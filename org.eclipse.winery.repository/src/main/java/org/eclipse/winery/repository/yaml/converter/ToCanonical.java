@@ -35,7 +35,6 @@ import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.HasInheritance;
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -47,13 +46,12 @@ import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TGroupType;
 import org.eclipse.winery.model.tosca.TImplementation;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TInterfaceDefinition;
@@ -63,7 +61,6 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TOperationDefinition;
 import org.eclipse.winery.model.tosca.TParameter;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -75,7 +72,6 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
@@ -139,12 +135,10 @@ public class ToCanonical {
     private Map<String, TArtifactTemplate> artifactTemplates;
     private List<TRequirementType> requirementTypes;
     private List<TImport> imports;
-    //private Map<QName, TInterfaceType> interfaceTypes;
     private Map<String, List<TPolicy>> policies;
     private Map<String, Map.Entry<String, String>> relationshipSTMap;
     private Map<String, TNodeTemplate> nodeTemplateMap;
     private AssignmentBuilder assignmentBuilder;
-    //    private ReferenceVisitor referenceVisitor;
     private final IRepository context;
 
     public ToCanonical(IRepository context) {
@@ -205,7 +199,7 @@ public class ToCanonical {
             .addRelationshipTypeImplementations(this.relationshipTypeImplementations)
             .addCapabilityTypes(convert(node.getCapabilityTypes()))
             .addArtifactTypes(convert(node.getArtifactTypes()))
-            .addArtifactTemplates(this.artifactTemplates.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList()))
+            .addArtifactTemplates(new ArrayList<>(this.artifactTemplates.values()))
             .addPolicyTypes(convert(node.getPolicyTypes()))
             .addInterfaceTypes(convert(node.getInterfaceTypes()))
             .setName(id)
@@ -257,17 +251,17 @@ public class ToCanonical {
             .setDerivedFrom(node.getDerivedFrom())
             .addTags(convertMetadata(node.getMetadata(), "targetNamespace", "abstract", "final"))
             .setTargetNamespace(node.getMetadata().get("targetNamespace"))
-            .setAbstract(Boolean.valueOf(node.getMetadata().get("abstract")))
-            .setFinal(Boolean.valueOf(node.getMetadata().get("final")))
+            .setAbstract(Boolean.parseBoolean(node.getMetadata().get("abstract")))
+            .setFinal(Boolean.parseBoolean(node.getMetadata().get("final")))
             .setAttributeDefinitions(convert(node.getAttributes()));
 
         if (node.getVersion() != null) {
             String version = node.getVersion().getVersion();
             if (version != null) {
-                TTag tag = new TTag();
-                tag.setName("version");
-                tag.setValue(version);
-                builder.addTags(tag);
+                builder.addTag(
+                    new TTag.Builder("version", version)
+                        .build()
+                );
             }
         }
 
@@ -303,23 +297,21 @@ public class ToCanonical {
      * @return TOSCA XML Tags
      */
     @NonNull
-    private TTags convertMetadata(Metadata metadata, String... excludedKeys) {
+    private List<TTag> convertMetadata(Metadata metadata, String... excludedKeys) {
         Set<String> exclusionSet = new HashSet<>(Arrays.asList(excludedKeys));
-        return new TTags.Builder()
-            .addTag(
-                metadata.entrySet().stream()
-                    .filter(Objects::nonNull)
-                    .filter(e -> !exclusionSet.contains(e.getKey()))
-                    .map(entry -> new TTag.Builder().setName(entry.getKey()).setValue(entry.getValue()).build())
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList())
-            )
-            .build();
+        return metadata.entrySet().stream()
+            .filter(Objects::nonNull)
+            .filter(e -> !exclusionSet.contains(e.getKey()))
+            .map(entry ->
+                new TTag.Builder(entry.getKey(), entry.getValue())
+                    .build())
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     /**
      * Converts TOSCA YAML ArtifactTypes to TOSCA XML ArtifactTypes. Both objects have a super type EntityType.
-     * Additional elements mime_type and file_ext from TOSCA YAML are moved to tags in TOSCA XML
+     * Additional elements mime_type and file_ext from TOSCA YAML are moved to Tags in TOSCA XML
      *
      * @param node the YAML ArtifactType
      * @return TOSCA XML ArtifactType
@@ -402,11 +394,11 @@ public class ToCanonical {
      * @return TOSCA XML DeploymentArtifacts
      */
     @Deprecated
-    private TDeploymentArtifacts convertDeploymentArtifacts(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
+    private List<TDeploymentArtifact> convertDeploymentArtifacts(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
         if (artifactDefinitionMap.isEmpty()) {
             return null;
         }
-        return new TDeploymentArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
+        return artifactDefinitionMap.entrySet().stream()
             .filter(Objects::nonNull)
             .map(entry -> {
                 TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
@@ -415,32 +407,7 @@ public class ToCanonical {
                     .setArtifactRef(new QName(targetNamespace, artifactTemplate.getId()))
                     .build();
             })
-            .collect(Collectors.toList()))
-            .build();
-    }
-
-    /**
-     * Converts TOSCA YAML ArtifactDefinitions to TOSCA XML DeploymentArtifacts
-     *
-     * @param artifactDefinitionMap map of TOSCA YAML ArtifactDefinitions
-     * @return TOSCA XML DeploymentArtifacts
-     */
-    @Deprecated
-    private TDeploymentArtifacts convertDeploymentArtifacts(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap) {
-        if (artifactDefinitionMap.isEmpty()) {
-            return null;
-        }
-        return new TDeploymentArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
-            .filter(Objects::nonNull)
-            .map(entry -> {
-                TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
-                this.artifactTemplates.put(artifactTemplate.getId(), artifactTemplate);
-                return new TDeploymentArtifact.Builder(entry.getKey(), entry.getValue().getType())
-                    .setArtifactRef(new QName(artifactTemplate.getId()))
-                    .build();
-            })
-            .collect(Collectors.toList()))
-            .build();
+            .collect(Collectors.toList());
     }
 
     /**
@@ -450,25 +417,23 @@ public class ToCanonical {
      * @return TOSCA XML ImplementationArtifacts
      */
     @Deprecated
-    private TImplementationArtifacts convertImplementationArtifact(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
+    private List<TImplementationArtifact> convertImplementationArtifact(@NonNull Map<String, YTArtifactDefinition> artifactDefinitionMap, String targetNamespace) {
         if (artifactDefinitionMap.isEmpty()) {
             return null;
         }
-        TImplementationArtifacts output = new TImplementationArtifacts.Builder(artifactDefinitionMap.entrySet().stream()
+        return artifactDefinitionMap.entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .map(entry -> {
                 TArtifactTemplate artifactTemplate = convert(entry.getValue(), entry.getKey());
                 this.artifactTemplates.put(artifactTemplate.getId(), artifactTemplate);
-                return new TImplementationArtifacts.ImplementationArtifact.Builder(entry.getValue().getType())
+                return new TImplementationArtifact.Builder(entry.getValue().getType())
                     .setName(entry.getKey())
                     .setArtifactRef(new QName(targetNamespace, artifactTemplate.getId()))
                     .setInterfaceName(convertInterfaceName(entry.getValue()))
                     .setOperationName(convertOperationName(entry.getValue()))
                     .build();
             })
-            .collect(Collectors.toList()))
-            .build();
-        return output;
+            .collect(Collectors.toList());
     }
 
     @Nullable
@@ -547,7 +512,7 @@ public class ToCanonical {
     }
 
     /**
-     * Constructs the the name of the PropertyType for a given type
+     * Constructs the name of the PropertyType for a given type
      */
     private QName getPropertyTypeName(QName type) {
         return new QName(type.getNamespaceURI(), type.getLocalPart() + "_Properties");
@@ -593,7 +558,7 @@ public class ToCanonical {
         TRequirement.Builder builder = new TRequirement.Builder(reqId, id, null);
 
         if (node.getCapability() != null) {
-            builder = builder.setCapability(node.getCapability().toString());
+            builder = builder.setCapability(node.getCapability().getLocalPart());
         } else {
             // when exporting, this must be caught, but while developing, it is tolerated
             // todo check if this is the case during export!
@@ -638,7 +603,7 @@ public class ToCanonical {
         for (HasInheritance currentNT : ancestry) {
             assert currentNT instanceof TNodeType;
             if (((TNodeType) currentNT).getCapabilityDefinitions() != null) {
-                currentCapDefs = ((TNodeType) currentNT).getCapabilityDefinitions().getCapabilityDefinition();
+                currentCapDefs = ((TNodeType) currentNT).getCapabilityDefinitions();
 
                 for (TCapabilityDefinition currentDef : currentCapDefs) {
                     if (currentDef.getName().equals(capName)) {
@@ -652,7 +617,7 @@ public class ToCanonical {
     }
 
     /**
-     * Gets the capability type of a capability identified by its name as present in the capability definition or
+     * Gets the CapabilityType of a Capability identified by its name as present in the capability definition or
      * capability assignment
      */
     private QName getCapabilityTypeOfCapabilityName(String capName) {
@@ -695,14 +660,13 @@ public class ToCanonical {
         if (Objects.isNull(node)) {
             return null;
         }
-        TCapabilityDefinition result = new TCapabilityDefinition.Builder(id, node.getType())
+
+        return new TCapabilityDefinition.Builder(id, node.getType())
             .addDocumentation(node.getDescription())
             .setLowerBound(node.getLowerBound())
             .setUpperBound(node.getUpperBound())
             .setValidSourceTypes(node.getValidSourceTypes())
             .build();
-
-        return result;
     }
 
     private TInterfaceDefinition convert(YTInterfaceDefinition node, String id) {
@@ -735,7 +699,7 @@ public class ToCanonical {
 
         builder.setNodeTemplates(convert(node.getNodeTemplates()));
         builder.setRelationshipTemplates(convert(node.getRelationshipTemplates()));
-        builder.setPolicies(new TPolicies(convert(node.getPolicies())));
+        builder.setPolicies(convert(node.getPolicies()));
         builder.setGroups(convert(node.getGroups()));
 
         if (node.getInputs() != null) {
@@ -792,7 +756,8 @@ public class ToCanonical {
             return null;
         }
         String typeName = fixNamespaceDuplication(id, node.getMetadata().get("targetNamespace"));
-        TRelationshipType output = fillEntityTypeProperties(node, new TRelationshipType.Builder(typeName))
+        // convertRelationshipTypeImplementation(node.getInterfaces(), id, node.getMetadata().get("targetNamespace"));
+        return fillEntityTypeProperties(node, new TRelationshipType.Builder(typeName))
             .addInterfaces(convert(node.getInterfaces(), null))
             .addSourceInterfaces(convert(node.getInterfaces(), "SourceInterfaces"))
             .addTargetInterfaces(convert(node.getInterfaces(), "TargetInterfaces"))
@@ -802,8 +767,6 @@ public class ToCanonical {
             .setValidTarget(convertValidTargetSource(node.getValidTargetTypes(), false))
             .setValidTargetList(node.getValidTargetTypes())
             .build();
-        // convertRelationshipTypeImplementation(node.getInterfaces(), id, node.getMetadata().get("targetNamespace"));
-        return output;
     }
 
     private QName convertValidTargetSource(List<QName> targets, Boolean isSource) {
@@ -969,21 +932,14 @@ public class ToCanonical {
      * @param targetList list of TOSCA YAML PolicyType targets
      * @return TOSCA XML PolicyType AppliesTo
      */
-    private TAppliesTo convertTargets(List<QName> targetList) {
-        if (targetList == null || targetList.size() == 0) {
+    private List<TPolicyType.NodeTypeReference> convertTargets(List<QName> targetList) {
+        if (targetList == null || targetList.isEmpty()) {
             return null;
         }
 
-        List<TAppliesTo.NodeTypeReference> references = new ArrayList<>();
-        for (QName nodeRef : targetList) {
-            TAppliesTo.NodeTypeReference ref = new TAppliesTo.NodeTypeReference();
-            ref.setTypeRef(nodeRef);
-            references.add(ref);
-        }
-
-        TAppliesTo appliesTo = new TAppliesTo();
-        appliesTo.getNodeTypeReference().addAll(references);
-        return appliesTo;
+        return targetList.stream()
+            .map(TPolicyType.NodeTypeReference::new)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -991,19 +947,19 @@ public class ToCanonical {
      */
     private void convertNodeTypeImplementation(
         Map<String, YTArtifactDefinition> implArtifacts,
-        Map<String, YTArtifactDefinition> deplArtifacts, String type, String targetNamespace) {
+        Map<String, YTArtifactDefinition> deploymentArtifacts, String type, String targetNamespace) {
         for (Map.Entry<String, YTArtifactDefinition> implArtifact : implArtifacts.entrySet()) {
-            for (Map.Entry<String, YTArtifactDefinition> deplArtifact : deplArtifacts.entrySet()) {
-                if (implArtifact.getKey().equalsIgnoreCase(deplArtifact.getKey())) {
-                    deplArtifacts.remove(deplArtifact.getKey());
+            for (Map.Entry<String, YTArtifactDefinition> deploymentArtifact : deploymentArtifacts.entrySet()) {
+                if (implArtifact.getKey().equalsIgnoreCase(deploymentArtifact.getKey())) {
+                    deploymentArtifacts.remove(deploymentArtifact.getKey());
                 }
             }
         }
         TNodeTypeImplementation.Builder builder = (new TNodeTypeImplementation.Builder(type + "_impl", new QName(targetNamespace, type))
             .setTargetNamespace(targetNamespace)
-            // .setDeploymentArtifacts(convertDeploymentArtifacts(deplArtifacts, targetNamespace))
+            // .setDeploymentArtifacts(convertDeploymentArtifacts(deploymentArtifacts, targetNamespace))
         );
-        TImplementationArtifacts implementationArtifacts = convertImplementationArtifact(implArtifacts, targetNamespace);
+        List<TImplementationArtifact> implementationArtifacts = convertImplementationArtifact(implArtifacts, targetNamespace);
         builder.setImplementationArtifacts(implementationArtifacts);
         this.nodeTypeImplementations.add(builder.build());
     }
@@ -1169,8 +1125,6 @@ public class ToCanonical {
                 } else if (entry.getValue() instanceof YTRequirementDefinition) {
                     return convert((YTRequirementDefinition) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof YTInterfaceType) {
-                    //assert (!interfaceTypes.containsKey(new QName(entry.getKey())));
-                    //this.interfaceTypes.put(new QName(entry.getKey()), (TInterfaceType) entry.getValue());
                     return convertToTInterfaceType((YTInterfaceType) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof YTInterfaceDefinition) {
                     return convert((YTInterfaceDefinition) entry.getValue(), entry.getKey());

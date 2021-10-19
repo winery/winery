@@ -29,10 +29,10 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
 import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
 import org.eclipse.winery.compliance.checking.ToscaComplianceRuleMatcher;
-import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -75,9 +75,10 @@ public class ToscaGraphIsomorphismTest extends TestWithGitBackedRepository {
 
     @Test
     public void testTComplianceRulePersistence() throws Exception {
-        OTComplianceRule rule = new OTComplianceRule(new OTComplianceRule.Builder());
-        rule.setName("test");
-        rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
+        OTComplianceRule rule = new OTComplianceRule.Builder("test")
+            .setName("test")
+            .setTargetNamespace(TEST_TARGET_NAMESPACE)
+            .build();
 
         ComplianceRuleId id = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test"));
         BackendUtils.persist(repository, id, rule);

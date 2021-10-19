@@ -8,7 +8,7 @@
     "otherAttributes": {
 
     },
-    "id": "winery-defs-for_tosca1-myLittleExample_1.0.0-w1-1",
+    "id": "tosca1-myLittleExample_1.0.0-w1-1",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [

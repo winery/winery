@@ -32,6 +32,8 @@
             [xsdSchemaType]="importXsdSchemaType"
             [data]="item"
             (deleted)="getSectionsData()"
+            (showsLastElement)="showLastElement.set(item.id, $event)"
+            [ngClass]="showLastElement.get(item.id) ? 'addPadding' : ''"
             class="winery-entity-container">
         </winery-entity-container>
     </div>

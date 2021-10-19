@@ -38,7 +38,8 @@ public class TTag implements Serializable {
     protected String value;
 
     @Deprecated // used for XML deserialization of API request content
-    public TTag() { }
+    public TTag() {
+    }
 
     public TTag(Builder builder) {
         this.name = Objects.requireNonNull(builder.name);
@@ -84,17 +85,13 @@ public class TTag implements Serializable {
     }
 
     public static class Builder {
+
         private String name;
         private String value;
 
-        public Builder setName(String name) {
+        public Builder(String name, String value) {
             this.name = name;
-            return this;
-        }
-
-        public Builder setValue(String value) {
             this.value = value;
-            return this;
         }
 
         public TTag build() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,17 +14,22 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -32,15 +37,18 @@ import org.eclipse.jdt.annotation.Nullable;
     "appliesTo"
 })
 public class XTPolicyType extends XTEntityType {
-    
-    @XmlElement(name = "AppliesTo")
-    protected XTAppliesTo appliesTo;
+
+    @XmlElementWrapper(name = "AppliesTo")
+    @XmlElement(name = "NodeTypeReference", required = true)
+    protected List<XNodeTypeReference> appliesTo;
+
     @XmlAttribute(name = "policyLanguage")
     @XmlSchemaType(name = "anyURI")
     protected String policyLanguage;
 
     @Deprecated // required for XML deserialization
-    public XTPolicyType() { }
+    public XTPolicyType() {
+    }
 
     public XTPolicyType(Builder builder) {
         super(builder);
@@ -64,11 +72,11 @@ public class XTPolicyType extends XTEntityType {
     }
 
     @Nullable
-    public XTAppliesTo getAppliesTo() {
+    public List<XNodeTypeReference> getAppliesTo() {
         return appliesTo;
     }
 
-    public void setAppliesTo(@Nullable XTAppliesTo value) {
+    public void setAppliesTo(@Nullable List<XNodeTypeReference> value) {
         this.appliesTo = value;
     }
 
@@ -86,8 +94,56 @@ public class XTPolicyType extends XTEntityType {
         visitor.visit(this);
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
+    public static class XNodeTypeReference implements Serializable {
+
+        @XmlAttribute(name = "typeRef", required = true)
+        protected QName typeRef;
+
+        @SuppressWarnings("unused")
+        public XNodeTypeReference() {
+        }
+
+        public XNodeTypeReference(QName typeRef) {
+            this.typeRef = typeRef;
+        }
+
+        /**
+         * Gets the value of the typeRef property.
+         *
+         * @return possible object is {@link QName }
+         */
+        @NonNull
+        public QName getTypeRef() {
+            return typeRef;
+        }
+
+        /**
+         * Sets the value of the typeRef property.
+         *
+         * @param value allowed object is {@link QName }
+         */
+        public void setTypeRef(QName value) {
+            this.typeRef = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            XNodeTypeReference that = (XNodeTypeReference) o;
+            return Objects.equals(typeRef, that.typeRef);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(typeRef);
+        }
+    }
+
     public static class Builder extends XTEntityType.Builder<Builder> {
-        private XTAppliesTo appliesTo;
+        private List<XNodeTypeReference> appliesTo;
         private String policyLanguage;
 
         public Builder(String name) {
@@ -98,7 +154,7 @@ public class XTPolicyType extends XTEntityType {
             super(entityType);
         }
 
-        public Builder setAppliesTo(XTAppliesTo appliesTo) {
+        public Builder setAppliesTo(List<XNodeTypeReference> appliesTo) {
             this.appliesTo = appliesTo;
             return this;
         }

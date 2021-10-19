@@ -18,6 +18,7 @@ import { Artifact } from '../../../model/artifact';
 import { ModalDirective } from 'ngx-bootstrap';
 import { InstanceService } from '../../instance.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
     selector: 'winery-instance-artifacts',
@@ -47,23 +48,21 @@ export class ArtifactsComponent implements OnInit {
     selectedFile: File;
     allowedTypes = '';
 
-    constructor(private artifactsService: ArtifactsService, public instanceService: InstanceService) {
+    constructor(private artifactsService: ArtifactsService,
+                public instanceService: InstanceService,
+                private notificationService: WineryNotificationService) {
     }
 
     ngOnInit(): void {
         this.loading = true;
-        this.artifactsService.getArtifacts().subscribe(data => {
+        this.artifactsService.getArtifacts().subscribe((data) => {
             this.artifacts = [];
             data.forEach(item => this.artifacts.push({ ...new Artifact(), ...item }));
             this.loading = false;
-        }, error => ArtifactsComponent.handleError(error));
+        }, (error) => this.handleError(error));
         this.artifactsService.getArtifactTypes().subscribe(data => {
             this.artifactTypes.classes = data;
-        }, error => ArtifactsComponent.handleError(error));
-    }
-
-    private static handleError(error: any) {
-        console.error(error);
+        }, error => this.handleError(error));
     }
 
     openModal() {
@@ -123,5 +122,9 @@ export class ArtifactsComponent implements OnInit {
         } else {
             this.selectedFile = undefined;
         }
+    }
+
+    private handleError(error: any) {
+        this.notificationService.error(error);
     }
 }

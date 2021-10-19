@@ -11,12 +11,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {InputParameters, OutputParameters} from '../../../model/parameters';
-import {WineryComponent} from '../../../model/wineryComponent';
-import {NodeOperation, PlanOperation, RelationshipOperation} from './targetInterface/operations';
+import { InterfaceParameter } from '../../../model/parameters';
+import { WineryComponent } from '../../../model/wineryComponent';
+import { NodeOperation, PlanOperation, RelationshipOperation } from './targetInterface/operations';
+
+export class InterfaceOperationApiData extends WineryComponent {
+    inputParameters: InterfaceParameter[] = [];
+    outputParameters: InterfaceParameter[] = [];
+    nodeOperation: NodeOperation;
+    relationshipOperation: RelationshipOperation;
+    plan: PlanOperation;
+}
 
 export class InterfacesApiData {
-    operation: InterfaceOperationApiData[] = [];
+    operations: InterfaceOperationApiData[] = [];
     name: string;
     id: string;
     text: string;
@@ -24,12 +32,4 @@ export class InterfacesApiData {
     constructor(name = '') {
         this.name = name;
     }
-}
-
-export class InterfaceOperationApiData extends WineryComponent {
-    inputParameters: InputParameters = new InputParameters();
-    outputParameters: OutputParameters = new OutputParameters();
-    nodeOperation: NodeOperation;
-    relationshipOperation: RelationshipOperation;
-    plan: PlanOperation;
 }

@@ -28,6 +28,7 @@ import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
 import org.eclipse.jdt.annotation.NonNull;
 
 public class YTNodeType extends YTNodeOrGroupType {
+
     private Map<String, YTAttributeDefinition> attributes;
     private List<YTMapRequirementDefinition> requirements;
     private Map<String, YTCapabilityDefinition> capabilities;

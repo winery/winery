@@ -130,7 +130,7 @@ public class ThreatModeling {
     private void getPresentThreats() {
         nodeTemplates.forEach((TNodeTemplate nt) -> {
             if (nt.getPolicies() != null) {
-                nt.getPolicies().getPolicy().forEach((TPolicy policy) -> {
+                nt.getPolicies().forEach((TPolicy policy) -> {
                     String policyTypeName = policy.getPolicyType().toString();
                     if (policyTypeName.equals(ThreatModelingConstants.THREAT_POLICY_ID)) {
 

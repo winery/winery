@@ -17,6 +17,7 @@ import { CapabilityDefinitionModel } from './capabilityDefinitionModel';
 import { RequirementDefinitionModel } from './requirementDefinitonModel';
 import { EntityType, TPolicyType } from './ttopology-template';
 import { PropertyDefinitionType } from './enums';
+import { ToastrService } from 'ngx-toastr';
 
 export class InheritanceUtils {
 
@@ -52,33 +53,13 @@ export class InheritanceUtils {
         );
     }
 
-    /**
-     * Retrieves the effective value of a given field of an entity type by traversing the type ancestry upwards and getting the first occurrence found of
-     * this field. For example, you can get the effictive mime_type of an artifact type using this method.
-     * @param typeName the type of the entity as a qname string e.g., '{tosca.nodes}.Compute'.
-     * @param fieldName the name of the field we are interested in, e.g., 'documentation'.
-     * @param allTypes the set of all types of this specific entity type, e.g., the linear set of all node types.
-     */
-    static getEffectiveSingleFieldValueOfAnEntityType(typeName: string, fieldName: string, allTypes: EntityType[]) {
-        const ancestry = this.getInheritanceAncestry(typeName, allTypes);
-
-        for (const entityType of ancestry) {
-            if (entityType[fieldName]) {
-                return entityType[fieldName];
-            }
-        }
-
-        return undefined;
-    }
-
     static getEffectiveCapabilityDefinitionsOfNodeType(nodeType: string, entityTypes: EntityTypesModel): CapabilityDefinitionModel[] {
         const listOfEffectiveCapabilityDefinitions: CapabilityDefinitionModel[] = [];
         const listOfBequeathingNodeTypes = this.getInheritanceAncestry(nodeType, entityTypes.unGroupedNodeTypes);
         for (const currentNodeType of listOfBequeathingNodeTypes) {
-            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].capabilityDefinitions &&
-                currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].capabilityDefinitions.capabilityDefinition) {
+            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].capabilityDefinitions) {
                 for (const capabilityDefinition of currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
-                    .capabilityDefinitions.capabilityDefinition) {
+                    .capabilityDefinitions) {
                     if (!listOfEffectiveCapabilityDefinitions
                         .some(value => value.name === capabilityDefinition.name)) {
                         listOfEffectiveCapabilityDefinitions.push(capabilityDefinition);
@@ -93,10 +74,9 @@ export class InheritanceUtils {
         const listOfEffectiveRequirementDefinitions: RequirementDefinitionModel[] = [];
         const listOfBequeathingNodeTypes = this.getInheritanceAncestry(nodeType, entityTypes.unGroupedNodeTypes);
         for (const currentNodeType of listOfBequeathingNodeTypes) {
-            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions &&
-                currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions.requirementDefinition) {
+            if (currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions) {
                 for (const requirementDefinition of currentNodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
-                    .requirementDefinitions.requirementDefinition) {
+                    .requirementDefinitions) {
                     if (!listOfEffectiveRequirementDefinitions
                         .some(value => value.name === requirementDefinition.name)) {
                         listOfEffectiveRequirementDefinitions.push(requirementDefinition);
@@ -108,9 +88,9 @@ export class InheritanceUtils {
     }
 
     /**
-     * Returns a list of decendants of an entity type.
+     * Returns a list of descendants of an entity type.
      *
-     * Returns a list of all decendants of the entity type in no particular order.
+     * Returns a list of all descendants of the entity type in no particular order.
      * The list contains the entity type itself at position 0.
      * @param entityType
      * @param entityTypes
@@ -150,31 +130,33 @@ export class InheritanceUtils {
         return result;
     }
 
-    static getEffectivePropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[]): any {
+    static getEffectivePropertiesOfTemplateElement(templateElementProperties: any, typeQName: string, entityTypes: EntityType[],
+                                                   notify: ToastrService): any {
         const defaultTypeProperties = this.getDefaultPropertiesFromEntityTypes(typeQName, entityTypes);
         const result = {};
         if (!defaultTypeProperties) {
-            console.log('Could not find default type properties for type ' + typeQName);
+            notify.info('Could not find default type properties for type ' + typeQName);
             return { propertyType: PropertyDefinitionType.NONE };
         }
+
         if (defaultTypeProperties.propertyType === PropertyDefinitionType.KV) {
             Object.assign(result, defaultTypeProperties.kvproperties);
-        }
-        if (defaultTypeProperties.propertyType === PropertyDefinitionType.YAML) {
+        } else if (defaultTypeProperties.propertyType === PropertyDefinitionType.YAML) {
             Object.assign(result, defaultTypeProperties.properties);
         }
         // overwrite defaults from the entity type with the properties of the element
         if (templateElementProperties && templateElementProperties.properties) {
             Object.assign(result, templateElementProperties.properties);
         }
+
         // FIXME: because this method is only used for Yaml Policies this forced mapping to YAML-properties is doable
-        //  This is highly likely to break for anything beyond that specific usecase!
+        //  This is highly likely to break for anything beyond that specific use case!
         return { propertyType: PropertyDefinitionType.YAML, properties: result };
     }
 
     /**
      * This function gets KV properties of a type and sets their default values
-     * @param any type: the element type, e.g. capabilityType, requirementType etc.
+     * @param type: the element type, e.g. capabilityType, requirementType etc.
      * @returns newKVProperties: KV Properties as Object
      */
     static getKVProperties(type: any): any {
@@ -328,7 +310,7 @@ export class InheritanceUtils {
                     };
 
                     return InheritanceUtils.hasKVPropDefinition(element) && selectedType.propertiesDefinition.elementName
-                                && selectedType.propertiesDefinition.namespace
+                    && selectedType.propertiesDefinition.namespace
                         ? {
                             ...properties,
                             elementName: selectedType.propertiesDefinition.elementName,

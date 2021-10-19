@@ -48,7 +48,7 @@ public class MultiRepositoryManager {
      */
     void initializeRepositoryListForMultiRepositoryAndReconfigureFactory(List<RepositoryProperties> repositoryList) {
         ObjectMapper objectMapper = new ObjectMapper();
-        File repositoryConfiguration = new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_REPOSITORIES);
+        File repositoryConfiguration = new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
         if (!repositoryConfiguration.exists()) {
             try {
                 Files.createFile(repositoryConfiguration.toPath());
@@ -87,7 +87,7 @@ public class MultiRepositoryManager {
             }
         }
         ignoreFiles.add(Constants.DEFAULT_LOCAL_REPO_NAME);
-        ignoreFiles.add(Filename.FILENAME_JSON_REPOSITORIES);
+        ignoreFiles.add(Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
         FileUtils.copyFiles(oldPath, newPath, ignoreFiles);
         try {
             FileUtils.forceDeleteFile(oldPath.resolve(".git").toFile());

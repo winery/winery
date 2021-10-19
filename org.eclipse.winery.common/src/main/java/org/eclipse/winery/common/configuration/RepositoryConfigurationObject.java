@@ -31,31 +31,16 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
     // this class shares the responsibility of the Environment class in abstracting 
     // over interactions with the configuration file. Loggers are therefore shared.
     private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
-    
+
     private static final String key = "repository.";
     private GitConfigurationObject gitConfiguration;
 
     private RepositoryProvider provider;
     private String repositoryRoot;
     private String csarOutputPath;
+    private boolean tenantRepository;
 
     private YAMLConfiguration configuration;
-
-    public enum RepositoryProvider {
-
-        FILE("file"), YAML("yaml");
-
-        private final String name;
-
-        RepositoryProvider(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 
     RepositoryConfigurationObject(YAMLConfiguration configuration, GitConfigurationObject gitConfigurationObject) {
         this.setGitConfiguration(gitConfigurationObject);
@@ -71,6 +56,7 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         configuration.setProperty(key + "provider", this.getProvider().toString());
         configuration.setProperty(key + "repositoryRoot", this.repositoryRoot);
         configuration.setProperty(key + "csarOutputPath", this.csarOutputPath);
+        configuration.setProperty(key + "tenantMode", this.tenantRepository);
         this.getGitConfiguration().save();
         Environment.getInstance().save();
     }
@@ -80,6 +66,9 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         this.configuration = updatedConfiguration;
         this.repositoryRoot = configuration.getString(key + "repositoryRoot");
         this.csarOutputPath = configuration.getString(key + "csarOutputPath");
+        if (this.configuration.containsKey(key + "tenantMode")) {
+            this.tenantRepository = configuration.getBoolean(key + "tenantMode");
+        }
         String provider = Environment.getInstance().getConfiguration().getString(getProviderConfigurationKey());
         if (provider.equalsIgnoreCase(RepositoryProvider.YAML.name())) {
             this.setProvider(RepositoryProvider.YAML);
@@ -143,6 +132,15 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         this.gitConfiguration = gitConfiguration;
     }
 
+    public void setTenantRepository(boolean tenantRepository) {
+        this.tenantRepository = tenantRepository;
+        this.save();
+    }
+
+    public boolean isTenantRepository() {
+        return tenantRepository;
+    }
+
     private static Path determineAndCreateRepositoryPath() {
         Path repositoryPath;
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -197,6 +195,22 @@ public class RepositoryConfigurationObject extends AbstractConfigurationObject {
         } catch (IOException e) {
             LOGGER.error("Error while creating directory: {}", e.getMessage(), e);
             throw new IllegalStateException(e);
+        }
+    }
+
+    public enum RepositoryProvider {
+
+        FILE("file"), YAML("yaml");
+
+        private final String name;
+
+        RepositoryProvider(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }

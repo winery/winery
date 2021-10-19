@@ -36,7 +36,7 @@ export class GroupViewPoliciesComponent implements OnInit {
 
     ngOnInit() {
         this.ngRedux.select((state) => state.wineryState.currentJsonTopology.policies)
-            .subscribe((policies) => this.policies = policies.policy);
+            .subscribe((policies) => this.policies = policies);
     }
 
     isEmpty(): boolean {

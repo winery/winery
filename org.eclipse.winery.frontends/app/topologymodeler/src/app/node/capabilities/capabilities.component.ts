@@ -21,7 +21,6 @@ import { Subscription } from 'rxjs';
 import { CapabilityModel } from '../../models/capabilityModel';
 import { TableType } from '../../models/enums';
 import { ReqCapModalType, ShowReqCapModalEventData } from '../toscatype-table/showReqCapModalEventData';
-import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     selector: 'winery-capabilities',
@@ -46,10 +45,10 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     subscription: Subscription;
     currentCapability: CapabilityModel;
 
-    constructor(private ngRedux: NgRedux<IWineryState>, private configuration: WineryRepositoryConfigurationService) {
+    constructor(private ngRedux: NgRedux<IWineryState>) {
         this.toggleModalHandler = new EventEmitter();
         this.subscription = this.ngRedux.select(state => state.wineryState.currentJsonTopology.nodeTemplates)
-            .subscribe(currentNodes => this.updateCaps());
+            .subscribe(() => this.updateCaps());
     }
 
     /**
@@ -58,7 +57,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     updateCaps(): void {
         if (this.currentNodeData) {
             if (this.currentNodeData.nodeTemplate.capabilities) {
-                this.capabilities = this.currentNodeData.nodeTemplate.capabilities.capability;
+                this.capabilities = this.currentNodeData.nodeTemplate.capabilities;
                 this.capabilitiesExist = true;
             }
         }

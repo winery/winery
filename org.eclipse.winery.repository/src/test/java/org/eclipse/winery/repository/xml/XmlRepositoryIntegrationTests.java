@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.xml;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
@@ -24,7 +25,6 @@ import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
 
@@ -38,7 +38,6 @@ import org.junit.platform.commons.util.Preconditions;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmlRepositoryIntegrationTests extends TestWithGitBackedRepository {
@@ -82,9 +81,12 @@ public class XmlRepositoryIntegrationTests extends TestWithGitBackedRepository {
             .build();
 
         if (element.getTags() == null) {
-            element.setTags(new TTags());
+            element.setTags(new ArrayList<>());
         }
-        element.getTags().getTag().add(new TTag.Builder().setName("test").setValue("test").build());
+        element.getTags()
+            .add(
+                new TTag.Builder("test", "test").build()
+            );
 
         // Save group
         element.getTopologyTemplate().addGroup(testGroup);
@@ -100,6 +102,6 @@ public class XmlRepositoryIntegrationTests extends TestWithGitBackedRepository {
         assertTrue(testGroup.getMembers().isEmpty());
 
         assertNotNull(element.getTags());
-        assertEquals(1, element.getTags().getTag().size());
+        assertEquals(1, element.getTags().size());
     }
 }

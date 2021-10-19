@@ -30,6 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImport")
 public class TImport extends TExtensibleElements {
+
     @XmlAttribute(name = "namespace")
     @XmlSchemaType(name = "anyURI")
     protected String namespace;

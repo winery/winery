@@ -35,7 +35,7 @@ export class ProvenanceComponent extends AccountabilityParentComponent {
         super(service, notify);
     }
 
-    private getModelProvenance() {
+    getModelProvenance() {
         this.loading = true;
         this.service.getModelProvenance(this.selectedProvenanceId.id)
             .subscribe(

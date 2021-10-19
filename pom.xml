@@ -78,7 +78,8 @@
         <org.eclipse.jgit.version>5.7.0.202003110725-r</org.eclipse.jgit.version>
         <org.mockito.moickito-core.version>2.19.0</org.mockito.moickito-core.version>
         <org.jgrapht.jgrapht-core.version>1.3.1</org.jgrapht.jgrapht-core.version>
-        <org.web3j>4.2.0</org.web3j>
+        <org.web3j.version>4.6.4</org.web3j.version>
+        <org.web3j.web3j-maven-plugin.version>4.6.5</org.web3j.web3j-maven-plugin.version>
         <org.apache.commons-lang3.version>3.7</org.apache.commons-lang3.version>
         <org.apache.commons.compress.version>1.19</org.apache.commons.compress.version>
         <commons-codec>1.11</commons-codec>
@@ -88,6 +89,7 @@
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
         <edmm.version>1.0.18</edmm.version>
+        <tika.version>1.26</tika.version>
 
         <!-- grouped libraries -->
         <org.apache.cxf.version>2.7.6</org.apache.cxf.version>

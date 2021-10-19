@@ -59,6 +59,13 @@ import { DetailsSidebarState } from '../sidebars/node-details/node-details-sideb
 })
 export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck {
 
+    /**
+     *  Parse the localName of the NodeType
+     */
+    get nodeTypeLocalName() {
+        return this.nodeTemplate.type.split('}').pop();
+    }
+
     public items: string[] = ['Item 1', 'Item 2', 'Item 3'];
     nodeClass: string;
     visibilityState = 'hidden';
@@ -78,8 +85,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     policyIcons: string[];
     configEnum = FeatureEnum;
     policiesOfNode: TPolicy[];
-    private policyChangeSubscription: Subscription;
-    private artifactsChangedSubscription: Subscription;
     groupDefinitions: TGroupDefinition[];
     participants: OTParticipant[];
 
@@ -119,6 +124,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     newerVersions: WineryVersion[];
     newerVersionExist: boolean;
     newVersionElement: VersionElement;
+    private policyChangeSubscription: Subscription;
+    private artifactsChangedSubscription: Subscription;
 
     constructor(private zone: NgZone,
                 private $ngRedux: NgRedux<IWineryState>,
@@ -126,7 +133,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 public elRef: ElementRef,
                 private backendService: BackendService,
                 private renderer: Renderer2,
-                private configurationService: WineryRepositoryConfigurationService,
+                public configurationService: WineryRepositoryConfigurationService,
                 private differs: KeyValueDiffers) {
         this.sendId = new EventEmitter();
         this.askForRepaint = new EventEmitter();
@@ -148,7 +155,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             this.policyChangeSubscription = $ngRedux.select(wineryState => wineryState.wineryState.currentJsonTopology.policies)
                 .subscribe(policies => {
                     if (this.entityTypes) {
-                        this.entityTypes.yamlPolicies = policies.policy;
+                        this.entityTypes.yamlPolicies = policies;
                         this.policiesOfNode = this.getAllowedPolicies();
                     }
                 });
@@ -172,13 +179,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 this.participants = topology.participants;
             });
         this.$ngRedux.subscribe(() => this.setPolicyIcons());
-    }
-
-    /**
-     *  Parse the localName of the NodeType
-     */
-    get nodeTypeLocalName() {
-        return this.nodeTemplate.type.split('}').pop();
     }
 
     public addItem(): void {
@@ -289,9 +289,9 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      * Get the icons of the policies.
      */
     setPolicyIcons() {
-        if (this.nodeTemplate.policies && this.nodeTemplate.policies.policy) {
+        if (this.nodeTemplate.policies) {
             this.policyIcons = [];
-            const list: TPolicy[] = this.nodeTemplate.policies.policy;
+            const list: TPolicy[] = this.nodeTemplate.policies;
 
             for (const value of list) {
                 let visual: Visuals;
@@ -391,7 +391,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 y: offsetTop
             };
             this.zone.runOutsideAngular(() => {
-                this.unbindMouseMove = this.renderer.listen(this.elRef.nativeElement, 'mousemove', (event) => this.mouseMove(event));
+                this.unbindMouseMove = this.renderer.listen(this.elRef.nativeElement, 'mousemove', () => this.mouseMove());
             });
         }
     }
@@ -399,7 +399,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     /**
      * If a node is moved, this saves the current position of the node into the store.
      */
-    mouseMove($event): void {
+    mouseMove(): void {
         const offsetLeft = this.elRef.nativeElement.firstChild.offsetLeft;
         const offsetTop = this.elRef.nativeElement.firstChild.offsetTop;
         this.currentPosition = {
@@ -411,10 +411,10 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     /**
      * Checks if it was a click or a drag operation on the node.
      */
-    mouseUpHandler($event): void {
+    mouseUpHandler(): void {
         // mouseup
         this.endTime = new Date().getTime();
-        this.testTimeDifference($event);
+        this.testTimeDifference();
         if (this.previousPosition !== undefined && this.currentPosition !== undefined) {
             const differenceY = this.previousPosition.y - this.currentPosition.y;
             const differenceX = this.previousPosition.x - this.currentPosition.x;
@@ -457,7 +457,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     /**
      * Creates a dragoperation for nodes
      */
-    makeSource($event): void {
+    makeSource(): void {
         const dragSourceInfo = {
             dragSource: this.dragSource,
             nodeId: this.nodeTemplate.id
@@ -493,7 +493,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      * Navigates to the corresponding node type in the management UI
      *  $event
      */
-    linkType($event: any): void {
+    linkType(): void {
         const qName = new QName(this.nodeTemplate.type);
         const typeURL = this.backendService.configuration.uiURL + urlElement.NodeTypeURL +
             encodeURIComponent(encodeURIComponent(qName.nameSpace)) + '/' + qName.localName
@@ -526,11 +526,19 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         }
     }
 
+    public openVersionModal() {
+        this.versionModal.open();
+    }
+
+    handleShowYamlPolicyManagementModal() {
+        this.showYamlPolicyManagementModal.emit();
+    }
+
     /**
      * Checks if it was a click or a drag operation on the node.
      *  $event
      */
-    private testTimeDifference($event): void {
+    private testTimeDifference(): void {
         if ((this.endTime - this.startTime) < 200) {
             this.longpress = false;
         } else if (this.endTime - this.startTime >= 200) {
@@ -564,10 +572,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
     }
 
-    public openVersionModal() {
-        this.versionModal.open();
-    }
-
     private getAllowedPolicies() {
         // get the ancestry of the node type
         const nodeTypeAncestry = InheritanceUtils.getInheritanceAncestry(this.nodeTemplate.type, this.entityTypes.unGroupedNodeTypes);
@@ -589,9 +593,5 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         });
 
         return result;
-    }
-
-    handleShowYamlPolicyManagementModal() {
-        this.showYamlPolicyManagementModal.emit();
     }
 }

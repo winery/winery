@@ -44,18 +44,31 @@ export interface OTParticipant {
 }
 
 /**
- * This is the datamodel for node Templates and relationship templates
+ * This is the data model for node Templates and relationship templates
  */
 export class TTopologyTemplate extends AbstractTEntity {
     nodeTemplates: Array<TNodeTemplate> = [];
     relationshipTemplates: Array<TRelationshipTemplate> = [];
-    policies: { policy: Array<TPolicy> };
+    policies: Array<TPolicy>;
     groups: Array<TGroupDefinition> = [];
     participants: Array<OTParticipant> = [];
 }
 
+export class TArtifact extends AbstractTEntity {
+    constructor(public id: string,
+                public type: string,
+                public file: string,
+                public targetLocation?: string,
+                public properties?: any,
+                public documentation?: any,
+                public any?: any,
+                public otherAttributes?: any) {
+        super(documentation, any, otherAttributes);
+    }
+}
+
 /**
- * This is the datamodel for node Templates
+ * This is the data-model for node Templates
  */
 export class TNodeTemplate extends AbstractTEntity {
 
@@ -71,11 +84,11 @@ export class TNodeTemplate extends AbstractTEntity {
                 otherAttributes?: any,
                 public x?: number,
                 public y?: number,
-                public capabilities?: { capability: any[] },
-                public requirements?: { requirement: any[] },
-                public deploymentArtifacts?: any,
-                public policies?: { policy: any[] },
-                public artifacts?: { artifact: Array<TArtifact> },
+                public capabilities?: any[],
+                public requirements?: any[],
+                public deploymentArtifacts?: any[],
+                public policies?: Array<TPolicy>,
+                public artifacts?: Array<TArtifact>,
                 public _state?: DifferenceStates) {
         super(documentation, any, otherAttributes);
     }
@@ -102,22 +115,20 @@ export class TNodeTemplate extends AbstractTEntity {
                 if (nodeTemplate.otherAttributes.hasOwnProperty(key)) {
                     nameSpace = key.substring(key.indexOf('{'), key.indexOf('}') + 1);
                     if (nameSpace) {
-                        const otherAttributes = {
+                        nodeTemplate.otherAttributes = {
                             [nameSpace + 'location']: updatedValue,
                             [nameSpace + 'x']: nodeTemplate.x,
                             [nameSpace + 'y']: nodeTemplate.y
                         };
-                        nodeTemplate.otherAttributes = otherAttributes;
                         newOtherAttributesAssigned = true;
                         break;
                     }
                 }
             }
             if (!newOtherAttributesAssigned) {
-                const otherAttributes = {
+                nodeTemplate.otherAttributes = {
                     'location': updatedValue,
                 };
-                nodeTemplate.otherAttributes = otherAttributes;
             }
         } else if (updatedAttribute === ('minInstances') || updatedAttribute === ('maxInstances')) {
             if (Number.isNaN(+updatedValue)) {
@@ -190,7 +201,7 @@ export class Entity {
 }
 
 /**
- * This is the datamodel for the Entity Types
+ * This is the data-model for the Entity Types
  */
 export class EntityType extends Entity {
     constructor(id: string = '',
@@ -265,7 +276,7 @@ export class TArtifactType extends EntityType {
 }
 
 /**
- * This is the datamodel for relationship templates
+ * This is the data-model for relationship templates
  */
 export class TRelationshipTemplate extends AbstractTEntity {
 
@@ -298,19 +309,6 @@ export class TRelationshipTemplate extends AbstractTEntity {
         return relTemplate;
     }
 
-}
-
-export class TArtifact extends AbstractTEntity {
-    constructor(public id: string,
-                public type: string,
-                public file: string,
-                public targetLocation?: string,
-                public properties?: any,
-                public documentation?: any,
-                public any?: any,
-                public otherAttributes?: any) {
-        super(documentation, any, otherAttributes);
-    }
 }
 
 export class TNodeType extends AbstractTEntity {

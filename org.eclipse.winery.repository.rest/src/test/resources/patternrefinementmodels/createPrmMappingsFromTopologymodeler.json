@@ -164,24 +164,13 @@
             "maxInstances": "1",
             "x": 771,
             "y": 400,
-            "capabilities": {
-                "capability": [
-                ]
-            },
-            "requirements": {
-                "requirement": [
-                ]
-            },
-            "deploymentArtifacts": {
-            },
-            "policies": {
-                "policy": [
-                ]
-            },
-            "artifacts": {
-                "artifact": [
-                ]
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": [
+            ],
+            "artifacts": [
+            ]
         },
         {
             "documentation": [
@@ -203,24 +192,12 @@
             "maxInstances": "1",
             "x": 1451,
             "y": 382,
-            "capabilities": {
-                "capability": [
-                ]
-            },
-            "requirements": {
-                "requirement": [
-                ]
-            },
-            "deploymentArtifacts": {
-            },
-            "policies": {
-                "policy": [
-                ]
-            },
-            "artifacts": {
-                "artifact": [
-                ]
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": [
+            ],
+            "artifacts": []
         },
         {
             "documentation": [
@@ -242,26 +219,13 @@
             "maxInstances": "1",
             "x": 1448,
             "y": 203,
-            "capabilities": {
-                "capability": [
-                ]
-            },
-            "requirements": {
-                "requirement": [
-                ]
-            },
-            "deploymentArtifacts": {
-            },
-            "policies": {
-                "policy": [
-                ]
-            },
-            "artifacts": {
-                "artifact": [
-                ]
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": [
+            ],
+            "artifacts": []
         }
     ],
-    "policies": {
-    }
+    "policies": []
 }

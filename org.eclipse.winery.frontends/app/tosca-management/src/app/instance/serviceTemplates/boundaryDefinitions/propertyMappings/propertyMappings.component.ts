@@ -12,9 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Property, PropertyMappingsApiData, PropertyMappingService } from './propertyMappings.service';
+import { PropertyMapping, PropertyMappingsApiData, PropertyMappingService } from './propertyMappings.service';
 import { WineryRowData, WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
-import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
@@ -50,7 +49,7 @@ export class PropertyMappingsComponent implements OnInit {
     @ViewChild('propertyMappingForm') propertyMappingForm: NgForm;
     @ViewChild('tempList') templateSelect: any;
     @ViewChild('propertiesSelect') propertiesSelect: any;
-    currentSelectedItem: Property = new Property();
+    currentSelectedItem: PropertyMapping = new PropertyMapping();
     addOrUpdate = 'Add';
     properties: { name: string, property: string } = { name: '', property: '' };
     xmlData: any;
@@ -85,7 +84,7 @@ export class PropertyMappingsComponent implements OnInit {
     getTopologyTemplate() {
         this.instanceService.getTopologyTemplate().subscribe(
             data => this.handleTopologyTemplateData(data),
-            error => this.notify.error('Could not get topology data')
+            () => this.notify.error('Could not get topology data')
         );
     }
 
@@ -98,7 +97,7 @@ export class PropertyMappingsComponent implements OnInit {
 
     handleTopologyTemplateData(data: WineryTopologyTemplate) {
         this.topologyTemplate = data;
-        if (!isNullOrUndefined(this.xmlData) && !isNullOrUndefined(this.apiData)) {
+        if (this.xmlData && this.apiData) {
             this.loading = false;
         }
     }
@@ -109,14 +108,14 @@ export class PropertyMappingsComponent implements OnInit {
         this.properties.name = this.xmlData.firstChild.localName;
         this.properties.property = '/*[local-name()=\'' + this.properties.name + '\']';
 
-        if (!isNullOrUndefined(this.topologyTemplate) && !isNullOrUndefined(this.apiData)) {
+        if (this.topologyTemplate && this.apiData) {
             this.loading = false;
         }
     }
 
     radioBtnSelected(event: any, reset = true) {
         this.serviceTemplateTemplate = Utils.getServiceTemplateTemplateFromString(event.target.value);
-        if (!isNullOrUndefined(this.serviceTemplateTemplate)) {
+        if (this.serviceTemplateTemplate) {
             this.targetTypeSelected = true;
             this.toscaType = Utils.getTypeOfServiceTemplateTemplate(this.serviceTemplateTemplate);
 
@@ -138,7 +137,7 @@ export class PropertyMappingsComponent implements OnInit {
     }
 
     getListOfTemplates(templateType: string): Array<SelectData> {
-        if (!isNullOrUndefined(this.topologyTemplate[templateType])) {
+        if (this.topologyTemplate[templateType]) {
             return this.topologyTemplate[templateType].map((template: WineryTemplate) => {
                 const newItem: SelectItem = new SelectItem('');
                 newItem.id = template.id;
@@ -175,7 +174,7 @@ export class PropertyMappingsComponent implements OnInit {
     }
 
     handleGetProperties(propertiesDefinition: PropertiesDefinitionsResourceApiData) {
-        if (!isNullOrUndefined(propertiesDefinition.winerysPropertiesDefinition)) {
+        if (propertiesDefinition.winerysPropertiesDefinition) {
             this.targetProperties = propertiesDefinition.winerysPropertiesDefinition.propertyDefinitionKVList.map(item => {
                 return { id: item.key, text: item.key };
             });
@@ -191,7 +190,7 @@ export class PropertyMappingsComponent implements OnInit {
     }
 
     targetPropertySelected(property: SelectItem) {
-        if (!isNullOrUndefined(property)) {
+        if (property) {
             this.selectedProperty = property.id;
         }
         this.currentSelectedItem.targetPropertyRef = '/*[local-name()=\'' + this.targetPropertiesWrapperElement +
@@ -200,7 +199,7 @@ export class PropertyMappingsComponent implements OnInit {
 
     handleData(data: PropertyMappingsApiData) {
         this.apiData = data;
-        if (!isNullOrUndefined(this.xmlData) && !isNullOrUndefined(this.topologyTemplate)) {
+        if (this.xmlData && this.topologyTemplate) {
             this.loading = false;
         }
     }
@@ -211,13 +210,13 @@ export class PropertyMappingsComponent implements OnInit {
 
     removeConfirmed() {
         this.service.removePropertyMapping(this.currentSelectedItem.serviceTemplatePropertyRef).subscribe(
-            data => this.handleSuccess('Deleted property mapping'),
+            () => this.handleSuccess('Deleted property mapping'),
             error => this.handleError(error)
         );
     }
 
-    onRemoveClick(elementToRemove: Property) {
-        if (!isNullOrUndefined(elementToRemove) && !isNullOrUndefined(this.currentSelectedItem)) {
+    onRemoveClick(elementToRemove: PropertyMapping) {
+        if (elementToRemove && this.currentSelectedItem) {
             this.confirmDeleteModal.show();
         } else {
             this.notify.warning('No Element was selected!');
@@ -226,7 +225,7 @@ export class PropertyMappingsComponent implements OnInit {
 
     onAddClick() {
         this.addOrUpdate = 'Add';
-        this.currentSelectedItem = new Property();
+        this.currentSelectedItem = new PropertyMapping();
         this.propertyMappingForm.reset();
         this.targetObject = null;
         this.targetTypeSelected = false;
@@ -240,7 +239,7 @@ export class PropertyMappingsComponent implements OnInit {
             return nodeTemplate.id === this.currentSelectedItem.targetObjectRef;
         });
 
-        if (isNullOrUndefined(element)) {
+        if (!element) {
             element = this.topologyTemplate.relationshipTemplates.find(relationshipTemplate => {
                 if (relationshipTemplate.id === this.currentSelectedItem.targetObjectRef) {
                     elementType = ServiceTemplateTemplateTypes.RelationshipTemplate;
@@ -250,10 +249,10 @@ export class PropertyMappingsComponent implements OnInit {
             });
         }
 
-        if (!isNullOrUndefined(element)) {
+        if (element) {
             // Get the last value defined in local-name()='valueWeWantToGet'
-            const splittedProperty = this.currentSelectedItem.targetPropertyRef.split('\'');
-            this.selectedProperty = splittedProperty[splittedProperty.length - 2];
+            const splitProperty = this.currentSelectedItem.targetPropertyRef.split('\'');
+            this.selectedProperty = splitProperty[splitProperty.length - 2];
             this.targetObject = new WineryTemplate();
             this.addOrUpdate = 'Update';
             this.radioBtnSelected({ target: { value: elementType } }, false);
@@ -270,7 +269,7 @@ export class PropertyMappingsComponent implements OnInit {
         }
         this.service.addPropertyMapping(this.currentSelectedItem)
             .subscribe(
-                data => this.handleSuccess('Added new property mapping'),
+                () => this.handleSuccess('Added new property mapping'),
                 error => this.handleError(error)
             );
         this.addPropertyMappingModal.hide();

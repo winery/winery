@@ -50,7 +50,14 @@ public class TPropertyMapping implements Serializable {
     protected String targetPropertyRef;
 
     @Deprecated // used for XML deserialization of API request content
-    public TPropertyMapping() { }
+    public TPropertyMapping() {
+    }
+
+    public TPropertyMapping(@NonNull String serviceTemplatePropertyRef, @NonNull HasId targetObjectRef, @NonNull String targetPropertyRef) {
+        this.serviceTemplatePropertyRef = serviceTemplatePropertyRef;
+        this.targetObjectRef = targetObjectRef;
+        this.targetPropertyRef = targetPropertyRef;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -11,17 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {InterfaceOperationApiData, InterfacesApiData} from '../interfacesApiData';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { InterfaceOperationApiData, InterfacesApiData } from '../interfacesApiData';
 import { CurrentSelectedEnum, NodeOperation, PlanOperation, RelationshipOperation } from './operations';
-import {InstanceService} from '../../../instance.service';
-import {isNullOrUndefined} from 'util';
-import {WineryTemplate} from '../../../../model/wineryComponent';
-import {InterfacesService} from '../interfaces.service';
-import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
-import {SelectItem} from 'ng2-select';
-import {PlansService} from '../../../serviceTemplates/plans/plans.service';
-import {PlansApiData} from '../../../serviceTemplates/plans/plansApiData';
+import { InstanceService } from '../../../instance.service';
+import { WineryTemplate } from '../../../../model/wineryComponent';
+import { InterfacesService } from '../interfaces.service';
+import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
+import { SelectItem } from 'ng2-select';
+import { PlansService } from '../../../serviceTemplates/plans/plans.service';
+import { PlansApiData } from '../../../serviceTemplates/plans/plansApiData';
 
 /**
  * Component for setting Boundary Definitions Interfaces. Is used in {@link InterfacesComponent}.
@@ -62,10 +61,10 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (!isNullOrUndefined(this.operation)) {
-            if (!isNullOrUndefined(this.operation.relationshipOperation)) {
+        if (this.operation) {
+            if (this.operation.relationshipOperation) {
                 this.onRelationshipSelected();
-            } else if (!isNullOrUndefined(this.operation.plan)) {
+            } else if (this.operation.plan) {
                 this.onPlanSelected();
             } else {
                 this.onNodeSelected();
@@ -74,16 +73,17 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     }
 
     onNodeSelected() {
-        this.referenceData = isNullOrUndefined(this.sharedData.topologyTemplate.nodeTemplates) ? null
-            : this.sharedData.topologyTemplate.nodeTemplates;
-        if (isNullOrUndefined(this.operation.nodeOperation)) {
+        this.referenceData = this.sharedData.topologyTemplate.nodeTemplates
+            ? this.sharedData.topologyTemplate.nodeTemplates
+            : null;
+        if (!this.operation.nodeOperation) {
             this.operation.nodeOperation = new NodeOperation();
-            this.activeReference = isNullOrUndefined(this.referenceData) ? null : this.referenceData[0];
+            this.activeReference = this.referenceData ? this.referenceData[0] : null;
 
-            if (!isNullOrUndefined(this.activeReference)) {
+            if (this.activeReference) {
                 this.operation.nodeOperation.nodeRef = this.activeReference.id;
             }
-        } else if (!isNullOrUndefined(this.referenceData)) {
+        } else if (this.referenceData) {
             this.activeReference = this.referenceData.find((element) => {
                 return element.id === this.operation.nodeOperation.nodeRef;
             });
@@ -95,16 +95,17 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     }
 
     onRelationshipSelected() {
-        this.referenceData = isNullOrUndefined(this.sharedData.topologyTemplate.relationshipTemplates) ? null
-            : this.sharedData.topologyTemplate.relationshipTemplates;
-        if (isNullOrUndefined(this.operation.relationshipOperation)) {
+        this.referenceData = this.sharedData.topologyTemplate.relationshipTemplates
+            ? this.sharedData.topologyTemplate.relationshipTemplates
+            : null;
+        if (!this.operation.relationshipOperation) {
             this.operation.relationshipOperation = new RelationshipOperation();
-            this.activeReference = isNullOrUndefined(this.referenceData) ? null : this.referenceData[0];
+            this.activeReference = this.referenceData ? this.referenceData[0] : null;
 
-            if (!isNullOrUndefined(this.activeReference)) {
+            if (this.activeReference) {
                 this.operation.relationshipOperation.relationshipRef = this.activeReference.id;
             }
-        } else if (!isNullOrUndefined(this.referenceData)) {
+        } else if (this.referenceData) {
             this.activeReference = this.referenceData.find((element) => {
                 return element.id === this.operation.relationshipOperation.relationshipRef;
             });
@@ -116,13 +117,13 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     }
 
     onPlanSelected() {
-        this.referenceData = isNullOrUndefined(this.plans) ? null : this.plans;
-        this.activeReference = isNullOrUndefined(this.plans) ? null : this.plans[0];
+        this.referenceData = this.plans ? this.plans : null;
+        this.activeReference = this.plans ? this.plans[0] : null;
 
-        if (isNullOrUndefined(this.operation.plan)) {
+        if (!this.operation.plan) {
             this.operation.plan = new PlanOperation();
             this.operation.plan.planRef = this.activeReference.id;
-        } else if (!isNullOrUndefined(this.referenceData)) {
+        } else if (this.referenceData) {
             this.activeReference = this.referenceData.find((element) => {
                 return element.id === this.operation.plan.planRef;
             });
@@ -157,12 +158,12 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         this.activeInterface = this.interfaces.find((element) => {
             return element.name === event.id;
         });
-        this.activeOperation = this.activeInterface.operation[0];
+        this.activeOperation = this.activeInterface.operations[0];
         this.setInterfaceAndOperation();
     }
 
     onOperationSelected(event: SelectItem) {
-        this.activeOperation = this.activeInterface.operation.find((element) => {
+        this.activeOperation = this.activeInterface.operations.find((element) => {
             return element.name === event.id;
         });
         this.setInterfaceAndOperation();
@@ -177,25 +178,25 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         let relationshipInterfaces = false;
 
         if (this.currentSelected === CurrentSelectedEnum.nodeTemplate) {
-            this.activeReference = this.sharedData.topologyTemplate.nodeTemplates.find((element, id, context) => {
+            this.activeReference = this.sharedData.topologyTemplate.nodeTemplates.find((element) => {
                 return element.id === this.operation.nodeOperation.nodeRef;
             });
 
-            if (isNullOrUndefined(this.activeReference)) {
+            if (!this.activeReference) {
                 this.activeReference = this.sharedData.topologyTemplate.nodeTemplates[0];
             }
         } else if (this.currentSelected === CurrentSelectedEnum.relationshipTemplate) {
             relationshipInterfaces = true;
-            this.activeReference = this.sharedData.topologyTemplate.relationshipTemplates.find((element, id, context) => {
+            this.activeReference = this.sharedData.topologyTemplate.relationshipTemplates.find((element) => {
                 return element.id === this.operation.relationshipOperation.relationshipRef;
             });
 
-            if (isNullOrUndefined(this.activeReference)) {
+            if (!this.activeReference) {
                 this.activeReference = this.sharedData.topologyTemplate.relationshipTemplates[0];
             }
         }
 
-        if (!isNullOrUndefined(this.activeReference)) {
+        if (this.activeReference) {
             const qName = this.activeReference.type.slice(1).split('}');
             const url = '/' + this.currentSelected + '/' + encodeURIComponent(encodeURIComponent(qName[0])) + '/' + qName[1];
 
@@ -210,17 +211,17 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     }
 
     private setInterfaceAndOperation() {
-        if (!isNullOrUndefined(this.activeInterface)) {
+        if (this.activeInterface) {
             switch (this.currentSelected) {
                 case CurrentSelectedEnum.nodeTemplate:
                     this.operation.nodeOperation.interfaceName = this.activeInterface.name;
-                    if (!isNullOrUndefined(this.activeOperation)) {
+                    if (this.activeOperation) {
                         this.operation.nodeOperation.operationName = this.activeOperation.name;
                     }
                     break;
                 case CurrentSelectedEnum.relationshipTemplate:
                     this.operation.relationshipOperation.interfaceName = this.activeInterface.name;
-                    if (!isNullOrUndefined(this.activeOperation)) {
+                    if (this.activeOperation) {
                         this.operation.relationshipOperation.operationName = this.activeOperation.name;
                     }
                     break;
@@ -233,33 +234,33 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         this.interfaces = data;
 
         if (this.currentSelected === CurrentSelectedEnum.nodeTemplate) {
-            const nodeInterface = this.interfaces.find((element, id, arr) => {
+            const nodeInterface = this.interfaces.find((element) => {
                 return element.name === this.operation.nodeOperation.interfaceName;
             });
 
             this.activeInterface = nodeInterface ? nodeInterface : this.interfaces[0];
 
-            if (!isNullOrUndefined(this.activeInterface)) {
-                this.activeOperation = this.activeInterface.operation.find((element, id, arr) => {
+            if (this.activeInterface) {
+                this.activeOperation = this.activeInterface.operations.find((element) => {
                     return element.name === this.operation.nodeOperation.operationName;
                 });
             }
         } else if (this.currentSelected === CurrentSelectedEnum.relationshipTemplate) {
-            const relInterface = this.interfaces.find((element, id, arr) => {
+            const relInterface = this.interfaces.find((element) => {
                 return element.name === this.operation.relationshipOperation.interfaceName;
             });
 
             this.activeInterface = relInterface ? relInterface : this.interfaces[0];
 
-            if (!isNullOrUndefined(this.activeInterface)) {
-                this.activeOperation = this.activeInterface.operation.find((element, id, arr) => {
+            if (this.activeInterface) {
+                this.activeOperation = this.activeInterface.operations.find((element) => {
                     return element.name === this.operation.relationshipOperation.operationName;
                 });
             }
         }
 
-        if (!isNullOrUndefined(this.activeInterface) && isNullOrUndefined(this.activeOperation)) {
-            this.activeOperation = this.activeInterface.operation[0];
+        if (this.activeInterface && !this.activeOperation) {
+            this.activeOperation = this.activeInterface.operations[0];
         }
 
         this.setInterfaceAndOperation();

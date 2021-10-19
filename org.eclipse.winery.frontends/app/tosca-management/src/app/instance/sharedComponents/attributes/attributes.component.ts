@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AttributesService } from './attributes.service';
 import { InstanceService } from '../../instance.service';
 import { AttributeDefinition } from '../../../model/attribute';
@@ -78,11 +78,6 @@ export class AttributesComponent implements OnInit {
             );
     }
 
-    private handleError(error: HttpErrorResponse) {
-        console.error(error);
-        this.loading = false;
-    }
-
     save() {
         this.loading = true;
         this.attributeService.updateAttributes(this.attributes)
@@ -90,5 +85,10 @@ export class AttributesComponent implements OnInit {
                 () => this.loading = false,
                 error => this.handleError(error)
             );
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        console.error(error);
+        this.loading = false;
     }
 }

@@ -23,11 +23,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,19 +43,30 @@ public class XTBoundaryDefinitions implements Serializable {
 
     @XmlElement(name = "Properties")
     protected XTBoundaryDefinitions.Properties properties;
-    @XmlElement(name = "PropertyConstraints")
-    protected XTBoundaryDefinitions.PropertyConstraints propertyConstraints;
-    @XmlElement(name = "Requirements")
-    protected XTBoundaryDefinitions.Requirements requirements;
-    @XmlElement(name = "Capabilities")
-    protected XTBoundaryDefinitions.Capabilities capabilities;
-    @XmlElement(name = "Policies")
-    protected XTPolicies policies;
-    @XmlElement(name = "Interfaces")
-    protected XTBoundaryDefinitions.Interfaces interfaces;
+
+    @XmlElementWrapper(name = "PropertyConstraints")
+    @XmlElement(name = "PropertyConstraint", required = true)
+    protected List<XTPropertyConstraint> propertyConstraints;
+
+    @XmlElementWrapper(name = "Requirements")
+    @XmlElement(name = "Requirement", required = true)
+    protected List<XTRequirementRef> requirements;
+
+    @XmlElementWrapper(name = "Capabilities")
+    @XmlElement(name = "Capability", required = true)
+    protected List<XTCapabilityRef> capabilities;
+
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<XTPolicy> policies;
+
+    @XmlElementWrapper(name = "Interfaces")
+    @XmlElement(name = "Interface", required = true)
+    protected List<XTExportedInterface> interfaces;
 
     @Deprecated // required for XML deserialization
-    public XTBoundaryDefinitions() { }
+    public XTBoundaryDefinitions() {
+    }
 
     public XTBoundaryDefinitions(Builder builder) {
         this.properties = builder.properties;
@@ -92,84 +103,48 @@ public class XTBoundaryDefinitions implements Serializable {
         this.properties = value;
     }
 
-    public XTBoundaryDefinitions.@Nullable PropertyConstraints getPropertyConstraints() {
+    public List<XTPropertyConstraint> getPropertyConstraints() {
         return propertyConstraints;
     }
 
-    public void setPropertyConstraints(XTBoundaryDefinitions.@Nullable PropertyConstraints value) {
+    public void setPropertyConstraints(List<XTPropertyConstraint> value) {
         this.propertyConstraints = value;
     }
 
-    public XTBoundaryDefinitions.@Nullable Requirements getRequirements() {
+    public List<XTRequirementRef> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(XTBoundaryDefinitions.@Nullable Requirements value) {
+    public void setRequirements(List<XTRequirementRef> value) {
         this.requirements = value;
     }
 
-    public XTBoundaryDefinitions.@Nullable Capabilities getCapabilities() {
+    public List<XTCapabilityRef> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(XTBoundaryDefinitions.@Nullable Capabilities value) {
+    public void setCapabilities(List<XTCapabilityRef> value) {
         this.capabilities = value;
     }
 
-    public @Nullable XTPolicies getPolicies() {
+    public List<XTPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable XTPolicies value) {
+    public void setPolicies(List<XTPolicy> value) {
         this.policies = value;
     }
 
-    public XTBoundaryDefinitions.@Nullable Interfaces getInterfaces() {
+    public List<XTExportedInterface> getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(XTBoundaryDefinitions.@Nullable Interfaces value) {
+    public void setInterfaces(List<XTExportedInterface> value) {
         this.interfaces = value;
     }
 
     public void accept(Visitor visitor) {
         visitor.visit(this);
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "capability"
-    })
-    public static class Capabilities implements Serializable {
-
-        @XmlElement(name = "Capability", required = true)
-        protected List<XTCapabilityRef> capability;
-
-        @NonNull
-        public List<XTCapabilityRef> getCapability() {
-            if (capability == null) {
-                capability = new ArrayList<XTCapabilityRef>();
-            }
-            return this.capability;
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
-    public static class Interfaces implements Serializable {
-
-        @XmlElement(name = "Interface", required = true)
-        protected List<XTExportedInterface> _interface;
-
-        @NonNull
-        public List<XTExportedInterface> getInterface() {
-            if (_interface == null) {
-                _interface = new ArrayList<XTExportedInterface>();
-            }
-            return this._interface;
-        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -181,8 +156,9 @@ public class XTBoundaryDefinitions implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected Object any;
-        @XmlElement(name = "PropertyMappings")
-        protected XTBoundaryDefinitions.Properties.PropertyMappings propertyMappings;
+        @XmlElementWrapper(name = "PropertyMappings")
+        @XmlElement(name = "PropertyMapping", required = true)
+        protected List<XTPropertyMapping> propertyMappings;
 
         @Nullable
         public Object getAny() {
@@ -193,80 +169,26 @@ public class XTBoundaryDefinitions implements Serializable {
             this.any = value;
         }
 
-        public XTBoundaryDefinitions.Properties.@Nullable PropertyMappings getPropertyMappings() {
+        public List<XTPropertyMapping> getPropertyMappings() {
             return propertyMappings;
         }
 
-        public void setPropertyMappings(XTBoundaryDefinitions.Properties.@Nullable PropertyMappings value) {
+        public void setPropertyMappings(List<XTPropertyMapping> value) {
             this.propertyMappings = value;
         }
 
         public void accept(Visitor visitor) {
             visitor.visit(this);
         }
-
-        @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "propertyMapping"
-        })
-        public static class PropertyMappings implements Serializable {
-
-            @XmlElement(name = "PropertyMapping", required = true)
-            protected List<XTPropertyMapping> propertyMapping;
-
-            @NonNull
-            public List<XTPropertyMapping> getPropertyMapping() {
-                if (propertyMapping == null) {
-                    propertyMapping = new ArrayList<XTPropertyMapping>();
-                }
-                return this.propertyMapping;
-            }
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyConstraint"
-    })
-    public static class PropertyConstraints implements Serializable {
-
-        @XmlElement(name = "PropertyConstraint", required = true)
-        protected List<XTPropertyConstraint> propertyConstraint;
-
-        @NonNull
-        public List<XTPropertyConstraint> getPropertyConstraint() {
-            if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<>();
-            }
-            return this.propertyConstraint;
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "requirement"
-    })
-    public static class Requirements implements Serializable {
-
-        @XmlElement(name = "Requirement", required = true)
-        protected List<XTRequirementRef> requirement;
-
-        @NonNull
-        public List<XTRequirementRef> getRequirement() {
-            if (requirement == null) {
-                requirement = new ArrayList<>();
-            }
-            return this.requirement;
-        }
     }
 
     public static class Builder {
         private Properties properties;
-        private PropertyConstraints propertyConstraints;
-        private Requirements requirements;
-        private Capabilities capabilities;
-        private XTPolicies policies;
-        private Interfaces interfaces;
+        private List<XTPropertyConstraint> propertyConstraints;
+        private List<XTRequirementRef> requirements;
+        private List<XTCapabilityRef> capabilities;
+        private List<XTPolicy> policies;
+        private List<XTExportedInterface> interfaces;
 
         public Builder() {
 
@@ -277,61 +199,51 @@ public class XTBoundaryDefinitions implements Serializable {
             return this;
         }
 
-        public Builder setPropertyConstraints(PropertyConstraints propertyConstraints) {
+        public Builder setPropertyConstraints(List<XTPropertyConstraint> propertyConstraints) {
             this.propertyConstraints = propertyConstraints;
             return this;
         }
 
-        public Builder setRequirements(Requirements requirements) {
+        public Builder setRequirements(List<XTRequirementRef> requirements) {
             this.requirements = requirements;
             return this;
         }
 
-        public Builder setCapabilities(Capabilities capabilities) {
+        public Builder setCapabilities(List<XTCapabilityRef> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
-        public Builder setPolicies(XTPolicies policies) {
+        public Builder setPolicies(List<XTPolicy> policies) {
             this.policies = policies;
             return this;
         }
 
-        public Builder setInterfaces(Interfaces interfaces) {
+        public Builder setInterfaces(List<XTExportedInterface> interfaces) {
             this.interfaces = interfaces;
             return this;
         }
 
-        public Builder addPolicies(XTPolicies policies) {
-            if (policies == null || policies.getPolicy().isEmpty()) {
+        public Builder addPolicies(List<XTPolicy> policies) {
+            if (policies == null || policies.isEmpty()) {
                 return this;
             }
 
             if (this.policies == null) {
                 this.policies = policies;
             } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.policies.addAll(policies);
             }
             return this;
         }
 
-        public Builder addPolicies(List<XTPolicy> policies) {
+        public Builder addPolicy(XTPolicy policies) {
             if (policies == null) {
                 return this;
             }
 
-            XTPolicies tmp = new XTPolicies();
-            tmp.getPolicy().addAll(policies);
-            return this.addPolicies(tmp);
-        }
-
-        public Builder addPolicies(XTPolicy policies) {
-            if (policies == null) {
-                return this;
-            }
-
-            XTPolicies tmp = new XTPolicies();
-            tmp.getPolicy().add(policies);
+            List<XTPolicy> tmp = new ArrayList<>();
+            tmp.add(policies);
             return this.addPolicies(tmp);
         }
 

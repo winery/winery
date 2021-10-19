@@ -128,7 +128,7 @@ public class MinHosts extends CriteriaCommon {
         Map<String, TTopologyTemplate> injectParameter = new HashMap<>();
         for (PermutationHelper possibility : permutation) {
             // all predecessors of the nt to replace get the same matching nt
-            TTopologyTemplate clone = AllocationUtils.deepcopy(possibility.getReplacement());
+            TTopologyTemplate clone = AllocationUtils.deepCopy(possibility.getReplacement());
             for (TNodeTemplate predecessor : topology.getHostedOnPredecessors(possibility.getCorrespondingNT())) {
                 injectParameter.put(predecessor.getId(), clone);
             }

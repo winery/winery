@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../../../configuration';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { ExistService } from '../../../wineryUtils/existService';
@@ -21,7 +20,7 @@ import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
 import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
-import { InputParameters, InterfaceParameter, OutputParameters } from '../../../model/parameters';
+import { InterfaceParameter } from '../../../model/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
@@ -111,7 +110,7 @@ export class InterfacesComponent implements OnInit {
             this.inputParameters = null;
         }
         this.selectedInterface = selectedInterface;
-        this.operations = selectedInterface.operation;
+        this.operations = selectedInterface.operations;
         this.selectedOperation = null;
     }
 
@@ -141,7 +140,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     onAddOperation(name: string) {
-        if (!isNullOrUndefined(this.selectedInterface)) {
+        if (this.selectedInterface) {
             const tmp = new InterfaceOperationApiData(name);
 
             // if we are working on a target interface in servicetemplates, delete unnecessary attributes to
@@ -154,7 +153,7 @@ export class InterfacesComponent implements OnInit {
                 delete tmp.otherAttributes;
             }
 
-            this.selectedInterface.operation.push(tmp);
+            this.selectedInterface.operations.push(tmp);
             this.onOperationSelected(tmp);
         }
     }
@@ -163,15 +162,15 @@ export class InterfacesComponent implements OnInit {
         this.selectedOperation = selectedOperation;
 
         if (!this.isServiceTemplate) {
-            if (isNullOrUndefined(selectedOperation.inputParameters)) {
-                selectedOperation.inputParameters = new InputParameters();
+            if (!selectedOperation.inputParameters) {
+                selectedOperation.inputParameters = [];
             }
-            if (isNullOrUndefined(selectedOperation.outputParameters)) {
-                selectedOperation.outputParameters = new OutputParameters();
+            if (!selectedOperation.outputParameters) {
+                selectedOperation.outputParameters = [];
             }
 
-            this.inputParameters = selectedOperation.inputParameters.inputParameter;
-            this.outputParameters = selectedOperation.outputParameters.outputParameter;
+            this.inputParameters = selectedOperation.inputParameters;
+            this.outputParameters = selectedOperation.outputParameters;
         }
     }
 
@@ -197,13 +196,13 @@ export class InterfacesComponent implements OnInit {
             + '-' + this.selectedInterface.name.replace(/\W/g, '-')
             + '-IA';
 
-        let artifactTemplateNamespace = '';
+        let artifactTemplateNamespace = this.sharedData.toscaComponent.namespace;
         if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
-            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace.replace('nodetypes', 'artifacttemplates');
+            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace
+                .replace('nodetypes', 'artifacttemplates');
         } else if (this.sharedData.toscaComponent.namespace.includes('relationshiptypes')) {
-            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace.replace('relationshiptypes', 'artifacttemplates');
-        } else {
-            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace;
+            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace
+                .replace('relationshiptypes', 'artifacttemplates');
         }
 
         this.artifactTemplate.namespace = artifactTemplateNamespace;
@@ -212,13 +211,11 @@ export class InterfacesComponent implements OnInit {
         this.generateArtifactApiData = new GenerateArtifactApiData();
         const packageName = this.getPackageNameFromNamespace();
 
-        let javaPackageName = '';
+        let javaPackageName = packageName;
         if (packageName.includes('nodetypes')) {
             javaPackageName = packageName.replace('nodetypes', 'nodetypeimplementations');
         } else if (packageName.includes('relationshiptypes')) {
             javaPackageName = packageName.replace('relationshiptypes', 'relationshiptypeimplementations');
-        } else {
-            javaPackageName = packageName;
         }
         this.generateArtifactApiData.javaPackage = javaPackageName;
 
@@ -230,13 +227,13 @@ export class InterfacesComponent implements OnInit {
             + '-' + this.sharedData.currentVersion.toString()
             + '-Implementation';
 
-        let implementationNamespace = '';
+        let implementationNamespace = this.sharedData.toscaComponent.namespace;
         if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
-            implementationNamespace = this.sharedData.toscaComponent.namespace.replace('nodetypes', 'nodetypeimplementations');
+            implementationNamespace = this.sharedData.toscaComponent.namespace
+                .replace('nodetypes', 'nodetypeimplementations');
         } else if (this.sharedData.toscaComponent.namespace.includes('relationshiptypes')) {
-            implementationNamespace = this.sharedData.toscaComponent.namespace.replace('relationshiptypes', 'relationshiptypeimplementations');
-        } else {
-            implementationNamespace = this.sharedData.toscaComponent.namespace;
+            implementationNamespace = this.sharedData.toscaComponent.namespace
+                .replace('relationshiptypes', 'relationshiptypeimplementations');
         }
         this.implementation.namespace = implementationNamespace;
         this.implementation.toscaType = Utils.getImplementationOrTemplateOfType(this.toscaType);
@@ -262,18 +259,18 @@ export class InterfacesComponent implements OnInit {
         const lifecycle = new InterfacesApiData();
         if (this.toscaType === ToscaTypes.RelationshipType && this.route.url.endsWith('/interfaces')) {
             lifecycle.name = Interfaces.RELATIONSHIP_CONFIGURE;
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_PRE_CONFIGURE_SOURCE));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_PRE_CONFIGURE_TARGET));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_POST_CONFIGURE_SOURCE));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_POST_CONFIGURE_TARGET));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_PRE_CONFIGURE_SOURCE));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_PRE_CONFIGURE_TARGET));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_POST_CONFIGURE_SOURCE));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.RELATIONSHIP_CONFIGURE_POST_CONFIGURE_TARGET));
         } else {
             // Node Types and Relationship Types (Source and Target Interface)
             lifecycle.name = Interfaces.LIFECYCLE_STANDARD;
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_INSTALL));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_CONFIGURE));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_START));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_STOP));
-            lifecycle.operation.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_UNINSTALL));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_INSTALL));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_CONFIGURE));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_START));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_STOP));
+            lifecycle.operations.push(new InterfaceOperationApiData(Interfaces.LIFECYCLE_STANDARD_UNINSTALL));
         }
         this.interfacesData.push(lifecycle);
         this.interfaceComponent.selectItem(lifecycle);
@@ -303,8 +300,8 @@ export class InterfacesComponent implements OnInit {
                 + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
                 + this.implementationName + '/'
             ).subscribe(
-                data => this.createImplementation = false,
-                error => this.createImplementation = true
+                () => this.createImplementation = false,
+                () => this.createImplementation = true
             );
         }
     }
@@ -315,8 +312,8 @@ export class InterfacesComponent implements OnInit {
                 + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace)) + '/'
                 + this.generateArtifactApiData.artifactTemplateName + '/'
             ).subscribe(
-                data => this.createArtifactTemplate = false,
-                error => this.createArtifactTemplate = true
+                () => this.createArtifactTemplate = false,
+                () => this.createArtifactTemplate = true
             );
         }
     }
@@ -340,7 +337,7 @@ export class InterfacesComponent implements OnInit {
         this.loading = true;
         this.service.save(this.interfacesData)
             .subscribe(
-                data => this.handleSave(),
+                () => this.handleSave(),
                 error => this.handleError(error)
             );
     }
@@ -349,7 +346,7 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
-        this.interfacesData = data;
+        this.interfacesData = data ? data : [];
         this.loading = false;
     }
 
@@ -412,7 +409,7 @@ export class InterfacesComponent implements OnInit {
             this.generating = false;
             this.generateImplModal.hide();
         }
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.notify.success('Successfully created Implementation!');
         }
     }

@@ -143,7 +143,7 @@ public class ToscaLightChecker {
         // todo: some inheritance or mapping check?
 
         if (nodeType.getInterfaces() != null) {
-            List<TInterface> interfaceList = nodeType.getInterfaces().getInterface();
+            List<TInterface> interfaceList = nodeType.getInterfaces();
             if (interfaceList.size() > 0) {
                 interfaceList.stream()
                     .filter(ToscaLightUtils::isNotLifecycleInterface)
@@ -164,8 +164,10 @@ public class ToscaLightChecker {
         }
 
         // todo ?
-        relType.getSourceInterfaces();
-        relType.getTargetInterfaces();
+        if (relType != null) {
+            relType.getSourceInterfaces();
+            relType.getTargetInterfaces();
+        }
     }
 
     private boolean isElementVisited(QName qName) {

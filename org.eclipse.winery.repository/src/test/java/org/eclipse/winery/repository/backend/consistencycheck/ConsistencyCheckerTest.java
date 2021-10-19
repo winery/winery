@@ -46,7 +46,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    public void nodeTypeImplementationNamespaceHasNoErrors() throws Exception {
+    public void nodeTypeImplementationNamespaceHasNoErrors() {
         NodeTypeImplementationId id = new NodeTypeImplementationId("http://winery.opentosca.org/test/nodetypeimplementations/fruits", "baobab_impl", false);
         ConsistencyErrorCollector errorLogger = new ConsistencyErrorCollector();
         consistencyChecker.checkNamespaceUri(id);
@@ -122,11 +122,13 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" does not exist!");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w2-wip1"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" does not exist!");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w2-wip2"), elementErrorList);
 
@@ -144,6 +146,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'location' is not allowed to appear in element 'NodeTemplate'.\n");
         elementErrorList.addError("type is null");
         elementErrorList.addError("Referenced element \"RelationshlpTypeWithValidSourceAndTarget_w1-wip1\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshlpTypeWithValidSourceAndTarget_w1-wip1\" does not exist!");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties_2 is null");
@@ -164,6 +167,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'y' is not allowed to appear in element 'NodeTemplate'.\n" +
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'location' is not allowed to appear in element 'NodeTemplate'.\n");
         elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" does not exist!");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
@@ -396,8 +400,25 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
                 "304b62b06556afa1a7227164a9c0d2c9a1178b8f",
                 // origin/fruits in a non-working version
                 getErrorsFor304b62b06556afa1a7227164a9c0d2c9a1178b8f()
+            ),
+            Arguments.of(
+                "c09263f4fa112ff9093f9d52c6dc756f03d710b9",
+                getErrorsForc09263f4fa112ff9093f9d52c6dc756f03d710b9()
             )
         );
+    }
+
+    private static Map<QName, ElementErrorList> getErrorsForc09263f4fa112ff9093f9d52c6dc756f03d710b9() {
+        Map<QName, ElementErrorList> expected = new HashMap<>();
+        ElementErrorList elementErrorList;
+
+        elementErrorList = new ElementErrorList("ArtifactTemplate");
+        elementErrorList.addError("Corrupt: Namespace in the TOSCA-file does not match the folder's name!");
+        elementErrorList.addError("Corrupt: Wrapping Definitions Id in the TOSCA-file does not match the folder's name!");
+        elementErrorList.addError("Corrupt: Id/Name in the TOSCA-file does not match the folder's name!");
+        expected.put(new QName("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithWrongTargetNamespace"), elementErrorList);
+        
+        return expected;
     }
 
     /**

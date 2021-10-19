@@ -19,9 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
@@ -44,7 +44,7 @@ public class ComplianceRuleResource extends AbstractComponentInstanceResourceCon
 
     @Override
     protected TExtensibleElements createNewElement() {
-        return new OTComplianceRule(new OTComplianceRule.Builder());
+        return new OTComplianceRule(new OTComplianceRule.Builder("default"));
     }
 
     public OTComplianceRule getComplianceRule() {

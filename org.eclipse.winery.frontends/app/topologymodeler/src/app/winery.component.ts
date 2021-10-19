@@ -71,7 +71,6 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     public loaded: ILoaded;
     private loadedRelationshipVisuals = 0;
-    private requiredRelationshipVisuals: number;
 
     constructor(private loadedService: LoadedService,
                 private appReadyEvent: AppReadyEventService,
@@ -171,32 +170,25 @@ export class WineryComponent implements OnInit, AfterViewInit {
             this.configurationService.isYaml(), this.topologyDifferences);
     }
 
-    private configure(params: TopologyModelerConfiguration) {
-        this.backendService.configure(params);
-        this.templateParameter = params;
-        // change readonly to true, so that the properties of the PRM-mappings cannot be changed afterwards
-        if (this.templateParameter.elementPath === this.prmModellingUrlFragment) {
-            this.readonly = true;
-        }
-    }
-
     initiateData(): void {
         // TODO well, this is a mess
-        this.backendService.model$.subscribe(m => {
+        this.backendService.model.subscribe((m) => {
             this.entityTypes = m;
             this.ngRedux.dispatch(this.uiActions.addEntityTypes(this.entityTypes));
         });
-        this.backendService.topDiff$
+        this.backendService.topDiff
             .subscribe(diff => this.topologyDifferences = diff);
-        this.backendService.topTemplate$
+        this.backendService.topTemplate
             .subscribe((template) => {
-                this.initTopologyTemplateForRendering(template.nodeTemplates, template.relationshipTemplates);
-                // init groups
-                this.ngRedux.dispatch(this.uiActions.updateGroupDefinitions(template.groups));
-                // init participants
-                this.ngRedux.dispatch(this.uiActions.updateParticipants(template.participants));
+                if (template) {
+                    this.initTopologyTemplateForRendering(template.nodeTemplates, template.relationshipTemplates);
+                    // init groups
+                    this.ngRedux.dispatch(this.uiActions.updateGroupDefinitions(template.groups));
+                    // init participants
+                    this.ngRedux.dispatch(this.uiActions.updateParticipants(template.participants));
+                }
             });
-        this.backendService.loaded$
+        this.backendService.loaded
             .subscribe(l => {
                 if (l) {
                     this.triggerLoaded('everything');
@@ -210,6 +202,15 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     sidebarDeleteButtonClicked($event) {
         this.sidebarDeleteButtonClickEvent = $event;
+    }
+
+    private configure(params: TopologyModelerConfiguration) {
+        this.backendService.configure(params);
+        this.templateParameter = params;
+        // change readonly to true, so that the properties of the PRM-mappings cannot be changed afterwards
+        if (this.templateParameter.elementPath === this.prmModellingUrlFragment) {
+            this.readonly = true;
+        }
     }
 
     private triggerLoaded(what?: string) {

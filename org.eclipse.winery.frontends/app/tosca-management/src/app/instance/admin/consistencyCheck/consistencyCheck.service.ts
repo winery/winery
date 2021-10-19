@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { webSocketURL } from '../../../configuration';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class ConsistencyCheckService {
@@ -43,10 +42,10 @@ export class ConsistencyCheckService {
     }
 
     onMessage(event: MessageEvent) {
-        if (!isNullOrUndefined(event.data)) {
+        if (event.data) {
             const data: ConsistencyUpdate = JSON.parse(event.data);
 
-            if (!isNullOrUndefined(data.errorList)) {
+            if (data.errorList) {
                 this.checkCompleted = true;
                 const keys = Object.keys(data.errorList);
                 const errorList = [];

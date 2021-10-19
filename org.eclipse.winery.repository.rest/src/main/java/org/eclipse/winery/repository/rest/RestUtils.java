@@ -49,16 +49,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
-import org.eclipse.winery.edmm.model.EdmmType;
-import org.eclipse.winery.repository.backend.WineryVersionUtils;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
-import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.edmm.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
@@ -71,12 +69,11 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -91,16 +88,18 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.selfcontainmentpackager.SelfContainmentPackager;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.export.CsarExportConfiguration;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.ComponentId;
-import org.eclipse.winery.repository.yaml.export.YamlExporter;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -114,6 +113,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConve
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.repository.yaml.export.YamlExporter;
 
 import io.github.edmm.core.parser.EntityGraph;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -138,6 +138,7 @@ public class RestUtils {
     private static final String RANGE_NCNAME_START_CHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
     private static final String REGEX_NCNAME_START_CHAR = "[" + RestUtils.RANGE_NCNAME_START_CHAR + "]";
 
+    // \\- is required
     private static final String RANGE_NCNAME_CHAR = RestUtils.RANGE_NCNAME_START_CHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
     private static final String REGEX_INVALID_NCNAMES_CHAR = "[^" + RestUtils.RANGE_NCNAME_CHAR + "]";
 
@@ -322,9 +323,8 @@ public class RestUtils {
 
         EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
             artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
-        EntityGraph transform = edmmConverter.transform(element);
 
-        return transform;
+        return edmmConverter.transform(element);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
@@ -452,9 +452,9 @@ public class RestUtils {
      * <p>
      * We cannot use {@literal Class<? extends TExtensibleElements>} as, for instance, {@link TConstraint} does not
      * inherit from {@link TExtensibleElements}
-     *  @param clazz the Class of the passed object, required if obj is null
+     *
+     * @param clazz the Class of the passed object, required if obj is null
      * @param obj   the object to serialize
-     * @param repository
      */
     public static <T> Response getXML(Class<T> clazz, T obj, IRepository repository) {
         // see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
@@ -541,7 +541,7 @@ public class RestUtils {
             // remove xaaspackager tags
             Collection<TTag> toRemove = new ArrayList<>();
 
-            for (TTag tag : oldSTModel.getTags().getTag()) {
+            for (TTag tag : oldSTModel.getTags()) {
                 switch (tag.getName()) {
                     case "xaasPackageNode":
                     case "xaasPackageArtifactType":
@@ -553,7 +553,7 @@ public class RestUtils {
                 }
             }
 
-            oldSTModel.getTags().getTag().removeAll(toRemove);
+            oldSTModel.getTags().removeAll(toRemove);
         }
 
         JAXBContext context = JAXBContext.newInstance(TDefinitions.class);
@@ -569,6 +569,10 @@ public class RestUtils {
     }
 
     public static boolean containsNodeType(TServiceTemplate serviceTemplate, QName nodeType) {
+        if (serviceTemplate == null || serviceTemplate.getTopologyTemplate() == null) {
+            return false;
+        }
+
         List<TEntityTemplate> templates = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
 
         return templates.stream().filter(template -> template instanceof TNodeTemplate).anyMatch(template -> template.getType().equals(nodeType));
@@ -624,7 +628,7 @@ public class RestUtils {
 
     public static String getTagValue(TServiceTemplate serviceTemplate, String tagKey) {
         if (serviceTemplate.getTags() != null) {
-            for (TTag tag : serviceTemplate.getTags().getTag()) {
+            for (TTag tag : serviceTemplate.getTags()) {
                 if (tag.getName().equals(tagKey)) {
                     return tag.getValue();
                 }
@@ -683,12 +687,12 @@ public class RestUtils {
 
         if (version.toString().length() > 0) {
             // ensure that the version isn't changed by the user
-            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version;
             id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
         }
 
         // If a definition was not committed yet, it is renamed, otherwise duplicate the definition.
-        if (repo instanceof GitBasedRepository && ((GitBasedRepository) repo).hasChangesInFile(BackendUtils.getRefOfDefinitions(oldId))) {
+        if (repo.hasChangesInFile(oldId)) {
             try {
                 repo.rename(oldId, id);
             } catch (IOException e) {
@@ -855,8 +859,8 @@ public class RestUtils {
     /**
      * This is not repository specific, but we leave it close to the only caller
      * <p>
-     * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an
-     * input stream pointing to the path is returned
+     * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an input
+     * stream pointing to the path is returned
      */
     private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
         if (!RepositoryFactory.getRepository().exists(ref)) {
@@ -1007,7 +1011,7 @@ public class RestUtils {
                     freezeVersion(releasableComponent);
 
                     version.setWorkInProgressVersion(0);
-                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version;
                     DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
                     result = duplicate(releasableComponent, newComponent);
 

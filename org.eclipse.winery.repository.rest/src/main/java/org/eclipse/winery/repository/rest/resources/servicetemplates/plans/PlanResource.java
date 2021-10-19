@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -29,9 +30,8 @@ import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.PlanId;
 import org.eclipse.winery.model.ids.elements.PlansId;
+import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlan.InputParameters;
-import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
@@ -43,13 +43,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Does <em>not</em> implement {@link org.eclipse.winery.repository.resources.IHasTypeReference}, because the type of a
- * plan is outside the system of TOSCA.
+ * Does <em>not</em> implement a type reference, because the plan type is outside the system of TOSCA.
  */
 public class PlanResource extends EntityWithIdResource<TPlan> implements IHasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlanResource.class);
-
 
     public PlanResource(IIdDetermination<TPlan> idDetermination, TPlan o, int idx, List<TPlan> list, ServiceTemplateResource res) {
         super(idDetermination, o, idx, list, res);
@@ -152,21 +150,21 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 
     @Path("inputparameters/")
     public ParametersResource getInputParametersResource() {
-        InputParameters inputParameters = this.o.getInputParameters();
+        List<TParameter> inputParameters = this.o.getInputParameters();
         if (inputParameters == null) {
-            inputParameters = new InputParameters();
+            inputParameters = new ArrayList<>();
             this.o.setInputParameters(inputParameters);
         }
-        return new ParametersResource(inputParameters.getInputParameter(), this.getServiceTemplateResource());
+        return new ParametersResource(inputParameters, this.getServiceTemplateResource());
     }
 
     @Path("outputparameters/")
     public ParametersResource getOutputParametersResource() {
-        OutputParameters outputParameters = this.o.getOutputParameters();
+        List<TParameter> outputParameters = this.o.getOutputParameters();
         if (outputParameters == null) {
-            outputParameters = new OutputParameters();
+            outputParameters = new ArrayList<>();
             this.o.setOutputParameters(outputParameters);
         }
-        return new ParametersResource(outputParameters.getOutputParameter(), this.getServiceTemplateResource());
+        return new ParametersResource(outputParameters, this.getServiceTemplateResource());
     }
 }

@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
-            <version>${org.web3j}</version>
+            <version>${org.web3j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.rutledgepaulv</groupId>
@@ -139,7 +139,7 @@
             <plugin>
                 <groupId>org.web3j</groupId>
                 <artifactId>web3j-maven-plugin</artifactId>
-                <version>${org.web3j}</version>
+                <version>${org.web3j.web3j-maven-plugin.version}</version>
                 <configuration>
                     <nativeJavaType>true</nativeJavaType>
                     <soliditySourceFiles>

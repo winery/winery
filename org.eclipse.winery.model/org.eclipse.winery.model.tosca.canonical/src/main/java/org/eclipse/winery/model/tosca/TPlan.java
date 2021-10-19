@@ -15,7 +15,6 @@
 package org.eclipse.winery.model.tosca;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -48,32 +48,44 @@ import org.w3c.dom.Element;
 })
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class TPlan extends TExtensibleElements {
+
     @XmlElement(name = "Precondition")
     protected TCondition precondition;
-    @XmlElement(name = "InputParameters")
-    protected TPlan.InputParameters inputParameters;
-    @XmlElement(name = "OutputParameters")
-    protected TPlan.OutputParameters outputParameters;
+
+    @XmlElementWrapper(name = "InputParameters")
+    @XmlElement(name = "InputParameter", required = true)
+    protected List<TParameter> inputParameters;
+
+    @XmlElementWrapper(name = "OutputParameters")
+    @XmlElement(name = "OutputParameter", required = true)
+    protected List<TParameter> outputParameters;
+
     @XmlElement(name = "PlanModel")
     protected TPlan.PlanModel planModel;
+
     @XmlElement(name = "PlanModelReference")
     protected TPlan.PlanModelReference planModelReference;
+
     @XmlAttribute(name = "id", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     @XmlSchemaType(name = "ID")
     protected String id;
+
     @XmlAttribute(name = "name")
     protected String name;
+
     @XmlAttribute(name = "planType", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String planType;
+
     @XmlAttribute(name = "planLanguage", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String planLanguage;
 
     @Deprecated // used for XML deserialization of API request content
-    public TPlan() { }
+    public TPlan() {
+    }
 
     public TPlan(Builder builder) {
         super(builder);
@@ -119,19 +131,19 @@ public class TPlan extends TExtensibleElements {
         this.precondition = value;
     }
 
-    public TPlan.@Nullable InputParameters getInputParameters() {
+    public List<TParameter> getInputParameters() {
         return inputParameters;
     }
 
-    public void setInputParameters(TPlan.@Nullable InputParameters value) {
+    public void setInputParameters(List<TParameter> value) {
         this.inputParameters = value;
     }
 
-    public TPlan.@Nullable OutputParameters getOutputParameters() {
+    public List<TParameter> getOutputParameters() {
         return outputParameters;
     }
 
-    public void setOutputParameters(TPlan.@Nullable OutputParameters value) {
+    public void setOutputParameters(List<TParameter> value) {
         this.outputParameters = value;
     }
 
@@ -151,7 +163,6 @@ public class TPlan extends TExtensibleElements {
         this.planModelReference = value;
     }
 
-    @NonNull
     public String getId() {
         return id;
     }
@@ -189,108 +200,6 @@ public class TPlan extends TExtensibleElements {
 
     public void accept(Visitor visitor) {
         visitor.visit(this);
-   }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "inputParameter"
-    })
-    public static class InputParameters implements Serializable {
-
-        @XmlElement(name = "InputParameter", required = true)
-        protected List<TParameter> inputParameter;
-
-        /**
-         * Gets the value of the inputParameter property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the inputParameter property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getInputParameter().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TParameter }
-         */
-        @NonNull
-        public List<TParameter> getInputParameter() {
-            if (inputParameter == null) {
-                inputParameter = new ArrayList<TParameter>();
-            }
-            return this.inputParameter;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            InputParameters that = (InputParameters) o;
-            return Objects.equals(inputParameter, that.inputParameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(inputParameter);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "outputParameter"
-    })
-    public static class OutputParameters implements Serializable {
-
-        @XmlElement(name = "OutputParameter", required = true)
-        protected List<TParameter> outputParameter;
-
-        /**
-         * Gets the value of the outputParameter property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the outputParameter property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getOutputParameter().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TParameter }
-         */
-        @NonNull
-        public List<TParameter> getOutputParameter() {
-            if (outputParameter == null) {
-                outputParameter = new ArrayList<TParameter>();
-            }
-            return this.outputParameter;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            OutputParameters that = (OutputParameters) o;
-            return Objects.equals(outputParameter, that.outputParameter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(outputParameter);
-        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -349,7 +258,6 @@ public class TPlan extends TExtensibleElements {
          *
          * @return possible object is {@link String }
          */
-        @NonNull
         public String getReference() {
             return reference;
         }
@@ -378,13 +286,14 @@ public class TPlan extends TExtensibleElements {
     }
 
     public static class Builder extends TExtensibleElements.Builder<Builder> {
+
         private final String id;
         private final String planType;
         private final String planLanguage;
 
         private TCondition precondition;
-        private InputParameters inputParameters;
-        private OutputParameters outputParameters;
+        private List<TParameter> inputParameters;
+        private List<TParameter> outputParameters;
         private PlanModel planModel;
         private PlanModelReference planModelReference;
         private String name;
@@ -400,12 +309,12 @@ public class TPlan extends TExtensibleElements {
             return this;
         }
 
-        public Builder setInputParameters(InputParameters inputParameters) {
+        public Builder setInputParameters(List<TParameter> inputParameters) {
             this.inputParameters = inputParameters;
             return this;
         }
 
-        public Builder setOutputParameters(OutputParameters outputParameters) {
+        public Builder setOutputParameters(List<TParameter> outputParameters) {
             this.outputParameters = outputParameters;
             return this;
         }

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -17,7 +17,8 @@
          tooltip="Hold CTRL to directly get to the latest version."
          (click)="onClick($event)">
         <div class="left">
-            <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
+            <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList"
+                 alt="Icon of the {{toscaType}} {{ data.name }}"/>
         </div>
         <div class="center" [style.width.px]="maxWidth">
             <div *ngIf="maxWidth === 500 || !data?.version?.hasVersion('componentVersion')" class="informationContainer">

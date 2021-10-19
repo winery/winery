@@ -47,11 +47,11 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
 
-    private topologyDiff: ToscaDiff;
-    private oldTopology: TTopologyTemplate;
-
     loader: ILoaded;
     diffMode: boolean;
+
+    private topologyDiff: ToscaDiff;
+    private oldTopology: TTopologyTemplate;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
@@ -125,6 +125,13 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
         this.addElementsToRedux();
     }
 
+    /**
+     * Lifecycle event
+     */
+    ngOnDestroy() {
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
+
     private addElementsToRedux() {
         this.relationshipTemplates.forEach(relationshipTemplate => {
             this.ngRedux.dispatch(this.actions.saveRelationship(relationshipTemplate));
@@ -138,12 +145,5 @@ export class TopologyRendererComponent implements OnInit, OnDestroy {
 
         this.loader.generatedReduxState = true;
         this.generatedReduxState.emit(this.loader);
-    }
-
-    /**
-     * Lifecycle event
-     */
-    ngOnDestroy() {
-        this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 }

@@ -12,13 +12,19 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
+export class Constraint {
+    any: any = null;
+    constraintType: string = null;
+    id: string = null;
+}
+
 export class CapabilityOrRequirementDefinition {
     name: string = null;
     capabilityType: string = null;
     requirementType: string = null;
     lowerBound: string = null;
     upperBound: string = null;
-    constraints: Constraints = null;
+    constraints: Constraint[] = null;
     documentation: any[] = [];
     any: any[] = [];
     otherAttributes: any = null;
@@ -31,16 +37,6 @@ export class CapOrReqDefinition {
     lowerBound: string = null;
     upperBound: string = null;
     validSourceTypes: string[] = [];
-}
-
-export class Constraint {
-    any: any = null;
-    constraintType: string = null;
-    id: string = null;
-}
-
-export class Constraints {
-    constraint: Constraint[] = [];
 }
 
 export class CapabilityDefinitionPostData {

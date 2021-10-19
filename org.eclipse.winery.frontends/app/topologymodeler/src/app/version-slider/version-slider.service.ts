@@ -27,6 +27,18 @@ export class VersionSliderService {
                 private backendService: BackendService) {
     }
 
+    private static toWineryVersion(wv: any): WineryVersion {
+        return new WineryVersion(
+            wv.componentVersion,
+            wv.wineryVersion,
+            wv.workInProgressVersion,
+            wv.currentVersion,
+            wv.latestVersion,
+            wv.releasable,
+            wv.editable
+        );
+    }
+
     getVersions(): Observable<WineryVersion[]> {
         const url = this.backendService.configuration.parentElementUrl + '?versions';
         return this.http.get<WineryVersion[]>(url)
@@ -47,17 +59,5 @@ export class VersionSliderService {
             + id + '/'
             + 'topologytemplate';
         return this.http.get<TTopologyTemplate>(url);
-    }
-
-    private static toWineryVersion(wv: any): WineryVersion {
-        return new WineryVersion(
-            wv.componentVersion,
-            wv.wineryVersion,
-            wv.workInProgressVersion,
-            wv.currentVersion,
-            wv.latestVersion,
-            wv.releasable,
-            wv.editable
-        );
     }
 }

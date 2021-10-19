@@ -43,6 +43,7 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -182,35 +183,34 @@ public class YamlCsarImporter extends CsarImporter {
     }
 
     private void importArtifacts(Path rootPath, TExtensibleElements ci, DefinitionsChildId wid, TOSCAMetaFile tmf, final List<String> errors) {
-        if (ci instanceof org.eclipse.winery.model.tosca.TServiceTemplate) {
-            org.eclipse.winery.model.tosca.TServiceTemplate st = (org.eclipse.winery.model.tosca.TServiceTemplate) ci;
-            st.getTopologyTemplate()
-                .getNodeTemplates()
-                .forEach(node -> {
-                    if (Objects.nonNull(node.getArtifacts()) && !node.getArtifacts().getArtifact().isEmpty()) {
-                        node.getArtifacts()
-                            .getArtifact()
-                            .stream()
-                            .map(this::fixForwardSlash)
-                            .filter(a -> this.isImportable(rootPath, a))
-                            .forEach(a -> {
-                                DirectoryId stFilesDir = new GenericDirectoryId(wid, IdNames.FILES_DIRECTORY);
-                                DirectoryId ntFilesDir = new GenericDirectoryId(stFilesDir, node.getId());
-                                DirectoryId artifactDir = new GenericDirectoryId(ntFilesDir, a.getName());
-                                importArtifact(rootPath, a, artifactDir, tmf, errors);
-                                fixArtifactRefName(rootPath, a);
-                            });
-                    }
-                });
+        if (ci instanceof TServiceTemplate) {
+            TServiceTemplate st = (TServiceTemplate) ci;
+            if (st.getTopologyTemplate() != null) {
+                st.getTopologyTemplate()
+                    .getNodeTemplates()
+                    .forEach(node -> {
+                        if (Objects.nonNull(node.getArtifacts()) && !node.getArtifacts().isEmpty()) {
+                            node.getArtifacts()
+                                .stream()
+                                .map(this::fixForwardSlash)
+                                .filter(a -> this.isImportable(rootPath, a))
+                                .forEach(a -> {
+                                    DirectoryId stFilesDir = new GenericDirectoryId(wid, IdNames.FILES_DIRECTORY);
+                                    DirectoryId ntFilesDir = new GenericDirectoryId(stFilesDir, node.getId());
+                                    DirectoryId artifactDir = new GenericDirectoryId(ntFilesDir, a.getName());
+                                    importArtifact(rootPath, a, artifactDir, tmf, errors);
+                                    fixArtifactRefName(rootPath, a);
+                                });
+                        }
+                    });
+            }
         } else if (ci instanceof TNodeType) {
             TNodeType nt = (TNodeType) ci;
 
             fixOperationImplFileRef(nt);
 
-            if (Objects.nonNull(nt.getArtifacts()) && !nt.getArtifacts().getArtifact().isEmpty()) {
-                nt.getArtifacts()
-                    .getArtifact()
-                    .stream()
+            if (Objects.nonNull(nt.getArtifacts()) && !nt.getArtifacts().isEmpty()) {
+                nt.getArtifacts().stream()
                     .map(this::fixForwardSlash)
                     .filter(a -> this.isImportable(rootPath, a))
                     .forEach(a -> {
@@ -245,7 +245,7 @@ public class YamlCsarImporter extends CsarImporter {
     private void fixOperationImplFileRef(TNodeType nt) {
         // current assumption: primary field in operation's implementation stores file reference
         if (Objects.nonNull(nt.getArtifacts()) && Objects.nonNull(nt.getInterfaceDefinitions())) {
-            nt.getArtifacts().getArtifact().forEach(a -> {
+            nt.getArtifacts().forEach(a -> {
                 nt.getInterfaceDefinitions().forEach(iDef -> {
                     if (Objects.nonNull(iDef.getOperations())) {
                         iDef.getOperations().forEach(op -> {

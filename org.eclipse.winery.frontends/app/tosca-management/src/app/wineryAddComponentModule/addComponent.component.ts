@@ -64,9 +64,10 @@ export class WineryAddComponent {
     @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
     useStartNamespace = true;
 
-    private readonly storageKey = 'hideVersionHelp';
     collapseVersioning: boolean;
     valid: boolean;
+
+    private readonly storageKey = 'hideVersionHelp';
 
     constructor(private sectionService: SectionService,
                 private inheritanceService: InheritanceService,
@@ -140,6 +141,18 @@ export class WineryAddComponent {
         this.hideHelp = !this.hideHelp;
     }
 
+    setNewComponentName(name: string) {
+        this.newComponentFinalName = name;
+    }
+
+    setNewComponentNamespace(namespace: string) {
+        this.newComponentNamespace = namespace;
+    }
+
+    setValid(valid: boolean) {
+        this.valid = !valid;
+    }
+
     private handleTypes(types: SelectData[]): void {
         this.types = types.length > 0 ? types : null;
 
@@ -205,17 +218,5 @@ export class WineryAddComponent {
         if (!this.typeRequired || this.types) {
             this.showModal();
         }
-    }
-
-    setNewComponentName(name: string) {
-        this.newComponentFinalName = name;
-    }
-
-    setNewComponentNamespace(namespace: string) {
-        this.newComponentNamespace = namespace;
-    }
-
-    setValid(valid: boolean) {
-        this.valid = !valid;
     }
 }

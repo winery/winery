@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Class to represent an operations implementation in TOSCA YAML.
+ * Class to represent an operations' implementation in TOSCA YAML.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OperationImplementation", propOrder = {

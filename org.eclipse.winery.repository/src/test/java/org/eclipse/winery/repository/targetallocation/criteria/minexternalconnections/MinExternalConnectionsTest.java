@@ -76,7 +76,7 @@ public class MinExternalConnectionsTest extends TestWithGitBackedRepository {
         TTopologyTemplate twoExternal = repository.getElement(id).getTopologyTemplate();
         ModelUtilities.setTargetLabel(twoExternal.getNodeTemplate("shetland_pony_2"), "PastureProvider");
         ModelUtilities.setTargetLabel(twoExternal.getNodeTemplate("shetland_pony_3"), "PastureProvider");
-        TTopologyTemplate oneExternal = AllocationUtils.deepcopy(twoExternal);
+        TTopologyTemplate oneExternal = AllocationUtils.deepCopy(twoExternal);
 
         ModelUtilities.setTargetLabel(oneExternal.getNodeTemplate("shetland_pony_2"), "FieldProvider");
         ModelUtilities.setTargetLabel(oneExternal.getNodeTemplate("shetland_pony_3"), "FieldProvider");

@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { PropertyConstraintsService } from './propertyConstraints.service';
 import { PropertyConstraintApiData } from './propertyConstraintApiData';
 import { ConstraintTypeApiData } from './constraintTypesApiData';
@@ -58,7 +57,7 @@ export class PropertyConstraintsComponent implements OnInit {
 
     // region ######## table methods ########
     onCellSelected(data: any) {
-        if (!isNullOrUndefined(data)) {
+        if (data) {
             this.selectedCell = data.row;
         }
     }
@@ -79,9 +78,7 @@ export class PropertyConstraintsComponent implements OnInit {
     }
 
     onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.confirmDeleteModal.show();
         }
     }
@@ -99,14 +96,6 @@ export class PropertyConstraintsComponent implements OnInit {
         this.addLoad();
         this.service.getConstraintTypes().subscribe(
             data => this.handleConstraintsData(data),
-            error => this.handleError(error)
-        );
-    }
-
-    private getConstraints() {
-        this.addLoad();
-        this.service.getConstraints().subscribe(
-            data => this.handleData(data),
             error => this.handleError(error)
         );
     }
@@ -129,6 +118,14 @@ export class PropertyConstraintsComponent implements OnInit {
         } else {
             this.notify.error('Failed to delete Property Constraint');
         }
+    }
+
+    private getConstraints() {
+        this.addLoad();
+        this.service.getConstraints().subscribe(
+            data => this.handleData(data),
+            error => this.handleError(error)
+        );
     }
 
     private handleData(data: PropertyConstraintApiData[]) {

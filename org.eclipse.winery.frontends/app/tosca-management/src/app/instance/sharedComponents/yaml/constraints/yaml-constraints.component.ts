@@ -55,27 +55,6 @@ export class YamlConstraintsComponent implements OnInit {
         this.loadDataType();
     }
 
-    private loadDataType() {
-        this.sharedData.getComponentData()
-            .subscribe(
-                data => this.handleDataInput(data),
-                error => this.handleError(error)
-            );
-    }
-
-    private handleDataInput(componentData: WineryInstance) {
-        // TODO: check type hierarchy exposed by WineryInstance?
-        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] as unknown as TDataType;
-        // backfill namespace from targetNamespace coming from the sharedData
-        this.component.namespace = this.component.namespace || (this.component as any).targetNamespace;
-        this.loadingData = false;
-    }
-
-    private handleError(error: HttpErrorResponse) {
-        this.loadingData = false;
-        this.notify.error(error.message);
-    }
-
     /**
      * removes item from constraint list
      * @param constraintClause
@@ -117,5 +96,25 @@ export class YamlConstraintsComponent implements OnInit {
         return range_constraint_keys;
     }
 
+    private loadDataType() {
+        this.sharedData.getComponentData()
+            .subscribe(
+                data => this.handleDataInput(data),
+                error => this.handleError(error)
+            );
+    }
+
+    private handleDataInput(componentData: WineryInstance) {
+        // TODO: check type hierarchy exposed by WineryInstance?
+        this.component = componentData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] as unknown as TDataType;
+        // backfill namespace from targetNamespace coming from the sharedData
+        this.component.namespace = this.component.namespace || (this.component as any).targetNamespace;
+        this.loadingData = false;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        this.loadingData = false;
+        this.notify.error(error.message);
+    }
 }
 

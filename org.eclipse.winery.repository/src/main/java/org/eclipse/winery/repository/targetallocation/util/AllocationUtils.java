@@ -36,7 +36,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 public class AllocationUtils {
 
     public static long idCounter = 0;
-    private static IRepository repository = RepositoryFactory.getRepository();
+    private static final IRepository repository = RepositoryFactory.getRepository();
 
     /**
      * Calculates the permutations of the given lists.
@@ -81,7 +81,7 @@ public class AllocationUtils {
         List<TopologyWrapper> topologies = new ArrayList<>();
 
         for (List<PermutationHelper> permutation : permutations) {
-            TopologyWrapper newTopology = new TopologyWrapper(deepcopy(topology.getTopology()));
+            TopologyWrapper newTopology = new TopologyWrapper(deepCopy(topology.getTopology()));
             Map<String, TNodeTemplate> topLevelNtsByIds = newTopology.getTopLevelNtsByIds();
 
             for (PermutationHelper possibility : permutation) {
@@ -100,7 +100,7 @@ public class AllocationUtils {
         List<TPolicyTemplate> policyTemplates = new ArrayList<>();
 
         if (nodeTemplate.getPolicies() != null) {
-            List<TPolicy> tPolicies = nodeTemplate.getPolicies().getPolicy();
+            List<TPolicy> tPolicies = nodeTemplate.getPolicies();
             for (TPolicy tPolicy : tPolicies) {
                 policyTemplates.add(toPolicyTemplate(tPolicy));
             }
@@ -116,14 +116,14 @@ public class AllocationUtils {
     /**
      * Still no complete copy of all TOSCA constructs. Cloned so that !original.equals(clone).
      */
-    public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate) {
-        return deepcopy(topologyTemplate, true);
+    public static TTopologyTemplate deepCopy(TTopologyTemplate topologyTemplate) {
+        return deepCopy(topologyTemplate, true);
     }
 
     /**
      * Still no complete copy of all TOSCA constructs.
      */
-    public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate, boolean changeNames) {
+    public static TTopologyTemplate deepCopy(TTopologyTemplate topologyTemplate, boolean changeNames) {
         TTopologyTemplate.Builder clone = new TTopologyTemplate.Builder();
         Map<String, TNodeTemplate> clonedNTsByIds = new HashMap<>();
 

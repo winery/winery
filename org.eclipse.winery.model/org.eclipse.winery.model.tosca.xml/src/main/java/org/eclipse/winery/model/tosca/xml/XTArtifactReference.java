@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -39,14 +40,15 @@ public class XTArtifactReference implements Serializable {
         @XmlElement(name = "Exclude", type = XTArtifactReference.Exclude.class),
         @XmlElement(name = "Include", type = XTArtifactReference.Include.class)
     })
-    protected List<Object> includeOrExclude;
+    protected List<IncludeOrExclude> includeOrExclude;
 
     @XmlAttribute(name = "reference", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String reference;
 
     @Deprecated // required for XML deserialization
-    public XTArtifactReference() { }
+    public XTArtifactReference() {
+    }
 
     public XTArtifactReference(Builder builder) {
         this.includeOrExclude = builder.includeOrExclude;
@@ -79,10 +81,9 @@ public class XTArtifactReference implements Serializable {
      * Gets the value of the includeOrExclude property.
      * <p>
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the includeOrExclude property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore, any modification you make
+     * to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method
+     * for the includeOrExclude property.
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
@@ -92,14 +93,13 @@ public class XTArtifactReference implements Serializable {
      * <p>
      * <p>
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link XTArtifactReference.Exclude }
-     * {@link XTArtifactReference.Include }
+     * Objects of the following type(s) are allowed in the list {@link XTArtifactReference.Exclude } {@link
+     * XTArtifactReference.Include }
      */
     @NonNull
-    public List<Object> getIncludeOrExclude() {
+    public List<IncludeOrExclude> getIncludeOrExclude() {
         if (includeOrExclude == null) {
-            includeOrExclude = new ArrayList<Object>();
+            includeOrExclude = new ArrayList<>();
         }
         return this.includeOrExclude;
     }
@@ -114,11 +114,19 @@ public class XTArtifactReference implements Serializable {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class Exclude {
+    @XmlTransient
+    public abstract static class IncludeOrExclude implements Serializable {
 
         @XmlAttribute(name = "pattern", required = true)
-        protected String pattern;
+        private String pattern;
+
+        // required for serialization
+        public IncludeOrExclude() {
+        }
+
+        public IncludeOrExclude(String pattern) {
+            this.pattern = pattern;
+        }
 
         @NonNull
         public String getPattern() {
@@ -132,30 +140,37 @@ public class XTArtifactReference implements Serializable {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class Include implements Serializable {
-
-        @XmlAttribute(name = "pattern", required = true)
-        protected String pattern;
-
-        @NonNull
-        public String getPattern() {
-            return pattern;
+    public static class Exclude extends IncludeOrExclude {
+        @Deprecated
+        public Exclude() {
         }
 
-        public void setPattern(String value) {
-            this.pattern = value;
+        public Exclude(String pattern) {
+            super(pattern);
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "")
+    public static class Include extends IncludeOrExclude {
+        @Deprecated
+        public Include() {
+        }
+
+        public Include(String pattern) {
+            super(pattern);
         }
     }
 
     public static class Builder {
         private final String reference;
-        private List<Object> includeOrExclude;
+        private List<IncludeOrExclude> includeOrExclude;
 
         public Builder(String reference) {
             this.reference = reference;
         }
 
-        public Builder setIncludeOrExclude(List<Object> includeOrExclude) {
+        public Builder setIncludeOrExclude(List<IncludeOrExclude> includeOrExclude) {
             this.includeOrExclude = includeOrExclude;
             return this;
         }

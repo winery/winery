@@ -123,7 +123,7 @@ export class InstanceService {
                     subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
                         SubMenuItems.inheritance, SubMenuItems.appearance, SubMenuItems.documentation];
                 } else {
-                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.propertiesDefinition,
+                    subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.appliesTo, SubMenuItems.propertiesDefinition,
                         SubMenuItems.inheritance, SubMenuItems.templates, SubMenuItems.appearance, SubMenuItems.documentation, SubMenuItems.xml];
                 }
                 break;
@@ -140,9 +140,10 @@ export class InstanceService {
                 break;
             case ToscaTypes.PatternRefinementModel:
             case ToscaTypes.TopologyFragmentRefinementModel:
-                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure, SubMenuItems.graficPrmModelling,
-                    SubMenuItems.relationMappings, SubMenuItems.attributeMappings, SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings,
-                    SubMenuItems.permutationMappings, SubMenuItems.permutations, SubMenuItems.xml];
+                subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure,
+                    SubMenuItems.graficPrmModelling, SubMenuItems.relationMappings, SubMenuItems.attributeMappings,
+                    SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings, SubMenuItems.permutationMappings,
+                    SubMenuItems.permutations, SubMenuItems.behaviorPatternMappings, SubMenuItems.xml];
                 break;
             case ToscaTypes.TestRefinementModel:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.graficPrmModelling,

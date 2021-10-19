@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
@@ -36,17 +38,18 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlSeeAlso( {
     XTNodeTypeImplementation.class,
     XTRelationshipTypeImplementation.class,
+    XTArtifactReference.class,
+    XTRequiredContainerFeature.class
 })
-public abstract class XTEntityTypeImplementation extends XTExtensibleElements implements XHasName, XHasType, XHasInheritance, XHasTargetNamespace {
+public abstract class XTEntityTypeImplementation extends XTExtensibleElementWithTags implements XHasName, XHasType, XHasInheritance, XHasTargetNamespace {
 
-    @XmlElement(name = "Tags")
-    protected XTTags tags;
+    @XmlElementWrapper(name = "RequiredContainerFeatures")
+    @XmlElement(name = "RequiredContainerFeature", required = true)
+    protected List<XTRequiredContainerFeature> requiredContainerFeatures;
 
-    @XmlElement(name = "RequiredContainerFeatures")
-    protected XTRequiredContainerFeatures requiredContainerFeatures;
-
-    @XmlElement(name = "ImplementationArtifacts")
-    protected XTImplementationArtifacts implementationArtifacts;
+    @XmlElementWrapper(name = "ImplementationArtifacts")
+    @XmlElement(name = "ImplementationArtifact", required = true)
+    protected List<XTImplementationArtifact> implementationArtifacts;
 
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")
@@ -68,15 +71,13 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
 
     @Deprecated // required for XML deserialization
     public XTEntityTypeImplementation() {
-        super();
     }
 
-    public XTEntityTypeImplementation(Builder builder) {
+    public XTEntityTypeImplementation(Builder<?> builder) {
         super(builder);
         this.targetNamespace = builder.targetNamespace;
         this.name = builder.name;
         this.implementedType = builder.implementedType;
-        this.tags = builder.tags;
         this.requiredContainerFeatures = builder.requiredContainerFeatures;
         this.implementationArtifacts = builder.implementationArtifacts;
         this._abstract = builder._abstract;
@@ -108,29 +109,20 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
     }
 
     @Nullable
-    public XTTags getTags() {
-        return tags;
-    }
-
-    public void setTags(XTTags value) {
-        this.tags = value;
-    }
-
-    @Nullable
-    public XTRequiredContainerFeatures getRequiredContainerFeatures() {
+    public List<XTRequiredContainerFeature> getRequiredContainerFeatures() {
         return requiredContainerFeatures;
     }
 
-    public void setRequiredContainerFeatures(XTRequiredContainerFeatures value) {
+    public void setRequiredContainerFeatures(List<XTRequiredContainerFeature> value) {
         this.requiredContainerFeatures = value;
     }
 
     @Nullable
-    public XTImplementationArtifacts getImplementationArtifacts() {
+    public List<XTImplementationArtifact> getImplementationArtifacts() {
         return implementationArtifacts;
     }
 
-    public void setImplementationArtifacts(XTImplementationArtifacts value) {
+    public void setImplementationArtifacts(List<XTImplementationArtifact> value) {
         this.implementationArtifacts = value;
     }
 
@@ -182,6 +174,7 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
     }
 
     @Override
+    @NonNull
     public QName getTypeAsQName() {
         return this.implementedType;
     }
@@ -191,17 +184,16 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
         this.implementedType = type;
     }
 
-    public static abstract class Builder<T extends Builder<T>> extends XTExtensibleElements.Builder<T> {
+    public static abstract class Builder<T extends Builder<T>> extends XTExtensibleElementWithTags.Builder<T> {
         private final QName implementedType;
         private String name;
         private String targetNamespace;
-        private XTTags tags;
-        private XTRequiredContainerFeatures requiredContainerFeatures;
-        private XTImplementationArtifacts implementationArtifacts;
+        private List<XTRequiredContainerFeature> requiredContainerFeatures;
+        private List<XTImplementationArtifact> implementationArtifacts;
         private XTBoolean _abstract;
         private XTBoolean _final;
 
-        public Builder(Builder builder, String name, QName implementedType) {
+        public Builder(Builder<T> builder, String name, QName implementedType) {
             super(builder);
             this.name = name;
             this.implementedType = implementedType;
@@ -223,17 +215,12 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
             return self();
         }
 
-        public T setTags(XTTags tags) {
-            this.tags = tags;
-            return self();
-        }
-
-        public T setRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
+        public T setRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
             this.requiredContainerFeatures = requiredContainerFeatures;
             return self();
         }
 
-        public T setImplementationArtifacts(XTImplementationArtifacts implementationArtifacts) {
+        public T setImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
             this.implementationArtifacts = implementationArtifacts;
             return self();
         }
@@ -253,114 +240,40 @@ public abstract class XTEntityTypeImplementation extends XTExtensibleElements im
             return self();
         }
 
-        public T addTags(XTTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return self();
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return self();
-        }
-
-        public T addTags(List<XTTag> tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(XTTag tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            XTTags tmp = new XTTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(String name, String value) {
-            if (name == null || name.isEmpty()) {
-                return self();
-            }
-
-            XTTag tmp = new XTTag();
-            tmp.setName(name);
-            tmp.setValue(value);
-            return addTags(tmp);
-        }
-
-        public T addRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
+        public T addRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
+            if (requiredContainerFeatures == null || requiredContainerFeatures.isEmpty()) {
                 return self();
             }
 
             if (this.requiredContainerFeatures == null) {
                 this.requiredContainerFeatures = requiredContainerFeatures;
             } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
+                this.requiredContainerFeatures.addAll(requiredContainerFeatures);
             }
             return self();
         }
 
-        public T addRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
+        public T addRequiredContainerFeature(XTRequiredContainerFeature requiredContainerFeatures) {
             if (requiredContainerFeatures == null) {
                 return self();
             }
 
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
+            List<XTRequiredContainerFeature> tmp = new ArrayList<>();
+            tmp.add(requiredContainerFeatures);
             return addRequiredContainerFeatures(tmp);
         }
 
-        public T addRequiredContainerFeatures(XTRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return self();
-            }
-
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public T addImplementationArtifacts(XTImplementationArtifacts implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.getImplementationArtifact().isEmpty()) {
+        public T addImplementationArtifacts(List<XTImplementationArtifact> implementationArtifacts) {
+            if (implementationArtifacts == null || implementationArtifacts.isEmpty()) {
                 return self();
             }
 
             if (this.implementationArtifacts == null) {
                 this.implementationArtifacts = implementationArtifacts;
             } else {
-                this.implementationArtifacts.getImplementationArtifact().addAll(implementationArtifacts.getImplementationArtifact());
+                this.implementationArtifacts.addAll(implementationArtifacts);
             }
             return self();
-        }
-
-        public T addImplementationArtifacts(List<XTImplementationArtifacts.ImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return self();
-            }
-
-            XTImplementationArtifacts tmp = new XTImplementationArtifacts();
-            tmp.getImplementationArtifact().addAll(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public T addImplementationArtifacts(XTImplementationArtifacts.ImplementationArtifact implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return self();
-            }
-
-            XTImplementationArtifacts tmp = new XTImplementationArtifacts();
-            tmp.getImplementationArtifact().add(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
         }
     }
 }

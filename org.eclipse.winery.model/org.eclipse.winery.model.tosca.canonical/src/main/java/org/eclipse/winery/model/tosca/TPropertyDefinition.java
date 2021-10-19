@@ -35,6 +35,7 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitio
     "outputs"
 })
 public class TPropertyDefinition implements HasName, Serializable {
+
     private String name;
     private String type;
     private String description;
@@ -42,7 +43,8 @@ public class TPropertyDefinition implements HasName, Serializable {
     private List<ParameterDefinition> outputs;
 
     @Deprecated // used for XML deserialization of API request content
-    public TPropertyDefinition() { }
+    public TPropertyDefinition() {
+    }
 
     public String getType() {
         return type;
@@ -59,16 +61,30 @@ public class TPropertyDefinition implements HasName, Serializable {
 
     @Override
     public void setName(String value) {
-
+        this.name = name;
     }
 
-    @Override
-    public String getIdFromIdOrNameField() {
-        return null;
+    public String getDescription() {
+        return description;
     }
 
-    @Override
-    public void setId(String id) {
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
+    public List<ParameterDefinition> getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(List<ParameterDefinition> inputs) {
+        this.inputs = inputs;
+    }
+
+    public List<ParameterDefinition> getOutputs() {
+        return outputs;
+    }
+
+    public void setOutputs(List<ParameterDefinition> outputs) {
+        this.outputs = outputs;
     }
 }

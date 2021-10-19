@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.extensions;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -22,11 +20,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.winery.model.tosca.HasId;
+import org.eclipse.winery.model.tosca.HasIdAndTags;
 import org.eclipse.winery.model.tosca.HasName;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
-import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -34,7 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "otComplianceRule")
-public class OTComplianceRule extends HasId implements HasName, HasTargetNamespace {
+public class OTComplianceRule extends HasIdAndTags implements HasName, HasTargetNamespace {
 
     @XmlAttribute
     protected String name;
@@ -49,18 +45,15 @@ public class OTComplianceRule extends HasId implements HasName, HasTargetNamespa
     @XmlElement(name = "RequiredStructure")
     protected TTopologyTemplate requiredStructure;
 
-    @XmlElement(name = "Tags")
-    protected TTags tags;
-
     @Deprecated // used for XML deserialization of API request content
-    public OTComplianceRule() { }
+    public OTComplianceRule() {
+    }
 
     public OTComplianceRule(Builder builder) {
         super(builder);
         this.name = builder.name;
         this.identifier = builder.identifier;
         this.requiredStructure = builder.requiredStructure;
-        this.tags = builder.tags;
         this.targetNamespace = builder.targetNamespace;
     }
 
@@ -111,30 +104,17 @@ public class OTComplianceRule extends HasId implements HasName, HasTargetNamespa
         this.requiredStructure = requiredStructure;
     }
 
-    public TTags getTags() {
-        return tags;
-    }
-
-    public void setTags(TTags tags) {
-        this.tags = tags;
-    }
-
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
-    public static class Builder extends HasId.Builder<Builder> {
+    public static class Builder extends HasIdAndTags.Builder<Builder> {
 
         private String name;
         private TTopologyTemplate identifier;
         private TTopologyTemplate requiredStructure;
-        private TTags tags;
         private String targetNamespace;
-
-        public Builder() {
-            super();
-        }
 
         public Builder(String id) {
             super(id);
@@ -152,14 +132,6 @@ public class OTComplianceRule extends HasId implements HasName, HasTargetNamespa
 
         public Builder setRequiredStructure(TTopologyTemplate requiredStructure) {
             this.requiredStructure = requiredStructure;
-            return self();
-        }
-
-        public Builder addTags(List<TTag> tags) {
-            if (this.tags == null) {
-                this.tags = new TTags();
-            }
-            this.tags.getTag().addAll(tags);
             return self();
         }
 

@@ -37,12 +37,14 @@ import org.eclipse.jdt.annotation.NonNull;
 //    "inputs"
 })
 public class TInterfaceType extends TEntityType {
+
     private String description;
     //private Map<String, TPropertyDefinition> inputs;
     private Map<String, TOperationDefinition> operations;
 
     @Deprecated // used for XML deserialization of API request content
-    public TInterfaceType() {  }
+    public TInterfaceType() {
+    }
 
     public TInterfaceType(Builder builder) {
         super(builder);
@@ -114,6 +116,7 @@ public class TInterfaceType extends TEntityType {
     }
 
     public static class Builder extends TEntityType.Builder<Builder> {
+
         public String description;
         private Map<String, TOperationDefinition> operations;
         private Map<String, TPropertyDefinition> inputs;
@@ -180,7 +183,7 @@ public class TInterfaceType extends TEntityType {
 
             return addInputs(Collections.singletonMap(name, input));
         }
-        
+
         @Override
         public Builder self() {
             return this;

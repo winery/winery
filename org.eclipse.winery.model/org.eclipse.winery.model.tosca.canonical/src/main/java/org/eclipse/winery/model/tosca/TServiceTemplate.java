@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -37,10 +38,7 @@ import org.eclipse.jdt.annotation.Nullable;
     "topologyTemplate",
     "plans"
 })
-public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace, HasTags {
-
-    @XmlElement(name = "Tags")
-    protected TTags tags;
+public class TServiceTemplate extends HasIdAndTags implements HasName, HasTargetNamespace {
 
     @XmlElement(name = "BoundaryDefinitions")
     protected TBoundaryDefinitions boundaryDefinitions;
@@ -48,8 +46,9 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
     @XmlElement(name = "TopologyTemplate", required = true)
     protected TTopologyTemplate topologyTemplate;
 
-    @XmlElement(name = "Plans")
-    protected TPlans plans;
+    @XmlElementWrapper(name = "Plans")
+    @XmlElement(name = "Plan", required = true)
+    protected List<TPlan> plans;
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -67,7 +66,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
 
     public TServiceTemplate(Builder builder) {
         super(builder);
-        this.tags = builder.tags;
         this.boundaryDefinitions = builder.boundaryDefinitions;
         this.topologyTemplate = builder.topologyTemplate;
         this.plans = builder.plans;
@@ -101,16 +99,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
     }
 
     @Nullable
-    @Override
-    public TTags getTags() {
-        return tags;
-    }
-
-    public void setTags(@Nullable TTags value) {
-        this.tags = value;
-    }
-
-    @Nullable
     public TBoundaryDefinitions getBoundaryDefinitions() {
         return boundaryDefinitions;
     }
@@ -136,11 +124,11 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
     }
 
     @Nullable
-    public TPlans getPlans() {
+    public List<TPlan> getPlans() {
         return plans;
     }
 
-    public void setPlans(@Nullable TPlans value) {
+    public void setPlans(List<TPlan> value) {
         this.plans = value;
     }
 
@@ -175,12 +163,11 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         visitor.visit(this);
     }
 
-    public static class Builder extends HasId.Builder<Builder> {
+    public static class Builder extends HasIdAndTags.Builder<Builder> {
         private final TTopologyTemplate topologyTemplate;
 
-        private TTags tags;
         private TBoundaryDefinitions boundaryDefinitions;
-        private TPlans plans;
+        private List<TPlan> plans;
         private String name;
         private String targetNamespace;
         private QName substitutableNodeType;
@@ -195,17 +182,12 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
             this.topologyTemplate = topologyTemplate;
         }
 
-        public Builder setTags(TTags tags) {
-            this.tags = tags;
-            return this;
-        }
-
         public Builder setBoundaryDefinitions(TBoundaryDefinitions boundaryDefinitions) {
             this.boundaryDefinitions = boundaryDefinitions;
             return this;
         }
 
-        public Builder setPlans(TPlans plans) {
+        public Builder setPlans(List<TPlan> plans) {
             this.plans = plans;
             return this;
         }
@@ -223,39 +205,6 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         public Builder setSubstitutableNodeType(QName substitutableNodeType) {
             this.substitutableNodeType = substitutableNodeType;
             return this;
-        }
-
-        public Builder addTags(TTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return this;
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return this;
-        }
-
-        public Builder addTags(List<TTag> tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public Builder addTags(TTag tags) {
-            if (tags == null) {
-                return this;
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
         }
 
         @Override

@@ -48,7 +48,8 @@
             <param-value>
                 io.swagger.jaxrs.json,
                 io.swagger.jaxrs.listing,
-                org.eclipse.winery.repository.rest.resources
+                org.eclipse.winery.repository.rest.resources,
+                org.eclipse.winery.repository.rest.filters
             </param-value>
         </init-param>
         <init-param>

@@ -60,27 +60,33 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     @Test
     public void baobabCapabilitiesJSON() throws Exception {
         this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/baobab_capabilites.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/",
+            "entitytypes/nodetypes/baobab_capabilites.json");
     }
 
     @Test
     public void baobabGetCapabilityDefinitions() throws Exception {
         this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_get.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/",
+            "entitytypes/nodetypes/baobab_capability_definitions_get.json");
     }
 
     @Test
     public void baobabAddCapabilityDefinition() throws Exception {
         this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
-        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition.json");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_contents.json");
+        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/",
+            "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/",
+            "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_contents.json");
     }
 
     @Test
     public void addCapabilityDefinitionWithNoValidSourceTypes() throws Exception {
         this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
-        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_without_validSourceTypes.json");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/", "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_contents.json");
+        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/",
+            "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_without_validSourceTypes.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/capabilitydefinitions/",
+            "entitytypes/nodetypes/baobab_capability_definitions_add_capabilitydefinition_contents.json");
     }
 
     @Test
@@ -93,14 +99,17 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     @Test
     public void baobabGetRequirementDefinition() throws Exception {
         this.setRevisionTo("494da65d11c8191b8254cba23a82a1abbface09c");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/requirementdefinitions/", "entitytypes/nodetypes/baobab_requirement_definitions_get.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/requirementdefinitions/",
+            "entitytypes/nodetypes/baobab_requirement_definitions_get.json");
     }
 
     @Test
     public void baobabCreateRequirementDefinition() throws Exception {
         this.setRevisionTo("494da65d11c8191b8254cba23a82a1abbface09c");
-        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/requirementdefinitions/", "entitytypes/nodetypes/baobab_requirement_definitions_add_requirementdefinition.json");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/requirementdefinitions/", "entitytypes/nodetypes/baobab_requirement_definitions_add_requirementdefinition_contents.json");
+        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/requirementdefinitions/",
+            "entitytypes/nodetypes/baobab_requirement_definitions_add_requirementdefinition.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/requirementdefinitions/",
+            "entitytypes/nodetypes/baobab_requirement_definitions_add_requirementdefinition_contents.json");
     }
 
     @Test
@@ -153,8 +162,10 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     @Test
     public void baobabAddInterface() throws Exception {
         this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779");
-        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/", "entitytypes/nodetypes/baobab_create_interface_and_operations.json");
-        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/", "entitytypes/nodetypes/baobab_initial_interface.json");
+        this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/",
+            "entitytypes/nodetypes/baobab_create_interface_and_operations.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/",
+            "entitytypes/nodetypes/baobab_initial_interface.json");
     }
 
     @Test

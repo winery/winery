@@ -19,8 +19,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,71 +31,13 @@ import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultiRepositoryManagerTest {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(MultiRepositoryManagerTest.class);
-    static String workspaceRepositoryRoot;
-
-    /**
-     * This sets the repository root to a test directory where the multirepository will be temporarily be initialized.
-     * This additionaly saves the workspace repository root to set it back later.
-     */
-    @BeforeAll
-    static void getRepositoryRootBeforeTestAndSetUpTestRoot() {
-        workspaceRepositoryRoot = Environments.getInstance().getRepositoryConfig().getRepositoryRoot();
-        Path testRepositoryRoot = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-multi-repository");
-        if (!Files.exists(testRepositoryRoot)) {
-            try {
-                Files.createDirectory(testRepositoryRoot);
-            } catch (IOException ioex) {
-                LOGGER.debug("Error while creating test directory", ioex);
-            }
-        } else {
-            try {
-                FileUtils.cleanDirectory(testRepositoryRoot.toFile());
-            } catch (IOException e) {
-                LOGGER.debug("Error clearing out the test directory before test execution.", e);
-            }
-        }
-        Environments.getInstance().getRepositoryConfig().setRepositoryRoot(testRepositoryRoot.toString());
-    }
-
-    @BeforeEach
-    void cleanDirectory() {
-        try {
-            FileUtils.cleanDirectory(new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
-        } catch (IOException e) {
-            LOGGER.error("Error while cleaning. Could not clear the temporary directory.", e);
-        }
-        try {
-            RepositoryFactory.reconfigure();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * This sets the repository root in the config back to the workspace repository root.
-     */
-    @AfterAll
-    static void setRepositoryRootBack() {
-        try {
-            FileUtils.deleteDirectory(new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
-        } catch (IOException e) {
-            LOGGER.error("Error while cleanup. Could not delete temporary directory.", e);
-        }
-        Environments.getInstance().getRepositoryConfig().setRepositoryRoot(workspaceRepositoryRoot);
-    }
+public class MultiRepositoryManagerTest extends RepositoryTest{
+    
 
     /**
      * Tests whenever a file is created for the repository list in the root folder.
@@ -110,12 +50,12 @@ public class MultiRepositoryManagerTest {
         MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
         multiRepositoryManager.initializeRepositoryListForMultiRepositoryAndReconfigureFactory(repositoryList);
         assertTrue(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(),
-            Filename.FILENAME_JSON_REPOSITORIES).toFile().exists());
+            Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile().exists());
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectReader reader = objectMapper.readerFor(new TypeReference<List<RepositoryProperties>>() {
         });
         repositoryList = reader.readValue(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(),
-            Filename.FILENAME_JSON_REPOSITORIES).toFile());
+            Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile());
         assertEquals(1, repositoryList.size());
         assertEquals("https://github.com/winery/mulit-repo-test", repositoryList.get(0).getUrl());
         assertEquals("master", repositoryList.get(0).getBranch());
@@ -199,7 +139,7 @@ public class MultiRepositoryManagerTest {
      * Also reconfigures the Factory to a MultiRepository.
      */
     void writeDependencyFile() {
-        File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_REPOSITORIES).toFile();
+        File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile();
         try (FileWriter writer = new FileWriter(dependencyFile)) {
             writer.write("[\n" +
                 "   {\n" +

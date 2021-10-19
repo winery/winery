@@ -49,7 +49,7 @@ public class YTRequirementAssignment implements VisitorNode {
         YTRequirementAssignment that = (YTRequirementAssignment) o;
         return Objects.equals(getNode(), that.getNode()) &&
             Objects.equals(getRelationship(), that.getRelationship()) &&
-            Objects.equals(getCapability(), that.getCapability()) &&
+            Objects.equals(getCapability(), that) &&
             Objects.equals(getNodeFilter(), that.getNodeFilter()) &&
             Objects.equals(getOccurrences(), that.getOccurrences());
     }

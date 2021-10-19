@@ -55,7 +55,7 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
 
     constructor(private entitiesModalService: EntitiesModalService,
                 private backendService: BackendService,
-                private reqCapRelationshipService: ReqCapRelationshipService,
+                public reqCapRelationshipService: ReqCapRelationshipService,
                 private configurationService: WineryRepositoryConfigurationService) {
         this.showClickedReqOrCapModal = new EventEmitter();
         this.relationshipTemplateIdClicked = new EventEmitter<string>();
@@ -237,28 +237,6 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
         }
     }
 
-    private getRequirementDefinition(req: RequirementModel): RequirementDefinitionModel {
-        const listOfBequeathingNodeTypes = InheritanceUtils
-            .getInheritanceAncestry(this.currentNodeData.nodeTemplate.type, this.entityTypes.unGroupedNodeTypes);
-        for (const nodeType of listOfBequeathingNodeTypes) {
-            if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] &&
-                nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions &&
-                nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions.requirementDefinition) {
-
-                const requirementDefinition = nodeType
-                    .full
-                    .serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
-                    .requirementDefinitions
-                    .requirementDefinition
-                    .find((reqDef: RequirementDefinitionModel) => reqDef.name === req.name);
-                if (requirementDefinition) {
-                    return requirementDefinition;
-                }
-            }
-        }
-        return null;
-    }
-
     getAllowedRelationshipTypes(req: RequirementModel): VisualEntityType[] {
         const reqDef: RequirementDefinitionModel = this.getRequirementDefinition(req);
         // if the requirement definition specifies a relationship type, then it is the only one allowed
@@ -352,5 +330,25 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
 
     sortBy(req: RequirementModel[], prop: string) {
         return req.sort((a, b) => a[prop] > b[prop] ? 1 : a[prop] === b[prop] ? 0 : -1);
+    }
+
+    private getRequirementDefinition(req: RequirementModel): RequirementDefinitionModel {
+        const listOfBequeathingNodeTypes = InheritanceUtils
+            .getInheritanceAncestry(this.currentNodeData.nodeTemplate.type, this.entityTypes.unGroupedNodeTypes);
+        for (const nodeType of listOfBequeathingNodeTypes) {
+            if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0] &&
+                nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].requirementDefinitions) {
+
+                const requirementDefinition = nodeType
+                    .full
+                    .serviceTemplateOrNodeTypeOrNodeTypeImplementation[0]
+                    .requirementDefinitions
+                    .find((reqDef: RequirementDefinitionModel) => reqDef.name === req.name);
+                if (requirementDefinition) {
+                    return requirementDefinition;
+                }
+            }
+        }
+        return null;
     }
 }

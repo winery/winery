@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -34,12 +35,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.xml.constants.TOSCA_xml_1_0;
-import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
-
 import org.eclipse.winery.model.tosca.xml.extensions.XOTComplianceRule;
-import org.eclipse.winery.model.tosca.xml.extensions.XOTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTestRefinementModel;
+import org.eclipse.winery.model.tosca.xml.extensions.XOTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
@@ -57,12 +57,16 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespace {
 
-    @XmlElement(name = "Extensions")
-    protected XTDefinitions.Extensions extensions;
+    @XmlElementWrapper(name = "Extensions")
+    @XmlElement(name = "Extension", required = true)
+    protected List<XTExtension> extensions;
+
     @XmlElement(name = "Import")
     protected List<XTImport> _import;
+
     @XmlElement(name = "Types")
     protected XTDefinitions.Types types;
+
     @XmlElements( {
         @XmlElement(name = "RelationshipType", type = XTRelationshipType.class),
         @XmlElement(name = "RelationshipTypeImplementation", type = XTRelationshipTypeImplementation.class),
@@ -84,14 +88,16 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
 
     @XmlAttribute(name = "name")
     protected String name;
+    
     @XmlAttribute(name = "targetNamespace", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
 
     @Deprecated // required for XML deserialization
-    public XTDefinitions() { }
+    public XTDefinitions() {
+    }
 
-    public XTDefinitions(Builder builder) {
+    public XTDefinitions(Builder<?> builder) {
         super(builder);
         this.extensions = builder.extensions;
         this._import = builder.imports;
@@ -141,18 +147,18 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
         this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(element);
     }
 
-    public XTDefinitions.@Nullable Extensions getExtensions() {
+    public List<XTExtension> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(XTDefinitions.Extensions value) {
+    public void setExtensions(List<XTExtension> value) {
         this.extensions = value;
     }
 
     @NonNull
     public List<XTImport> getImport() {
         if (_import == null) {
-            _import = new ArrayList<XTImport>();
+            _import = new ArrayList<>();
         }
         return this._import;
     }
@@ -167,14 +173,14 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
 
     /**
      * <p> Objects of the following type(s) are allowed in the list {@link XTRelationshipType } {@link
-     * XTRelationshipTypeImplementation } {@link XTArtifactTemplate } {@link XTPolicyTemplate } {@link XTServiceTemplate }
-     * {@link XTArtifactType } {@link XTCapabilityType } {@link XTNodeType } {@link XTNodeTypeImplementation } {@link
+     * XTRelationshipTypeImplementation } {@link XTArtifactTemplate } {@link XTPolicyTemplate } {@link XTServiceTemplate
+     * } {@link XTArtifactType } {@link XTCapabilityType } {@link XTNodeType } {@link XTNodeTypeImplementation } {@link
      * XTRequirementType } {@link XTPolicyType }
      */
     @NonNull
     public List<XTExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
         if (serviceTemplateOrNodeTypeOrNodeTypeImplementation == null) {
-            serviceTemplateOrNodeTypeOrNodeTypeImplementation = new ArrayList<XTExtensibleElements>();
+            serviceTemplateOrNodeTypeOrNodeTypeImplementation = new ArrayList<>();
         }
         return this.serviceTemplateOrNodeTypeOrNodeTypeImplementation;
     }
@@ -295,55 +301,6 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "extension"
-    })
-    public static class Extensions implements Serializable {
-
-        @XmlElement(name = "Extension", required = true)
-        protected List<XTExtension> extension;
-
-        /**
-         * Gets the value of the extension property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the extension property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getExtension().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list {@link XTExtension }
-         */
-        @NonNull
-        public List<XTExtension> getExtension() {
-            if (extension == null) {
-                extension = new ArrayList<XTExtension>();
-            }
-            return this.extension;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Extensions that = (Extensions) o;
-            return Objects.equals(extension, that.extension);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(extension);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
         "any"
     })
     public static class Types implements Serializable {
@@ -354,7 +311,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
         @NonNull
         public List<Object> getAny() {
             if (any == null) {
-                any = new ArrayList<Object>();
+                any = new ArrayList<>();
             }
             return this.any;
         }
@@ -376,7 +333,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
     public static class Builder<T extends Builder<T>> extends XHasId.Builder<T> {
         private final String target_namespace;
 
-        private XTDefinitions.Extensions extensions;
+        private List<XTExtension> extensions;
         private List<XTImport> imports;
         private XTDefinitions.Types types;
         private List<XTServiceTemplate> serviceTemplates;
@@ -396,11 +353,6 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
         public Builder(String id, String target_namespace) {
             super(id);
             this.target_namespace = target_namespace;
-        }
-
-        public T setExtensions(XTDefinitions.Extensions extensions) {
-            this.extensions = extensions;
-            return self();
         }
 
         public T setImport(List<XTImport> imports) {
@@ -481,30 +433,20 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addExtensions(XTDefinitions.Extensions extensions) {
-            if (extensions == null || extensions.getExtension().isEmpty()) {
+        public T addExtensions(List<XTExtension> extensions) {
+            if (extensions == null || extensions.isEmpty()) {
                 return self();
             }
 
             if (this.extensions == null) {
                 this.extensions = extensions;
             } else {
-                this.extensions.getExtension().addAll(extensions.getExtension());
+                this.extensions.addAll(extensions);
             }
             return self();
         }
 
-        public T addExtensions(List<XTExtension> extensions) {
-            if (extensions == null) {
-                return self();
-            }
-
-            List<XTExtension> tmp = new ArrayList<>();
-            tmp.addAll(extensions);
-            return addExtensions(tmp);
-        }
-
-        public T addExtensions(XTExtension extensions) {
+        public T addExtension(XTExtension extensions) {
             if (extensions == null) {
                 return self();
             }
@@ -573,7 +515,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addServiceTemplates(XTServiceTemplate serviceTemplate) {
+        public T addServiceTemplate(XTServiceTemplate serviceTemplate) {
             if (serviceTemplate == null) {
                 return self();
             }
@@ -596,13 +538,13 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addNodeTypes(XTNodeType nodeTypes) {
-            if (nodeTypes == null) {
+        public T addNodeType(XTNodeType nodeType) {
+            if (nodeType == null) {
                 return self();
             }
 
             List<XTNodeType> tmp = new ArrayList<>();
-            tmp.add(nodeTypes);
+            tmp.add(nodeType);
             return addNodeTypes(tmp);
         }
 
@@ -619,7 +561,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addNodeTypeImplementations(XTNodeTypeImplementation relationshipTypes) {
+        public T addNodeTypeImplementation(XTNodeTypeImplementation relationshipTypes) {
             if (relationshipTypes == null) {
                 return self();
             }
@@ -642,7 +584,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addRelationshipTypes(XTRelationshipType relationshipTypes) {
+        public T addRelationshipType(XTRelationshipType relationshipTypes) {
             if (relationshipTypes == null) {
                 return self();
             }
@@ -665,7 +607,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addRelationshipTypeImplementations(XTRelationshipTypeImplementation relationshipTypeImplementations) {
+        public T addRelationshipTypeImplementation(XTRelationshipTypeImplementation relationshipTypeImplementations) {
             if (relationshipTypeImplementations == null) {
                 return self();
             }
@@ -688,7 +630,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addRequirementTypes(XTRequirementType requirementTypes) {
+        public T addRequirementType(XTRequirementType requirementTypes) {
             if (requirementTypes == null) {
                 return self();
             }
@@ -711,7 +653,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addCapabilityTypes(XTCapabilityType capabilityTypes) {
+        public T addCapabilityType(XTCapabilityType capabilityTypes) {
             if (capabilityTypes == null) {
                 return self();
             }
@@ -734,7 +676,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addArtifactTypes(XTArtifactType artifactTypes) {
+        public T addArtifactType(XTArtifactType artifactTypes) {
             if (artifactTypes == null) {
                 return self();
             }
@@ -757,7 +699,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addArtifactTemplates(XTArtifactTemplate artifactTemplates) {
+        public T addArtifactTemplate(XTArtifactTemplate artifactTemplates) {
             if (artifactTemplates == null) {
                 return self();
             }
@@ -780,7 +722,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addPolicyTypes(XTPolicyType policyTypes) {
+        public T addPolicyType(XTPolicyType policyTypes) {
             if (policyTypes == null) {
                 return self();
             }
@@ -803,7 +745,7 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
             return self();
         }
 
-        public T addPolicyTemplates(XTPolicyTemplate policyTemplate) {
+        public T addPolicyTemplate(XTPolicyTemplate policyTemplate) {
             if (policyTemplate == null) {
                 return self();
             }
@@ -826,19 +768,19 @@ public class XTDefinitions extends XHasId implements XHasName, XHasTargetNamespa
         public List<XTExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
             List<XTExtensibleElements> tmp = new ArrayList<>();
             Stream.of(
-                serviceTemplates,
-                nodeTypes,
-                nodeTypeImplementations,
-                relationshipTypes,
-                relationshipTypeImplementations,
-                requirementTypes,
-                capabilityTypes,
-                artifactTypes,
-                artifactTemplates,
-                policyTypes,
-                policyTemplate,
-                nonStandardElements
-            ).filter(Objects::nonNull)
+                    serviceTemplates,
+                    nodeTypes,
+                    nodeTypeImplementations,
+                    relationshipTypes,
+                    relationshipTypeImplementations,
+                    requirementTypes,
+                    capabilityTypes,
+                    artifactTypes,
+                    artifactTemplates,
+                    policyTypes,
+                    policyTemplate,
+                    nonStandardElements
+                ).filter(Objects::nonNull)
                 .forEach(tmp::addAll);
             return tmp;
         }

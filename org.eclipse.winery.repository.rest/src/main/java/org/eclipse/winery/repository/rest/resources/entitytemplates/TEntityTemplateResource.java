@@ -13,12 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -46,9 +48,9 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
     @GET
     @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
-        TEntityTemplate.PropertyConstraints constraints = this.o.getPropertyConstraints();
+        List<TPropertyConstraint> constraints = this.o.getPropertyConstraints();
         if (constraints == null) {
-            constraints = new TEntityTemplate.PropertyConstraints();
+            constraints = new ArrayList<>();
         }
         return new PropertyConstraintsResource(constraints, (AbstractComponentInstanceResource) this.res);
     }

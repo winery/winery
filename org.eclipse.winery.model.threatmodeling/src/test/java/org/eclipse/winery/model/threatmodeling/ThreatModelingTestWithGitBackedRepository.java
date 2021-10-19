@@ -73,9 +73,8 @@ class ThreatModelingTestWithGitBackedRepository extends TestWithGitBackedReposit
             .setName("MITIGATE_MyThreat")
             .build();
 
-        TBoundaryDefinitions boundaryDefinitions = new TBoundaryDefinitions
-            .Builder()
-            .addPolicies(boundaryThreat)
+        TBoundaryDefinitions boundaryDefinitions = new TBoundaryDefinitions.Builder()
+            .addPolicy(boundaryThreat)
             .build();
 
         TServiceTemplate networkServiceA = new TServiceTemplate.Builder("NetworkServiceA", emptyTopology)
@@ -95,15 +94,14 @@ class ThreatModelingTestWithGitBackedRepository extends TestWithGitBackedReposit
             .setTargetNamespace(demoNamespace)
             .build();
 
-        TPolicy nodeTemplateThreat = new TPolicy
-            .Builder(QName.valueOf(ThreatModelingConstants.THREAT_POLICY_ID))
+        TPolicy nodeTemplateThreat = new TPolicy.Builder(QName.valueOf(ThreatModelingConstants.THREAT_POLICY_ID))
             .setPolicyRef(new QName(ThreatModelingConstants.THREATMODELING_NAMESPACE, "MyThreat"))
             .setName("MyThreat")
             .build();
 
         TNodeTemplate myNodeTemplate = new TNodeTemplate
             .Builder("myNodeTemplate", new QName(demoNamespace, "MyNode"))
-            .addPolicies(nodeTemplateThreat)
+            .addPolicy(nodeTemplateThreat)
             .build();
 
         TTopologyTemplate myTopology = new TTopologyTemplate.Builder().addNodeTemplate(myNodeTemplate).build();

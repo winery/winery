@@ -49,7 +49,6 @@ import org.eclipse.jdt.annotation.NonNull;
     TRequirementDefinition.class,
     TExtension.class,
     TCapabilityDefinition.class,
-    TExtensions.class,
     TDeploymentArtifact.class,
     TPlan.class,
     TEntityTemplate.class,
@@ -71,15 +70,14 @@ public abstract class TExtensibleElements implements Serializable {
     @NonNull
     private Map<QName, String> otherAttributes = new HashMap<>();
 
-    @Deprecated // used for XML deserialization of API request content
-    public TExtensibleElements() { }
+    // used for XML deserialization of API request content
+    public TExtensibleElements() {
+    }
 
-    public TExtensibleElements(Builder builder) {
+    public TExtensibleElements(Builder<?> builder) {
         this.documentation = builder.documentation;
         this.any = builder.any;
-        if (builder.otherAttributes == null) {
-            this.otherAttributes.clear();
-        } else {
+        if (builder.otherAttributes != null) {
             this.otherAttributes = builder.otherAttributes;
         }
     }
@@ -102,7 +100,7 @@ public abstract class TExtensibleElements implements Serializable {
     @NonNull
     public List<TDocumentation> getDocumentation() {
         if (documentation == null) {
-            documentation = new ArrayList<TDocumentation>();
+            documentation = new ArrayList<>();
         }
         return this.documentation;
     }
@@ -110,7 +108,7 @@ public abstract class TExtensibleElements implements Serializable {
     @NonNull
     public List<Object> getAny() {
         if (any == null) {
-            any = new ArrayList<Object>();
+            any = new ArrayList<>();
         }
         return this.any;
     }
@@ -136,7 +134,7 @@ public abstract class TExtensibleElements implements Serializable {
         public Builder() {
         }
 
-        public Builder(Builder builder) {
+        public Builder(Builder<?> builder) {
             this.documentation = builder.documentation;
             this.any = builder.any;
             this.otherAttributes = builder.otherAttributes;
@@ -191,9 +189,11 @@ public abstract class TExtensibleElements implements Serializable {
                 return self();
             }
 
-            TDocumentation tmp = new TDocumentation();
-            tmp.getContent().add(documentation);
-            return self().addDocumentation(tmp);
+            return self().addDocumentation(
+                new TDocumentation.Builder()
+                    .addContent(documentation)
+                    .build()
+            );
         }
 
         public T addDocumentation(Map<String, String> documentation) {

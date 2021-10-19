@@ -30,7 +30,6 @@ import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
@@ -144,12 +143,14 @@ public class ThreatModelingUtils {
         // check if boundary definitions are not empty
         if (Objects.nonNull(boundaryDefinitions)) {
             // get all policies
-            TPolicies serviceTemplatePolicies = boundaryDefinitions.getPolicies();
+            List<TPolicy> serviceTemplatePolicies = boundaryDefinitions.getPolicies();
             if (Objects.nonNull(serviceTemplatePolicies)) {
-                mitigationPolicies = serviceTemplatePolicies.getPolicy()
-                    .stream() // check if polcies are mitigation policies
-                    .filter((TPolicy policy) -> policy.getPolicyType().toString().equals(ThreatModelingConstants.MITIGATION_POLICY_ID))
-                    .collect(Collectors.toList());
+                mitigationPolicies = serviceTemplatePolicies
+                    .stream() // check if policies are mitigation policies
+                    .filter((TPolicy policy) -> 
+                        policy.getPolicyType().toString()
+                            .equals(ThreatModelingConstants.MITIGATION_POLICY_ID)
+                    ).collect(Collectors.toList());
             }
         }
 

@@ -52,7 +52,7 @@ public class FulfillPolicies extends CriteriaCached {
     public List<TopologyWrapper> filter(List<TopologyWrapper> topologies) {
         // clone to avoid altering input topologies
         List<TopologyWrapper> cloned = topologies.stream().map(t ->
-            new TopologyWrapper(AllocationUtils.deepcopy(t.getTopology()))).collect(Collectors.toList());
+            new TopologyWrapper(AllocationUtils.deepCopy(t.getTopology()))).collect(Collectors.toList());
         // all generated topologies have the same policies for top level nts -> get policies from any of them
         Map<TNodeTemplate, List<PolicyWrapper>> policiesForNTs = getPoliciesForNTs(cloned.get(0), params);
         return new PoliciesFilter(cloned, policiesForNTs).filter();
@@ -98,8 +98,10 @@ public class FulfillPolicies extends CriteriaCached {
             matchingFragments = new PolicyComparison(policiesForNTs.get(topLevelNT),
                 matchingFragments).getFragmentsFulfillingPolicies();
             for (TTopologyTemplate fragment : matchingFragments) {
-                String targetLabel = ModelUtilities.getTargetLabel(fragment.getNodeTemplates().get(0)).get();
-                possibleTargetLabels.get(topLevelNT).add(targetLabel);
+                ModelUtilities.getTargetLabel(fragment.getNodeTemplates().get(0))
+                    .ifPresent(targetLabel ->
+                        possibleTargetLabels.get(topLevelNT).add(targetLabel)
+                    );
             }
 
             if (possibleTargetLabels.get(topLevelNT).isEmpty()) {
@@ -136,8 +138,7 @@ public class FulfillPolicies extends CriteriaCached {
     }
 
     /**
-     * Get policy templates by names specified in GUI.
-     * The Policy Template names are used as IDs -> have to be unique.
+     * Get policy templates by names specified in GUI. The Policy Template names are used as IDs -> have to be unique.
      */
     private Map<TNodeTemplate, List<PolicyWrapper>> getPoliciesForNTs(TopologyWrapper topology, JsonNode params) {
         Map<TNodeTemplate, List<PolicyWrapper>> policiesForNTs = new HashMap<>();
@@ -151,8 +152,8 @@ public class FulfillPolicies extends CriteriaCached {
                 String propertyKey = policyWithOperator.get("property").asText();
                 String operator = policyWithOperator.get("operator").asText();
 
-                for (TPolicy policy : topLevelNT.getPolicies().getPolicy()) {
-                    if (policy.getName().equals(policyWithOperator.get("policy").asText())) {
+                for (TPolicy policy : topLevelNT.getPolicies()) {
+                    if (policy.getName() != null && policy.getName().equals(policyWithOperator.get("policy").asText())) {
                         TPolicyTemplate policyTemplate = AllocationUtils.toPolicyTemplate(policy);
                         policiesForNTs.get(topLevelNT).add(new PolicyWrapper(policyTemplate, propertyKey, operator));
                     }

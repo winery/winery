@@ -14,7 +14,7 @@
 package org.eclipse.winery.model.ids;
 
 /**
- * Meta class to handle things, where a String (URI, NCName, ...) may be URLencoded
+ * Meta-class to handle things, where a String (URI, NCName, ...) may be URLencoded
  */
 public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecoded> {
 

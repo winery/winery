@@ -30,6 +30,7 @@ import { PermutationMappingsComponent } from './permutationMappings/permutationM
 import { WineryDynamicTableModule } from '../../wineryDynamicTable/wineryDynamicTable.module';
 import { PermutationsComponent } from './permutations/permutations.component';
 import { AlertModule } from 'ngx-bootstrap';
+import { BehaviorPatternMappingsComponent } from './behavior-pattern-mappings/behavior-pattern-mappings.component';
 
 @NgModule({
     imports: [
@@ -60,6 +61,7 @@ import { AlertModule } from 'ngx-bootstrap';
         DeploymentArtifactsMappingsComponent,
         PermutationMappingsComponent,
         PermutationsComponent,
+        BehaviorPatternMappingsComponent,
     ]
 })
 export class RefinementModelsModule {

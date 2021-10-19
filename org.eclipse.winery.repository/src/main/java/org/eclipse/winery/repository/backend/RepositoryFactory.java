@@ -27,6 +27,7 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.filebased.MultiRepository;
+import org.eclipse.winery.repository.filebased.TenantRepository;
 import org.eclipse.winery.repository.xml.XmlRepository;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 
@@ -43,11 +44,15 @@ public class RepositoryFactory {
 
     private static IRepository repository = null;
 
-    private static boolean repositoryContainsRepoConfig(FileBasedRepositoryConfiguration config) {
+    public static boolean repositoryContainsMultiRepositoryConfiguration(FileBasedRepositoryConfiguration config) {
+        return repositoryContainsRepoConfig(config, Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
+    }
+
+    public static boolean repositoryContainsRepoConfig(FileBasedRepositoryConfiguration config, String fileName) {
         if (config.getRepositoryPath().isPresent()) {
-            return new File(config.getRepositoryPath().get().toString(), Filename.FILENAME_JSON_REPOSITORIES).exists();
+            return new File(config.getRepositoryPath().get().toString(), fileName).exists();
         } else {
-            return new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_REPOSITORIES).exists();
+            return new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), fileName).exists();
         }
     }
 
@@ -59,41 +64,44 @@ public class RepositoryFactory {
         }
     }
 
-    public static void reconfigure(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, GitAPIException {
-        RepositoryFactory.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
+    public static void reconfigure(GitBasedRepositoryConfiguration configuration) throws IOException, GitAPIException {
+        RepositoryFactory.gitBasedRepositoryConfiguration = configuration;
         RepositoryFactory.fileBasedRepositoryConfiguration = null;
-        AbstractFileBasedRepository compositeRepository;
-        // if a repository root is specified, use it instead of the root specified in the config
-        if (gitBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
-            compositeRepository = createXmlOrYamlRepository(gitBasedRepositoryConfiguration, gitBasedRepositoryConfiguration.getRepositoryPath().get());
+
+        if (repositoryContainsMultiRepositoryConfiguration(configuration)) {
+            repository = new MultiRepository(configuration.getRepositoryPath().get());
+        } else if (Environments.getInstance().getRepositoryConfig().isTenantRepository()) {
+            repository = new TenantRepository(configuration.getRepositoryPath().get());
         } else {
-            compositeRepository = createXmlOrYamlRepository(fileBasedRepositoryConfiguration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
-        }
-        if (repositoryContainsRepoConfig(gitBasedRepositoryConfiguration)) {
-            repository = new MultiRepository(compositeRepository.getRepositoryRoot());
-        } else {
-            repository = new GitBasedRepository(gitBasedRepositoryConfiguration, compositeRepository);
+            // if a repository root is specified, use it instead of the root specified in the config
+            AbstractFileBasedRepository localRepository = configuration.getRepositoryPath().isPresent()
+                ? createXmlOrYamlRepository(configuration, configuration.getRepositoryPath().get())
+                : createXmlOrYamlRepository(configuration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
+            repository = new GitBasedRepository(configuration, localRepository);
         }
     }
 
-    public static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-        RepositoryFactory.fileBasedRepositoryConfiguration = fileBasedRepositoryConfiguration;
+    public static void reconfigure(FileBasedRepositoryConfiguration configuration) {
+        RepositoryFactory.fileBasedRepositoryConfiguration = configuration;
         RepositoryFactory.gitBasedRepositoryConfiguration = null;
-        AbstractFileBasedRepository compositeRepository;
-        // if a repository root is specified by the configuration use it instead of the root specified in the configuration
-        if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
-            compositeRepository = createXmlOrYamlRepository(fileBasedRepositoryConfiguration, fileBasedRepositoryConfiguration.getRepositoryPath().get());
-        } else {
-            compositeRepository = createXmlOrYamlRepository(fileBasedRepositoryConfiguration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
-        }
-        if (repositoryContainsRepoConfig(fileBasedRepositoryConfiguration)) {
+
+        if (repositoryContainsMultiRepositoryConfiguration(configuration)) {
             try {
-                repository = new MultiRepository(compositeRepository.getRepositoryRoot());
-            } catch (IOException | GitAPIException exception) {
-                exception.printStackTrace();
+                repository = new MultiRepository(configuration.getRepositoryPath().get());
+            } catch (IOException | GitAPIException e) {
+                LOGGER.error("Error while initializing Multi-Repository!");
+            }
+        } else if (Environments.getInstance().getRepositoryConfig().isTenantRepository()) {
+            try {
+                repository = new TenantRepository(configuration.getRepositoryPath().get());
+            } catch (IOException | GitAPIException e) {
+                LOGGER.error("Error while initializing Tenant-Repository");
             }
         } else {
-            repository = compositeRepository;
+            // if a repository root is specified, use it instead of the root specified in the config
+            repository = configuration.getRepositoryPath().isPresent()
+                ? createXmlOrYamlRepository(configuration, configuration.getRepositoryPath().get())
+                : createXmlOrYamlRepository(configuration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
         }
     }
 
@@ -115,12 +123,20 @@ public class RepositoryFactory {
     }
 
     /**
-     * Generates a new IRepository working on the specified path. No git support, just plain file system
+     * Generates a new IRepository working on the specified path.
      */
     public static IRepository getRepository(Path path) {
         Objects.requireNonNull(path);
-        FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(path);
-        return getRepository(fileBasedRepositoryConfiguration);
+        GitBasedRepositoryConfiguration config = new GitBasedRepositoryConfiguration(
+            false,
+            new FileBasedRepositoryConfiguration(path)
+        );
+        try {
+            reconfigure(config);
+        } catch (IOException | GitAPIException e) {
+            LOGGER.error("Error while reconfiguring the repository", e);
+        }
+        return repository;
     }
 
     public static IRepository getRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {

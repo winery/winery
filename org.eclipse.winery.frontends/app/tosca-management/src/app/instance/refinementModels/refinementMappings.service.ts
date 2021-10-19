@@ -27,6 +27,7 @@ import { AttributeMapping } from './attributeMappings/attributeMapping';
 import { DeploymentArtifactMapping } from './deploymentArtifactsMappings/deploymentArtifactMapping';
 import { RefinementMappings } from './RefinementMappings';
 import { PermutationMapping } from './permutationMappings/permutationMapping';
+import { BehaviorPatternMapping } from './behavior-pattern-mappings/types';
 
 @Injectable()
 export class RefinementMappingsService {
@@ -130,6 +131,18 @@ export class RefinementMappingsService {
 
     public getPermutationMappings(): Observable<PermutationMapping[]> {
         return this.http.get<PermutationMapping[]>(this.path + '/permutationmappings');
+    }
+
+    public addBehaviorPatternMapping(mapping: BehaviorPatternMapping): Observable<BehaviorPatternMapping[]> {
+        return this.http.put<BehaviorPatternMapping[]>(this.path + '/behaviorpatternmappings', mapping);
+    }
+
+    public deleteBehaviorPatternMapping(mapping: BehaviorPatternMapping): Observable<BehaviorPatternMapping[]> {
+        return this.http.delete<BehaviorPatternMapping[]>(this.path + '/behaviorpatternmappings/' + mapping.id);
+    }
+
+    public getBehaviorPatternMappings(): Observable<BehaviorPatternMapping[]> {
+        return this.http.get<BehaviorPatternMapping[]>(this.path + '/behaviorpatternmappings');
     }
 
     public getNewMappingsId(mappings: RefinementMappings[], prefix: string): number {

@@ -22,7 +22,7 @@
      [class.unselected]="!makeSelectionVisible"
      id={{nodeTemplate.id}}
      (mousedown)="mouseDownHandler($event)"
-     (mouseup)="mouseUpHandler($event)"
+     (mouseup)="mouseUpHandler()"
      [@onCreateNodeTemplateAnimation]='visibilityState'
      [class.removeZIndex]="removeZIndex">
 
@@ -31,7 +31,8 @@
     </div>
 
     <div *ngIf="policyIcons" class="policyIconsAnnotation">
-        <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation">
+        <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation"
+             alt="Policy icon">
     </div>
 
     <div *ngIf="newerVersions?.length !== 0">
@@ -63,8 +64,10 @@
         </div>
         <div class="col-sm-3 winery-image">
             <img *ngIf="!nodeTemplate.visuals?.imageUrl" src="https://via.placeholder.com/50x50"
+                 alt="Node Template icon placeholder"
                  style="border-radius: 10%; margin-top: 1px; width: 50px; height: auto">
-            <img *ngIf="nodeTemplate.visuals?.imageUrl" src="{{nodeTemplate.visuals?.imageUrl}}">
+            <img *ngIf="nodeTemplate.visuals?.imageUrl" src="{{nodeTemplate.visuals?.imageUrl}}"
+                 alt="Node Template icon placeholder">
         </div>
         <div id="specifierDiv" class="col-sm-8" style="padding-left: 0; padding-right: 0;">
             <table class="header-table" style="margin-left: 6px">
@@ -84,7 +87,7 @@
                 </tr>
                 <tr *ngIf="navbarButtonsState.buttonsState.typesButton" class="">
                     <ng-template #popTemplate>
-                        <div class="popover-component" style="font-size: x-small" (click)="linkType($event)"
+                        <div class="popover-component" style="font-size: x-small" (click)="linkType()"
                              [innerHtml]="popoverHtml"></div>
                     </ng-template>
                     <td class="td-value"
@@ -108,8 +111,10 @@
              (click)="openSidebar($event); closeConnectorEndpoints($event)">
             <div class="col-sm-3">
                 <img *ngIf="!nodeTemplate.visuals.imageUrl" class="patternImage" src="https://via.placeholder.com/50x50"
+                     alt="Pattern icon placeholder"
                      style="border-radius: 10%; width: 50px; height: auto">
                 <img *ngIf="nodeTemplate.visuals.imageUrl" class="patternImage"
+                     alt="Pattern icon"
                      src="{{nodeTemplate.visuals.imageUrl}}">
             </div>
         </div>
@@ -118,12 +123,12 @@
     <div *wineryRepositoryHideOnFeature="'yaml'">
         <div class="endpointContainer center-block row" style="border: 0; box-shadow: none"
              *ngIf="connectorEndpointVisible && !readonly"
-             (mouseover)="makeSource($event)">
+             (mouseover)="makeSource()">
             <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}
                  (mousedown)="passCurrentType($event)">
                 <button *ngFor="let rel of entityTypes.relationshipTypes"
                         type="button" class="btn btn-sm btn-outline-secondary btn-block"
-                        [style.border-color]="this.nodeTemplate?.color" [style.color]="rel.color"
+                        [style.color]="rel.color"
                         style="font-size: x-small;">
                     <i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="padding-left: 1em;"></i> {{rel.id}}
                 </button>
@@ -135,10 +140,10 @@
     <accordion #accordion (click)="repaint($event)">
         <!-- PROPERTIES -->
         <accordion-group
-                class="card-header-node-accordions"
-                #propertiesgroup
-                panelClass="accordionGroupPanel"
-                *ngIf="navbarButtonsState.buttonsState.propertiesButton">
+            class="card-header-node-accordions"
+            #propertiesgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.propertiesButton">
             <div accordion-heading>
                 Properties
                 <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
@@ -164,13 +169,13 @@
                 ></i>
             </div>
             <winery-deployment-artifacts
-                    [readonly]="readonly"
-                    (toggleModalHandler)="sendToggleAction($event)"
-                    [currentNodeData]="{currentNodeId: nodeTemplate.id,
+                [readonly]="readonly"
+                (toggleModalHandler)="sendToggleAction($event)"
+                [currentNodeData]="{currentNodeId: nodeTemplate.id,
                                     currentNodePart: 'DEPLOYMENT_ARTIFACTS',
                                     currentProperties: nodeTemplate}"
-                    [deploymentArtifacts]="nodeTemplate.deploymentArtifacts?.deploymentArtifact"
-                    [yamlArtifacts]="nodeTemplate.artifacts?.artifact">
+                [deploymentArtifacts]="nodeTemplate.deploymentArtifacts"
+                [yamlArtifacts]="nodeTemplate.artifacts">
             </winery-deployment-artifacts>
         </accordion-group>
 
@@ -187,10 +192,10 @@
                 ></i>
             </div>
             <winery-requirements
-                    [readonly]="readonly"
-                    (toggleModalHandler)="sendToggleAction($event)"
-                    (relationshipTemplateIdClicked)="onRelationshipTemplateIdClicked($event)"
-                    [currentNodeData]="{entityTypes: entityTypes,
+                [readonly]="readonly"
+                (toggleModalHandler)="sendToggleAction($event)"
+                (relationshipTemplateIdClicked)="onRelationshipTemplateIdClicked($event)"
+                [currentNodeData]="{entityTypes: entityTypes,
                                     nodeTemplate: nodeTemplate,
                                     currentNodePart: 'REQUIREMENTS'}">
             </winery-requirements>
@@ -209,9 +214,9 @@
                 ></i>
             </div>
             <winery-capabilities
-                    [readonly]="readonly"
-                    (toggleModalHandler)="sendToggleAction($event)"
-                    [currentNodeData]="{entityTypes: entityTypes,
+                [readonly]="readonly"
+                (toggleModalHandler)="sendToggleAction($event)"
+                [currentNodeData]="{entityTypes: entityTypes,
                                     nodeTemplate: nodeTemplate,
                                     currentNodePart: 'CAPABILITIES'}">
             </winery-capabilities>
@@ -243,7 +248,7 @@
                    [ngClass]="{'fa-chevron-down': participantsgroup?.isOpen, 'fa-chevron-right': !participantsgroup?.isOpen}">
                 </i>
             </div>
-            <winery-assign-participants [readonly]="readonly" 
+            <winery-assign-participants [readonly]="readonly"
                                         [participants]="participants" [node]="nodeTemplate">
             </winery-assign-participants>
         </accordion-group>
@@ -288,7 +293,7 @@
                              [currentNodeData]="{currentNodeId: nodeTemplate.id,
                                     currentNodePart: 'POLICIES',
                                     currentProperties: nodeTemplate}"
-                             [policies]="nodeTemplate.policies?.policy">
+                             [policies]="nodeTemplate.policies">
             </winery-policies>
         </accordion-group>
 
@@ -305,7 +310,7 @@
                 </i>
             </div>
             <winery-target-locations
-                    [currentNodeData]="{currentNodeId: nodeTemplate.id,
+                [currentNodeData]="{currentNodeId: nodeTemplate.id,
                                     currentNodePart: 'TARGET_LOCATIONS',
                                     currentTargetLocation: nodeTemplate.otherAttributes}">
             </winery-target-locations>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,17 +23,6 @@
     margin-left: 28px;
     height: 40px;
     width: 40px;
-}
-
-.rootContainer {
-    background: linear-gradient(#eaeaea, #aeaeae);
-    border: 7px solid grey;
-    margin-left: -11px;
-    padding-top: 8px;
-    padding-bottom: 2px;
-    margin-right: 13px;
-    padding-left: 4px;
-    display: inline-block;
 }
 
 .inlineRootContainer {

@@ -37,10 +37,13 @@ public class TExtension extends TExtensibleElements {
     protected boolean mustUnderstand;
 
     @Deprecated // used for XML deserialization of API request content
-    public TExtension() { }
+    public TExtension() {
+    }
 
     public TExtension(Builder builder) {
         super(builder);
+        this.namespace = builder.namespace;
+        this.mustUnderstand = builder.mustUnderstand;
     }
 
     @Override

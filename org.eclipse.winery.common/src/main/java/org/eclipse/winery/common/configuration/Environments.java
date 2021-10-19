@@ -35,18 +35,20 @@ public final class Environments {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Environments.class);
 
+    private static final ArrayList<ConfigurationChangeListener> configurationChangeListeners = new ArrayList<>();
+
     private static RepositoryConfigurationObject repositoryConfigurationObject;
     private static GitConfigurationObject gitConfigurationObject;
     private static UiConfigurationObject uiConfigurationObject;
     private static AccountabilityConfigurationObject accountabilityConfigurationObject;
     private static Environments instance;
-    private static ArrayList<ConfigurationChangeListener> configurationChangeListeners = new ArrayList<>();
 
     private Environments() {
-        accountabilityConfigurationObject = new AccountabilityConfigurationObject(Environment.getInstance().getConfiguration());
-        gitConfigurationObject = new GitConfigurationObject(Environment.getInstance().getConfiguration());
-        repositoryConfigurationObject = new RepositoryConfigurationObject(Environment.getInstance().getConfiguration(), gitConfigurationObject);
-        uiConfigurationObject = new UiConfigurationObject(Environment.getInstance().getConfiguration());
+        Environment instance = Environment.getInstance();
+        accountabilityConfigurationObject = new AccountabilityConfigurationObject(instance.getConfiguration());
+        gitConfigurationObject = new GitConfigurationObject(instance.getConfiguration());
+        repositoryConfigurationObject = new RepositoryConfigurationObject(instance.getConfiguration(), gitConfigurationObject);
+        uiConfigurationObject = new UiConfigurationObject(instance.getConfiguration());
     }
 
     public static Environments getInstance() {
@@ -148,7 +150,7 @@ public final class Environments {
      */
     private void checkForUpdateAndUpdateInstances() {
         if (Environment.getInstance().checkConfigurationForUpdate()) {
-            Environment.getInstance().updateConfig();
+            Environment.getInstance().getConfigFromFile();
             Environments.updateInstances(Environment.getInstance().getConfiguration());
             afterUpdateNotify();
         }

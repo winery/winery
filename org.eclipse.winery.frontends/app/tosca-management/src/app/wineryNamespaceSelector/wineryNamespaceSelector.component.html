@@ -15,9 +15,9 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading" class="form-group">
-    <label for="namespace">Namespace</label>
+    <label for="namespace-{{ randomIdSuffix }}">Namespace</label>
     <input #namespaceInput
-           id="namespace"
+           id="namespace-{{ randomIdSuffix }}"
            class="form-control"
            name="namespace"
            autocomplete=off
@@ -39,24 +39,24 @@
     </div>
     <div *ngIf="useStartNamespace" style="margin-top: 20px">
         <div>
-            <label for="initNamespace" class="control-label">Template:</label>
+            <label for="initNamespace-{{ randomIdSuffix }}" class="control-label">Template:</label>
             <button type="button" class="btn btn-default btn-xs collapsebtn"
                     (click)="isCollapsed = !isCollapsed" style="float: right;">
                 <span class="collapsespan" aria-hidden="true" [class.collapsed]="isCollapsed"></span>
             </button>
         </div>
-        <div (collapsed)="collapsed($event)"
-             (expanded)="expanded($event)"
+        <div (collapsed)="collapsed()"
+             (expanded)="expanded()"
              [collapse]="isCollapsed">
             <div>
-                <label for="initNamespace" class="control-label">Start of namespace URI - used for automatic
+                <label for="initNamespace-{{ randomIdSuffix }}" class="control-label">Start of namespace URI - used for automatic
                     namespace URI generation</label>
             </div>
             <div style="display: flex;">
                 <input #initNamespace
                        type="text"
                        class="form-control"
-                       id="initNamespace"
+                       id="initNamespace-{{ randomIdSuffix }}"
                        name="initNamespace"
                        #namespaceStart="ngModel"
                        [(ngModel)]="initNamespaceString">

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -27,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.model.tosca.TRequirementDefinition.Constraints;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -38,12 +38,12 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTy
 public final class RequirementDefinitionResource extends AbstractReqOrCapDefResource<TRequirementDefinition> {
 
     /**
-     * Constructor has to follow the pattern of EnetityTResource as the constructor is invoked by reflection in
-     * EntityWithIdcollectionResource
+     * Constructor has to follow the pattern of EntityTResource as the constructor is invoked by reflection in
+     * EntityWithIdCollectionResource
      *
      * @param res the resource this req def is nested in. Has to be of Type "NodeTypeResource". Due to the
      *            implementation of org.eclipse.winery .repository.resources._support.collections.
-     *            withid.EntityWithIdCollectionResource .getEntityResourceInstance(EntityT, int), we have to use
+     *            withId.EntityWithIdCollectionResource .getEntityResourceInstance(EntityT, int), we have to use
      *            "AbstractComponentInstanceResource" as type
      */
     public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, AbstractComponentInstanceResource res) {
@@ -53,6 +53,7 @@ public final class RequirementDefinitionResource extends AbstractReqOrCapDefReso
     /**
      * Quick fix to avoid internal server error when opening RequirementDefinitions Tab
      */
+    @SuppressWarnings("unused")
     public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, IPersistable res) {
         this(idDetermination, reqDef, idx, list, (AbstractComponentInstanceResource) res);
     }
@@ -62,16 +63,16 @@ public final class RequirementDefinitionResource extends AbstractReqOrCapDefReso
     }
 
     /**
-     * Fetch the list of constraints from the given definition. If the list does not exist, the list is created an
+     * Fetch the list of constraints from the given definition. If the list does not exist, the list is created and
      * stored in the given def
      */
     public static List<TConstraint> getConstraints(TRequirementDefinition def) {
-        Constraints constraints = def.getConstraints();
+        List<TConstraint> constraints = def.getConstraints();
         if (constraints == null) {
-            constraints = new Constraints();
+            constraints = new ArrayList<>();
             def.setConstraints(constraints);
         }
-        return constraints.getConstraint();
+        return constraints;
     }
 
     public QName getType() {

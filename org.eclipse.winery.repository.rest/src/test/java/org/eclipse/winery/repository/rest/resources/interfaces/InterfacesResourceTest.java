@@ -29,5 +29,21 @@ public class InterfacesResourceTest extends AbstractResourceTest {
             "entitytypes/interfaces/create_configure_interface_result.json");
         this.assertGet("relationshiptypes/http%253A%252F%252Fplain.winery.opentosca.org%252Frelationshiptypes/RelationshipTypeWithoutProperties",
             "entitytypes/interfaces/create_configure_interface_result.xml");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fplain.winery.opentosca.org%252Frelationshiptypes/RelationshipTypeWithoutProperties/xml",
+            "entitytypes/interfaces/create_configure_interface_result.xml");
     }
+    
+    @Test
+    public void addInputParameters() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertNoContentPost("nodetypes/http%253A%252F%252Fopentosca.org%252Fnodetypes/MySQL-DBMS/interfaces/",
+            "entitytypes/interfaces/add_input_params.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fopentosca.org%252Fnodetypes/MySQL-DBMS/interfaces/",
+            "entitytypes/interfaces/add_input_params_result.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fopentosca.org%252Fnodetypes/MySQL-DBMS",
+            "entitytypes/interfaces/add_input_params_result.xml");
+        this.assertGet("nodetypes/http%253A%252F%252Fopentosca.org%252Fnodetypes/MySQL-DBMS/xml",
+            "entitytypes/interfaces/add_input_params_result.xml");
+    }
+    
 }

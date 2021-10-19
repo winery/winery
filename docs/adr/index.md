@@ -50,6 +50,7 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0028](0028-use-hardcoded-namespaces-for-threat-modeling.md) - Use hardcoded namespaces for threat modeling
 - [ADR-0029](0029-IPSec-algorithm-application.md) - IPSec Algorithm Implementation
 - [ADR-0030](0030-multiple-repositories.md) - Support of multiple repositories
+- [ADR-0031](0031-reuse-refinement-code-for-pattern-detection.md) - Reuse the pattern refinement implementation for pattern detection
 
 <!-- adrlogstop -->
 

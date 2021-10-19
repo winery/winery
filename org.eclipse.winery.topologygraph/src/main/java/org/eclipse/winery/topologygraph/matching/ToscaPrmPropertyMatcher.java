@@ -46,20 +46,23 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
     }
 
     public boolean characterizingPatternsCompatible(ToscaEntity left, ToscaEntity right) {
-        // if the detector has no patterns attached but the candidate has --> it's a match
-        boolean characterizingPatternsCompatible = true;
-
         // By convention, the left node is always the element to search in right.
         TEntityTemplate detectorEntityElement = left.getTemplate();
         TEntityTemplate candidateEntityElement = right.getTemplate();
+        return characterizingPatternsCompatible(detectorEntityElement, candidateEntityElement);
+    }
+
+    public boolean characterizingPatternsCompatible(TEntityTemplate detectorEntityElement, TEntityTemplate candidateEntityElement) {
+        // if the detector has no patterns attached but the candidate has --> it's a match
+        boolean characterizingPatternsCompatible = true;
 
         if (detectorEntityElement instanceof HasPolicies && candidateEntityElement instanceof HasPolicies) {
             HasPolicies detectorElement = (HasPolicies) detectorEntityElement;
             HasPolicies candidate = (HasPolicies) candidateEntityElement;
 
             if (Objects.nonNull(detectorElement.getPolicies()) && Objects.nonNull(candidate.getPolicies())) {
-                List<TPolicy> candidatePolicies = candidate.getPolicies().getPolicy();
-                characterizingPatternsCompatible = detectorElement.getPolicies().getPolicy()
+                List<TPolicy> candidatePolicies = candidate.getPolicies();
+                characterizingPatternsCompatible = detectorElement.getPolicies()
                     .stream()
                     .allMatch(detectorPolicy -> {
                         if (this.namespaceManager.isPatternNamespace(detectorPolicy.getPolicyType().getNamespaceURI())) {
@@ -80,7 +83,7 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
                     });
             } else if (Objects.nonNull(detectorElement.getPolicies())) {
                 // only if there are patterns attached
-                characterizingPatternsCompatible = detectorElement.getPolicies().getPolicy()
+                characterizingPatternsCompatible = detectorElement.getPolicies()
                     .stream()
                     .noneMatch(detectorPolicy ->
                         this.namespaceManager.isPatternNamespace(detectorPolicy.getPolicyType().getNamespaceURI())

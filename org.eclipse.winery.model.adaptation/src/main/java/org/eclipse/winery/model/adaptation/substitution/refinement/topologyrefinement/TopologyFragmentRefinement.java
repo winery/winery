@@ -14,12 +14,14 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
@@ -32,8 +34,9 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementUti
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
+import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -72,6 +75,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
         this(refinementChooser, TopologyFragmentRefinementModelId.class, "refined");
     }
 
+    @SuppressWarnings("unused")
     public TopologyFragmentRefinement() {
         this(new DefaultRefinementChooser());
     }
@@ -98,20 +102,22 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
     }
 
     @Override
-    public void applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
+    public Map<String, String> applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
         if (!(refinement.getRefinementModel() instanceof OTTopologyFragmentRefinementModel)) {
             throw new UnsupportedOperationException("The refinement candidate is not a PRM!");
         }
 
         // determine the elements that are staying
         OTTopologyFragmentRefinementModel prm = (OTTopologyFragmentRefinementModel) refinement.getRefinementModel();
-        List<TEntityTemplate> stayingRefinementElements = RefinementUtils.getStayingRefinementElements(prm);
+        List<String> stayingRefinementElementIds = RefinementUtils.getStayingRefinementElements(prm).stream()
+            .map(HasId::getId)
+            .collect(Collectors.toList());
 
         // import the refinement structure
         Map<String, String> idMapping = BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(
             refinement.getRefinementModel().getRefinementTopology(),
             topology,
-            stayingRefinementElements
+            stayingRefinementElementIds
         );
 
         // only for UI: position the imported nodes next to the nodes to be refined
@@ -121,7 +127,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             refinement.getRefinementModel().getRefinementTopology()
         );
         refinement.getRefinementModel().getRefinementTopology().getNodeTemplates().stream()
-            .filter(element -> !stayingRefinementElements.contains(element))
+            .filter(element -> !stayingRefinementElementIds.contains(element.getId()))
             .forEach(node -> {
                     Map<String, Integer> newCoordinates = coordinates.get(node.getId());
                     TNodeTemplate nodeTemplate = topology.getNodeTemplate(idMapping.get(node.getId()));
@@ -145,11 +151,14 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
             if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
                 topology.getNodeTemplateOrRelationshipTemplate().remove(matchingNode);
-            } else if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null) {
-                vertex.getTemplate().getPolicies().getPolicy().forEach(detectorPolicy ->
-                    matchingNode.getPolicies().getPolicy()
-                        .removeIf(matchingPolicy -> matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType()))
-                );
+            } else if (shouldRemoveBehaviorPatterns(vertex.getTemplate(), matchingNode)) {
+                if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null)
+                    vertex.getTemplate().getPolicies().forEach(detectorPolicy ->
+                        matchingNode.getPolicies()
+                            .removeIf(matchingPolicy -> 
+                                matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType())
+                            )
+                    );
             }
         });
         refinement.getDetectorGraph().edgeSet()
@@ -162,6 +171,12 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     topology.getNodeTemplateOrRelationshipTemplate().remove(relationshipTemplate);
                 }
             });
+        return idMapping;
+    }
+
+    protected boolean shouldRemoveBehaviorPatterns(TNodeTemplate vertex, TNodeTemplate matchingNode) {
+        return vertex.getPolicies() != null
+            && matchingNode.getPolicies() != null;
     }
 
     private boolean applyDeploymentArtifactMapping(RefinementCandidate refinement, TNodeTemplate detectorNode, TNodeTemplate matchingNode,
@@ -169,9 +184,10 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
         List<OTDeploymentArtifactMapping> deploymentArtifactMappings = ((OTTopologyFragmentRefinementModel) refinement.getRefinementModel()).getDeploymentArtifactMappings();
 
         return matchingNode.getDeploymentArtifacts() == null
-            || matchingNode.getDeploymentArtifacts().getDeploymentArtifact().isEmpty()
+            || matchingNode.getDeploymentArtifacts().isEmpty()
             || (
-            deploymentArtifactMappings != null && matchingNode.getDeploymentArtifacts().getDeploymentArtifact().stream()
+            deploymentArtifactMappings != null && matchingNode.getDeploymentArtifacts().stream()
+                .filter(deploymentArtifact -> deploymentArtifact.getArtifactType() != null)
                 .allMatch(deploymentArtifact ->
                     deploymentArtifactMappings.stream()
                         .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNode.getId()))
@@ -180,14 +196,17 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                 if (idMapping != null) {
                                     TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementElement().getId()));
                                     if (addedNode != null) {
-                                        TDeploymentArtifacts existingDeploymentArtifactsOfRefinement = addedNode.getDeploymentArtifacts();
-                                        if (existingDeploymentArtifactsOfRefinement == null) {
-                                            existingDeploymentArtifactsOfRefinement = new TDeploymentArtifacts();
-                                            addedNode.setDeploymentArtifacts(existingDeploymentArtifactsOfRefinement);
-                                        } else if (existingDeploymentArtifactsOfRefinement.getDeploymentArtifact(deploymentArtifact.getName()) != null) {
+                                        List<TDeploymentArtifact> existingDAs = addedNode.getDeploymentArtifacts();
+                                        if (existingDAs == null) {
+                                            existingDAs = new ArrayList<>();
+                                            addedNode.setDeploymentArtifacts(existingDAs);
+                                        } else if (
+                                            existingDAs.stream()
+                                                .anyMatch(da -> da.getName().equals(deploymentArtifact.getName()))
+                                        ) {
                                             deploymentArtifact.setName(deploymentArtifact.getName() + UUID.randomUUID());
                                         }
-                                        existingDeploymentArtifactsOfRefinement.getDeploymentArtifact().add(deploymentArtifact);
+                                        existingDAs.add(deploymentArtifact);
                                     } else {
                                         LOGGER.error("Error while adding Deployment Artifacts! Node was not added to the topology!");
                                     }
@@ -297,7 +316,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     matchingNode.getId().equals(relationship.getTargetElement().getRef().getId())
             ).filter(relationship -> {
                 // ignore all relationships which are part of the sub-graph
-                // \nexists sgm_y \in sgms : \pi_1(sgm_y) = r_j
+                // !\exists sgm_y \in SGMs : \pi_1(sgm_y) = r_j
                 return candidate.getDetectorGraph().edgeSet()
                     .stream()
                     .noneMatch(toscaEdge -> {

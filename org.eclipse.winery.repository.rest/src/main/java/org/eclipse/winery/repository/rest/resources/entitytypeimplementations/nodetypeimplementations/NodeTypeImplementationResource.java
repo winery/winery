@@ -13,18 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Path;
+
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.artifacts.DeploymentArtifactsResource;
 import org.eclipse.winery.repository.rest.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.EntityTypeImplementationResource;
-
-import javax.ws.rs.Path;
 
 public class NodeTypeImplementationResource extends EntityTypeImplementationResource implements INodeTemplateResourceOrNodeTypeImplementationResource, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 
@@ -45,13 +48,12 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
      */
     @Path("implementationartifacts/")
     public ImplementationArtifactsResource getImplementationArtifacts() {
-        TImplementationArtifacts implementationArtifacts;
-        implementationArtifacts = this.getNTI().getImplementationArtifacts();
+        List<TImplementationArtifact> implementationArtifacts = this.getNTI().getImplementationArtifacts();
         if (implementationArtifacts == null) {
-            implementationArtifacts = new TImplementationArtifacts();
+            implementationArtifacts = new ArrayList<>();
             this.getNTI().setImplementationArtifacts(implementationArtifacts);
         }
-        return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
+        return new ImplementationArtifactsResource(implementationArtifacts, this);
     }
 
     /**
@@ -60,13 +62,12 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
      */
     @Path("deploymentartifacts/")
     public DeploymentArtifactsResource getDeploymentArtifacts() {
-        TDeploymentArtifacts deploymentArtifacts;
-        deploymentArtifacts = this.getNTI().getDeploymentArtifacts();
+        List<TDeploymentArtifact> deploymentArtifacts = this.getNTI().getDeploymentArtifacts();
         if (deploymentArtifacts == null) {
-            deploymentArtifacts = new TDeploymentArtifacts();
+            deploymentArtifacts = new ArrayList<>();
             this.getNTI().setDeploymentArtifacts(deploymentArtifacts);
         }
-        return new DeploymentArtifactsResource(deploymentArtifacts.getDeploymentArtifact(), this);
+        return new DeploymentArtifactsResource(deploymentArtifacts, this);
     }
 
     @Override

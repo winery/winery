@@ -93,7 +93,7 @@ public class MinExternalConnections extends CriteriaCached {
             if (generatedTopologies.size() >= outputCap) {
                 break;
             }
-            TopologyWrapper clone = new TopologyWrapper(AllocationUtils.deepcopy(topology.getTopology()));
+            TopologyWrapper clone = new TopologyWrapper(AllocationUtils.deepCopy(topology.getTopology()));
             Map<String, TNodeTemplate> topLevelNtsByIds = clone.getTopLevelNtsByIds();
 
             // map merged ConnectsToGraph to topology

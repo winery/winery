@@ -14,17 +14,23 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * <p>Java class for tNodeTypeImplementation complex type.
@@ -77,22 +83,21 @@ import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
 })
 public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
 
-    @XmlElement(name = "DeploymentArtifacts")
-    protected XTDeploymentArtifacts deploymentArtifacts;
+    @XmlElementWrapper(name = "DeploymentArtifacts")
+    @XmlElement(name = "DeploymentArtifact", required = true)
+    protected List<XTDeploymentArtifact> deploymentArtifacts;
 
     @XmlElement(name = "DerivedFrom")
     protected XTNodeTypeImplementation.DerivedFrom derivedFrom;
 
     @Deprecated // required for XML deserialization
     public XTNodeTypeImplementation() {
-        super();
     }
 
     public XTNodeTypeImplementation(Builder builder) {
         super(builder);
         this.derivedFrom = builder.derivedFrom;
         this.deploymentArtifacts = builder.deploymentArtifacts;
-        this.implementationArtifacts = builder.implementationArtifacts;
     }
 
     @Override
@@ -121,11 +126,11 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
     }
 
     @Nullable
-    public XTDeploymentArtifacts getDeploymentArtifacts() {
+    public List<XTDeploymentArtifact> getDeploymentArtifacts() {
         return deploymentArtifacts;
     }
 
-    public void setDeploymentArtifacts(XTDeploymentArtifacts value) {
+    public void setDeploymentArtifacts(List<XTDeploymentArtifact> value) {
         this.deploymentArtifacts = value;
     }
 
@@ -222,10 +227,9 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
     }
 
     public static class Builder extends XTEntityTypeImplementation.Builder<Builder> {
+
         private DerivedFrom derivedFrom;
-        private XTRequiredContainerFeatures requiredContainerFeatures;
-        private XTImplementationArtifacts implementationArtifacts;
-        private XTDeploymentArtifacts deploymentArtifacts;
+        private List<XTDeploymentArtifact> deploymentArtifacts;
 
         public Builder(XTExtensibleElements extensibleElements, String name, QName implementedNodeType) {
             super(extensibleElements, name, implementedNodeType);
@@ -240,117 +244,31 @@ public class XTNodeTypeImplementation extends XTEntityTypeImplementation {
             return this;
         }
 
-        public Builder setRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
-            this.requiredContainerFeatures = requiredContainerFeatures;
-            return this;
-        }
-
-        public Builder setImplementationArtifacts(XTImplementationArtifacts implementationArtifacts) {
-            this.implementationArtifacts = implementationArtifacts;
-            return this;
-        }
-
-        public Builder setDeploymentArtifacts(XTDeploymentArtifacts deploymentArtifacts) {
+        public Builder setDeploymentArtifacts(List<XTDeploymentArtifact> deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
             return this;
         }
 
-        public Builder addRequiredContainerFeatures(XTRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
-                return this;
-            }
-
-            if (this.requiredContainerFeatures == null) {
-                this.requiredContainerFeatures = requiredContainerFeatures;
-            } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
-            }
-            return this;
-        }
-
-        public Builder addRequiredContainerFeatures(List<XTRequiredContainerFeature> requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addRequiredContainerFeatures(XTRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return this;
-            }
-
-            XTRequiredContainerFeatures tmp = new XTRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public Builder addImplementationArtifacts(XTImplementationArtifacts implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.getImplementationArtifact().isEmpty()) {
-                return this;
-            }
-
-            if (this.implementationArtifacts == null) {
-                this.implementationArtifacts = implementationArtifacts;
-            } else {
-                this.implementationArtifacts.getImplementationArtifact().addAll(implementationArtifacts.getImplementationArtifact());
-            }
-            return this;
-        }
-
-        public Builder addImplementationArtifacts(List<XTImplementationArtifacts.ImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return this;
-            }
-
-            XTImplementationArtifacts tmp = new XTImplementationArtifacts();
-            tmp.getImplementationArtifact().addAll(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public Builder addImplementationArtifacts(XTImplementationArtifacts.ImplementationArtifact implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return this;
-            }
-
-            XTImplementationArtifacts tmp = new XTImplementationArtifacts();
-            tmp.getImplementationArtifact().add(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public Builder addDeploymentArtifacts(XTDeploymentArtifacts deploymentArtifacts) {
-            if (deploymentArtifacts == null || deploymentArtifacts.getDeploymentArtifact().isEmpty()) {
+        public Builder addDeploymentArtifacts(List<XTDeploymentArtifact> deploymentArtifacts) {
+            if (deploymentArtifacts == null || deploymentArtifacts.isEmpty()) {
                 return this;
             }
 
             if (this.deploymentArtifacts == null) {
                 this.deploymentArtifacts = deploymentArtifacts;
             } else {
-                this.deploymentArtifacts.getDeploymentArtifact().addAll(deploymentArtifacts.getDeploymentArtifact());
+                this.deploymentArtifacts.addAll(deploymentArtifacts);
             }
             return this;
         }
 
-        public Builder addDeploymentArtifacts(List<XTDeploymentArtifact> deploymentArtifacts) {
-            if (deploymentArtifacts == null) {
+        public Builder addDeploymentArtifact(XTDeploymentArtifact deploymentArtifact) {
+            if (deploymentArtifact == null) {
                 return this;
             }
 
-            XTDeploymentArtifacts tmp = new XTDeploymentArtifacts();
-            tmp.getDeploymentArtifact().addAll(deploymentArtifacts);
-            return addDeploymentArtifacts(tmp);
-        }
-
-        public Builder addDeploymentArtifacts(XTDeploymentArtifact deploymentArtifacts) {
-            if (deploymentArtifacts == null) {
-                return this;
-            }
-
-            XTDeploymentArtifacts tmp = new XTDeploymentArtifacts();
-            tmp.getDeploymentArtifact().add(deploymentArtifacts);
+            List<XTDeploymentArtifact> tmp = new ArrayList<>();
+            tmp.add(deploymentArtifact);
             return addDeploymentArtifacts(tmp);
         }
 

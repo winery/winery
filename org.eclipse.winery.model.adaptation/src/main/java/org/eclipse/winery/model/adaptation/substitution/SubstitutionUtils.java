@@ -96,7 +96,7 @@ public abstract class SubstitutionUtils {
 
                 boolean isAnnotatedByPattern = false;
                 if (Objects.nonNull(nodeTemplate.getPolicies())) {
-                    isAnnotatedByPattern = nodeTemplate.getPolicies().getPolicy()
+                    isAnnotatedByPattern = nodeTemplate.getPolicies()
                         .stream()
                         .anyMatch(tPolicy -> namespaceManager.isPatternNamespace(tPolicy.getPolicyType().getNamespaceURI()));
                 }

@@ -13,8 +13,6 @@
  *******************************************************************************/
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { InterfacesApiData } from '../interfacesApiData';
 import { InstanceService } from '../../../instance.service';
 
 @Component({
@@ -38,7 +36,7 @@ export class SelectableListComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (isNullOrUndefined(this.rows)) {
+        if (!this.rows) {
             this.rows = [];
         }
     }

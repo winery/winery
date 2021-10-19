@@ -47,7 +47,8 @@ public class XTPropertyMapping implements Serializable {
     protected String targetPropertyRef;
 
     @Deprecated // required for XML deserialization
-    public XTPropertyMapping() { }
+    public XTPropertyMapping() {
+    }
 
     private XTPropertyMapping(Builder builder) {
         this.serviceTemplatePropertyRef = builder.serviceTemplatePropertyRef;
@@ -100,23 +101,15 @@ public class XTPropertyMapping implements Serializable {
     }
 
     public static class Builder {
-        private String serviceTemplatePropertyRef;
-        private XHasId targetObjectRef;
-        private String targetPropertyRef;
 
-        public Builder setServiceTemplatePropertyRef(String serviceTemplatePropertyRef) {
+        private final String serviceTemplatePropertyRef;
+        private final XHasId targetObjectRef;
+        private final String targetPropertyRef;
+
+        public Builder(String serviceTemplatePropertyRef, XHasId targetObjectRef, String targetPropertyRef) {
             this.serviceTemplatePropertyRef = serviceTemplatePropertyRef;
-            return this;
-        }
-
-        public Builder setTargetObjectRef(XHasId targetObjectRef) {
             this.targetObjectRef = targetObjectRef;
-            return this;
-        }
-
-        public Builder setTargetPropertyRef(String targetPropertyRef) {
             this.targetPropertyRef = targetPropertyRef;
-            return this;
         }
 
         public XTPropertyMapping build() {

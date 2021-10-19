@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -62,16 +63,21 @@ import org.eclipse.jdt.annotation.Nullable;
  * the Definitions are <b>of type</b> tDefinitions.
  *
  * This could cause issues when deserializing XML-standard conform Definitions as TDefinitions.
- * Therefor all deserialization of user-input that doesn't use winery Definitions as basis needs to be performed by the standard-specific repository implementations
+ * Therefore, all deserialization of user-input that doesn't use winery Definitions as basis needs to be performed by the standard-specific repository implementations
  * to correctly handle the discrepancies between the standards.
  */
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
-    @XmlElement(name = "Extensions")
-    protected TDefinitions.Extensions extensions;
+
+    @XmlElementWrapper(name = "Extensions")
+    @XmlElement(name = "Extension", required = true)
+    protected List<TExtension> extensions;
+
     @XmlElement(name = "Import")
     protected List<TImport> _import;
+
     @XmlElement(name = "Types")
     protected TDefinitions.Types types;
+
     @XmlElements( {
         @XmlElement(name = "RelationshipType", type = TRelationshipType.class),
         @XmlElement(name = "RelationshipTypeImplementation", type = TRelationshipTypeImplementation.class),
@@ -95,6 +101,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     @XmlAttribute(name = "name")
     protected String name;
+
     @XmlAttribute(name = "targetNamespace", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String targetNamespace;
@@ -166,18 +173,18 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(element);
     }
 
-    public TDefinitions.@Nullable Extensions getExtensions() {
+    public List<TExtension> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(TDefinitions.Extensions value) {
+    public void setExtensions(List<TExtension> value) {
         this.extensions = value;
     }
 
     @NonNull
     public List<TImport> getImport() {
         if (_import == null) {
-            _import = new ArrayList<TImport>();
+            _import = new ArrayList<>();
         }
         return this._import;
     }
@@ -377,55 +384,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "extension"
-    })
-    public static class Extensions implements Serializable {
-
-        @XmlElement(name = "Extension", required = true)
-        protected List<TExtension> extension;
-
-        /**
-         * Gets the value of the extension property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the extension property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getExtension().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list {@link TExtension }
-         */
-        @NonNull
-        public List<TExtension> getExtension() {
-            if (extension == null) {
-                extension = new ArrayList<TExtension>();
-            }
-            return this.extension;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Extensions that = (Extensions) o;
-            return Objects.equals(extension, that.extension);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(extension);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
         "any"
     })
     public static class Types implements Serializable {
@@ -436,7 +394,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         @NonNull
         public List<Object> getAny() {
             if (any == null) {
-                any = new ArrayList<Object>();
+                any = new ArrayList<>();
             }
             return this.any;
         }
@@ -458,7 +416,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     public static class Builder extends HasId.Builder<Builder> {
         private final String target_namespace;
 
-        private TDefinitions.Extensions extensions;
+        private List<TExtension> extensions;
         private List<TImport> imports;
         private TDefinitions.Types types;
         private List<TServiceTemplate> serviceTemplates;
@@ -575,36 +533,26 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             return self();
         }
 
-        public Builder addExtensions(TDefinitions.Extensions extensions) {
-            if (extensions == null || extensions.getExtension().isEmpty()) {
+        public Builder addExtensions(List<TExtension> extensions) {
+            if (extensions == null || extensions.isEmpty()) {
                 return self();
             }
 
             if (this.extensions == null) {
                 this.extensions = extensions;
             } else {
-                this.extensions.getExtension().addAll(extensions.getExtension());
+                this.extensions.addAll(extensions);
             }
             return self();
         }
 
-        public Builder addExtensions(List<TExtension> extensions) {
-            if (extensions == null) {
-                return self();
-            }
-
-            TDefinitions.Extensions container = new TDefinitions.Extensions();
-            container.getExtension().addAll(extensions);
-            return addExtensions(container);
-        }
-
-        public Builder addExtensions(TExtension extensions) {
-            if (extensions == null) {
+        public Builder addExtension(TExtension extension) {
+            if (extension == null) {
                 return self();
             }
 
             List<TExtension> tmp = new ArrayList<>();
-            tmp.add(extensions);
+            tmp.add(extension);
             return addExtensions(tmp);
         }
 
@@ -993,21 +941,21 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         public List<TExtensibleElements> getServiceTemplateOrNodeTypeOrNodeTypeImplementation() {
             List<TExtensibleElements> tmp = new ArrayList<>();
             Stream.of(
-                serviceTemplates,
-                nodeTypes,
-                nodeTypeImplementations,
-                relationshipTypes,
-                relationshipTypeImplementations,
-                requirementTypes,
-                capabilityTypes,
-                dataTypes,
-                artifactTypes,
-                artifactTemplates,
-                policyTypes,
-                policyTemplate,
-                interfaceTypes,
-                nonStandardElements
-            ).filter(Objects::nonNull)
+                    serviceTemplates,
+                    nodeTypes,
+                    nodeTypeImplementations,
+                    relationshipTypes,
+                    relationshipTypeImplementations,
+                    requirementTypes,
+                    capabilityTypes,
+                    dataTypes,
+                    artifactTypes,
+                    artifactTemplates,
+                    policyTypes,
+                    policyTemplate,
+                    interfaceTypes,
+                    nonStandardElements
+                ).filter(Objects::nonNull)
                 .forEach(tmp::addAll);
             return tmp;
         }

@@ -84,7 +84,7 @@ public class AllocationUtilsTest extends TestWithGitBackedRepository {
         });
         TTopologyTemplate clone = BackendUtils.clone(topology);
         assertEquals(topology, clone);
-        TTopologyTemplate cloneNotEquals = AllocationUtils.deepcopy(topology);
+        TTopologyTemplate cloneNotEquals = AllocationUtils.deepCopy(topology);
         assertNotEquals(topology, cloneNotEquals);
     }
 

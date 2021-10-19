@@ -14,16 +14,21 @@
 
 package org.eclipse.winery.model.tosca.xml;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExportedInterface", propOrder = {
@@ -40,7 +45,8 @@ public class XTExportedInterface implements XHasName, Serializable {
     protected String name;
 
     @Deprecated // required for XML deserialization
-    public XTExportedInterface() { }
+    public XTExportedInterface() {
+    }
 
     public XTExportedInterface(Builder builder) {
         this.name = builder.name;
@@ -82,17 +88,13 @@ public class XTExportedInterface implements XHasName, Serializable {
     }
 
     public static class Builder {
-        private List<XTExportedOperation> operation;
-        private String name;
 
-        public Builder setOperation(List<XTExportedOperation> operation) {
+        private final List<XTExportedOperation> operation;
+        private final String name;
+
+        public Builder(String name, List<XTExportedOperation> operation) {
             this.operation = operation;
-            return this;
-        }
-
-        public Builder setName(String name) {
             this.name = name;
-            return this;
         }
 
         public XTExportedInterface build() {

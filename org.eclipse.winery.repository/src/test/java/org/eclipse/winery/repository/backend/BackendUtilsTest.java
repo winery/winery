@@ -25,7 +25,6 @@ import java.util.TreeSet;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.json.JacksonProvider;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -33,6 +32,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 
@@ -147,51 +147,33 @@ public class BackendUtilsTest {
 
     public TArtifactTemplate createArtifactTemplateWithSingleReferenceToAnUrl() {
         // create artifact template with a single contained reference (an absolute URL)
-        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
-        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
-        artifactTemplate.setArtifactReferences(artifactReferences);
-        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-        TArtifactReference artRef = new TArtifactReference();
-        artRef.setReference("http://www.example.org/absolute-url");
-        artRefList.add(artRef);
-
-        return artifactTemplate;
+        return new TArtifactTemplate.Builder("test", QName.valueOf("{ns}test"))
+            .addArtifactReference(
+                new TArtifactReference.Builder("http://www.example.org/absolute-url").build()
+            )
+            .build();
     }
 
     public TArtifactTemplate createArtifactTemplateWithReferenceToAnUrlAndANonExistentFile() {
-        // create artifact template with a single contained reference (an absolute URL)
-        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
-        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
-        artifactTemplate.setArtifactReferences(artifactReferences);
-        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-
-        TArtifactReference artRef = new TArtifactReference();
-        artRef.setReference("http://www.example.org/absolute-url");
-        artRefList.add(artRef);
-
-        artRef = new TArtifactReference();
-        artRef.setReference("does-not-exist.txt");
-        artRefList.add(artRef);
-
-        return artifactTemplate;
+        return new TArtifactTemplate.Builder("test", QName.valueOf("{ns}test"))
+            .addArtifactReference(
+                new TArtifactReference.Builder("http://www.example.org/absolute-url").build()
+            ).addArtifactReference(
+                new TArtifactReference.Builder("does-not-exist.txt").build()
+            )
+            .build();
     }
 
     public TArtifactTemplate createArtifactTemplateWithReferenceToAnUrlAndExistentFile() {
-        // create artifact template with a single contained reference (an absolute URL)
-        TArtifactTemplate artifactTemplate = new TArtifactTemplate();
-        TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
-        artifactTemplate.setArtifactReferences(artifactReferences);
-        List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-
-        TArtifactReference artRef = new TArtifactReference();
-        artRef.setReference("http://www.example.org/absolute-url");
-        artRefList.add(artRef);
-
-        artRef = new TArtifactReference();
-        artRef.setReference("artifacttemplates/http%253A%252F%252Fexample.org/test-artifact-template/exists.txt");
-        artRefList.add(artRef);
-
-        return artifactTemplate;
+        return new TArtifactTemplate.Builder("test", QName.valueOf("{ns}test"))
+            .addArtifactReference(
+                new TArtifactReference.Builder("http://www.example.org/absolute-url").build()
+            ).addArtifactReference(
+                new TArtifactReference.Builder(
+                    "artifacttemplates/http%253A%252F%252Fexample.org/test-artifact-template/exists.txt"
+                ).build()
+            )
+            .build();
     }
 
     @Test
@@ -213,7 +195,7 @@ public class BackendUtilsTest {
     }
 
     @Test
-    public void synchronizeReferencesRemovesNonExistantFileAndDoesNotRemoveUrls() throws Exception {
+    public void synchronizeReferencesRemovesNonExistentFileAndDoesNotRemoveUrls() throws Exception {
         ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://example.org", "test-artifact-template", false);
 
         // alternative test implementation: Use git-based repository
@@ -231,7 +213,7 @@ public class BackendUtilsTest {
     }
 
     @Test
-    public void synchronizeReferencesDoesNontRemoveExistantFileAndDoesNotRemoveUrls() throws Exception {
+    public void synchronizeReferencesDoesNotRemoveExistentFileAndDoesNotRemoveUrls() throws Exception {
         ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://example.org", "test-artifact-template", false);
 
         // alternative test implementation: Use git-based repository
@@ -248,27 +230,29 @@ public class BackendUtilsTest {
 
         TArtifactTemplate artifactTemplate = createArtifactTemplateWithReferenceToAnUrlAndExistentFile();
         when(repository.getElement(artifactTemplateId)).thenReturn(artifactTemplate);
-        TArtifactTemplate synchronizhedArtifactTemplate = BackendUtils.synchronizeReferences(repository, artifactTemplateId);
+        TArtifactTemplate synchronizedArtifactTemplate = BackendUtils.synchronizeReferences(repository, artifactTemplateId);
 
-        assertEquals(createArtifactTemplateWithReferenceToAnUrlAndExistentFile(), synchronizhedArtifactTemplate);
+        assertEquals(createArtifactTemplateWithReferenceToAnUrlAndExistentFile(), synchronizedArtifactTemplate);
     }
 
     @Test
     public void testUpdateVersionOfNodeTemplate() throws Exception {
         TTopologyTemplate.Builder topologyTemplate = new TTopologyTemplate.Builder();
 
-        TNodeTemplate nt1 = new TNodeTemplate();
-        TNodeTemplate nt2 = new TNodeTemplate();
-        nt1.setId("java8_1.0-w1-wip1_3");
-        nt1.setType(new QName("namespace", "java8_1.0-w1-wip1"));
-        nt2.setId("java8_1.0-w2-wip2");
-        nt2.setType(new QName("namespace", "java8_1.0-w2-wip2"));
+        TNodeTemplate nt1 = new TNodeTemplate.Builder(
+            "java8_1.0-w1-wip1_3",
+            new QName("namespace", "java8_1.0-w1-wip1")
+        ).build();
+        TNodeTemplate nt2 = new TNodeTemplate.Builder(
+            "java8_1.0-w2-wip2",
+            new QName("namespace", "java8_1.0-w2-wip2")
+        ).build();
 
         topologyTemplate.addNodeTemplate(nt1);
 
         TTopologyTemplate resultTopologyTemplate = BackendUtils.updateVersionOfNodeTemplate(topologyTemplate.build(), "java8_1.0-w1-wip1_3", "{namespace}java8_1.0-w2-wip2");
         List<TEntityTemplate> entityTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
         List<TEntityTemplate> entityTemplatesClone = resultTopologyTemplate.getNodeTemplateOrRelationshipTemplate();
-        assertEquals(entityTemplates.get(0).getTypeAsQName().toString(), "{namespace}java8_1.0-w2-wip2");
+        assertEquals("{namespace}java8_1.0-w2-wip2", entityTemplates.get(0).getTypeAsQName().toString());
     }
 }

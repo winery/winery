@@ -83,6 +83,8 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     isCollapsed = true;
     allNamespaces: NamespaceProperties[] = [];
 
+    randomIdSuffix = Math.random();
+
     @ViewChild('namespaceInput') namespaceInput: ElementRef;
     public initNamespaceString = '';
 
@@ -156,10 +158,10 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
         this.onTouchedCallback = fn;
     }
 
-    collapsed(event: any): void {
+    collapsed(): void {
     }
 
-    expanded(event: any): void {
+    expanded(): void {
     }
 
     // endregion

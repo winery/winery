@@ -14,9 +14,12 @@
 
 package org.eclipse.winery.model.tosca.xml.utils;
 
+import java.util.ArrayList;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
-import org.eclipse.winery.model.tosca.xml.XTPolicies;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 
 import org.junit.jupiter.api.Test;
@@ -28,21 +31,24 @@ public class RemoveEmptyListsTest {
 
     @Test
     public void emptyPropertiesAndPoliciesListsRemovedFromNodeTemplate() {
-        XTTopologyTemplate topologyTemplate = new XTTopologyTemplate();
-        XTNodeTemplate nodeTemplate = new XTNodeTemplate();
+        XTTopologyTemplate topologyTemplate = new XTTopologyTemplate.Builder().build();
+        XTNodeTemplate nodeTemplate = new XTNodeTemplate.Builder(
+            "test",
+            QName.valueOf("{ns}test")
+        ).build();
         topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(nodeTemplate);
 
         nodeTemplate.setProperties(new XTEntityTemplate.Properties());
-        nodeTemplate.setPolicies(new XTPolicies());
+        nodeTemplate.setPolicies(new ArrayList<>());
 
         assertNotNull(((XTNodeTemplate) topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0)).getPolicies());
-        assertNotNull(((XTNodeTemplate) topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0)).getProperties());
+        assertNotNull(topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0).getProperties());
         // preconditions fulfilled
 
         RemoveEmptyLists removeEmptyLists = new RemoveEmptyLists();
         removeEmptyLists.removeEmptyLists(topologyTemplate);
-        
+
         assertNull(((XTNodeTemplate) topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0)).getPolicies());
-        assertNull(((XTNodeTemplate) topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0)).getProperties());
+        assertNull(topologyTemplate.getNodeTemplateOrRelationshipTemplate().get(0).getProperties());
     }
 }

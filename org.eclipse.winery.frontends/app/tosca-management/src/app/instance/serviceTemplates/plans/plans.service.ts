@@ -59,10 +59,6 @@ export class PlansService {
             );
     }
 
-    private getJson<T>(path: string): Observable<T> {
-        return this.http.get<T>(path);
-    }
-
     updatePlan(plan: PlansApiData): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http
@@ -79,5 +75,9 @@ export class PlansService {
         return this.http.post(url, null,
             { headers: headers, observe: 'response', responseType: 'text' }
         );
+    }
+
+    private getJson<T>(path: string): Observable<T> {
+        return this.http.get<T>(path);
     }
 }

@@ -15,9 +15,9 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -31,14 +31,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.ids.EncodingUtil;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyConstraintsApiData;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -48,35 +45,20 @@ public class PropertyConstraintsResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertyConstraintsResource.class);
 
-    private final TBoundaryDefinitions.PropertyConstraints propertyConstraints;
-    private final TEntityTemplate.PropertyConstraints entityPropertyConstraints;
+    private final List<TPropertyConstraint> propertyConstraints;
     private final AbstractComponentInstanceResource res;
-    private final boolean isEntitytemplate;
 
-    public PropertyConstraintsResource(TBoundaryDefinitions.PropertyConstraints propertyConstraints, ServiceTemplateResource res) {
+    public PropertyConstraintsResource(List<TPropertyConstraint> propertyConstraints, AbstractComponentInstanceResource res) {
         this.propertyConstraints = propertyConstraints;
         this.res = res;
-        this.entityPropertyConstraints = null;
-        this.isEntitytemplate = false;
-    }
-
-    public PropertyConstraintsResource(TEntityTemplate.PropertyConstraints propertyConstraints, AbstractComponentInstanceResource res) {
-        this.res = res;
-        this.propertyConstraints = null;
-        this.entityPropertyConstraints = propertyConstraints;
-        this.isEntitytemplate = true;
     }
 
     @Path("{id}")
     @DELETE
     public Response onDelete(@PathParam("id") String id) {
         id = EncodingUtil.URLdecode(id);
-        Iterator<TPropertyConstraint> iterator;
-        if (isEntitytemplate) {
-            iterator = this.entityPropertyConstraints.getPropertyConstraint().iterator();
-        } else {
-            iterator = this.propertyConstraints.getPropertyConstraint().iterator();
-        }
+        Iterator<TPropertyConstraint> iterator = this.propertyConstraints.iterator();
+
         while (iterator.hasNext()) {
             TPropertyConstraint propertyConstraint = iterator.next();
             if (propertyConstraint.getProperty().equals(id)) {
@@ -109,27 +91,16 @@ public class PropertyConstraintsResource {
             return Response.notAcceptable(null).build();
         }
         propertyConstraint.setConstraintType(constraintsApiData.getConstraintType());
-        if (isEntitytemplate) {
-            this.entityPropertyConstraints.getPropertyConstraint().add(propertyConstraint);
-        } else {
-            this.propertyConstraints.getPropertyConstraint().add(propertyConstraint);
-        }
+        this.propertyConstraints.add(propertyConstraint);
+
         return RestUtils.persist(this.res);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<PropertyConstraintsApiData> onGet() {
-        List<PropertyConstraintsApiData> apiDatas = new ArrayList<>();
-        if (isEntitytemplate) {
-            for (TPropertyConstraint propertyConstraint: this.entityPropertyConstraints.getPropertyConstraint()) {
-                apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
-            }
-        } else {
-            for (TPropertyConstraint propertyConstraint: this.propertyConstraints.getPropertyConstraint()) {
-                apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
-            }
-        }
-        return apiDatas;
+        return this.propertyConstraints.stream()
+            .map(PropertyConstraintsApiData::new)
+            .collect(Collectors.toList());
     }
 }

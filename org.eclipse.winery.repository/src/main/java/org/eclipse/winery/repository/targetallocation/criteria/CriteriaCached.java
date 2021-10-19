@@ -116,7 +116,7 @@ public abstract class CriteriaCached extends CriteriaCommon {
             }
 
             // the same matching nt is injected for all nts that should be hosted together
-            TTopologyTemplate replacement = AllocationUtils.deepcopy(entry.getKey().getReplacement());
+            TTopologyTemplate replacement = AllocationUtils.deepCopy(entry.getKey().getReplacement());
             for (PermutationHelper permutationHelper : hostTogether) {
                 injectParameter.put(permutationHelper.getCorrespondingNT().getId(), replacement);
                 done.add(permutationHelper);

@@ -28,9 +28,11 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactType")
 public class XTArtifactType extends XTEntityType {
+    
     // the following two fields are added to support YAML mode
     @XmlAttribute(name = "mimetype", required = false)
     private String mimeType;
+    
     @XmlAttribute(name = "fileextensions", required = false)
     private List<String> fileExtensions;
 

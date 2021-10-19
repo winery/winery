@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +30,10 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 
@@ -48,13 +47,9 @@ public class UbuntuVMPlugin implements SelfContainmentPlugin {
     private final static String imageFileType = ".img";
     private final static String imageDiskType = "-disk1" + imageFileType;
 
-    private final Map<QName, TArtifactTemplate> artifactTemplates;
-
     private final Map<String, List<String>> codeNamesToVersion = initCodeNames();
 
     public UbuntuVMPlugin() {
-        IRepository repository = RepositoryFactory.getRepository();
-        this.artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
     }
 
     @Override
@@ -85,14 +80,14 @@ public class UbuntuVMPlugin implements SelfContainmentPlugin {
                 WineryVersion artifactVersion = new WineryVersion(nodeTypeVersion.getComponentVersion() + "-CloudImage", 1, 1);
                 ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(
                     OpenToscaBaseTypes.artifactTemplateNamespace,
-                    nameWithoutVersion + "-DA" + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + artifactVersion.toString(),
+                    nameWithoutVersion + "-DA" + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + artifactVersion,
                     false);
                 TArtifactTemplate element = repository.getElement(artifactTemplateId);
                 element.setType(OpenToscaBaseTypes.cloudImageArtifactType);
                 logger.info("Generated ArtifactTemplate {}", artifactTemplateId.getQName());
 
                 if (!repository.exists(artifactTemplateId)) {
-                    logger.info("Trying to donwload iamge file...");
+                    logger.info("Trying to download image file...");
                     String baseUrl = "https://cloud-images.ubuntu.com/" +
                         codeName +
                         "/current/" +
@@ -129,17 +124,16 @@ public class UbuntuVMPlugin implements SelfContainmentPlugin {
 
                             BackendUtils.synchronizeReferences(repository, artifactTemplateId);
 
-                            TDeploymentArtifact imageDa = new TDeploymentArtifact();
-                            imageDa.setArtifactType(OpenToscaBaseTypes.cloudImageArtifactType);
-                            imageDa.setArtifactRef(artifactTemplateId.getQName());
-                            imageDa.setName("CloudImage");
+                            TDeploymentArtifact imageDa = new TDeploymentArtifact.Builder("CloudImage", OpenToscaBaseTypes.cloudImageArtifactType)
+                                .setArtifactRef(artifactTemplateId.getQName())
+                                .build();
 
-                            TDeploymentArtifacts deploymentArtifacts = nodeTypeImplementation.getDeploymentArtifacts();
+                            List<TDeploymentArtifact> deploymentArtifacts = nodeTypeImplementation.getDeploymentArtifacts();
                             if (deploymentArtifacts == null) {
-                                deploymentArtifacts = new TDeploymentArtifacts();
+                                deploymentArtifacts = new ArrayList<>();
                                 nodeTypeImplementation.setDeploymentArtifacts(deploymentArtifacts);
                             }
-                            deploymentArtifacts.getDeploymentArtifact().add(imageDa);
+                            deploymentArtifacts.add(imageDa);
                         } else {
                             logger.info("Could not download image -- the URLs do not exist: \n\t{}\n\t{}",
                                 baseUrl + imageFileType, baseUrl + imageDiskType);

@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
@@ -44,18 +46,19 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlSeeAlso( {
     TNodeTypeImplementation.class,
     TRelationshipTypeImplementation.class,
+    TRequiredContainerFeature.class,
+    TImplementationArtifact.class
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance, HasTargetNamespace {
+public abstract class TEntityTypeImplementation extends TExtensibleElementWithTags implements HasName, HasType, HasInheritance, HasTargetNamespace {
 
-    @XmlElement(name = "Tags")
-    protected TTags tags;
+    @XmlElementWrapper(name = "RequiredContainerFeatures")
+    @XmlElement(name = "RequiredContainerFeature", required = true)
+    protected List<TRequiredContainerFeature> requiredContainerFeatures;
 
-    @XmlElement(name = "RequiredContainerFeatures")
-    protected TRequiredContainerFeatures requiredContainerFeatures;
-
-    @XmlElement(name = "ImplementationArtifacts")
-    protected TImplementationArtifacts implementationArtifacts;
+    @XmlElementWrapper(name = "ImplementationArtifacts")
+    @XmlElement(name = "ImplementationArtifact", required = true)
+    protected List<TImplementationArtifact> implementationArtifacts;
 
     @XmlAttribute(name = "targetNamespace")
     @XmlSchemaType(name = "anyURI")
@@ -88,12 +91,11 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         super();
     }
 
-    public TEntityTypeImplementation(Builder builder) {
+    public TEntityTypeImplementation(Builder<?> builder) {
         super(builder);
         this.targetNamespace = builder.targetNamespace;
         this.name = builder.name;
         this.implementedType = builder.implementedType;
-        this.tags = builder.tags;
         this.requiredContainerFeatures = builder.requiredContainerFeatures;
         this.implementationArtifacts = builder.implementationArtifacts;
         this._abstract = builder._abstract;
@@ -126,29 +128,20 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     }
 
     @Nullable
-    public TTags getTags() {
-        return tags;
-    }
-
-    public void setTags(TTags value) {
-        this.tags = value;
-    }
-
-    @Nullable
-    public TRequiredContainerFeatures getRequiredContainerFeatures() {
+    public List<TRequiredContainerFeature> getRequiredContainerFeatures() {
         return requiredContainerFeatures;
     }
 
-    public void setRequiredContainerFeatures(TRequiredContainerFeatures value) {
+    public void setRequiredContainerFeatures(List<TRequiredContainerFeature> value) {
         this.requiredContainerFeatures = value;
     }
 
     @Nullable
-    public TImplementationArtifacts getImplementationArtifacts() {
+    public List<TImplementationArtifact> getImplementationArtifacts() {
         return implementationArtifacts;
     }
 
-    public void setImplementationArtifacts(TImplementationArtifacts value) {
+    public void setImplementationArtifacts(List<TImplementationArtifact> value) {
         this.implementationArtifacts = value;
     }
 
@@ -161,7 +154,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     }
 
     public void setAbstract(@Nullable Boolean value) {
-        this._abstract = value == null ? false : value;
+        this._abstract = value != null && value;
     }
 
     public boolean getFinal() {
@@ -173,7 +166,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     }
 
     public void setFinal(@Nullable Boolean value) {
-        this._final = value == null ? false : value;
+        this._final = value != null && value;
     }
 
     @Override
@@ -207,17 +200,17 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         this.implementedType = type;
     }
 
-    public static abstract class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
+    public static abstract class Builder<T extends Builder<T>> extends TExtensibleElementWithTags.Builder<T> {
+
         private final QName implementedType;
         private String name;
         private String targetNamespace;
-        private TTags tags;
-        private TRequiredContainerFeatures requiredContainerFeatures;
-        private TImplementationArtifacts implementationArtifacts;
+        private List<TRequiredContainerFeature> requiredContainerFeatures;
+        private List<TImplementationArtifact> implementationArtifacts;
         private boolean _abstract;
         private boolean _final;
 
-        public Builder(Builder builder, String name, QName implementedType) {
+        public Builder(Builder<T> builder, String name, QName implementedType) {
             super(builder);
             this.name = name;
             this.implementedType = implementedType;
@@ -239,17 +232,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
             return self();
         }
 
-        public T setTags(TTags tags) {
-            this.tags = tags;
-            return self();
-        }
-
-        public T setRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            this.requiredContainerFeatures = requiredContainerFeatures;
-            return self();
-        }
-
-        public T setImplementationArtifacts(TImplementationArtifacts implementationArtifacts) {
+        public T setImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
             this.implementationArtifacts = implementationArtifacts;
             return self();
         }
@@ -269,113 +252,49 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
             return self();
         }
 
-        public T addTags(TTags tags) {
-            if (tags == null || tags.getTag().isEmpty()) {
-                return self();
-            }
-
-            if (this.tags == null) {
-                this.tags = tags;
-            } else {
-                this.tags.getTag().addAll(tags.getTag());
-            }
-            return self();
-        }
-
-        public T addTags(List<TTag> tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().addAll(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(TTag tags) {
-            if (tags == null) {
-                return self();
-            }
-
-            TTags tmp = new TTags();
-            tmp.getTag().add(tags);
-            return addTags(tmp);
-        }
-
-        public T addTags(String name, String value) {
-            if (name == null || name.isEmpty()) {
-                return self();
-            }
-
-            TTag tmp = new TTag();
-            tmp.setName(name);
-            tmp.setValue(value);
-            return addTags(tmp);
-        }
-
-        public T addRequiredContainerFeatures(TRequiredContainerFeatures requiredContainerFeatures) {
-            if (requiredContainerFeatures == null || requiredContainerFeatures.getRequiredContainerFeature().isEmpty()) {
+        public T addRequiredContainerFeatures(List<TRequiredContainerFeature> requiredContainerFeatures) {
+            if (requiredContainerFeatures == null || requiredContainerFeatures.isEmpty()) {
                 return self();
             }
 
             if (this.requiredContainerFeatures == null) {
                 this.requiredContainerFeatures = requiredContainerFeatures;
             } else {
-                this.requiredContainerFeatures.getRequiredContainerFeature().addAll(requiredContainerFeatures.getRequiredContainerFeature());
+                this.requiredContainerFeatures.addAll(requiredContainerFeatures);
             }
             return self();
         }
 
-        public T addRequiredContainerFeatures(List<TRequiredContainerFeature> requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
+        public T addRequiredContainerFeature(TRequiredContainerFeature requiredContainerFeature) {
+            if (requiredContainerFeature == null) {
                 return self();
             }
 
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().addAll(requiredContainerFeatures);
+            List<TRequiredContainerFeature> tmp = new ArrayList<>();
+            tmp.add(requiredContainerFeature);
             return addRequiredContainerFeatures(tmp);
         }
 
-        public T addRequiredContainerFeatures(TRequiredContainerFeature requiredContainerFeatures) {
-            if (requiredContainerFeatures == null) {
-                return self();
-            }
-
-            TRequiredContainerFeatures tmp = new TRequiredContainerFeatures();
-            tmp.getRequiredContainerFeature().add(requiredContainerFeatures);
-            return addRequiredContainerFeatures(tmp);
-        }
-
-        public T addImplementationArtifacts(TImplementationArtifacts implementationArtifacts) {
-            if (implementationArtifacts == null || implementationArtifacts.getImplementationArtifact().isEmpty()) {
+        public T addImplementationArtifacts(List<TImplementationArtifact> implementationArtifacts) {
+            if (implementationArtifacts == null || implementationArtifacts.isEmpty()) {
                 return self();
             }
 
             if (this.implementationArtifacts == null) {
                 this.implementationArtifacts = implementationArtifacts;
             } else {
-                this.implementationArtifacts.getImplementationArtifact().addAll(implementationArtifacts.getImplementationArtifact());
+                this.implementationArtifacts.addAll(implementationArtifacts);
             }
             return self();
         }
 
-        public T addImplementationArtifacts(List<TImplementationArtifacts.ImplementationArtifact> implementationArtifacts) {
-            if (implementationArtifacts == null) {
+        public T addImplementationArtifact(TImplementationArtifact implementationArtifact) {
+            if (implementationArtifact == null) {
                 return self();
             }
 
-            TImplementationArtifacts tmp = new TImplementationArtifacts();
-            tmp.getImplementationArtifact().addAll(implementationArtifacts);
-            return addImplementationArtifacts(tmp);
-        }
-
-        public T addImplementationArtifacts(TImplementationArtifacts.ImplementationArtifact implementationArtifacts) {
-            if (implementationArtifacts == null) {
-                return self();
-            }
-
-            TImplementationArtifacts tmp = new TImplementationArtifacts();
-            tmp.getImplementationArtifact().add(implementationArtifacts);
+            ArrayList<TImplementationArtifact> tmp = new ArrayList<>();
+            tmp.add(implementationArtifact);
             return addImplementationArtifacts(tmp);
         }
     }

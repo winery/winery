@@ -37,29 +37,16 @@ export class EdmmReplacementRulesComponent implements OnInit {
     components: string[];
     toTopology: string;
 
-    private ruleIndex = 0;
-
     @Input() pluginResult: EdmmTechnologyTransformationCheck;
     @Input() currentCandidate: string;
     @Input() topologyTemplate: TTopologyTemplate;
     @Input() oneToOneMap: Map<string, string>;
 
+    private ruleIndex = 0;
+
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
                 private manageTopologyService: ManageTopologyService) {
-    }
-
-    ngOnInit(): void {
-
-        if (this.pluginResult.replacementRules.length > 0) {
-            this.pluginName = this.pluginResult.name;
-            this.updateRule();
-        }
-    }
-
-    private updateRule() {
-        this.components = this.pluginResult.replacementRules[this.ruleIndex].unsupportedComponents;
-        this.toTopology = this.parseTopology(this.pluginResult.replacementRules[this.ruleIndex].toTopology);
     }
 
     /**
@@ -94,23 +81,12 @@ export class EdmmReplacementRulesComponent implements OnInit {
         return obj;
     }
 
-    /**
-     * At the moment the topology represented  with a Map is displayed in a yaml-like way to the user.
-     */
-    private parseTopology(topology: Map<string, any>): string {
-        return EdmmReplacementRulesComponent.navigateTopology(
-            topology,
-            (component, _topology, result) => {
-                result += component + '\n';
-                result += '  type : ' + this.oneToOneMap[_topology[component]['type']] + '\n';
-                return result;
-            },
-            (source, target, relation, _topology, result) => {
-                result += '  - ' + this.oneToOneMap[relation] + ' : ' + target + '\n';
-                return result;
-            },
-            ''
-        );
+    ngOnInit(): void {
+
+        if (this.pluginResult.replacementRules.length > 0) {
+            this.pluginName = this.pluginResult.name;
+            this.updateRule();
+        }
     }
 
     applyRule() {
@@ -190,28 +166,12 @@ export class EdmmReplacementRulesComponent implements OnInit {
         return 'partlyApplicable';
     }
 
-    private updateRuleIndex(update: number) {
-        this.ruleIndex += update;
-        if (this.ruleIndex > this.pluginResult.replacementRules.length - 1) {
-            this.ruleIndex = 0;
-        } else if (this.ruleIndex < 0) {
-            this.ruleIndex = this.pluginResult.replacementRules.length - 1;
-        }
-    }
-
     nextRule() {
         this.moveRule(+1);
     }
 
     prevRule() {
         this.moveRule(-1);
-    }
-
-    private moveRule(update: number) {
-        this.updateRuleIndex(update);
-        this.updateRule();
-        this.onMouseLeave();
-        this.onMouseOver();
     }
 
     onMouseOver() {
@@ -228,5 +188,45 @@ export class EdmmReplacementRulesComponent implements OnInit {
 
     onMouseLeave() {
         this.ngRedux.dispatch(this.actions.highlightNodes([]));
+    }
+
+    private updateRule() {
+        this.components = this.pluginResult.replacementRules[this.ruleIndex].unsupportedComponents;
+        this.toTopology = this.parseTopology(this.pluginResult.replacementRules[this.ruleIndex].toTopology);
+    }
+
+    /**
+     * At the moment the topology represented  with a Map is displayed in a yaml-like way to the user.
+     */
+    private parseTopology(topology: Map<string, any>): string {
+        return EdmmReplacementRulesComponent.navigateTopology(
+            topology,
+            (component, _topology, result) => {
+                result += component + '\n';
+                result += '  type : ' + this.oneToOneMap[_topology[component]['type']] + '\n';
+                return result;
+            },
+            (source, target, relation, _topology, result) => {
+                result += '  - ' + this.oneToOneMap[relation] + ' : ' + target + '\n';
+                return result;
+            },
+            ''
+        );
+    }
+
+    private updateRuleIndex(update: number) {
+        this.ruleIndex += update;
+        if (this.ruleIndex > this.pluginResult.replacementRules.length - 1) {
+            this.ruleIndex = 0;
+        } else if (this.ruleIndex < 0) {
+            this.ruleIndex = this.pluginResult.replacementRules.length - 1;
+        }
+    }
+
+    private moveRule(update: number) {
+        this.updateRuleIndex(update);
+        this.updateRule();
+        this.onMouseLeave();
+        this.onMouseOver();
     }
 }

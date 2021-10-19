@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -43,18 +44,28 @@ import org.eclipse.jdt.annotation.Nullable;
 })
 public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasPolicies {
 
-    @XmlElement(name = "Requirements")
-    protected XTNodeTemplate.Requirements requirements;
-    @XmlElement(name = "Capabilities")
-    protected XTNodeTemplate.Capabilities capabilities;
-    @XmlElement(name = "Policies")
-    protected XTPolicies policies;
-    @XmlElement(name = "DeploymentArtifacts")
-    protected XTDeploymentArtifacts deploymentArtifacts;
+    @XmlElementWrapper(name = "Requirements")
+    @XmlElement(name = "Requirement")
+    protected List<XTRequirement> requirements;
+
+    @XmlElementWrapper(name = "Capabilities")
+    @XmlElement(name = "Capability")
+    protected List<XTCapability> capabilities;
+
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy")
+    protected List<XTPolicy> policies;
+
+    @XmlElementWrapper(name = "DeploymentArtifacts")
+    @XmlElement(name = "DeploymentArtifact", required = true)
+    protected List<XTDeploymentArtifact> deploymentArtifacts;
+
     @XmlAttribute(name = "name")
     protected String name;
+
     @XmlAttribute(name = "minInstances")
     protected Integer minInstances;
+
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
 
@@ -109,36 +120,36 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         return "nodetemplate";
     }
 
-    public XTNodeTemplate.@Nullable Requirements getRequirements() {
+    public List<XTRequirement> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(XTNodeTemplate.@Nullable Requirements value) {
+    public void setRequirements(List<XTRequirement> value) {
         this.requirements = value;
     }
 
-    public XTNodeTemplate.@Nullable Capabilities getCapabilities() {
+    public List<XTCapability> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(XTNodeTemplate.@Nullable Capabilities value) {
+    public void setCapabilities(List<XTCapability> value) {
         this.capabilities = value;
     }
 
-    public @Nullable XTPolicies getPolicies() {
+    public List<XTPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable XTPolicies value) {
+    public void setPolicies(List<XTPolicy> value) {
         this.policies = value;
     }
 
     @Nullable
-    public XTDeploymentArtifacts getDeploymentArtifacts() {
+    public List<XTDeploymentArtifact> getDeploymentArtifacts() {
         return deploymentArtifacts;
     }
 
-    public void setDeploymentArtifacts(XTDeploymentArtifacts value) {
+    public void setDeploymentArtifacts(List<XTDeploymentArtifact> value) {
         this.deploymentArtifacts = value;
     }
 
@@ -151,7 +162,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         this.name = value;
     }
 
-    @NonNull
     public int getMinInstances() {
         if (minInstances == null) {
             return 1;
@@ -164,7 +174,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         this.minInstances = value;
     }
 
-    @NonNull
     public String getMaxInstances() {
         if (maxInstances == null) {
             return "1";
@@ -188,8 +197,8 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     }
 
     /**
-     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y"
-     * property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
+     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the
+     * "y" property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
      *
      * @param x the value of the x-coordinate to be set
      */
@@ -210,8 +219,8 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     }
 
     /**
-     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the "y"
-     * property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
+     * Sets the top coordinate of a {@link XTNodeTemplate}. When receiving the JSON, this method ensures that (i) the
+     * "y" property can be handled and (ii) the Y coordinate is written correctly in the extension namespace.
      *
      * @param y the value of the coordinate to be set
      */
@@ -226,59 +235,6 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "capability"
-    })
-    public static class Capabilities implements Serializable {
-
-        @XmlElement(name = "Capability", required = true)
-        protected List<XTCapability> capability;
-
-        /**
-         * Gets the value of the capability property.
-         * <p>
-         * <p>
-         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
-         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
-         * method for the capability property.
-         * <p>
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getCapability().add(newItem);
-         * </pre>
-         * <p>
-         * <p>
-         * <p>
-         * Objects of the following type(s) are allowed in the list {@link XTCapability }
-         */
-        @NonNull
-        public List<XTCapability> getCapability() {
-            if (capability == null) {
-                capability = new ArrayList<XTCapability>();
-            }
-            return this.capability;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Capabilities that = (Capabilities) o;
-            return Objects.equals(capability, that.capability);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(capability);
-        }
-
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
         "requirement"
     })
     public static class Requirements implements Serializable {
@@ -289,7 +245,7 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
         @NonNull
         public List<XTRequirement> getRequirement() {
             if (requirement == null) {
-                requirement = new ArrayList<XTRequirement>();
+                requirement = new ArrayList<>();
             }
             return this.requirement;
         }
@@ -313,10 +269,10 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
     }
 
     public static class Builder extends XRelationshipSourceOrTarget.Builder<Builder> {
-        private Requirements requirements;
-        private Capabilities capabilities;
-        private XTPolicies policies;
-        private XTDeploymentArtifacts deploymentArtifacts;
+        private List<XTRequirement> requirements;
+        private List<XTCapability> capabilities;
+        private List<XTPolicy> policies;
+        private List<XTDeploymentArtifact> deploymentArtifacts;
         private String name;
         private Integer minInstances;
         private String maxInstances;
@@ -331,22 +287,17 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             super(entityTemplate);
         }
 
-        public Builder setRequirements(XTNodeTemplate.Requirements requirements) {
+        public Builder setRequirements(List<XTRequirement> requirements) {
             this.requirements = requirements;
             return this;
         }
 
-        public Builder setCapabilities(XTNodeTemplate.Capabilities capabilities) {
+        public Builder setCapabilities(List<XTCapability> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
-        public Builder setPolicies(XTPolicies policies) {
-            this.policies = policies;
-            return this;
-        }
-
-        public Builder setDeploymentArtifacts(XTDeploymentArtifacts deploymentArtifacts) {
+        public Builder setDeploymentArtifacts(List<XTDeploymentArtifact> deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
             return this;
         }
@@ -376,81 +327,28 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
             return this;
         }
 
-        public Builder addRequirements(XTNodeTemplate.Requirements requirements) {
-            if (requirements == null || requirements.getRequirement().isEmpty()) {
+        public Builder addRequirements(List<XTRequirement> requirements) {
+            if (requirements == null || requirements.isEmpty()) {
                 return this;
             }
 
             if (this.requirements == null) {
                 this.requirements = requirements;
             } else {
-                this.requirements.getRequirement().addAll(requirements.getRequirement());
+                this.requirements.addAll(requirements);
             }
             return this;
         }
 
-        public Builder addRequirements(List<XTRequirement> requirements) {
-            if (requirements == null) {
-                return this;
-            }
-
-            XTNodeTemplate.Requirements tmp = new XTNodeTemplate.Requirements();
-            tmp.getRequirement().addAll(requirements);
-            return addRequirements(tmp);
-        }
-
-        public Builder addRequirements(XTRequirement requirements) {
-            if (requirements == null) {
-                return this;
-            }
-
-            XTNodeTemplate.Requirements tmp = new XTNodeTemplate.Requirements();
-            tmp.getRequirement().add(requirements);
-            return addRequirements(tmp);
-        }
-
-        public Builder addCapabilities(XTNodeTemplate.Capabilities capabilities) {
-            if (capabilities == null || capabilities.getCapability().isEmpty()) {
+        public Builder addCapabilities(List<XTCapability> capabilities) {
+            if (capabilities == null || capabilities.isEmpty()) {
                 return this;
             }
 
             if (this.capabilities == null) {
                 this.capabilities = capabilities;
             } else {
-                this.capabilities.getCapability().addAll(capabilities.getCapability());
-            }
-            return this;
-        }
-
-        public Builder addCapabilities(List<XTCapability> capabilities) {
-            if (capabilities == null) {
-                return this;
-            }
-
-            XTNodeTemplate.Capabilities tmp = new XTNodeTemplate.Capabilities();
-            tmp.getCapability().addAll(capabilities);
-            return addCapabilities(tmp);
-        }
-
-        public Builder addCapabilities(XTCapability capabilities) {
-            if (capabilities == null) {
-                return this;
-            }
-
-            XTNodeTemplate.Capabilities tmp = new XTNodeTemplate.Capabilities();
-            tmp.getCapability().add(capabilities);
-            return addCapabilities(tmp);
-        }
-
-        public Builder addPolicies(XTPolicies policies) {
-            if (policies == null) {
-                return this;
-            }
-
-            if (this.policies == null) {
-                this.policies = policies;
-            } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.capabilities.addAll(capabilities);
             }
             return this;
         }
@@ -460,19 +358,12 @@ public class XTNodeTemplate extends XRelationshipSourceOrTarget implements XHasP
                 return this;
             }
 
-            XTPolicies tmp = new XTPolicies();
-            tmp.getPolicy().addAll(policies);
-            return addPolicies(tmp);
-        }
-
-        public Builder addPolicies(XTPolicy policies) {
-            if (policies == null) {
-                return this;
+            if (this.policies == null) {
+                this.policies = policies;
+            } else {
+                this.policies.addAll(policies);
             }
-
-            XTPolicies tmp = new XTPolicies();
-            tmp.getPolicy().add(policies);
-            return addPolicies(tmp);
+            return this;
         }
 
         @Override

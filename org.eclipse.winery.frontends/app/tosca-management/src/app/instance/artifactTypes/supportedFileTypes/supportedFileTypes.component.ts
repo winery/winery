@@ -70,11 +70,6 @@ export class SupportedFileTypesComponent implements OnInit {
 
     }
 
-    private handleError(error: HttpErrorResponse): void {
-        this.loading = false;
-        this.notify.error(error.message, 'Error');
-    }
-
     saveToServer() {
         this.loading = true;
         this.service.set(this.currentMimeType, this.allFileExtensions.map(ext => ext.value))
@@ -105,5 +100,9 @@ export class SupportedFileTypesComponent implements OnInit {
         this.allFileExtensions = this.allFileExtensions.filter(ext => ext.value !== $event.value);
     }
 
+    private handleError(error: HttpErrorResponse): void {
+        this.loading = false;
+        this.notify.error(error.message, 'Error');
+    }
 }
 

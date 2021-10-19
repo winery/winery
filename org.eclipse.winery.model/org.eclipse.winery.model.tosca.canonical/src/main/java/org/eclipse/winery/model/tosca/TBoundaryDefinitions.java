@@ -23,11 +23,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,19 +43,30 @@ public class TBoundaryDefinitions implements Serializable {
 
     @XmlElement(name = "Properties")
     protected TBoundaryDefinitions.Properties properties;
-    @XmlElement(name = "PropertyConstraints")
-    protected TBoundaryDefinitions.PropertyConstraints propertyConstraints;
-    @XmlElement(name = "Requirements")
-    protected TBoundaryDefinitions.Requirements requirements;
-    @XmlElement(name = "Capabilities")
-    protected TBoundaryDefinitions.Capabilities capabilities;
-    @XmlElement(name = "Policies")
-    protected TPolicies policies;
-    @XmlElement(name = "Interfaces")
-    protected TBoundaryDefinitions.Interfaces interfaces;
+
+    @XmlElementWrapper(name = "PropertyConstraints")
+    @XmlElement(name = "PropertyConstraint", required = true)
+    protected List<TPropertyConstraint> propertyConstraints;
+
+    @XmlElementWrapper(name = "Requirements")
+    @XmlElement(name = "Requirement", required = true)
+    protected List<TRequirementRef> requirements;
+
+    @XmlElementWrapper(name = "Capabilities")
+    @XmlElement(name = "Capability", required = true)
+    protected List<TCapabilityRef> capabilities;
+
+    @XmlElementWrapper(name = "Policies")
+    @XmlElement(name = "Policy", required = true)
+    protected List<TPolicy> policies;
+
+    @XmlElementWrapper(name = "Interfaces")
+    @XmlElement(name = "Interface", required = true)
+    protected List<TExportedInterface> interfaces;
 
     @Deprecated // used for XML deserialization of API request content
-    public TBoundaryDefinitions() { }
+    public TBoundaryDefinitions() {
+    }
 
     public TBoundaryDefinitions(Builder builder) {
         this.properties = builder.properties;
@@ -92,84 +103,48 @@ public class TBoundaryDefinitions implements Serializable {
         this.properties = value;
     }
 
-    public TBoundaryDefinitions.@Nullable PropertyConstraints getPropertyConstraints() {
+    public List<TPropertyConstraint> getPropertyConstraints() {
         return propertyConstraints;
     }
 
-    public void setPropertyConstraints(TBoundaryDefinitions.@Nullable PropertyConstraints value) {
+    public void setPropertyConstraints(List<TPropertyConstraint> value) {
         this.propertyConstraints = value;
     }
 
-    public TBoundaryDefinitions.@Nullable Requirements getRequirements() {
+    public List<TRequirementRef> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(TBoundaryDefinitions.@Nullable Requirements value) {
+    public void setRequirements(List<TRequirementRef> value) {
         this.requirements = value;
     }
 
-    public TBoundaryDefinitions.@Nullable Capabilities getCapabilities() {
+    public List<TCapabilityRef> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(TBoundaryDefinitions.@Nullable Capabilities value) {
+    public void setCapabilities(List<TCapabilityRef> value) {
         this.capabilities = value;
     }
 
-    public @Nullable TPolicies getPolicies() {
+    public List<TPolicy> getPolicies() {
         return policies;
     }
 
-    public void setPolicies(@Nullable TPolicies value) {
+    public void setPolicies(List<TPolicy> value) {
         this.policies = value;
     }
 
-    public TBoundaryDefinitions.@Nullable Interfaces getInterfaces() {
+    public List<TExportedInterface> getInterfaces() {
         return interfaces;
     }
 
-    public void setInterfaces(TBoundaryDefinitions.@Nullable Interfaces value) {
+    public void setInterfaces(List<TExportedInterface> value) {
         this.interfaces = value;
     }
 
     public void accept(Visitor visitor) {
         visitor.visit(this);
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "capability"
-    })
-    public static class Capabilities implements Serializable {
-
-        @XmlElement(name = "Capability", required = true)
-        protected List<TCapabilityRef> capability;
-
-        @NonNull
-        public List<TCapabilityRef> getCapability() {
-            if (capability == null) {
-                capability = new ArrayList<>();
-            }
-            return this.capability;
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "_interface"
-    })
-    public static class Interfaces implements Serializable {
-
-        @XmlElement(name = "Interface", required = true)
-        protected List<TExportedInterface> _interface;
-
-        @NonNull
-        public List<TExportedInterface> getInterface() {
-            if (_interface == null) {
-                _interface = new ArrayList<>();
-            }
-            return this._interface;
-        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -181,8 +156,9 @@ public class TBoundaryDefinitions implements Serializable {
 
         @XmlAnyElement(lax = true)
         protected Object any;
-        @XmlElement(name = "PropertyMappings")
-        protected TBoundaryDefinitions.Properties.PropertyMappings propertyMappings;
+        @XmlElementWrapper(name = "PropertyMappings")
+        @XmlElement(name = "PropertyMapping", required = true)
+        protected List<TPropertyMapping> propertyMappings;
 
         @Nullable
         public Object getAny() {
@@ -193,80 +169,27 @@ public class TBoundaryDefinitions implements Serializable {
             this.any = value;
         }
 
-        public TBoundaryDefinitions.Properties.@Nullable PropertyMappings getPropertyMappings() {
+        public List<TPropertyMapping> getPropertyMappings() {
             return propertyMappings;
         }
 
-        public void setPropertyMappings(TBoundaryDefinitions.Properties.@Nullable PropertyMappings value) {
+        public void setPropertyMappings(List<TPropertyMapping> value) {
             this.propertyMappings = value;
         }
 
         public void accept(Visitor visitor) {
             visitor.visit(this);
         }
-
-        @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "propertyMapping"
-        })
-        public static class PropertyMappings implements Serializable {
-
-            @XmlElement(name = "PropertyMapping", required = true)
-            protected List<TPropertyMapping> propertyMapping;
-
-            @NonNull
-            public List<TPropertyMapping> getPropertyMapping() {
-                if (propertyMapping == null) {
-                    propertyMapping = new ArrayList<>();
-                }
-                return this.propertyMapping;
-            }
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "propertyConstraint"
-    })
-    public static class PropertyConstraints implements Serializable {
-
-        @XmlElement(name = "PropertyConstraint", required = true)
-        protected List<TPropertyConstraint> propertyConstraint;
-
-        @NonNull
-        public List<TPropertyConstraint> getPropertyConstraint() {
-            if (propertyConstraint == null) {
-                propertyConstraint = new ArrayList<>();
-            }
-            return this.propertyConstraint;
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "requirement"
-    })
-    public static class Requirements implements Serializable {
-
-        @XmlElement(name = "Requirement", required = true)
-        protected List<TRequirementRef> requirement;
-
-        @NonNull
-        public List<TRequirementRef> getRequirement() {
-            if (requirement == null) {
-                requirement = new ArrayList<>();
-            }
-            return this.requirement;
-        }
     }
 
     public static class Builder {
+
         private Properties properties;
-        private PropertyConstraints propertyConstraints;
-        private Requirements requirements;
-        private Capabilities capabilities;
-        private TPolicies policies;
-        private Interfaces interfaces;
+        private List<TPropertyConstraint> propertyConstraints;
+        private List<TRequirementRef> requirements;
+        private List<TCapabilityRef> capabilities;
+        private List<TPolicy> policies;
+        private List<TExportedInterface> interfaces;
 
         public Builder() {
 
@@ -277,61 +200,51 @@ public class TBoundaryDefinitions implements Serializable {
             return this;
         }
 
-        public Builder setPropertyConstraints(PropertyConstraints propertyConstraints) {
+        public Builder setPropertyConstraints(List<TPropertyConstraint> propertyConstraints) {
             this.propertyConstraints = propertyConstraints;
             return this;
         }
 
-        public Builder setRequirements(Requirements requirements) {
+        public Builder setRequirements(List<TRequirementRef> requirements) {
             this.requirements = requirements;
             return this;
         }
 
-        public Builder setCapabilities(Capabilities capabilities) {
+        public Builder setCapabilities(List<TCapabilityRef> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
-        public Builder setPolicies(TPolicies policies) {
+        public Builder setPolicies(List<TPolicy> policies) {
             this.policies = policies;
             return this;
         }
 
-        public Builder setInterfaces(Interfaces interfaces) {
+        public Builder setInterfaces(List<TExportedInterface> interfaces) {
             this.interfaces = interfaces;
             return this;
         }
 
-        public Builder addPolicies(TPolicies policies) {
-            if (policies == null || policies.getPolicy().isEmpty()) {
+        public Builder addPolicies(List<TPolicy> policies) {
+            if (policies == null || policies.isEmpty()) {
                 return this;
             }
 
             if (this.policies == null) {
                 this.policies = policies;
             } else {
-                this.policies.getPolicy().addAll(policies.getPolicy());
+                this.policies.addAll(policies);
             }
             return this;
         }
 
-        public Builder addPolicies(List<TPolicy> policies) {
+        public Builder addPolicy(TPolicy policies) {
             if (policies == null) {
                 return this;
             }
 
-            TPolicies tmp = new TPolicies();
-            tmp.getPolicy().addAll(policies);
-            return this.addPolicies(tmp);
-        }
-
-        public Builder addPolicies(TPolicy policies) {
-            if (policies == null) {
-                return this;
-            }
-
-            TPolicies tmp = new TPolicies();
-            tmp.getPolicy().add(policies);
+            List<TPolicy> tmp = new ArrayList<>();
+            tmp.add(policies);
             return this.addPolicies(tmp);
         }
 

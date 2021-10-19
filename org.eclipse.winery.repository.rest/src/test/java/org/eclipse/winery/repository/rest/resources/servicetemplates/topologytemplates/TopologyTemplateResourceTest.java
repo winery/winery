@@ -67,22 +67,28 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void emptyElementTagsInXML() throws Exception {
         this.setRevisionTo("origin/plain");
         // for testing an arbitrary existing service template is used
-        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.xml");
+        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants_w1-wip1/topologytemplate/",
+            "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants_w1-wip1.xml");
     }
 
     @Test
     public void topologyTemplateUpdateWithEmptyListsGetTheListsRemoved() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2-with-empty-objects.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
+        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", 
+            "servicetemplates/baobab_topologytemplate_v2-with-empty-objects.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/",
+            "servicetemplates/baobab_topologytemplate_v2.json");
     }
 
     @Test
     public void apacheSparkAppOnVspheretopologyTemplateUpdateWithEmptyListsGetTheListsRemoved() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/apache-spark-on-vsphere-input.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/apache-spark-on-vsphere-result.json");
+        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/",
+            "servicetemplates/apache-spark-on-vsphere-input.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/",
+            "servicetemplates/apache-spark-on-vsphere-result.json");
     }
 
     @Test
@@ -146,8 +152,10 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void jsonWithEmptyPoliciesElementProducesValidXml() throws Exception {
         this.setRevisionTo("origin/plain");
         // for testing an arbitrary existing service template is used
-        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "entitytypes/servicetemplates/topologytemplates/empty-xml-test--topology-with-empty-policy.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "entitytypes/servicetemplates/topologytemplates/empty-xml-test--topology-without-empty-elements.xml");
+        this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/",
+            "entitytypes/servicetemplates/topologytemplates/empty-xml-test--topology-with-empty-policy.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/",
+            "entitytypes/servicetemplates/topologytemplates/empty-xml-test--topology-without-empty-elements.xml");
     }
 
     @Test

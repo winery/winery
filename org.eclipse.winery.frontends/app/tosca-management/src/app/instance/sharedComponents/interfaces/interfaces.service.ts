@@ -18,7 +18,6 @@ import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesApiData } from './interfacesApiData';
 import { InstanceService } from '../../instance.service';
 import { backendBaseURL } from '../../../configuration';
-import { isNullOrUndefined } from 'util';
 import { Utils } from '../../../wineryUtils/utils';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -144,7 +143,7 @@ export class InterfacesService {
      * shortly before we use it again.
      */
     private setImplementationsUrl() {
-        if (isNullOrUndefined(this.implementationsUrl) && !isNullOrUndefined(this.sharedData.toscaComponent)) {
+        if (!this.implementationsUrl && this.sharedData.toscaComponent) {
             this.implementationsUrl = Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType) + '/';
         }
     }

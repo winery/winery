@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Component, forwardRef, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { TDataType } from '../../models/ttopology-template';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -49,19 +49,15 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
     errors: string[] = [];
     _value: any;
 
-    // storage for callbacks
-    private _onChange: any = e => {};
-    private _onTouch: any = e => {};
+    JSON: JSON;
     private desugaredValidator: Validator = undefined;
 
     // this subject helps reduce computation load by debouncing validation triggers while the user adds input.
     private validationDebouncer: Subject<any> = new Subject<any>();
     private availableDataTypes: TDataType[] = [];
 
-    JSON: JSON;
-
     constructor(private dataTypes: BackendService) {
-        this.dataTypes.model$.subscribe(backendModel => {
+        this.dataTypes.model.subscribe((backendModel) => {
             this.availableDataTypes = backendModel.dataTypes;
         });
     }
@@ -123,5 +119,12 @@ export class TypeawareInputComponent implements ControlValueAccessor, OnInit, On
             return value.substr(1, value.length - 2);
         }
         return value;
+    }
+
+    // storage for callbacks
+    private _onChange: any = () => {
+    }
+
+    private _onTouch: any = () => {
     }
 }

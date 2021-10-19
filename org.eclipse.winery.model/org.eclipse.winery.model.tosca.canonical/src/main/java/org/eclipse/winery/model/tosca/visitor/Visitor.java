@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.tosca.visitor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,18 +27,17 @@ import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TCondition;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TExportedInterface;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
@@ -46,7 +46,6 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -56,7 +55,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * In other words: The nesting is followed.
  *
  * In general, for all elements in the hierarchy, a visit method is implemented. This visit method visits all children
- * (in the TOSCA graph meta model). In case an element in the hierarchy has no children in the TOSCA graph meta model
+ * (in the TOSCA graph metamodel). In case an element in the hierarchy has no children in the TOSCA graph metamodel
  * and no children in the inheritance hierarchy, it is omitted.
  *
  * This class intentionally defines all default methods not as abstract to keep the children simple and to avoid
@@ -68,6 +67,7 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * TODO: Implement it for all DefinitionsChildren (NodeType, NodeTypeImplementation, ...)
  */
+@SuppressWarnings("unused")
 public abstract class Visitor {
 
     public void visit(TServiceTemplate serviceTemplate) {
@@ -79,16 +79,16 @@ public abstract class Visitor {
             topologyTemplate.accept(this);
         }
 
-        final TTags tags = serviceTemplate.getTags();
+        final List<TTag> tags = serviceTemplate.getTags();
         if (tags != null) {
-            for (TTag tag : tags.getTag()) {
+            for (TTag tag : tags) {
                 tag.accept(this);
             }
         }
 
-        final TPlans plans = serviceTemplate.getPlans();
+        final List<TPlan> plans = serviceTemplate.getPlans();
         if (plans != null) {
-            for (TPlan plan : plans.getPlan()) {
+            for (TPlan plan : plans) {
                 plan.accept(this);
             }
         }
@@ -107,13 +107,16 @@ public abstract class Visitor {
         if (precondition != null) {
             precondition.accept(this);
         }
-        final TPlan.InputParameters inputParameters = plan.getInputParameters();
-        if (inputParameters != null) {
-            for (TParameter parameter : inputParameters.getInputParameter()) {
+        if (plan.getInputParameters() != null) {
+            for (TParameter parameter : plan.getInputParameters()) {
                 parameter.accept(this);
             }
         }
-        plan.getOutputParameters();
+        if (plan.getOutputParameters() != null) {
+            for (TParameter parameter : plan.getOutputParameters()) {
+                parameter.accept(this);
+            }
+        }
     }
 
     public void visit(TTopologyTemplate topologyTemplate) {
@@ -126,7 +129,29 @@ public abstract class Visitor {
         for (TRelationshipTemplate relationshipTemplate : topologyTemplate.getRelationshipTemplates()) {
             relationshipTemplate.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
+    }
+
+    public void visit(TNodeTypeImplementation nodeTypeImplementation) {
+        Objects.requireNonNull(nodeTypeImplementation);
+        visit((TEntityTypeImplementation) nodeTypeImplementation);
+
+        if (nodeTypeImplementation.getDeploymentArtifacts() != null) {
+            for (TDeploymentArtifact da : nodeTypeImplementation.getDeploymentArtifacts()) {
+                da.accept(this);
+            }
+        }
+    }
+
+    public void visit(TEntityTypeImplementation implementation) {
+        Objects.requireNonNull(implementation);
+        visit((TExtensibleElements) implementation);
+
+        if (implementation.getImplementationArtifacts() != null) {
+            for (TImplementationArtifact ia : implementation.getImplementationArtifacts()) {
+                ia.accept(this);
+            }
+        }
     }
 
     public void visit(TExtensibleElements extensibleElement) {
@@ -134,7 +159,7 @@ public abstract class Visitor {
         for (TDocumentation documentation : extensibleElement.getDocumentation()) {
             documentation.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TEntityType entityType) {
@@ -156,36 +181,36 @@ public abstract class Visitor {
         if (properties != null) {
             visit(properties);
         }
-        final TEntityTemplate.PropertyConstraints propertyConstraints = entityTemplate.getPropertyConstraints();
+        final List<TPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
         if (propertyConstraints != null) {
-            propertyConstraints.accept(this);
+            propertyConstraints.forEach(this::visit);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TNodeTemplate nodeTemplate) {
         this.visit((RelationshipSourceOrTarget) nodeTemplate);
-        final TNodeTemplate.Requirements requirements = nodeTemplate.getRequirements();
+        final List<TRequirement> requirements = nodeTemplate.getRequirements();
         if (requirements != null) {
-            requirements.accept(this);
+            requirements.forEach(requirement -> requirement.accept(this));
         }
-        final TNodeTemplate.Capabilities capabilities = nodeTemplate.getCapabilities();
+        final List<TCapability> capabilities = nodeTemplate.getCapabilities();
         if (capabilities != null) {
-            capabilities.accept(this);
+            capabilities.forEach(capability -> capability.accept(this));
         }
-        final TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        final List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         if (deploymentArtifacts != null) {
-            for (TDeploymentArtifact deploymentArtifact : deploymentArtifacts.getDeploymentArtifact()) {
+            for (TDeploymentArtifact deploymentArtifact : deploymentArtifacts) {
                 deploymentArtifact.accept(this);
             }
         }
-        final TPolicies policies = nodeTemplate.getPolicies();
+        final List<TPolicy> policies = nodeTemplate.getPolicies();
         if (policies != null) {
-            for (TPolicy policy : policies.getPolicy()) {
+            for (TPolicy policy : policies) {
                 policy.accept(this);
             }
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TRelationshipTemplate relationshipTemplate) {
@@ -196,48 +221,27 @@ public abstract class Visitor {
                 relationshipConstraint.accept(this);
             }
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TEntityTemplate.Properties properties) {
         // in all cases this is a leaf node, so no action to take
     }
 
-    public void visit(TEntityTemplate.PropertyConstraints propertyConstraints) {
-        for (TPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+    public void visit(List<TPropertyConstraint> propertyConstraints) {
+        for (TPropertyConstraint propertyConstraint : propertyConstraints) {
             propertyConstraint.accept(this);
         }
-        // meta model does not offer more children
+        // metamodel does not offer more children
     }
 
     public void visit(TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint relationshipConstraint) {
         // this is a leaf, so no action to take
     }
 
-    public void visit(TNodeTemplate.Capabilities capabilities) {
-        for (TCapability capability : capabilities.getCapability()) {
-            capability.accept(this);
-        }
-        // meta model does not offer more children
-    }
-
-    public void visit(TNodeTemplate.Requirements requirements) {
-        for (TRequirement requirement : requirements.getRequirement()) {
-            requirement.accept(this);
-        }
-        // meta model does not offer more children
-    }
-
     public void visit(TRequirement requirement) {
-        final TEntityTemplate.Properties properties = requirement.getProperties();
-        if (properties != null) {
-            visit(properties);
-        }
-        final TEntityTemplate.PropertyConstraints propertyConstraints = requirement.getPropertyConstraints();
-        if (propertyConstraints != null) {
-            propertyConstraints.accept(this);
-        }
-        // meta model does not offer more children
+        this.visit((TEntityTemplate) requirement);
+        // metamodel does not offer more children
     }
 
     public void accept(TTag tag) {
@@ -262,45 +266,45 @@ public abstract class Visitor {
     }
 
     private void acceptBoundaryDefinitionsInterfaces(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Interfaces interfaces = boundaryDefinitions.getInterfaces();
+        final List<TExportedInterface> interfaces = boundaryDefinitions.getInterfaces();
         if (interfaces != null) {
-            for (TExportedInterface exportedInterface : interfaces.getInterface()) {
+            for (TExportedInterface exportedInterface : interfaces) {
                 exportedInterface.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsCapabilities(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Capabilities capabilities = boundaryDefinitions.getCapabilities();
+        final List<TCapabilityRef> capabilities = boundaryDefinitions.getCapabilities();
         if (capabilities != null) {
-            for (TCapabilityRef capabilityRef : capabilities.getCapability()) {
+            for (TCapabilityRef capabilityRef : capabilities) {
                 capabilityRef.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsRequirements(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.Requirements requirements = boundaryDefinitions.getRequirements();
+        final List<TRequirementRef> requirements = boundaryDefinitions.getRequirements();
         if (requirements != null) {
-            for (TRequirementRef requirementRef : requirements.getRequirement()) {
+            for (TRequirementRef requirementRef : requirements) {
                 requirementRef.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsPolicies(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TPolicies policies = boundaryDefinitions.getPolicies();
+        final List<TPolicy> policies = boundaryDefinitions.getPolicies();
         if (policies != null) {
-            for (TPolicy policy : policies.getPolicy()) {
+            for (TPolicy policy : policies) {
                 policy.accept(this);
             }
         }
     }
 
     private void acceptBoundaryDefinitionsPropertyConstraints(@NonNull TBoundaryDefinitions boundaryDefinitions) {
-        final TBoundaryDefinitions.PropertyConstraints propertyConstraints = boundaryDefinitions.getPropertyConstraints();
+        final List<TPropertyConstraint> propertyConstraints = boundaryDefinitions.getPropertyConstraints();
         if (propertyConstraints != null) {
-            for (TPropertyConstraint propertyConstraint : propertyConstraints.getPropertyConstraint()) {
+            for (TPropertyConstraint propertyConstraint : propertyConstraints) {
                 propertyConstraint.accept(this);
             }
         }
@@ -314,9 +318,9 @@ public abstract class Visitor {
     }
 
     public void visit(TBoundaryDefinitions.Properties properties) {
-        final TBoundaryDefinitions.Properties.PropertyMappings propertyMappings = properties.getPropertyMappings();
+        final List<TPropertyMapping> propertyMappings = properties.getPropertyMappings();
         if (propertyMappings != null) {
-            for (TPropertyMapping propertyMapping : propertyMappings.getPropertyMapping()) {
+            for (TPropertyMapping propertyMapping : propertyMappings) {
                 propertyMapping.accept(this);
             }
         }

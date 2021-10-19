@@ -39,7 +39,7 @@ export abstract class TopologyTemplateUtil {
             otherAttributes: {},
             relationshipTemplates: [],
             nodeTemplates: [],
-            policies: { policy: new Array<TPolicy>() },
+            policies: new Array<TPolicy>(),
             groups: [],
             participants: [],
         };
@@ -117,41 +117,41 @@ export abstract class TopologyTemplateUtil {
             }
             // look for missing capabilities and add them
             const capDefs: CapabilityDefinitionModel[] = InheritanceUtils.getEffectiveCapabilityDefinitionsOfNodeType(node.type, types);
-            if (!node.capabilities || !node.capabilities.capability) {
-                node.capabilities = { capability: [] };
+            if (!node.capabilities ) {
+                node.capabilities = [];
             }
-            capDefs.forEach(def => {
-                const capAssignment = node.capabilities.capability.find(capAss => capAss.name === def.name);
+            capDefs.forEach((def) => {
+                const capAssignment = node.capabilities.find((capAss) => capAss.name === def.name);
                 const cap: CapabilityModel = CapabilityModel.fromCapabilityDefinitionModel(def);
 
                 if (capAssignment) {
-                    const capAssignmentIndex = node.capabilities.capability.indexOf(capAssignment);
+                    const capAssignmentIndex = node.capabilities.indexOf(capAssignment);
                     cap.properties = capAssignment.properties;
-                    node.capabilities.capability.splice(capAssignmentIndex, 1);
+                    node.capabilities.splice(capAssignmentIndex, 1);
                 }
 
                 cap.id = this.generateYAMLCapabilityID(node, cap.name);
-                node.capabilities.capability.push(cap);
+                node.capabilities.push(cap);
             });
 
             // we assume that either all requirements are in the template, or none are (and therefore must be retrieved from the type hierarchy)
             const reqDefs: RequirementDefinitionModel[] = InheritanceUtils.getEffectiveRequirementDefinitionsOfNodeType(node.type, types);
             if (!node.requirements) {
-                node.requirements = { requirement: [] };
+                node.requirements = [];
             }
-            reqDefs.forEach(reqDef => {
+            reqDefs.forEach((reqDef) => {
                 const req = RequirementModel.fromRequirementDefinition(reqDef);
-                if (!node.requirements.requirement.find(r => {
+                if (!node.requirements.find((r) => {
                     if (req.unbounded) {
                         return r.name === req.name && r.relationship === req.relationship;
                     } else {
                         return r.name === req.name;
                     }
                 })) {
-                    node.requirements.requirement.push(req);
+                    node.requirements.push(req);
                 }
             });
-            node.requirements.requirement.forEach(req => req.id = this.generateYAMLRequirementID(node, req));
+            node.requirements.forEach((req) => req.id = this.generateYAMLRequirementID(node, req));
         }
 
         return new TNodeTemplate(
@@ -167,11 +167,11 @@ export abstract class TopologyTemplateUtil {
             otherAttributes,
             node.x,
             node.y,
-            node.capabilities ? node.capabilities : { capability: [] },
-            node.requirements ? node.requirements : { requirement: [] },
-            node.deploymentArtifacts ? node.deploymentArtifacts : {},
-            node.policies ? node.policies : { policy: [] },
-            node.artifacts ? node.artifacts : { artifact: [] },
+            node.capabilities ? node.capabilities :  [] ,
+            node.requirements ? node.requirements :  [],
+            node.deploymentArtifacts ? node.deploymentArtifacts : [],
+            node.policies ? node.policies : [],
+            node.artifacts ? node.artifacts : [],
             state
         );
     }
@@ -195,8 +195,8 @@ export abstract class TopologyTemplateUtil {
     static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): Visuals {
         for (const visual of nodeVisuals) {
             const qName = new QName(visual.typeId);
-            const localName = qName.localName;
-            if (localName === new QName(nodeType).localName) {
+            const nodeTypeQName = new QName(nodeType);
+            if (qName.localName === nodeTypeQName.localName && qName.nameSpace === nodeTypeQName.nameSpace) {
                 const color = !state ? visual.color : VersionUtils.getElementColorByDiffState(state);
                 return <Visuals>{
                     color: color,
@@ -243,7 +243,7 @@ export abstract class TopologyTemplateUtil {
     static handleYamlRelationship(relationship: TRelationshipTemplate, nodeTemplateArray: Array<TNodeTemplate>) {
         // First, we look for the source node template / requirement
         for (const nodeTemplate of nodeTemplateArray) {
-            const foundRequirement: RequirementModel = nodeTemplate.requirements.requirement
+            const foundRequirement: RequirementModel = nodeTemplate.requirements
                 .find(requirement => requirement.relationship === relationship.id);
             if (foundRequirement) {
                 // the id was calculated before by the init node template method
@@ -251,7 +251,7 @@ export abstract class TopologyTemplateUtil {
                 // now we look for the target node template / capability.
                 const targetNodeTemplate = nodeTemplateArray.find(nt => nt.id === foundRequirement.node);
                 if (targetNodeTemplate) {
-                    const targetCapability = targetNodeTemplate.capabilities.capability
+                    const targetCapability = targetNodeTemplate.capabilities
                         .find(cap => cap.name === foundRequirement.capability);
                     // the id was calculated before by the init node template method
                     relationship.targetElement = { ref: targetCapability.id };

@@ -12,7 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+    Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild
+} from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import { TPolicy } from '../../models/policiesModalData';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
@@ -21,7 +23,6 @@ import { EntityTypesModel } from '../../models/entityTypesModel';
 import { BackendService } from '../../services/backend.service';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NgRedux } from '@angular-redux/store';
-import { isNullOrUndefined } from 'util';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { ExistsService } from '../../services/exists.service';
 import { ToastrService } from 'ngx-toastr';
@@ -60,14 +61,14 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     artifactOrPolicyAlreadyExists: boolean;
     // artifactOrPolicy creation
     artifactOrPolicy: QNameWithTypeApiData = new QNameWithTypeApiData();
-    artifactOrPolicyUrl: string;
     // needed for edit and delete tasks
     modalVariantForEditDeleteTasks = '(none)';
 
     // this is required for some reason
     ModalVariant = ModalVariant;
+    selectedYamlArtifactAllowedTypes = '';
+
     private selectedYamlArtifactFile: File;
-    private selectedYamlArtifactAllowedTypes = '';
     private currentTopologyTemplate: TTopologyTemplate;
     private subscriptions: Subscription[] = [];
 
@@ -77,7 +78,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
                 private existsService: ExistsService,
                 private entitiesModalService: EntitiesModalService,
                 private alert: ToastrService,
-                private configurationService: WineryRepositoryConfigurationService) {
+                public configurationService: WineryRepositoryConfigurationService) {
     }
 
     ngOnInit() {
@@ -111,12 +112,12 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
                 this.modal.show();
             }));
         this.subscriptions.push(
-            this.ngRedux.select(currentState => currentState.wineryState.currentJsonTopology)
-                .subscribe(topologyTemplate => this.currentTopologyTemplate = topologyTemplate));
+            this.ngRedux.select((currentState) => currentState.wineryState.currentJsonTopology)
+                .subscribe((topologyTemplate) => this.currentTopologyTemplate = topologyTemplate));
     }
 
     ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub.unsubscribe());
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -174,7 +175,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
                     {}
                 );
                 this.saveYamlArtifactsToModel(yamlArtifact);
-                this.backendService.saveTopologyTemplate(this.currentTopologyTemplate).subscribe((res) => {
+                this.backendService.saveTopologyTemplate(this.currentTopologyTemplate).subscribe(() => {
                     this.resetDeploymentArtifactOrPolicyModalData();
                     this.alert.success('Successfully Saved the Artifact!', 'Operation Successful');
                 }, error => {
@@ -199,7 +200,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
                     this.currentNodeData.id,
                     yamlArtifact.id,
                     this.selectedYamlArtifactFile,
-                ).subscribe((res) => {
+                ).subscribe(() => {
                     this.resetDeploymentArtifactOrPolicyModalData();
                     this.alert.success('Successfully Saved the Artifact!', 'Operation Successful');
                 }, error => {
@@ -218,7 +219,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
             );
             // POST to the backend
             this.backendService.createNewArtifactOrPolicy(this.artifactOrPolicy, 'artifact')
-                .subscribe(res => {
+                .subscribe((res) => {
                     if (res.ok === true) {
                         this.alert.success('<p>Saved the Deployment Artifact!<br>' + 'Response Status: '
                             + res.statusText + ' ' + res.status + '</p>');
@@ -244,7 +245,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
             );
             // POST to the backend
             this.backendService.createNewArtifactOrPolicy(this.artifactOrPolicy, 'policy')
-                .subscribe(res => {
+                .subscribe((res) => {
                     if (res.ok === true) {
                         this.alert.success('<p>Saved the Policy Template!<br>' + 'Response Status: '
                             + res.statusText + ' ' + res.status + '</p>');
@@ -313,7 +314,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         let artifactTypesOrPolicyTypes: string;
         variant === ModalVariant.DeploymentArtifacts ? artifactTypesOrPolicyTypes = 'artifactTypes' : artifactTypesOrPolicyTypes = 'policyTypes';
         // change the ones affected
-        this.entityTypes[artifactTypesOrPolicyTypes].some(currentlySelectedOne => {
+        this.entityTypes[artifactTypesOrPolicyTypes].some((currentlySelectedOne) => {
             if (currentlySelectedOne.name === artifactTypeOrPolicyType) {
                 this.deploymentArtifactOrPolicyModalData.id = currentlySelectedOne.id;
                 this.deploymentArtifactOrPolicyModalData.modalName = currentlySelectedOne.id;
@@ -358,8 +359,8 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         } else if (changedField === 'namespace') {
             this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace = event.target.value;
         }
-        if (!isNullOrUndefined(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace &&
-            this.deploymentArtifactOrPolicyModalData.modalTemplateName)) {
+        if (this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace &&
+            this.deploymentArtifactOrPolicyModalData.modalTemplateName) {
             this.deploymentArtifactOrPolicyModalData.modalTemplateRef = '{' +
                 this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace + '}' + this.deploymentArtifactOrPolicyModalData.modalTemplateName;
 
@@ -378,8 +379,8 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
 
             this.existsService.check(url)
                 .subscribe(
-                    data => this.artifactOrPolicyAlreadyExists = true,
-                    error => this.artifactOrPolicyAlreadyExists = false
+                    () => this.artifactOrPolicyAlreadyExists = true,
+                    () => this.artifactOrPolicyAlreadyExists = false
                 );
         }
     }
@@ -502,14 +503,6 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    private makeArtifactUrl() {
-        this.artifactOrPolicyUrl = this.backendService.configuration.repositoryURL
-            + urlElement.ArtifactTemplateURL
-            + encodeURIComponent(encodeURIComponent(this.deploymentArtifactOrPolicyModalData.modalTemplateNameSpace))
-            + '/' + this.deploymentArtifactOrPolicyModalData.modalTemplateName + '/';
-        // TODO: add upload ability "this.uploadUrl = this.artifactOrPolicyUrl + 'files/';"
-    }
-
     yamlArtifactFileSelected(files: FileList) {
         if (files && files.length > 0) {
             this.selectedYamlArtifactFile = files[0];
@@ -524,7 +517,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         if (this.deploymentArtifactOrPolicyModalData.modalType) {
             const selectedYamlArtifactType = this.entityTypes
                 .artifactTypes
-                .find(artiTyep => artiTyep.qName === this.deploymentArtifactOrPolicyModalData.modalType);
+                .find((artifactType) => artifactType.qName === this.deploymentArtifactOrPolicyModalData.modalType);
             if (selectedYamlArtifactType) {
                 if (selectedYamlArtifactType.fileExtensions && selectedYamlArtifactType.fileExtensions.length > 0) {
                     this.selectedYamlArtifactAllowedTypes = selectedYamlArtifactType.fileExtensions.join(',');
@@ -549,7 +542,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     downloadYamlArtifactFile() {
         this.backendService.downloadYamlArtifactFile(this.deploymentArtifactOrPolicyModalData.nodeTemplateId,
             this.deploymentArtifactOrPolicyModalData.modalName,
-            this.deploymentArtifactOrPolicyModalData.modalFileName).subscribe(data => {
+            this.deploymentArtifactOrPolicyModalData.modalFileName).subscribe((data) => {
             const blob = new Blob([data.body], { type: 'application/octet-stream' });
             const url = window.URL.createObjectURL(blob);
             const anchor = document.createElement('a');

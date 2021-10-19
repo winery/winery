@@ -19,18 +19,14 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
-export class Property {
+export class PropertyMapping {
     serviceTemplatePropertyRef: string;
     targetObjectRef: string;
     targetPropertyRef: string;
 }
 
-export interface PropertyMappings {
-    propertyMapping: Property[];
-}
-
 export interface PropertyMappingsApiData {
-    propertyMappings: PropertyMappings;
+    propertyMappings: PropertyMapping[];
 }
 
 @Injectable()
@@ -48,7 +44,7 @@ export class PropertyMappingService {
         return this.http.get<PropertyMappingsApiData>(this.path);
     }
 
-    addPropertyMapping(propertyMapping: Property): Observable<HttpResponse<string>> {
+    addPropertyMapping(propertyMapping: PropertyMapping): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http
             .post(

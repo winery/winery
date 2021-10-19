@@ -37,9 +37,9 @@
             "maxInstances": "1",
             "y": "287",
             "x": "678",
-            "policies": {},
-            "requirements": {},
-            "capabilities": {}
+            "policies": [],
+            "requirements": [],
+            "capabilities": []
         }
     ]
 }

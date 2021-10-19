@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,11 +29,9 @@ import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.GenericDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -73,43 +71,35 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 
     @Path("instancestates/")
     public InstanceStatesResource getInstanceStatesResource() {
-        TTopologyElementInstanceStates instanceStates = this.getRelationshipType().getInstanceStates();
-        if (instanceStates == null) {
+        if (this.getRelationshipType().getInstanceStates() == null) {
             // if an explicit (empty) list does not exist, create it
-            instanceStates = new TTopologyElementInstanceStates();
-            this.getRelationshipType().setInstanceStates(instanceStates);
+            this.getRelationshipType().setInstanceStates(new ArrayList<>());
         }
         return new InstanceStatesResource(this.getRelationshipType().getInstanceStates(), this);
     }
 
     @Path("interfaces/")
     public InterfacesResource getInterfaces() {
-        TInterfaces interfaces = this.getRelationshipType().getInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getRelationshipType().setInterfaces(interfaces);
+        if (this.getRelationshipType().getInterfaces() == null) {
+            this.getRelationshipType().setInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "yaml");
+        return new InterfacesResource(this, this.getRelationshipType().getInterfaces(), "yaml");
     }
 
     @Path("sourceinterfaces/")
     public InterfacesResource getSourceInterfaces() {
-        TInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getRelationshipType().setSourceInterfaces(interfaces);
+        if (this.getRelationshipType().getSourceInterfaces() == null) {
+            this.getRelationshipType().setSourceInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "source");
+        return new InterfacesResource(this, this.getRelationshipType().getSourceInterfaces(), "source");
     }
 
     @Path("targetinterfaces/")
     public InterfacesResource getTargetInterfaces() {
-        TInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
-        if (interfaces == null) {
-            interfaces = new TInterfaces();
-            this.getRelationshipType().setTargetInterfaces(interfaces);
+        if (this.getRelationshipType().getTargetInterfaces() == null) {
+            this.getRelationshipType().setTargetInterfaces(new ArrayList<>());
         }
-        return new InterfacesResource(this, interfaces.getInterface(), "target");
+        return new InterfacesResource(this, this.getRelationshipType().getTargetInterfaces(), "target");
     }
 
     @Path("interfacedefinitions")

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
-import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -39,7 +38,6 @@ import org.eclipse.winery.model.tosca.TCondition;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -49,18 +47,16 @@ import org.eclipse.winery.model.tosca.TExportedOperation;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TExtension;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
@@ -76,10 +72,10 @@ import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
+import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.extensions.OTParticipant;
@@ -93,6 +89,7 @@ import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTStringList;
 import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.OTPropertyKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.xml.XHasId;
 import org.eclipse.winery.model.tosca.xml.XRelationshipSourceOrTarget;
@@ -118,10 +115,9 @@ import org.eclipse.winery.model.tosca.xml.XTExportedInterface;
 import org.eclipse.winery.model.tosca.xml.XTExportedOperation;
 import org.eclipse.winery.model.tosca.xml.XTExtensibleElements;
 import org.eclipse.winery.model.tosca.xml.XTExtension;
-import org.eclipse.winery.model.tosca.xml.XTImplementationArtifacts;
+import org.eclipse.winery.model.tosca.xml.XTImplementationArtifact;
 import org.eclipse.winery.model.tosca.xml.XTImport;
 import org.eclipse.winery.model.tosca.xml.XTInterface;
-import org.eclipse.winery.model.tosca.xml.XTInterfaces;
 import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
 import org.eclipse.winery.model.tosca.xml.XTNodeType;
 import org.eclipse.winery.model.tosca.xml.XTNodeTypeImplementation;
@@ -145,18 +141,19 @@ import org.eclipse.winery.model.tosca.xml.XTServiceTemplate;
 import org.eclipse.winery.model.tosca.xml.XTTag;
 import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTAttributeMapping;
+import org.eclipse.winery.model.tosca.xml.extensions.XOTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTComplianceRule;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPermutationMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTPrmMapping;
+import org.eclipse.winery.model.tosca.xml.extensions.XOTPropertyKV;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTRelationMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTStayMapping;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTStringList;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTestRefinementModel;
 import org.eclipse.winery.model.tosca.xml.extensions.XOTTopologyFragmentRefinementModel;
-import org.eclipse.winery.repository.xml.XmlRepository;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -167,20 +164,14 @@ import org.slf4j.LoggerFactory;
 public class ToCanonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ToCanonical.class);
-    private final XmlRepository repository;
 
-    public ToCanonical(XmlRepository repository) {
-        this.repository = repository;
-    }
-
-    public TDefinitions convert(XTDefinitions xml) {
-        return convert(xml, false);
+    public ToCanonical() {
     }
 
     /**
      * Converts an XML TDefinitions collection to canonical TDefinitions.
      */
-    public TDefinitions convert(XTDefinitions xml, boolean convertImports) {
+    public TDefinitions convert(XTDefinitions xml) {
         // FIXME need to correctly deal with convertImports flag to create a self-contained Definitions to export as CSAR if it is set.
         TDefinitions.Builder builder = new TDefinitions.Builder(xml.getId(), xml.getTargetNamespace())
             .setName(xml.getName())
@@ -198,7 +189,7 @@ public class ToCanonical {
             .setPolicyTemplate(convertList(xml.getPolicyTemplates(), this::convert))
             .addRequirementTypes(convertList(xml.getRequirementTypes(), this::convert));
         if (xml.getExtensions() != null) {
-            builder.addExtensions(convertList(xml.getExtensions().getExtension(), this::convert));
+            builder.addExtensions(convertList(xml.getExtensions(), this::convert));
         }
         // this handles the "conversion" – basically copying of data – required by the disjoint TExtensibleElements
         //  acting as baseclass for all the extensions we support
@@ -249,12 +240,12 @@ public class ToCanonical {
                 return;
             }
             if (boundaries.getRequirements() != null) {
-                boundaries.getRequirements().getRequirement().forEach(req ->
+                boundaries.getRequirements().forEach(req ->
                     req.setRef(resolveRequirement(req.getRef(), topology))
                 );
             }
             if (boundaries.getCapabilities() != null) {
-                boundaries.getCapabilities().getCapability().forEach(cap ->
+                boundaries.getCapabilities().forEach(cap ->
                     cap.setRef(resolveCapability(cap.getRef(), topology))
                 );
             }
@@ -268,7 +259,16 @@ public class ToCanonical {
         if (ref instanceof TCapability) {
             incomplete.setRef(resolveCapability((TCapability) ref, topology));
         } else if (ref instanceof TNodeTemplate) {
-            incomplete.setRef(topology.getNodeTemplate(ref.getId()));
+            if (topology != null) {
+                TNodeTemplate nodeTemplate = topology.getNodeTemplate(ref.getId());
+                if (nodeTemplate != null) {
+                    incomplete.setRef(nodeTemplate);
+                } else {
+                    LOGGER.error("Node Template could not be found!");
+                }
+            } else {
+                LOGGER.error("Topology Template was null!");
+            }
         } else if (ref instanceof TRequirement) {
             incomplete.setRef(resolveRequirement((TRequirement) ref, topology));
         } else {
@@ -280,7 +280,7 @@ public class ToCanonical {
     private TCapability resolveCapability(TCapability incomplete, TTopologyTemplate topology) {
         return topology.getNodeTemplates().stream()
             .flatMap(nt -> nt.getCapabilities() == null ? Stream.empty()
-                : nt.getCapabilities().getCapability().stream())
+                : nt.getCapabilities().stream())
             .filter(cap -> cap.getId().equals(incomplete.getId()))
             .findFirst()
             .orElseGet(() -> {
@@ -291,8 +291,8 @@ public class ToCanonical {
 
     private TRequirement resolveRequirement(TRequirement incomplete, TTopologyTemplate topology) {
         return topology.getNodeTemplates().stream()
-            .flatMap(nt -> nt.getRequirements() == null ? Stream.empty()
-                : nt.getRequirements().getRequirement().stream())
+            .filter(nt -> nt.getRequirements() != null)
+            .flatMap(nt -> nt.getRequirements().stream())
             .filter(req -> req.getId().equals(incomplete.getId()))
             .findFirst()
             .orElseGet(() -> {
@@ -313,28 +313,23 @@ public class ToCanonical {
             builder.setValidTarget(xml.getValidTarget().getTypeRef());
         }
         if (xml.getInstanceStates() != null) {
-            TTopologyElementInstanceStates instanceStates = new TTopologyElementInstanceStates();
-            instanceStates.getInstanceState().addAll(xml.getInstanceStates().getInstanceState().stream()
-                .map(c -> {
-                    TTopologyElementInstanceStates.InstanceState r = new TTopologyElementInstanceStates.InstanceState();
-                    r.setState(c.getState());
-                    return r;
-                }).collect(Collectors.toList()));
+            List<TInstanceState> instanceStates = xml.getInstanceStates().stream()
+                .map(c -> new TInstanceState(c.getState())).collect(Collectors.toList());
             builder.setInstanceStates(instanceStates);
         }
         fillEntityTypeProperties(builder, xml);
         return builder.build();
     }
 
-    private List<TInterface> convertInterfaces(XTInterfaces xml) {
+    private List<TInterface> convertInterfaces(List<XTInterface> xml) {
         if (xml == null) {
-            return Collections.emptyList();
+            return null;
         }
-        return xml.getInterface().stream().map(this::convertInterface).collect(Collectors.toList());
+        return xml.stream().map(this::convertInterface).collect(Collectors.toList());
     }
 
     private TInterface convertInterface(XTInterface xml) {
-        return new TInterface.Builder(xml.getName(), convertOperations(xml.getOperation())).build();
+        return new TInterface.Builder(xml.getName(), convertOperations(xml.getOperations())).build();
     }
 
     private List<TOperation> convertOperations(List<XTOperation> xml) {
@@ -344,12 +339,18 @@ public class ToCanonical {
     private TOperation convert(XTOperation xml) {
         TOperation.Builder builder = new TOperation.Builder(xml.getName());
         if (xml.getInputParameters() != null) {
-            builder.addInputParameters(xml.getInputParameters().getInputParameter().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            builder.addInputParameters(
+                xml.getInputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getOutputParameters() != null) {
-            builder.addOutputParameters(xml.getOutputParameters().getOutputParameter().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            builder.addOutputParameters(
+                xml.getOutputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         return builder.build();
     }
@@ -372,15 +373,21 @@ public class ToCanonical {
     private <Builder extends TEntityTypeImplementation.Builder<Builder>, Value extends XTEntityTypeImplementation>
     void fillEntityTypeImplementationProperties(Builder builder, Value xml) {
         if (xml.getRequiredContainerFeatures() != null) {
-            builder.addRequiredContainerFeatures(xml.getRequiredContainerFeatures().getRequiredContainerFeature()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            builder.addRequiredContainerFeatures(
+                xml.getRequiredContainerFeatures().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getTags() != null) {
-            builder.addTags(xml.getTags().getTag().stream().map(this::convert).collect(Collectors.toList()));
+            builder.addTags(xml.getTags().stream().map(this::convert).collect(Collectors.toList()));
         }
         if (xml.getImplementationArtifacts() != null) {
-            builder.addImplementationArtifacts(xml.getImplementationArtifacts().getImplementationArtifact().stream()
-                .map(this::convert).collect(Collectors.toList()));
+            builder.addImplementationArtifacts(
+                xml.getImplementationArtifacts().stream()
+                .map(this::convert)
+                .collect(Collectors.toList())
+            );
         }
         builder.setTargetNamespace(xml.getTargetNamespace());
         builder.setAbstract(xml.getAbstract() == XTBoolean.YES);
@@ -388,8 +395,8 @@ public class ToCanonical {
         fillExtensibleElementsProperties(builder, xml);
     }
 
-    private TImplementationArtifacts.ImplementationArtifact convert(XTImplementationArtifacts.ImplementationArtifact xml) {
-        return new TImplementationArtifacts.ImplementationArtifact.Builder(xml.getArtifactType())
+    private TImplementationArtifact convert(XTImplementationArtifact xml) {
+        return new TImplementationArtifact.Builder(xml.getArtifactType())
             .setName(xml.getName())
             .setInterfaceName(xml.getInterfaceName())
             .setOperationName(xml.getOperationName())
@@ -398,28 +405,26 @@ public class ToCanonical {
     }
 
     private TTag convert(XTTag xml) {
-        return new TTag.Builder().setName(xml.getName()).setValue(xml.getValue()).build();
+        return new TTag.Builder(xml.getName(), xml.getValue())
+            .build();
     }
 
     private TRequiredContainerFeature convert(XTRequiredContainerFeature xml) {
-        TRequiredContainerFeature result = new TRequiredContainerFeature();
-        result.setFeature(xml.getFeature());
-        return result;
+        return new TRequiredContainerFeature(
+            xml.getFeature()
+        );
     }
 
     private TPolicyType convert(XTPolicyType xml) {
         TPolicyType.Builder builder = new TPolicyType.Builder(xml.getName());
         if (xml.getAppliesTo() != null) {
-            TAppliesTo appliesTo = new TAppliesTo();
-            appliesTo.getNodeTypeReference().addAll(xml.getAppliesTo().getNodeTypeReference().stream()
-                .map(c -> {
-                    TAppliesTo.NodeTypeReference result = new TAppliesTo.NodeTypeReference();
-                    result.setTypeRef(c.getTypeRef());
-                    return result;
-                })
-                .collect(Collectors.toList()));
-            builder.setAppliesTo(appliesTo);
+            builder.setAppliesTo(
+                xml.getAppliesTo().stream()
+                    .map(c -> new TPolicyType.NodeTypeReference(c.getTypeRef()))
+                    .collect(Collectors.toList())
+            );
         }
+
         fillEntityTypeProperties(builder, xml);
         return builder.build();
     }
@@ -427,7 +432,11 @@ public class ToCanonical {
     private <Builder extends TEntityType.Builder<Builder>, Value extends XTEntityType>
     void fillEntityTypeProperties(Builder builder, Value xml) {
         if (xml.getTags() != null) {
-            builder.addTags(xml.getTags().getTag().stream().map(this::convert).collect(Collectors.toList()));
+            builder.addTags(
+                xml.getTags().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getDerivedFrom() != null) {
             TEntityType.DerivedFrom derived = new TEntityType.DerivedFrom();
@@ -485,9 +494,7 @@ public class ToCanonical {
     private TNodeTypeImplementation convert(XTNodeTypeImplementation xml) {
         TNodeTypeImplementation.Builder builder = new TNodeTypeImplementation.Builder(xml.getName(), xml.getNodeType());
         if (xml.getDeploymentArtifacts() != null) {
-            TDeploymentArtifacts artifacts = new TDeploymentArtifacts.Builder(xml.getDeploymentArtifacts()
-                .getDeploymentArtifact().stream().map(this::convert).collect(Collectors.toList())).build();
-            builder.setDeploymentArtifacts(artifacts);
+            builder.setDeploymentArtifacts(convertList(xml.getDeploymentArtifacts(), this::convert));
         }
         if (xml.getDerivedFrom() != null) {
             TNodeTypeImplementation.DerivedFrom derived = new TNodeTypeImplementation.DerivedFrom();
@@ -508,30 +515,23 @@ public class ToCanonical {
     private TNodeType convert(XTNodeType xml) {
         TNodeType.Builder builder = new TNodeType.Builder(xml.getName());
         if (xml.getRequirementDefinitions() != null) {
-            TNodeType.RequirementDefinitions reqDefs = new TNodeType.RequirementDefinitions();
-            reqDefs.getRequirementDefinition().addAll(xml.getRequirementDefinitions().getRequirementDefinition()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            List<TRequirementDefinition> reqDefs = xml.getRequirementDefinitions()
+                .stream().map(this::convert).collect(Collectors.toList());
             builder.setRequirementDefinitions(reqDefs);
         }
         if (xml.getCapabilityDefinitions() != null) {
-            TNodeType.CapabilityDefinitions capDefs = new TNodeType.CapabilityDefinitions();
-            capDefs.getCapabilityDefinition().addAll(xml.getCapabilityDefinitions().getCapabilityDefinition()
-                .stream().map(this::convert).collect(Collectors.toList()));
+            List<TCapabilityDefinition> capDefs = xml.getCapabilityDefinitions()
+                .stream().map(this::convert).collect(Collectors.toList());
             builder.setCapabilityDefinitions(capDefs);
         }
         if (xml.getInstanceStates() != null) {
-            TTopologyElementInstanceStates instanceStates = new TTopologyElementInstanceStates();
-            instanceStates.getInstanceState().addAll(xml.getInstanceStates().getInstanceState().stream()
-                .map(c -> {
-                    TTopologyElementInstanceStates.InstanceState r = new TTopologyElementInstanceStates.InstanceState();
-                    r.setState(c.getState());
-                    return r;
-                }).collect(Collectors.toList()));
+            List<TInstanceState> instanceStates = xml.getInstanceStates().stream()
+                .map(c -> new TInstanceState(c.getState())).collect(Collectors.toList());
             builder.setInstanceStates(instanceStates);
         }
         if (xml.getInterfaces() != null) {
-            TInterfaces interfaces = new TInterfaces();
-            interfaces.getInterface().addAll(convertInterfaces(xml.getInterfaces()));
+            List<TInterface> interfaces = xml.getInterfaces().stream()
+                .map(this::convertInterface).collect(Collectors.toList());
             builder.setInterfaces(interfaces);
         }
         fillEntityTypeProperties(builder, xml);
@@ -552,10 +552,11 @@ public class ToCanonical {
         //  it's required for us, though, so we just assume it's present
         TRequirementDefinition.Builder builder = new TRequirementDefinition.Builder(xml.getName(), xml.getRequirementType());
         if (xml.getConstraints() != null) {
-            TRequirementDefinition.Constraints constraints = new TRequirementDefinition.Constraints();
-            constraints.getConstraint().addAll(xml.getConstraints().getConstraint().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setConstraints(constraints);
+            builder.setConstraints(
+                xml.getConstraints().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         builder.setLowerBound(xml.getLowerBound());
         builder.setUpperBound(xml.getUpperBound());
@@ -570,8 +571,8 @@ public class ToCanonical {
     private TCapabilityDefinition convert(XTCapabilityDefinition xml) {
         TCapabilityDefinition.Builder builder = new TCapabilityDefinition.Builder(xml.getName(), xml.getCapabilityType());
         if (xml.getConstraints() != null) {
-            xml.getConstraints().getConstraint()
-                .stream().map(this::convert)
+            xml.getConstraints().stream()
+                .map(this::convert)
                 .forEach(builder::addConstraints);
         }
         builder.setLowerBound(xml.getLowerBound());
@@ -582,10 +583,10 @@ public class ToCanonical {
     }
 
     private TConstraint convert(XTConstraint xml) {
-        TConstraint constraint = new TConstraint();
-        constraint.setAny(xml.getAny());
-        constraint.setConstraintType(xml.getConstraintType());
-        return constraint;
+        return new TConstraint(
+            xml.getAny(),
+            xml.getConstraintType()
+        );
     }
 
     private TCapability convert(XTCapability xml) {
@@ -606,10 +607,11 @@ public class ToCanonical {
             builder.setProperties(convertProperties(xml.getProperties()));
         }
         if (xml.getPropertyConstraints() != null) {
-            TEntityTemplate.PropertyConstraints constraints = new TEntityTemplate.PropertyConstraints();
-            constraints.getPropertyConstraint().addAll(xml.getPropertyConstraints().getPropertyConstraint().stream()
-                .map(this::convert).collect(Collectors.toList()));
-            builder.setPropertyConstraints(constraints);
+            builder.setPropertyConstraints(
+                xml.getPropertyConstraints().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         fillExtensibleElementsProperties(builder, xml);
     }
@@ -626,11 +628,11 @@ public class ToCanonical {
     }
 
     private TPropertyConstraint convert(XTPropertyConstraint xml) {
-        TPropertyConstraint constraint = new TPropertyConstraint();
-        constraint.setAny(xml.getAny());
-        constraint.setConstraintType(xml.getConstraintType());
-        constraint.setProperty(xml.getProperty());
-        return constraint;
+        return new TPropertyConstraint(
+            xml.getAny(),
+            xml.getConstraintType(),
+            xml.getProperty()
+        );
     }
 
     private TExtension convert(XTExtension xml) {
@@ -641,11 +643,10 @@ public class ToCanonical {
     }
 
     private TDocumentation convert(XTDocumentation xml) {
-        TDocumentation canonical = new TDocumentation();
-        canonical.getContent().addAll(xml.getContent());
-        canonical.setSource(xml.getSource());
-        canonical.setLang(xml.getLang());
-        return canonical;
+        return new TDocumentation.Builder(xml.getContent())
+            .setSource(xml.getSource())
+            .setLang(xml.getLang())
+            .build();
     }
 
     private TCapabilityType convert(XTCapabilityType xml) {
@@ -668,9 +669,9 @@ public class ToCanonical {
         TArtifactTemplate.Builder builder = new TArtifactTemplate.Builder(xml.getId(), xml.getType());
         builder.setName(xml.getName());
         if (xml.getArtifactReferences() != null) {
-            xml.getArtifactReferences().getArtifactReference().stream()
+            xml.getArtifactReferences().stream()
                 .map(this::convert)
-                .forEach(builder::addArtifactReferences);
+                .forEach(builder::addArtifactReference);
         }
         fillEntityTemplateProperties(builder, xml);
         return builder.build();
@@ -690,15 +691,11 @@ public class ToCanonical {
     }
 
     private TArtifactReference.Include convert(XTArtifactReference.Include xml) {
-        TArtifactReference.Include canonical = new TArtifactReference.Include();
-        canonical.setPattern(xml.getPattern());
-        return canonical;
+        return new TArtifactReference.Include(xml.getPattern());
     }
 
     private TArtifactReference.Exclude convert(XTArtifactReference.Exclude xml) {
-        TArtifactReference.Exclude canonical = new TArtifactReference.Exclude();
-        canonical.setPattern(xml.getPattern());
-        return canonical;
+        return new TArtifactReference.Exclude(xml.getPattern());
     }
 
     private TImport convert(XTImport xml) {
@@ -715,31 +712,33 @@ public class ToCanonical {
         builder.setName(xml.getName());
         builder.setTargetNamespace(xml.getTargetNamespace());
         if (xml.getTags() != null) {
-            xml.getTags().getTag().stream()
+            xml.getTags().stream()
                 .filter(t -> !t.getName().startsWith("group:")) // filter group definitions
                 .filter(t -> !t.getName().startsWith("participant:")) // filter participants
-                .map(this::convert).forEach(builder::addTags);
+                .map(this::convert)
+                .forEach(builder::addTag);
         }
         if (xml.getBoundaryDefinitions() != null) {
             builder.setBoundaryDefinitions(convert(xml.getBoundaryDefinitions()));
         }
         if (xml.getPlans() != null) {
-            TPlans plans = new TPlans();
-            plans.setTargetNamespace(xml.getPlans().getTargetNamespace());
-            plans.getPlan().addAll(xml.getPlans().getPlan().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setPlans(plans);
+            builder.setPlans(
+                xml.getPlans().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         builder.setSubstitutableNodeType(xml.getSubstitutableNodeType());
         fillExtensibleElementsProperties(builder, xml);
 
         // map group-related tags back to topology template
         if (topologyTemplate != null && xml.getTags() != null) {
-            topologyTemplate.setGroups(convertList(xml.getTags().getTag(), this::convertToGroup));
+            topologyTemplate.setGroups(convertList(xml.getTags(), this::convertToGroup));
         }
 
         // handle participant extension
         if (topologyTemplate != null && xml.getTags() != null) {
-            topologyTemplate.setParticipants(convertList(xml.getTags().getTag(), this::convertToParticipant));
+            topologyTemplate.setParticipants(convertList(xml.getTags(), this::convertToParticipant));
         }
 
         return builder.build();
@@ -771,14 +770,18 @@ public class ToCanonical {
             builder.setPrecondition(convert(xml.getPrecondition()));
         }
         if (xml.getInputParameters() != null) {
-            TPlan.InputParameters inputs = new TPlan.InputParameters();
-            inputs.getInputParameter().addAll(xml.getInputParameters().getInputParameter().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setInputParameters(inputs);
+            builder.setInputParameters(
+                xml.getInputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getOutputParameters() != null) {
-            TPlan.OutputParameters outputs = new TPlan.OutputParameters();
-            outputs.getOutputParameter().addAll(xml.getOutputParameters().getOutputParameter().stream().map(this::convert).collect(Collectors.toList()));
-            builder.setOutputParameters(outputs);
+            builder.setOutputParameters(
+                xml.getOutputParameters().stream()
+                    .map(this::convert)
+                    .collect(Collectors.toList())
+            );
         }
         if (xml.getPlanModel() != null) {
             TPlan.PlanModel model = new TPlan.PlanModel();
@@ -796,10 +799,10 @@ public class ToCanonical {
     }
 
     private TCondition convert(XTCondition xml) {
-        TCondition canonical = new TCondition();
-        canonical.setExpressionLanguage(xml.getExpressionLanguage());
-        canonical.getAny().addAll(xml.getAny());
-        return canonical;
+        return new TCondition(
+            xml.getAny(),
+            xml.getExpressionLanguage()
+        );
     }
 
     private TBoundaryDefinitions convert(XTBoundaryDefinitions xml) {
@@ -808,35 +811,36 @@ public class ToCanonical {
             TBoundaryDefinitions.Properties props = new TBoundaryDefinitions.Properties();
             props.setAny(xml.getProperties().getAny());
             if (xml.getProperties().getPropertyMappings() != null) {
-                TBoundaryDefinitions.Properties.PropertyMappings mappings = new TBoundaryDefinitions.Properties.PropertyMappings();
-                mappings.getPropertyMapping().addAll(convertList(xml.getProperties().getPropertyMappings().getPropertyMapping(), this::convert));
-                props.setPropertyMappings(mappings);
+                props.setPropertyMappings(
+                    convertList(xml.getProperties().getPropertyMappings(), this::convert)
+                );
             }
             builder.setProperties(props);
         }
         if (xml.getRequirements() != null) {
-            TBoundaryDefinitions.Requirements reqs = new TBoundaryDefinitions.Requirements();
-            reqs.getRequirement().addAll(convertList(xml.getRequirements().getRequirement(), this::convert));
-            builder.setRequirements(reqs);
+            builder.setRequirements(
+                convertList(xml.getRequirements(), this::convert)
+            );
         }
         if (xml.getCapabilities() != null) {
-            TBoundaryDefinitions.Capabilities caps = new TBoundaryDefinitions.Capabilities();
-            caps.getCapability().addAll(convertList(xml.getCapabilities().getCapability(), this::convert));
-            builder.setCapabilities(caps);
+            builder.setCapabilities(
+                convertList(xml.getCapabilities(), this::convert)
+            );
         }
         if (xml.getPolicies() != null) {
-            TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                convertList(xml.getPolicies(), this::convert)
+            );
         }
         if (xml.getInterfaces() != null) {
-            TBoundaryDefinitions.Interfaces interfaces = new TBoundaryDefinitions.Interfaces();
-            interfaces.getInterface().addAll(convertList(xml.getInterfaces().getInterface(), this::convert));
-            builder.setInterfaces(interfaces);
+            builder.setInterfaces(
+                convertList(xml.getInterfaces(), this::convert)
+            );
         }
         if (xml.getPropertyConstraints() != null) {
-            TBoundaryDefinitions.PropertyConstraints constraints = new TBoundaryDefinitions.PropertyConstraints();
-            constraints.getPropertyConstraint().addAll(convertList(xml.getPropertyConstraints().getPropertyConstraint(), this::convert));
-            builder.setPropertyConstraints(constraints);
+            builder.setPropertyConstraints(
+                convertList(xml.getPropertyConstraints(), this::convert)
+            );
         }
         return builder.build();
     }
@@ -910,17 +914,17 @@ public class ToCanonical {
     }
 
     private TCapabilityRef convert(XTCapabilityRef xml) {
-        TCapabilityRef canonical = new TCapabilityRef();
-        canonical.setName(xml.getName());
-        canonical.setRef(convert(xml.getRef()));
-        return canonical;
+        return new TCapabilityRef(
+            xml.getName(),
+            convert(xml.getRef())
+        );
     }
 
     private TRequirementRef convert(XTRequirementRef xml) {
-        TRequirementRef canonical = new TRequirementRef();
-        canonical.setName(xml.getName());
-        canonical.setRef(convert(xml.getRef()));
-        return canonical;
+        return new TRequirementRef(
+            xml.getName(),
+            convert(xml.getRef())
+        );
     }
 
     private TRequirement convert(XTRequirement xml) {
@@ -933,11 +937,11 @@ public class ToCanonical {
     }
 
     private TPropertyMapping convert(XTPropertyMapping xml) {
-        TPropertyMapping canonical = new TPropertyMapping();
-        canonical.setServiceTemplatePropertyRef(xml.getServiceTemplatePropertyRef());
-        canonical.setTargetPropertyRef(xml.getTargetPropertyRef());
-        canonical.setTargetObjectRef(convert(xml.getTargetObjectRef()));
-        return canonical;
+        return new TPropertyMapping(
+            xml.getServiceTemplatePropertyRef(),
+            convert(xml.getTargetObjectRef()),
+            xml.getTargetPropertyRef()
+        );
     }
 
     @Nullable
@@ -956,25 +960,18 @@ public class ToCanonical {
     private TNodeTemplate convert(XTNodeTemplate xml) {
         TNodeTemplate.Builder builder = new TNodeTemplate.Builder(xml.getId(), xml.getType());
         if (xml.getRequirements() != null) {
-            TNodeTemplate.Requirements reqs = new TNodeTemplate.Requirements();
-            reqs.getRequirement().addAll(convertList(xml.getRequirements().getRequirement(), this::convert));
-            builder.setRequirements(reqs);
+            builder.setRequirements(convertList(xml.getRequirements(), this::convert));
         }
         if (xml.getCapabilities() != null) {
-            TNodeTemplate.Capabilities caps = new TNodeTemplate.Capabilities();
-            caps.getCapability().addAll(convertList(xml.getCapabilities().getCapability(), this::convert));
-            builder.setCapabilities(caps);
+            builder.setCapabilities(convertList(xml.getCapabilities(), this::convert));
         }
         if (xml.getPolicies() != null) {
-            TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                convertList(xml.getPolicies(), this::convert)
+            );
         }
         if (xml.getDeploymentArtifacts() != null) {
-            TDeploymentArtifacts artifacts = new TDeploymentArtifacts.Builder(
-                convertList(xml.getDeploymentArtifacts().getDeploymentArtifact(), this::convert)
-            )
-                .build();
-            builder.setDeploymentArtifacts(artifacts);
+            builder.addDeploymentArtifacts(convertList(xml.getDeploymentArtifacts(), this::convert));
         }
         builder.setName(xml.getName());
         builder.setMinInstances(xml.getMinInstances());
@@ -987,7 +984,7 @@ public class ToCanonical {
 
     private TRelationshipTemplate convert(XTRelationshipTemplate xml) {
         TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(xml.getId(), xml.getType(),
-            convert(xml.getSourceElement()), convert(xml.getTargetElement()));
+            convert(xml.getSourceElement().getRef()), convert(xml.getTargetElement().getRef()));
         builder.setName(xml.getName());
         if (xml.getRelationshipConstraints() != null) {
             TRelationshipTemplate.RelationshipConstraints constraints = new TRelationshipTemplate.RelationshipConstraints();
@@ -996,8 +993,9 @@ public class ToCanonical {
             builder.setRelationshipConstraints(constraints);
         }
         if (xml.getPolicies() != null) {
-            TPolicies policies = new TPolicies(convertList(xml.getPolicies().getPolicy(), this::convert));
-            builder.setPolicies(policies);
+            builder.setPolicies(
+                convertList(xml.getPolicies(), this::convert)
+            );
         }
         fillEntityTemplateProperties(builder, xml);
         return builder.build();
@@ -1007,12 +1005,6 @@ public class ToCanonical {
         TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint canonical = new TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint();
         canonical.setAny(xml.getAny());
         canonical.setConstraintType(xml.getConstraintType());
-        return canonical;
-    }
-
-    private TRelationshipTemplate.SourceOrTargetElement convert(XTRelationshipTemplate.SourceOrTargetElement xml) {
-        TRelationshipTemplate.SourceOrTargetElement canonical = new TRelationshipTemplate.SourceOrTargetElement();
-        canonical.setRef(convert(xml.getRef()));
         return canonical;
     }
 
@@ -1041,7 +1033,6 @@ public class ToCanonical {
 
     private HasId convert(XHasId xml) {
         if (xml instanceof XTDefinitions) {
-            // what in the ever loving fuck am I supposed to do now??
             // this case should never ever come true
             throw new IllegalStateException("Attempted to convert a TDefinitions instance through HasId overload.");
         }
@@ -1098,6 +1089,9 @@ public class ToCanonical {
         if (xml instanceof XOTTopologyFragmentRefinementModel) {
             return convert((XOTTopologyFragmentRefinementModel) xml);
         }
+        if (xml instanceof XOTBehaviorPatternMapping) {
+            return convert((XOTBehaviorPatternMapping) xml);
+        }
         throw new IllegalStateException("Attempted to convert unknown Extension to the TOSCA-Standard of the type " + xml.getClass().getName() + " to canonical");
     }
 
@@ -1146,6 +1140,8 @@ public class ToCanonical {
 
     private OTPatternRefinementModel convert(XOTPatternRefinementModel xml) {
         OTPatternRefinementModel.Builder builder = new OTPatternRefinementModel.Builder();
+        builder.setIsPdrm(xml.isPdrm() == XTBoolean.YES);
+        builder.setBehaviorPatternMappings(convertList(xml.getBehaviorPatternMappings(), this::convert));
         fillOTTopologyFragmentRefinementModelProperties(builder, xml);
         return builder.build();
     }
@@ -1196,5 +1192,17 @@ public class ToCanonical {
         OTTopologyFragmentRefinementModel.Builder builder = new OTTopologyFragmentRefinementModel.Builder();
         fillOTTopologyFragmentRefinementModelProperties(builder, xml);
         return builder.build();
+    }
+
+    private OTBehaviorPatternMapping convert(XOTBehaviorPatternMapping xml) {
+        OTBehaviorPatternMapping.Builder builder = new OTBehaviorPatternMapping.Builder(xml.getId());
+        builder.setBehaviorPattern(xml.getBehaviorPattern());
+        builder.setProperty(convert(xml.getProperty()));
+        fillOTPrmMappingProperties(builder, xml);
+        return builder.build();
+    }
+
+    private OTPropertyKV convert(XOTPropertyKV xml) {
+        return new OTPropertyKV(xml.getKey(), xml.getValue());
     }
 }

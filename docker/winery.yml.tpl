@@ -21,10 +21,12 @@ ui:
     repositoryUiUrl: http://{{ .Env.WINERY_HOSTNAME }}:{{ .Env.WINERY_PORT }}/#
     edmmTransformationTool: http://{{ .Env.EDMM_TRANSFORMATION_HOSTNAME }}:{{ .Env.EDMM_TRANSFORMATION_PORT }}/plugins/check-model-support
     eclipseChe: {{ .Env.CHE_URL_PROTOCOL }}://{{ .Env.CHE_URL }}
+    tops: http://{{ .Env.TOPS_HOSTNAME }}:{{ .Env.TOPS_PORT }}
 repository:
   provider: {{ .Env.WINERY_REPOSITORY_PROVIDER }}
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}
   csarOutputPath: {{ .Env.WINERY_CSAR_OUTPUT_PATH }}
+  tenantMode: {{ .Env.WINERY_TENANT_MODE }} 
   git:
     clientSecret: {{ .Env.GITHUB_CLIENT_SECRET }}
     password: default

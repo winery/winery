@@ -16,7 +16,6 @@ import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector
 import { NamespacesService } from './namespaces.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { isNullOrUndefined } from 'util';
 import { NamespaceProperties } from '../../../model/namespaceProperties';
 import { ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -40,7 +39,6 @@ export class NamespacesComponent implements OnInit {
         { title: 'Prefix', name: 'prefix' },
         { title: 'Namespace', name: 'namespace' },
         { title: 'Description', name: 'readableName' },
-        { title: 'Repository URL', name: 'upstreamRepository'},
         { title: 'Pattern NS', name: 'patternCollection' },
         { title: 'Secure NS', name: 'secureCollection' }
     ];
@@ -79,9 +77,7 @@ export class NamespacesComponent implements OnInit {
      * @param data
      */
     onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
+        if (data) {
             this.elementToRemove = data;
             this.confirmDeleteModal.show();
         }
@@ -91,7 +87,7 @@ export class NamespacesComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.newNamespace = new NamespaceProperties(null, null, '', '', false, false);
+        this.newNamespace = new NamespaceProperties(null, null, '', false, false);
         this.validatorObjectPrefix.isActive = true;
         this.modalTitle = 'Add new Namespace';
         this.addButtonTitle = 'Add';
@@ -106,7 +102,6 @@ export class NamespacesComponent implements OnInit {
             data.namespace,
             data.prefix,
             data.readableName,
-            data.upstreamRepository,
             data.patternCollection,
             data.secureCollection
         );

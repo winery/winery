@@ -32,8 +32,8 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
-import org.eclipse.winery.model.tosca.TInterfaces;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
+import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -213,16 +213,16 @@ public class EdmmConverter {
 
     private void createArtifact(TNodeTemplate nodeTemplate, EntityId componentNodeId, EntityGraph entityGraph) {
         if (nodeTemplate.getDeploymentArtifacts() != null
-            && nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact().size() > 0) {
+            && nodeTemplate.getDeploymentArtifacts().size() > 0) {
             EntityId artifactsEntityId = componentNodeId.extend(DefaultKeys.ARTIFACTS);
             entityGraph.addEntity(new SequenceEntity(artifactsEntityId, entityGraph));
 
-            for (TDeploymentArtifact artifact : nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact()) {
+            for (TDeploymentArtifact artifact : nodeTemplate.getDeploymentArtifacts()) {
                 String path = null;
 
                 TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
-                if (artifactTemplate != null && artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
-                    path = artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                if (artifactTemplate != null && artifactTemplate.getArtifactReferences().size() > 0) {
+                    path = artifactTemplate.getArtifactReferences().get(0).getReference();
                 }
 
                 EntityId artifactEntityId = artifactsEntityId.extend(
@@ -354,9 +354,9 @@ public class EdmmConverter {
 
     private void createOperations(TEntityType type, EntityId nodeTypeEntityId, EntityGraph entityGraph) {
         if (type instanceof TNodeType && Objects.nonNull(((TNodeType) type).getInterfaces())) {
-            TInterfaces interfaces = ((TNodeType) type).getInterfaces();
-            interfaces.getInterface().forEach(anInterface -> {
-                anInterface.getOperation().forEach(operation -> {
+            List<TInterface> interfaces = ((TNodeType) type).getInterfaces();
+            interfaces.forEach(anInterface -> {
+                anInterface.getOperations().forEach(operation -> {
                     EntityId operationsEntityId = nodeTypeEntityId.extend(DefaultKeys.OPERATIONS);
                     entityGraph.addEntity(new MappingEntity(operationsEntityId, entityGraph));
 
@@ -376,26 +376,27 @@ public class EdmmConverter {
     private String getImplementationForOperation(TEntityTypeImplementation implementation,
                                                  String interfaceName, String operationName) {
         if (implementation != null && implementation.getImplementationArtifacts() != null) {
-            List<TImplementationArtifacts.ImplementationArtifact> artifacts = implementation.getImplementationArtifacts()
-                .getImplementationArtifact().stream()
+            List<TImplementationArtifact> artifacts = implementation.getImplementationArtifacts()
+                .stream()
+                .filter(artifact -> artifact.getInterfaceName() != null)
                 .filter(artifact -> artifact.getInterfaceName().equals(interfaceName))
                 .collect(Collectors.toList());
 
             if (artifacts.size() == 1 && artifacts.get(0).getArtifactRef() != null) {
                 TArtifactTemplate artifactTemplate = artifactTemplates.get(artifacts.get(0).getArtifactRef());
                 if (artifactTemplate.getArtifactReferences() != null &&
-                    artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
-                    return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                    artifactTemplate.getArtifactReferences().size() > 0) {
+                    return artifactTemplate.getArtifactReferences().get(0).getReference();
                 }
             }
 
-            for (TImplementationArtifacts.ImplementationArtifact artifact : artifacts) {
-                if (artifact.getOperationName().equals(operationName)) {
+            for (TImplementationArtifact artifact : artifacts) {
+                if (artifact.getOperationName() != null && artifact.getOperationName().equals(operationName)) {
                     TArtifactTemplate artifactTemplate = artifactTemplates.get(artifact.getArtifactRef());
                     if (artifactTemplate != null &&
                         artifactTemplate.getArtifactReferences() != null &&
-                        artifactTemplate.getArtifactReferences().getArtifactReference().size() > 0) {
-                        return artifactTemplate.getArtifactReferences().getArtifactReference().get(0).getReference();
+                        artifactTemplate.getArtifactReferences().size() > 0) {
+                        return artifactTemplate.getArtifactReferences().get(0).getReference();
                     }
                 }
             }

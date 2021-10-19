@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { PlansApiData } from '../instance/serviceTemplates/plans/plansApiData';
+import { TPolicy } from '../../../../topologymodeler/src/app/models/policiesModalData';
 
 export class WineryComponent {
     documentation: Array<any> = null;
@@ -65,17 +66,20 @@ export class WineryTopologyTemplate extends WineryComponent {
     relationshipTemplates: RelationshipTemplate[];
 }
 
-export class NodeTemplate extends WineryTemplate {
+export abstract class WineryTemplateWithPolicies extends WineryTemplate {
+    policies: TPolicy[];
+}
+
+export class NodeTemplate extends WineryTemplateWithPolicies {
     requirements: Object = null;
     capabilities: Object = null;
-    policies: Object = null;
     deploymentArtifacts: Object = null;
     minInstances: number;
     maxInstances: string;
 }
 
-export class RelationshipTemplate extends WineryTemplate {
-    relationshipConstraing: Object = null;
+export class RelationshipTemplate extends WineryTemplateWithPolicies {
+    relationshipConstraint: Object = null;
     sourceElement: RelationshipElement;
     targetElement: RelationshipElement;
 }

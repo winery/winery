@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,10 +36,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
-import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
@@ -59,6 +56,7 @@ import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.filebased.management.IRepositoryResolver;
 import org.eclipse.winery.repository.filebased.management.RepositoryResolverFactory;
+import org.eclipse.winery.repository.xml.XmlRepository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,10 +78,10 @@ public class MultiRepository implements IWrappingRepository {
 
     private final Map<IRepository, Set<String>> repositoryGlobal = new HashMap<>();
     private final Map<IRepository, Set<Namespace>> repositoryCommonNamespace = new HashMap<>();
-    private File repositoryConfiguration;
+    private File dependantRepositories;
     private List<RepositoryProperties> repositoriesList = new ArrayList<>();
-    private GitBasedRepository localRepository;
-    private Path repositoryRoot;
+    private final GitBasedRepository localRepository;
+    private final Path repositoryRoot;
     private final EventBus eventBus;
 
     /**
@@ -96,12 +94,20 @@ public class MultiRepository implements IWrappingRepository {
         this.eventBus = new EventBus();
         try {
             LOGGER.debug("Trying to initialize local repository...");
+
             File localRepoPath = new File(repositoryRoot.toString(), Constants.DEFAULT_LOCAL_REPO_NAME);
-            FileBasedRepositoryConfiguration localRepoConfig = new FileBasedRepositoryConfiguration(localRepoPath.toPath());
-            repositoryConfiguration = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+            this.dependantRepositories = new File(repositoryRoot.toString(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
             readRepositoriesConfig();
-            GitBasedRepositoryConfiguration gitConfig = new GitBasedRepositoryConfiguration(false, localRepoConfig);
-            this.localRepository = new GitBasedRepository(gitConfig, RepositoryFactory.createXmlOrYamlRepository(localRepoConfig, localRepoPath.toPath()));
+
+            GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(
+                false,
+                new FileBasedRepositoryConfiguration(localRepoPath.toPath())
+            );
+            this.localRepository = new GitBasedRepository(
+                gitBasedRepositoryConfiguration,
+                RepositoryFactory.createXmlOrYamlRepository(gitBasedRepositoryConfiguration, localRepoPath.toPath())
+            );
+
             LOGGER.debug("Local repo has been initialized at {}", localRepoPath.getAbsolutePath());
         } catch (IOException | GitAPIException e) {
             LOGGER.error("Error while initializing local repository of the Multi Repository!", e);
@@ -182,7 +188,7 @@ public class MultiRepository implements IWrappingRepository {
 
             String pns;
             try {
-                if (Environments.getInstance().getRepositoryConfig().getProvider() == RepositoryConfigurationObject.RepositoryProvider.FILE) {
+                if (this.localRepository.getRepository() instanceof XmlRepository) {
                     pns = namespace.getEncoded().substring(0, namespace.getEncoded()
                         .lastIndexOf(RepositoryUtils.getUrlSeparatorEncoded()));
                 } else {
@@ -247,12 +253,12 @@ public class MultiRepository implements IWrappingRepository {
     /**
      * Clones the repositories specified by repositories into the MultiRepository
      *
-     * @param repositories the set of repoistories that should be cloned into the MultiRepository.
+     * @param repositories the set of repositories that should be cloned into the MultiRepository.
      */
     void addRepositoryToFile(List<RepositoryProperties> repositories) {
-        repositoriesList = repositories;
+        this.repositoriesList = repositories;
         saveConfiguration();
-        loadRepositoriesByList();
+        loadRepositoriesByList(this.repositoriesList);
     }
 
     /**
@@ -277,13 +283,16 @@ public class MultiRepository implements IWrappingRepository {
     private void readRepositoriesConfig() throws IOException {
         if (repoContainsConfigFile()) {
             LOGGER.info("Found Repositories file");
-            loadConfiguration(repositoryConfiguration);
+            this.repositoriesList = loadConfiguration(this.dependantRepositories);
             MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-            if (!multiRepositoryManager.isMultiRepositoryFileStructureEstablished(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()))) {
-                multiRepositoryManager.createMultiRepositoryFileStructure(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()),
-                    Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Constants.DEFAULT_LOCAL_REPO_NAME));
+
+            if (!multiRepositoryManager.isMultiRepositoryFileStructureEstablished(this.repositoryRoot)) {
+                multiRepositoryManager.createMultiRepositoryFileStructure(
+                    this.repositoryRoot,
+                    this.repositoryRoot.resolve(Constants.DEFAULT_LOCAL_REPO_NAME)
+                );
             }
-            loadRepositoriesByList();
+            loadRepositoriesByList(this.repositoriesList);
         } else {
             createConfigFileAndSetFactoryToMultiRepository();
         }
@@ -299,7 +308,7 @@ public class MultiRepository implements IWrappingRepository {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
                 objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-                objectMapper.writeValue(repositoryConfiguration, repositoriesList);
+                objectMapper.writeValue(dependantRepositories, repositoriesList);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -310,7 +319,7 @@ public class MultiRepository implements IWrappingRepository {
      * @return True whenever there is a repositories.json file in the root folder of the MultiRepository
      */
     private boolean repoContainsConfigFile() {
-        File repo = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_REPOSITORIES);
+        File repo = new File(this.getRepositoryRoot().toString(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
         return repo.exists();
     }
 
@@ -319,19 +328,21 @@ public class MultiRepository implements IWrappingRepository {
      *
      * @param dependency The path to the dependencies file
      */
-    private void loadConfiguration(File dependency) throws IOException {
+    private List<RepositoryProperties> loadConfiguration(File dependency) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectReader reader = objectMapper.readerFor(new TypeReference<List<RepositoryProperties>>() {
         });
-        repositoriesList = reader.readValue(dependency);
+        return reader.readValue(dependency);
     }
 
     /**
      * Clones all repositories of the MultiRepository into the file system. Does not clone duplicates. Also clones all
      * dependencies of the repositories
+     *
+     * @param repositoryProperties the list of repositories to load
      */
-    private void loadRepositoriesByList() {
-        for (RepositoryProperties repository : repositoriesList) {
+    private void loadRepositoriesByList(List<RepositoryProperties> repositoryProperties) {
+        for (RepositoryProperties repository : repositoryProperties) {
             createRepository(repository.getUrl(), repository.getBranch());
         }
     }
@@ -342,7 +353,7 @@ public class MultiRepository implements IWrappingRepository {
         try {
             RepositoryFactory.reconfigure();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error while reconfiguring the repository!", e);
         }
     }
 
@@ -363,37 +374,38 @@ public class MultiRepository implements IWrappingRepository {
         }
 
         if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(url, this)) {
-            String ownerDirectory;
-            File ownerRootFile;
             try {
-                ownerDirectory = URLEncoder.encode(resolver.getRepositoryMaintainerUrl(), "UTF-8");
-                ownerRootFile = new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), ownerDirectory);
-                if (!ownerRootFile.exists()) {
-                    Files.createDirectories(ownerRootFile.toPath());
+                String ownerDirectory = URLEncoder.encode(resolver.getRepositoryMaintainerUrl(), "UTF-8");
+                Path ownerRoot = this.repositoryRoot.resolve(ownerDirectory);
+                if (!ownerRoot.toFile().exists()) {
+                    Files.createDirectories(ownerRoot);
                 }
 
-                File repositoryLocation = new File(ownerRootFile, resolver.getRepositoryName());
-                IRepository newSubRepository = resolver.createRepository(repositoryLocation);
+                Path repositoryLocation = ownerRoot.resolve(resolver.getRepositoryName());
+                IRepository newSubRepository = resolver.createRepository(repositoryLocation.toFile());
                 this.addRepository(newSubRepository);
 
-                File configurationFile = new File(newSubRepository.getRepositoryRoot().toString().replace("\\workspace", ""), Filename.FILENAME_JSON_REPOSITORIES);
+                File configurationFile = newSubRepository.getRepositoryRoot()
+                    .resolve(Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile();
                 if (configurationFile.exists()) {
-                    loadConfiguration(configurationFile);
-                    loadRepositoriesByList();
+                    loadRepositoriesByList(loadConfiguration(configurationFile));
                 }
-                fixNamespaces(newSubRepository, url);
+                fixNamespaces(newSubRepository);
             } catch (IOException | GitAPIException e) {
-                LOGGER.error("Error while creating the repository structure");
-                e.printStackTrace();
+                LOGGER.error("Error while creating the repository structure", e);
             }
         }
     }
 
-    private void fixNamespaces(IRepository repository, String url) {
-        SortedSet<DefinitionsChildId> defChilds = repository.getAllDefinitionsChildIds();
+    private void fixNamespaces(IRepository repository) {
+        SortedSet<DefinitionsChildId> defChildren = repository.getAllDefinitionsChildIds();
         Collection<NamespaceProperties> namespaceProperties = new ArrayList<>();
-        for (DefinitionsChildId value : defChilds) {
-            namespaceProperties.add(new NamespaceProperties(value.getNamespace().getDecoded(), value.getNamespace().getDecoded().replace(".", ""), "", url, false));
+        for (DefinitionsChildId value : defChildren) {
+            namespaceProperties.add(
+                new NamespaceProperties(value.getNamespace().getDecoded(),
+                    value.getNamespace().getDecoded().replace(".", ""), "",
+                    false)
+            );
         }
         repository.getNamespaceManager().addAllPermanent(namespaceProperties);
     }
@@ -553,8 +565,8 @@ public class MultiRepository implements IWrappingRepository {
     public void forceDelete(GenericId id) {
         try {
             RepositoryUtils.getRepositoryById(id, this).forceDelete(id);
-        } catch (IOException ioex) {
-            LOGGER.debug("Error while force deleting definition child.", ioex);
+        } catch (IOException e) {
+            LOGGER.debug("Error while force deleting definition child.", e);
         }
     }
 
@@ -563,8 +575,8 @@ public class MultiRepository implements IWrappingRepository {
         getRepositories().forEach(repository -> {
             try {
                 repository.forceDelete(definitionsChildIdClazz, namespace);
-            } catch (IOException ioex) {
-                LOGGER.debug("Error while force deleting definition child.", ioex);
+            } catch (IOException e) {
+                LOGGER.debug("Error while force deleting definition child.", e);
             }
         });
     }
