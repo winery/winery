@@ -130,6 +130,7 @@ import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.YamlSpecKeywords;
 import org.eclipse.winery.repository.yaml.YamlRepository;
 import org.eclipse.winery.repository.yaml.export.YamlExporter;
 
@@ -592,7 +593,7 @@ public class FromCanonical {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             yamlDef.setInputs(inputs);
 
-            return new YTMapActivityDefinition().setMap(Collections.singletonMap("call_operation", yamlDef));
+            return new YTMapActivityDefinition().setMap(Collections.singletonMap(YamlSpecKeywords.CALL_OPERATION, yamlDef));
         }
         return new YTMapActivityDefinition();
     }
