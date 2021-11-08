@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,7 +28,7 @@ import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
 import org.eclipse.winery.repository.backend.consistencycheck.ElementErrorList;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.tools.copybaragenerator.CopybaraGenerator;
 
 import me.tongfei.progressbar.ProgressBar;
@@ -87,8 +87,8 @@ public class WineryCli {
             System.exit(0);
         }
 
-        if (repository instanceof FilebasedRepository) {
-            System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
+        if (repository instanceof AbstractFileBasedRepository) {
+            System.out.println("Using repository path " + repository.getRepositoryRoot() + "...");
         } else {
             System.out.println("Using non-filebased repository");
         }

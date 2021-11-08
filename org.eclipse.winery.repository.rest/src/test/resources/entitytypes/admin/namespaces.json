@@ -3,56 +3,64 @@
         "namespace": "http://www.example.org",
         "prefix": "ex",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://www.eclipse.org/winery/model/selfservice",
         "prefix": "selfservice",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes",
         "prefix": "tbt",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaSpecificTypes",
         "prefix": "tst",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits",
         "prefix": "wfc",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
         "prefix": "wfn",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
         "prefix": "wfni",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     },
     {
         "namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
         "prefix": "wfr",
         "readableName": "",
-        "upstreamRepository": "",
-        "patternCollection": false
+        "patternCollection": false,
+        "secureCollection": false,
+        "generatedNamespace": false
     }
 ]

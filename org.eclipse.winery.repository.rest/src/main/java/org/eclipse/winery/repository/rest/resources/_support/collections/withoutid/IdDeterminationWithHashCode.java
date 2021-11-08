@@ -14,24 +14,24 @@
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
 public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
 
-    public static final IdDeterminationWithHashCode INSTANCE = new IdDeterminationWithHashCode();
+    private final IRepository repository;
+
+    public IdDeterminationWithHashCode(IRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public String getId(Object entity) {
         // We assume that different Object serializations *always* have different hashCodes
-        int hash = BackendUtils.getXMLAsString(entity).hashCode();
+        // This id generation strategy matches the one employed for searching through a list of entities
+        // for EntityWithoutIdCollectionResource
+        // notably this also assumes that the serialization of an entity is deterministic if it does not have an id
+        int hash = BackendUtils.getXMLAsString(entity, repository).hashCode();
         return Integer.toString(hash);
     }
-
-    /**
-     * Static wrapper method for functions.tld
-     */
-    public static String getIdStatically(Object entity) {
-        return IdDeterminationWithHashCode.INSTANCE.getId(entity);
-    }
-
 }

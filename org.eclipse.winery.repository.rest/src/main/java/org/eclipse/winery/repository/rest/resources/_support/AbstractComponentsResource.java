@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,21 +33,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.version.VersionSupport;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 
-import com.sun.jersey.api.NotFoundException;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -64,6 +62,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
+    
+    protected final IRepository requestRepository = RepositoryFactory.getRepository();
 
     @Path("{namespace}/")
     public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {
@@ -86,6 +86,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
             try {
                 tcId = this.getDefinitionsChildId(namespace, id, false);
                 res = RestUtils.create(tcId, name);
+                res.setMessage(getComponentInstanceResource(tcId).getElement());
             } catch (Exception e) {
                 AbstractComponentsResource.LOGGER.debug("Could not create id instance", e);
                 res = new ResourceResult(Status.INTERNAL_SERVER_ERROR);
@@ -155,7 +156,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
      * @throws NotFoundException if resource doesn't exist.
      */
     public static AbstractComponentInstanceResource getComponentInstanceResource(DefinitionsChildId tcId) {
-        String type = Util.getTypeForComponentId(tcId.getClass());
+        String type = IdUtil.getTypeForComponentId(tcId.getClass());
         if (!RepositoryFactory.getRepository().exists(tcId)) {
             AbstractComponentsResource.LOGGER.debug("Definition child id " + tcId.toString() + " not found");
             throw new NotFoundException("Definition child id " + tcId.toString() + " not found");
@@ -197,8 +198,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
      * "name" field is used there at the UI
      *
      * @param grouped if given, the JSON output is grouped by namespace
-     * @return A list of all ids of all instances of this component type. Format: <code>[({"namespace":
-     * "[namespace]", "id": "[id]"},)* ]</code>.
+     * @return A list of all ids of all instances of this component type. Format: <code>[({"namespace": "[namespace]",
+     * "id": "[id]"},)* ]</code>.
      * <p>
      * If grouped is set, the list will be grouped by namespace.
      * <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text":
@@ -211,16 +212,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
         @QueryParam("includeVersions") String includeVersions,
         @QueryParam("full") @ApiParam("If set, the full information of the definition's child is returned. E.g., in the case of node types, the same result as a GET on {ns}/{id] is returned. Works only in the case of grouped.") String full) {
         Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
-        boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
         final IRepository repository = RepositoryFactory.getRepository();
-        SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = null;
-
-        allDefinitionsChildIds = repository.getAllDefinitionsChildIds(idClass);
+        SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds(idClass);
 
         if (Objects.nonNull(grouped)) {
             return getGroupedListOfIds(allDefinitionsChildIds, full, includeVersions);
         } else {
-            return getListOfIds(allDefinitionsChildIds, supportsNameAttribute, full, includeVersions);
+            return RestUtils.getListOfIds(allDefinitionsChildIds, Objects.nonNull(full), Objects.nonNull(includeVersions));
         }
     }
 
@@ -231,16 +229,16 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
             .map(namespace -> {
                 List<LocalNameForAngular> names = groupedIds.get(namespace).stream()
                     .map(definition -> {
-                        Definitions fullDefinition = null;
+                        TDefinitions fullDefinition = null;
                         if (Objects.nonNull(full)) {
-                            fullDefinition = getFullComponentData(definition);
+                            fullDefinition = RestUtils.getFullComponentData(definition);
                         }
 
                         String qName = definition.getQName().toString();
                         String id = definition.getXmlId().toString();
 
                         if ("componentVersionOnly".equals(includeVersions)) {
-                            qName = VersionUtils.getQNameWithComponentVersionOnly(definition);
+                            qName = VersionSupport.getQNameWithComponentVersionOnly(definition);
                             id = qName.split("}")[1];
                         }
 
@@ -252,37 +250,5 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
                 return new NamespaceAndDefinedLocalNamesForAngular(namespace, names);
             })
             .collect(Collectors.toList());
-    }
-
-    private List<ComponentId> getListOfIds(SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds, boolean supportsNameAttribute, String full, String includeVersions) {
-        return allDefinitionsChildIds.stream()
-            .sorted()
-            .map(id -> {
-                String name = id.getXmlId().getDecoded();
-                Definitions definitions = null;
-                WineryVersion version = null;
-                if (supportsNameAttribute) {
-                    AbstractComponentInstanceResource componentInstanceResource = AbstractComponentsResource.getComponentInstanceResource(id);
-                    name = ((IHasName) componentInstanceResource).getName();
-                }
-                if (Objects.nonNull(full)) {
-                    definitions = getFullComponentData(id);
-                }
-                if (Objects.nonNull(includeVersions)) {
-                    version = VersionUtils.getVersion(id.getXmlId().getDecoded());
-                }
-                return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
-            })
-            .collect(Collectors.toList());
-    }
-
-    private Definitions getFullComponentData(DefinitionsChildId id) {
-        try {
-            return BackendUtils.getDefinitionsHavingCorrectImports(RepositoryFactory.getRepository(), id);
-        } catch (Exception e) {
-            AbstractComponentsResource.LOGGER.error(e.getMessage(), e);
-        }
-
-        return null;
     }
 }

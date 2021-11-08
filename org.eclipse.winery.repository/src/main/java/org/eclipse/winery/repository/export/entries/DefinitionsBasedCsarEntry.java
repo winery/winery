@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,6 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+
 package org.eclipse.winery.repository.export.entries;
 
 import java.io.ByteArrayInputStream;
@@ -18,42 +19,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.repository.backend.IRepository;
 
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.repository.JAXBSupport;
-
-/**
- * Provides access to an entry that represents a TOSCA definition.
- */
 public class DefinitionsBasedCsarEntry implements CsarEntry {
-    private static Marshaller marshaller;
-    private Definitions definitions;
 
-    public DefinitionsBasedCsarEntry(Definitions definitions) {
-        assert (definitions != null);
-        this.definitions = definitions;
+    private final TDefinitions definitions;
+    private final IRepository repository;
+
+    public DefinitionsBasedCsarEntry(TDefinitions definitions, IRepository repository) {
+        this.repository = Objects.requireNonNull(repository);
+        this.definitions = Objects.requireNonNull(definitions);
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try {
-            JAXBSupport.createMarshaller(true).marshal(definitions, byteArrayOutputStream);
-            return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        } catch (JAXBException e) {
-            throw new IOException(e);
-        }
+        ByteArrayOutputStream serialized = new ByteArrayOutputStream();
+        writeToOutputStream(serialized);
+        return new ByteArrayInputStream(serialized.toByteArray());
     }
 
     @Override
     public void writeToOutputStream(OutputStream outputStream) throws IOException {
-        try {
-            JAXBSupport.createMarshaller(true).marshal(definitions, outputStream);
-        } catch (JAXBException e) {
-            throw new IOException(e);
-        }
+        repository.serialize(definitions, outputStream);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,9 +27,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.winery.common.HashingUtil;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileAttributes;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -37,8 +37,8 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.virgo.util.parser.manifest.ManifestContents;
 import org.eclipse.virgo.util.parser.manifest.RecoveringManifestParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.eclipse.winery.repository.export.CsarExportConfiguration.INCLUDE_HASHES;
 import static org.eclipse.winery.repository.export.CsarExportConfiguration.STORE_IMMUTABLY;
@@ -52,9 +52,9 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 
     private ByteArrayInputStream createOutputAndInputStream(String commitId, DefinitionsChildId id, Map<String, Object> exportConfiguration) throws Exception {
         setRevisionTo(commitId);
-        CsarExporter exporter = new CsarExporter();
+        CsarExporter exporter = new CsarExporter(repository);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        exporter.writeCsar(RepositoryFactory.getRepository(), id, os, exportConfiguration);
+        exporter.writeCsar(id, os, exportConfiguration);
         return new ByteArrayInputStream(os.toByteArray());
     }
 
@@ -191,7 +191,8 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    @EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\")).exists()")
+    // todo check how to enable
+    @Disabled
     public void csarFilesHaveImmutableStorageAddresses() throws Exception {
         Map<String, Object> exportConfiguration = new HashMap<>();
         exportConfiguration.put(STORE_IMMUTABLY.name(), null);
@@ -213,14 +214,15 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    @EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\")).exists()")
+    @Disabled
+    // todo check how to enable
     public void testPutCsarInBlockchainAndImmutableStorage() throws Exception {
         setRevisionTo("origin/plain");
-        CsarExporter exporter = new CsarExporter();
+        CsarExporter exporter = new CsarExporter(repository);
         DefinitionsChildId id = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithAllReqCapVariants", false);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        CompletableFuture<String> future = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), id, os);
+        CompletableFuture<String> future = exporter.writeCsarAndSaveManifestInProvenanceLayer(id, os);
         String transactionHash = future.get();
 
         assertNotNull(transactionHash);

@@ -13,14 +13,16 @@
    See https://github.com/eclipse/winery/issues/71 for a discussion.
  - `processContents="lax"` was added to Properties at Boundary definitions.
  - Make "Types" in "<Definitions>" valid as the only nested element in "<Definitions>"
- - Add "PatternRefinementModels" as tPatternRefinementModel
-   - tRelationMapping
-   - tDirection
-   - tPrmPropertyMapping
-   - tPrmPropertyMappingType
+ - Add "PatternRefinementModels" as otPatternRefinementModel
+   - otRelationMapping
+   - otDirection
+   - otPrmPropertyMapping
+   - otPrmPropertyMappingType
+   - otTopologyFragmentRefinementModel
+   - otPermutationOption & otPermutationMapping
  - Add "ComplianceRules" as tComplianceRule
  - Add tPolicies to Relationship Templates
- - Add "TestRefinementModels" as tTestRefinementModel
+ - Add "TestRefinementModels" as otTestRefinementModel
 -->
 <xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
            attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
@@ -88,9 +90,10 @@
       <xs:element name="ArtifactTemplate" type="tArtifactTemplate"/>
       <xs:element name="PolicyType" type="tPolicyType"/>
       <xs:element name="PolicyTemplate" type="tPolicyTemplate"/>
-      <xs:element name="PatternRefinementModel" type="tPatternRefinementModel"/>
-      <xs:element name="ComplianceRule" type="tComplianceRule"/>
-      <xs:element name="TestRefinementModel" type="tTestRefinementModel"/>
+      <xs:element name="PatternRefinementModel" type="otTopologyFragmentRefinementModel"/>
+      <xs:element name="TopologyFragmentRefinementModel" type="otTopologyFragmentRefinementModel"/>
+      <xs:element name="ComplianceRule" type="otComplianceRule"/>
+      <xs:element name="TestRefinementModel" type="otTestRefinementModel"/>
      </xs:choice>
     </xs:sequence>
     <xs:attribute name="id" type="xs:ID" use="required"/>
@@ -278,6 +281,7 @@
        <xs:simpleType>
         <xs:restriction base="xs:string">
          <xs:enumeration value="unbounded"/>
+         <xs:enumeration value="UNBOUNDED"/>
         </xs:restriction>
        </xs:simpleType>
       </xs:union>
@@ -477,6 +481,7 @@
        <xs:simpleType>
         <xs:restriction base="xs:string">
          <xs:enumeration value="unbounded"/>
+         <xs:enumeration value="UNBOUNDED"/>
         </xs:restriction>
        </xs:simpleType>
       </xs:union>
@@ -523,11 +528,13 @@
        <xs:simpleType>
         <xs:restriction base="xs:string">
          <xs:enumeration value="unbounded"/>
+         <xs:enumeration value="UNBOUNDED"/>
         </xs:restriction>
        </xs:simpleType>
       </xs:union>
      </xs:simpleType>
     </xs:attribute>
+    <xs:attribute name="validSourceTypes" use="optional"/>
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
@@ -809,23 +816,74 @@
  <xs:complexType name="tRequiredContainerFeature">
   <xs:attribute name="feature" type="xs:anyURI" use="required"/>
  </xs:complexType>
- <xs:complexType name="tPatternRefinementModel">
+ <xs:complexType name="otPatternRefinementModel">
+  <xs:complexContent>
+   <xs:extension base="otTopologyFragmentRefinementModel">
+    <xs:sequence>
+     <xs:element name="BehaviorPatternMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="BehaviorPatternMapping" type="otBehaviorPatternMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+    </xs:sequence>
+    <xs:attribute name="isPdrm" type="tBoolean" default="no"/>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+ <xs:complexType name="otTopologyFragmentRefinementModel">
   <xs:complexContent>
    <xs:extension base="tExtensibleElements">
     <xs:sequence>
      <xs:element name="Detector" type="tTopologyTemplate"/>
-     <xs:element name="RefinementStructure" type="tTopologyTemplate"/>
      <xs:element name="RelationMappings">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="RelationMapping" type="tRelationMapping" maxOccurs="unbounded"/>
+        <xs:element name="RelationMapping" type="otRelationMapping" maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
-     <xs:element name="PropertyMappings">
+     <xs:element name="RefinementStructure" type="tTopologyTemplate"/>
+     <xs:element name="AttributeMappings">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="PropertyMapping" type="tPrmPropertyMapping" maxOccurs="unbounded"/>
+        <xs:element name="AttributeMapping" type="otAttributeMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="StayMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="StayMapping" type="otStayMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="PermutationMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="PermutationMapping" type="otPermutationMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="DeploymentArtifactMappings">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="DeploymentArtifactMapping" type="otDeploymentArtifactMapping" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="PermutationOptions">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="PermutationOption" type="xs:string"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
+     <xs:element name="ComponentSets">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="ComponentSet" type="xs:string"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
@@ -835,32 +893,68 @@
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
- <xs:complexType name="tRelationMapping">
+ <xs:complexType name="otPermutationMapping">
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+ </xs:complexType>
+ <xs:complexType name="otRelationMapping">
   <xs:attribute name="id" type="xs:ID" use="required"/>
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
   <xs:attribute name="relationType" type="xs:QName" use="required"/>
-  <xs:attribute name="direction" type="tDirection" use="required"/>
+  <xs:attribute name="direction" type="otDirection" use="required"/>
   <xs:attribute name="validSourceOrTarget" type="xs:QName"/>
  </xs:complexType>
- <xs:complexType name="tPrmPropertyMapping">
+ <xs:complexType name="otAttributeMapping">
   <xs:attribute name="id" type="xs:ID" use="required"/>
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
-  <xs:attribute name="type" type="tPrmPropertyMappingType" use="required"/>
+  <xs:attribute name="type" type="otAttributeMappingType" use="required"/>
   <xs:attribute name="detectorProperty" type="xs:string" use="optional"/>
   <xs:attribute name="refinementProperty" type="xs:string" use="optional"/>
  </xs:complexType>
- <xs:simpleType name="tDirection">
+ <xs:complexType name="otStayMapping">
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="modelElementType" type="otPrmModelElementType" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+ </xs:complexType>
+ <xs:complexType name="otDeploymentArtifactMapping">
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+  <xs:attribute name="artifactType" type="xs:QName" use="required"/>
+ </xs:complexType>
+ <xs:complexType name="otBehaviorPatternMapping">
+  <xs:sequence>
+   <xs:element name="Property" type="otPropertyKv"/>
+  </xs:sequence>
+  <xs:attribute name="id" type="xs:ID" use="required"/>
+  <xs:attribute name="detectorNode" type="xs:string" use="required"/>
+  <xs:attribute name="refinementNode" type="xs:string" use="required"/>
+  <xs:attribute name="behaviorPattern" type="xs:string" use="required"/>
+ </xs:complexType>
+ <xs:complexType name="otPropertyKv">
+  <xs:attribute name="key" type="xs:string" use="required"/>
+  <xs:attribute name="value" type="xs:string" use="required"/>
+ </xs:complexType>
+ <xs:simpleType name="otDirection">
   <xs:restriction base="xs:string">
    <xs:enumeration value="ingoing"/>
    <xs:enumeration value="outgoing"/>
   </xs:restriction>
  </xs:simpleType>
- <xs:simpleType name="tPrmPropertyMappingType">
+ <xs:simpleType name="otAttributeMappingType">
   <xs:restriction base="xs:string">
    <xs:enumeration value="all"/>
    <xs:enumeration value="selective"/>
+  </xs:restriction>
+ </xs:simpleType>
+ <xs:simpleType name="otPrmModelElementType">
+  <xs:restriction base="xs:string">
+   <xs:enumeration value="node"/>
+   <xs:enumeration value="relation"/>
   </xs:restriction>
  </xs:simpleType>
  <xs:simpleType name="tBoolean">
@@ -872,7 +966,7 @@
  <xs:simpleType name="importedURI">
   <xs:restriction base="xs:anyURI"/>
  </xs:simpleType>
- <xs:complexType name="tComplianceRule">
+ <xs:complexType name="otComplianceRule">
   <xs:complexContent>
    <xs:extension base="tExtensibleElements">
     <xs:sequence>
@@ -885,7 +979,7 @@
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
- <xs:complexType name="tTestRefinementModel">
+ <xs:complexType name="otTestRefinementModel">
   <xs:complexContent>
    <xs:extension base="tExtensibleElements">
     <xs:sequence>
@@ -894,7 +988,7 @@
      <xs:element name="RelationMappings">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="RelationMapping" type="tRelationMapping" maxOccurs="unbounded"/>
+        <xs:element name="RelationMapping" type="otRelationMapping" maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>

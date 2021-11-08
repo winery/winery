@@ -1,0 +1,36 @@
+<div>
+    <div>
+        <h5 class="pull-left">Participants</h5>
+        <div class="button-bar pull-right">
+            <button (click)="openModal()" class="btn btn-sm btn-primary">
+                Add
+            </button>
+        </div>
+    </div>
+    <div *ngIf="isEmpty()" style="color: dimgray; text-align: center">
+        <span>No participants defined <br> for this Topology Template.</span>
+    </div>
+    <table class="table table-striped table-bordered table-condensed" *ngIf="!isEmpty()">
+        <tr>
+            <th>Name</th>
+            <th>URL</th>
+            <th style="width: 25px"></th>
+        </tr>
+        <tbody *ngFor="let o of participants">
+        <tr>
+            <td>{{o.name}}</td>
+            <td>{{o.url}}</td>
+            <td>
+                <button (click)="remove(o)" class="btn btn-sm btn-danger">
+                    <i class="fa fa-remove"></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <winery-dynamic-form-modal #generatedModal
+                               [config]="formMetadata"
+                               [modalTitle]="'Add Participant Definition'"
+                               (saveClicked)="save($event)">
+    </winery-dynamic-form-modal>
+</div>

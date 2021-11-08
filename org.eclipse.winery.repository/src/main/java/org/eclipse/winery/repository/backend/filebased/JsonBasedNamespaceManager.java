@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,12 +23,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,38 +36,44 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonBasedNamespaceManager.class);
     private final File file;
-    private final ObjectMapper objectMapper;
 
     private Map<String, NamespaceProperties> namespaceProperties;
 
     public JsonBasedNamespaceManager(File file) {
+        this(file, true);
+    }
+
+    public JsonBasedNamespaceManager(File file, boolean local) {
         Objects.requireNonNull(file);
         this.file = file;
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         this.namespaceProperties = this.loadNamespacePropertiesFromFile();
 
-        this.namespaceProperties.put(Namespaces.TOSCA_NAMESPACE,
-            new NamespaceProperties(Namespaces.TOSCA_NAMESPACE, "tosca", "Predefined TOSCA elements", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
-            new NamespaceProperties(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery", "TOSCA extension by Eclipse Winery", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.W3C_NAMESPACE_URI,
-            new NamespaceProperties(Namespaces.W3C_NAMESPACE_URI, "xmlns", "W3C XML namespace", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.W3C_XML_SCHEMA_NS_URI,
-            new NamespaceProperties(Namespaces.W3C_XML_SCHEMA_NS_URI, "xsd", "W3C XML schema namespace", "", false)
-        );
-        this.namespaceProperties.put(Namespaces.EXAMPLE_NAMESPACE_URI,
-            new NamespaceProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "ex", "Namespace for creating examples", "", false)
-        );
+        if (local) {
+            this.namespaceProperties.put(Namespaces.TOSCA_NAMESPACE,
+                new NamespaceProperties(Namespaces.TOSCA_NAMESPACE, "tosca", "Predefined TOSCA elements", false)
+            );
+            this.namespaceProperties.put(org.eclipse.winery.model.converter.support.Namespaces.TOSCA_YAML_NS,
+                new NamespaceProperties(org.eclipse.winery.model.converter.support.Namespaces.TOSCA_YAML_NS, "yml", "Predefined TOSCA YAML Simple Profile elements", false)
+            );
+            this.namespaceProperties.put(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
+                new NamespaceProperties(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery", "TOSCA extension by Eclipse Winery", false)
+            );
+            this.namespaceProperties.put(Namespaces.W3C_NAMESPACE_URI,
+                new NamespaceProperties(Namespaces.W3C_NAMESPACE_URI, "xmlns", "W3C XML namespace", false)
+            );
+            this.namespaceProperties.put(Namespaces.W3C_XML_SCHEMA_NS_URI,
+                new NamespaceProperties(Namespaces.W3C_XML_SCHEMA_NS_URI, "xsd", "W3C XML schema namespace", false)
+            );
+            this.namespaceProperties.put(Namespaces.EXAMPLE_NAMESPACE_URI,
+                new NamespaceProperties(Namespaces.EXAMPLE_NAMESPACE_URI, "ex", "Namespace for creating examples", false)
+            );
+        }
     }
 
     @Override
     protected Set<String> getAllPrefixes(String namespace) {
-        return this.namespaceProperties.entrySet().stream()
-            .map(entry -> entry.getValue().getPrefix())
+        return this.namespaceProperties.values().stream()
+            .map(NamespaceProperties::getPrefix)
             .collect(Collectors.toSet());
     }
 
@@ -94,11 +99,11 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
                 if (this.file.getParentFile().mkdirs() || this.file.createNewFile()) {
                     LOGGER.debug("Created new namespace file at {}", this.file);
                 } else {
-                    LOGGER.error("Could not craete namespace file at {}", this.file);
+                    LOGGER.error("Could not create namespace file at {}", this.file);
                 }
             }
 
-            this.objectMapper.writeValue(this.file, this.namespaceProperties);
+            JacksonProvider.mapper.writeValue(this.file, this.namespaceProperties);
         } catch (IOException e) {
             LOGGER.debug("Could not save namespace to json file!", e);
         }
@@ -144,7 +149,7 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
                 TypeReference<HashMap<String, NamespaceProperties>> hashMapTypeReference =
                     new TypeReference<HashMap<String, NamespaceProperties>>() {
                     };
-                nsProps = objectMapper.readValue(file, hashMapTypeReference);
+                nsProps = JacksonProvider.mapper.readValue(file, hashMapTypeReference);
             }
         } catch (IOException e) {
             LOGGER.debug("Error while loading the namespace file.", e);
@@ -156,7 +161,11 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
     @Override
     public void addAllPermanent(Collection<NamespaceProperties> properties) {
-        properties.forEach(prop -> this.namespaceProperties.put(prop.getNamespace(), prop));
+        properties.forEach(prop -> {
+            if (!this.namespaceProperties.containsKey(prop.getNamespace())) {
+                this.namespaceProperties.put(prop.getNamespace(), prop);
+            }
+        });
         this.save();
     }
 
@@ -172,6 +181,28 @@ public class JsonBasedNamespaceManager extends AbstractNamespaceManager {
 
         if (Objects.nonNull(properties)) {
             return properties.isPatternCollection();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        NamespaceProperties properties = this.namespaceProperties.get(namespace);
+
+        if (Objects.nonNull(properties)) {
+            return properties.isSecureCollection();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isGeneratedNamespace(String namespace) {
+        NamespaceProperties properties = this.namespaceProperties.get(namespace);
+
+        if (Objects.nonNull(properties)) {
+            return properties.isGeneratedNamespace();
         } else {
             return false;
         }

@@ -1,0 +1,23 @@
+[
+    {
+        "nodeTemplateId": "NodeTypeWithDifferentFeatures_w1-wip1_0",
+        "features": [
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_AWS-OpenStack-w1-wip1",
+                "featureName": "scalable AWS and Heat"
+            },
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_Kubernetes-w1-wip1",
+                "featureName": "scalable Kubernetes"
+            },
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_Puppet-w1-wip1",
+                "featureName": "scalable Puppet"
+            },
+            {
+                "type": "{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1",
+                "featureName": "ping"
+            }
+        ]
+    }
+]

@@ -1,0 +1,132 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="top" [class.twolines]="needTwoLines">
+    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon" alt="Icon of the Node Type.">
+    <img *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible" src="../../../assets/images/toscaLight.png"
+         class="toscaLightCompatible" alt="This Service Tempalte is TOSCALight compatible.">
+    <div class="informationContainer">
+        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
+                                [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
+        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'namespace'"
+                                [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
+    </div>
+    <div class="managementButtons row" *ngIf="showManagementButtons">
+        <button class="btn btn-danger" (click)="openDeleteConfirmationModel()">Delete</button>
+        <button *wineryRepositoryShowOnFeature="'radon'" (click)="openChe()" class="btn btn-info">
+            Open in IDE
+        </button>
+        <div *ngIf="!this.configurationService.isYaml(); then xmlExport else yamlExport"></div>
+        <ng-template #xmlExport>
+            <div class="btn-group" dropdown>
+                <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
+                    Export <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
+                    </li>
+                    <li class="divider dropdown-divider"></li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR</a>
+                    </li>
+                    <li *ngIf="toscaComponent.toscaType === toscaTypes.ServiceTemplate">
+                        <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with Dependencies</a>
+                    </li>
+                    <li *ngIf="accountabilityEnabled">
+                        <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR</a>
+                    </li>
+                    <li *ngIf="showEdmmExport">
+                        <a target="_blank" href="{{ toscaComponent.edmmExportPath }}"
+                           *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible; else errorReport">Export to
+                            EDMM</a>
+                        <ng-template #errorReport>
+                            <a (click)="showErrorReport()">Show TOSCA Light Error Report</a>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+        </ng-template>
+        <ng-template #yamlExport>
+            <div class="btn-group" dropdown>
+                <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
+                    Export <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">Download</a>
+                    </li>
+                    <li *wineryRepositoryHideOnFeature="'radon'">
+                        <a (click)="exportToFilesystem()">Export to Filesystem</a>
+                    </li>
+                    <li *wineryRepositoryShowOnFeature="'radon'">
+                        <a (click)="exportToFilesystem()">Export to IDE</a>
+                    </li>
+                </ul>
+            </div>
+        </ng-template>
+        <winery-version class="" [versions]="versions"></winery-version>
+        <div *ngIf="typeUrl">
+            <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
+        </div>
+    </div>
+    <div class="subMenu">
+        <a *ngFor="let item of subMenu; index as i"
+           class="styledTabMenuButton styledTabMenuButton2ndlevel"
+           [ngClass]="{'tab-menu-fix': requiresTabFix}"
+           [routerLink]="['./' + item.urlFragment]"
+           [routerLinkActive]="'selected'"
+           (click)="selectedTab = item.displayName">
+            <div class="left"></div>
+            <div class="center">{{ item.displayName }}</div>
+            <div class="right"></div>
+        </a>
+    </div>
+</div>
+
+<ng-template #confirmDeleteModal>
+    <winery-modal-header [modalRef]="deleteConfirmationModalRef"
+                         [title]="'Delete ' + (toscaComponent.toscaType | toscaTypeToReadableName)">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ toscaComponent.localName }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="deleteConfirmed.emit();" [modalRef]="deleteConfirmationModalRef"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</ng-template>
+
+<ng-template #toscaLightCompatibilityModal>
+    <winery-modal-header [modalRef]="toscaLightCompatibilityErrorReportModalRef"
+                         [title]="'TOSCA Light Compatibility Error Log'">
+    </winery-modal-header>
+    <winery-modal-body *ngIf="toscaLightCompatibilityData?.errorList">
+        <h4>TOSCA Light Incompatibilities:</h4>
+        <ul>
+            <li *ngFor="let qName of toscaLightErrorKeys">
+                <span>{{ qName }}</span>
+                <ul>
+                    <li *ngFor="let error of toscaLightCompatibilityData.errorList[qName]">
+                        {{ error }}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="toscaLightCompatibilityErrorReportModalRef" [showDefaultButtons]="true"
+                         [closeButtonLabel]="'Close'"
+                         [hideOkButton]="true"></winery-modal-footer>
+</ng-template>

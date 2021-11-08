@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,31 +17,27 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TRelationDirection;
-import org.eclipse.winery.model.tosca.TRelationMapping;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class RelationMappingApiData extends AbstractPrmMappingElement {
 
-    public TRelationDirection direction;
+    public OTRelationDirection direction;
     public QName relationType;
     public QName validSourceOrTarget;
 
     public RelationMappingApiData() {
-
     }
 
     @JsonIgnore
-    public TRelationMapping createTRelationMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
-        TRelationMapping mapping = new TRelationMapping();
-        mapping.setId(this.id);
-        mapping.setDetectorNode(detectorNodeTemplate);
-        mapping.setRefinementNode(refinementNodeTemplate);
-        mapping.setDirection(this.direction);
-        mapping.setRelationType(this.relationType);
-        mapping.setValidSourceOrTarget(this.validSourceOrTarget);
-
-        return mapping;
+    public OTRelationMapping createTRelationMapping(TNodeTemplate detectorNodeTemplate, TNodeTemplate refinementNodeTemplate) {
+        return new OTRelationMapping(new OTRelationMapping.Builder(this.id)
+            .setDetectorElement(detectorNodeTemplate)
+            .setRefinementElement(refinementNodeTemplate)
+            .setDirection(this.direction)
+            .setRelationType(this.relationType)
+            .setValidSourceOrTarget(this.validSourceOrTarget));
     }
 }

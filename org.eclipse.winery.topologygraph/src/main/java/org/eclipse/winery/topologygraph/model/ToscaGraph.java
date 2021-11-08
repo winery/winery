@@ -13,16 +13,20 @@
  ********************************************************************************/
 package org.eclipse.winery.topologygraph.model;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jgrapht.EdgeFactory;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class ToscaGraph extends DefaultDirectedGraph<ToscaNode, ToscaEdge> {
+import org.apache.commons.lang3.StringUtils;
+import org.jgrapht.graph.SimpleDirectedGraph;
+
+public class ToscaGraph extends SimpleDirectedGraph<ToscaNode, ToscaEdge> {
 
     private static final long serialVersionUID = 1L;
 
-    public ToscaGraph(EdgeFactory<ToscaNode, ToscaEdge> ef) {
-        super(ef);
+    public ToscaGraph() {
+        super(ToscaEdge.class);
     }
 
     public ToscaNode getNode(String id) {
@@ -31,5 +35,18 @@ public class ToscaGraph extends DefaultDirectedGraph<ToscaNode, ToscaEdge> {
 
     public ToscaNode getReferenceNode() {
         return vertexSet().stream().findAny().orElse(null);
+    }
+
+    public Set<ToscaEntity> vertexAndEdgeSet() {
+        return Stream.concat(
+            vertexSet().stream().map(v -> (ToscaEntity) v),
+            edgeSet().stream().map(e -> (ToscaEntity) e)
+        ).collect(Collectors.toSet());
+    }
+
+    public Optional<ToscaEntity> getVertexOrEdge(String id) {
+        return vertexAndEdgeSet().stream()
+            .filter(e -> e.getId().equals(id))
+            .findFirst();
     }
 }

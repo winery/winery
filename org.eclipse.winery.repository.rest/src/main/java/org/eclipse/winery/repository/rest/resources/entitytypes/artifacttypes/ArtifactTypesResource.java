@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,16 +13,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes;
 
+import java.util.SortedSet;
 import io.swagger.annotations.Api;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.SortedSet;
 
 @Api(tags = "Artifact Types")
 public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenceResource<ArtifactTypeResource> {
@@ -67,8 +71,8 @@ public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenc
     }
 
     /**
-     * Returns the first matching ArtifactTypeResource for the given file
-     * extension. Returns null if no such ArtifactType can be found
+     * Returns the first matching ArtifactTypeResource for the given file extension. Returns null if no such
+     * ArtifactType can be found
      * <p>
      * The case of the extension is ignored.
      * <p>

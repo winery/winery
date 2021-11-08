@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -17,20 +17,26 @@
     <parent>
         <groupId>org.eclipse.winery</groupId>
         <artifactId>winery</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>org.eclipse.winery.model.bpmn4tosca</artifactId>
+
+    <properties>
+        <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+    </properties>
+    
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${com.fasterxml.jackson.core.jackson-annotations}</version>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${org.glassfish.jxb}</version>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
-            <version>0.9.1</version>
+            <version>${org.jgrapht.jgrapht-core.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -45,46 +51,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <properties>
-        <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
-        <main.basedir>${project.parent.basedir}</main.basedir>
-    </properties>
-    <url>http://www.eclipse.org/winery</url>
-    <organization>
-        <name>Eclipse.org - Winery Project</name>
-        <url>http://www.eclipse.org/winery</url>
-    </organization>
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/eclipse/winery/issues</url>
-    </issueManagement>
-    <inceptionYear>2015</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>Winery Developer List</name>
-            <post>winery-dev@eclipse.org</post>
-            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-        </mailingList>
-    </mailingLists>
-    <licenses>
-        <license>
-            <name>Eclipse Public License v2.0</name>
-            <url>http://www.eclipse.org/legal/epl-v20.html</url>
-            <distribution>repo</distribution>
-            <comments>Standard Eclipse Licence</comments>
-        </license>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>${maven.checkstyle.version}</version>
                 <executions>
                     <execution>
                         <id>checkstyle</id>
@@ -96,14 +69,9 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>7.6</version>
-                    </dependency>
-                    <dependency>
                         <groupId>com.thomasjensen.checkstyle.addons</groupId>
                         <artifactId>checkstyle-addons</artifactId>
-                        <version>4.0.1</version>
+                        <version>${checkstyle.addons.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -112,9 +80,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

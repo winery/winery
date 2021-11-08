@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +35,7 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,41 +48,58 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.edmm.EdmmManager;
+import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmType;
+import org.eclipse.winery.model.ids.GenericId;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.selfcontainmentpackager.SelfContainmentPackager;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
-import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.repository.export.CsarExportConfiguration;
 import org.eclipse.winery.repository.export.CsarExportOptions;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
+import org.eclipse.winery.repository.rest.datatypes.ComponentId;
 import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -95,16 +113,13 @@ import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConve
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
-import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.converter.Converter;
+import org.eclipse.winery.repository.yaml.export.YamlExporter;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
+import io.github.edmm.core.parser.EntityGraph;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,11 +135,12 @@ public class RestUtils {
     // RegExp inspired by http://stackoverflow.com/a/5396246/873282
     // NameStartChar without ":"
     // stackoverflow: -dfff, standard: d7fff
-    private static final String RANGE_NCNAMESTARTCHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
-    private static final String REGEX_NCNAMESTARTCHAR = "[" + RestUtils.RANGE_NCNAMESTARTCHAR + "]";
+    private static final String RANGE_NCNAME_START_CHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
+    private static final String REGEX_NCNAME_START_CHAR = "[" + RestUtils.RANGE_NCNAME_START_CHAR + "]";
 
-    private static final String RANGE_NCNAMECHAR = RestUtils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
-    private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + RestUtils.RANGE_NCNAMECHAR + "]";
+    // \\- is required
+    private static final String RANGE_NCNAME_CHAR = RestUtils.RANGE_NCNAME_START_CHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
+    private static final String REGEX_INVALID_NCNAMES_CHAR = "[^" + RestUtils.RANGE_NCNAME_CHAR + "]";
 
     static {
         if (Locale.getDefault() != Locale.ENGLISH) {
@@ -137,10 +153,6 @@ public class RestUtils {
                 LOGGER.error("Could not switch locale to English", e);
             }
         }
-    }
-
-    public static URI createURI(String uri) {
-        return URI.create(uri);
     }
 
     /**
@@ -164,7 +176,7 @@ public class RestUtils {
      */
     public static String createXmlIdAsString(String name) {
         String id = name;
-        if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAMESTARTCHAR)) {
+        if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAME_START_CHAR)) {
             id = "-".concat(id);
         }
         // id starts with a valid character
@@ -174,10 +186,10 @@ public class RestUtils {
         id = id.replace(' ', '-');
 
         // keep length of ID, only wipe out invalid characters
-        // alternative: replace invalid characters by URLencoded version. As the
+        // alternative: replace invalid characters by URL encoded version. As the
         // ID is visible only in the URL, this quick hack should be OK
         // ID is visible only in the URL, this quick hack should be OK
-        id = id.replaceAll(RestUtils.REGEX_INVALIDNCNAMESCHAR, "-");
+        id = id.replaceAll(RestUtils.REGEX_INVALID_NCNAMES_CHAR, "-");
 
         return id;
     }
@@ -189,7 +201,7 @@ public class RestUtils {
         final ToscaExportUtil exporter = new ToscaExportUtil();
         StreamingOutput so = output -> {
             Map<String, Object> conf = new HashMap<>();
-            conf.put(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
+            conf.put(CsarExportConfiguration.REPOSITORY_URI.toString(), uri);
             try {
                 exporter.writeTOSCA(RepositoryFactory.getRepository(), resource.getId(), conf, output);
             } catch (Exception e) {
@@ -216,8 +228,8 @@ public class RestUtils {
      * @param options the set of options that are applicable for exporting a csar
      */
     public static Response getCsarOfSelectedResource(final AbstractComponentInstanceResource resource, CsarExportOptions options) {
-        LocalDateTime start = LocalDateTime.now();
-        final CsarExporter exporter = new CsarExporter();
+        long start = System.currentTimeMillis();
+        final CsarExporter exporter = new CsarExporter(RepositoryFactory.getRepository());
         Map<String, Object> exportConfiguration = new HashMap<>();
 
         StreamingOutput so = output -> {
@@ -225,14 +237,18 @@ public class RestUtils {
                 // check which options are chosen
                 if (options.isAddToProvenance()) {
                     // We wait for the accountability layer to confirm the transaction
-                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(RepositoryFactory.getRepository(), resource.getId(), output)
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output)
                         .get();
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
-                    LOGGER.debug("CSAR export (provenance) lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+                } else if (options.isIncludeDependencies() && resource.getId() instanceof ServiceTemplateId) {
+                    SelfContainmentPackager packager = new SelfContainmentPackager(RepositoryFactory.getRepository());
+                    DefinitionsChildId selfContainedVersion = packager.createSelfContainedVersion(resource.getId());
+                    exporter.writeSelfContainedCsar(RepositoryFactory.getRepository(), selfContainedVersion, output, exportConfiguration);
                 } else {
-                    exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output, exportConfiguration);
-                    LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+                    exporter.writeCsar(resource.getId(), output, exportConfiguration);
                 }
+                long duration = (System.currentTimeMillis() - start) / 1000;
+                LOGGER.debug("CSAR export lasted {} min {} s", (int) duration / 60, duration % 60);
             } catch (Exception e) {
                 LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
@@ -250,40 +266,78 @@ public class RestUtils {
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
-        final Converter converter = new Converter();
-        try {
-            // MimeTypes.MIMETYPE_YAML not chosen, because firefox always demands download
-            return Response.ok(converter.convertDefinitionsChildToYaml(id)).type(MediaType.TEXT_PLAIN_TYPE).build();
-        } catch (MultiException e) {
-            throw new WebApplicationException(e);
-        }
+        // TODO
+//        final Converter converter = new Converter();
+//        try {
+//            // MimeTypes.MIMETYPE_YAML not chosen, because firefox always demands download
+//            return Response.ok(converter.convertDefinitionsChildToYaml(id)).type(MediaType.TEXT_PLAIN_TYPE).build();
+//        } catch (MultiException e) {
+//            throw new WebApplicationException(e);
+//        }
+        return Response.noContent().build();
     }
 
     public static Response getYamlCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
-        final Converter converter = new Converter();
+        LocalDateTime start = LocalDateTime.now();
+        final YamlExporter exporter = new YamlExporter(RepositoryFactory.getRepository());
+        Map<String, Object> exportConfiguration = new HashMap<>();
+
         StreamingOutput so = output -> {
             try {
-                InputStream is = converter.convertX2Y(resource.getId());
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                //read from is to buffer
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    output.write(buffer, 0, bytesRead);
-                }
-                is.close();
-                //flush OutputStream to write any buffered data to file
-                output.flush();
-                output.close();
+                exporter.writeCsar(resource.getId(), output, exportConfiguration);
+                LOGGER.debug("CSAR export lasted {}", Duration.between(LocalDateTime.now(), start).toString());
             } catch (Exception e) {
+                LOGGER.error("Error while exporting CSAR", e);
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(resource.getXmlId().getEncoded());
-        sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
+            resource.getXmlId().getEncoded(),
+            Constants.SUFFIX_CSAR);
+
+        return Response.ok()
+            .header("Content-Disposition", contentDisposition)
+            .type(MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
+    }
+
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+
+        IRepository repository = RepositoryFactory.getRepository();
+
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
+        Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
+        Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
+        Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
+        EdmmManager edmmManager = EdmmManager.forRepository(repository);
+        Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
+        Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
+
+        if (nodeTypes.isEmpty()) {
+            throw new IllegalStateException("No Node Types defined!");
+        } else if (relationshipTypes.isEmpty()) {
+            throw new IllegalStateException("No Relationship Types defined!");
+        }
+
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
+            artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
+
+        return edmmConverter.transform(element);
+    }
+
+    public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
+
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
+        StringWriter stringWriter = new StringWriter();
+        transform.generateYamlOutput(stringWriter);
+
+        return Response.ok()
+            .type(MimeTypes.MIMETYPE_YAML)
+            .entity(stringWriter.toString())
+            .build();
     }
 
     /**
@@ -310,11 +364,10 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        StringBuilder sb = new StringBuilder();
-        sb.append("attachment;filename=\"");
-        sb.append(name);
-        sb.append("\"");
-        return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+        String sb = "attachment;filename=\"" +
+            name +
+            "\"";
+        return Response.ok().header("Content-Disposition", sb).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
     /**
@@ -343,18 +396,18 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(id);
+        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(ref);
+        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {
-        return RestUtils.createURI(RestUtils.getAbsoluteURL(id));
+        return URI.create((RestUtils.getAbsoluteURL(id)));
     }
 
     /**
@@ -370,10 +423,11 @@ public class RestUtils {
             location = "servicetemplates";
         } else if (type.contains("ComplianceRule")) {
             location = "compliancerules";
-        } else if (type.contains("PatternRefinementModel")) {
-            location = "patternrefinementmodels";
-        } else if (type.contains("TestRefinementModel")) {
-            location = "testrefinementmodels";
+        } else if (type.contains("RefinementModel")) {
+            location = "refinementmodels";
+        } else if (type.contains("DataType")) {
+            // FIXME Intermediate location, may be subject to change!
+            location = "yaml";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";
@@ -402,12 +456,12 @@ public class RestUtils {
      * @param clazz the Class of the passed object, required if obj is null
      * @param obj   the object to serialize
      */
-    public static <T> Response getXML(Class<T> clazz, T obj) {
+    public static <T> Response getXML(Class<T> clazz, T obj, IRepository repository) {
         // see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
         // which can be directly passed as entity
         // the issue is that we want to have a *formatted* XML
         // Therefore, we serialize "by hand".
-        String xml = BackendUtils.getXMLAsString(clazz, obj, false);
+        String xml = BackendUtils.getXMLAsString(clazz, obj, false, repository);
 
         return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
     }
@@ -430,21 +484,16 @@ public class RestUtils {
      * Checks whether a given resource (with absolute URL!) is available with a HEAD request on it.
      */
     public static boolean isResourceAvailable(String path) {
-        Client client = Client.create();
-        WebResource wr = client.resource(path);
-        boolean res;
-        try {
-            ClientResponse response = wr.head();
-            res = (response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL));
-        } catch (com.sun.jersey.api.client.ClientHandlerException ex) {
-            // In the case of a java.net.ConnectException, return false
-            res = false;
-        }
-        return res;
+        Response response = ClientBuilder.newClient()
+            .target(path)
+            .request()
+            .head();
+
+        return response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL);
     }
 
     public static Set<String> clean(Set<String> set) {
-        Set<String> newSet = new HashSet<String>();
+        Set<String> newSet = new HashSet<>();
 
         for (String setItem : set) {
             if (setItem != null && !setItem.trim().isEmpty() && !setItem.equals("null")) {
@@ -456,7 +505,7 @@ public class RestUtils {
     }
 
     public static Set<QName> cleanQNameSet(Set<QName> set) {
-        Set<QName> newSet = new HashSet<QName>();
+        Set<QName> newSet = new HashSet<>();
 
         for (QName setItem : set) {
             if (setItem != null && !setItem.getLocalPart().equals("null")) {
@@ -472,7 +521,7 @@ public class RestUtils {
 
         RepositoryFileReference fileRef = new RepositoryFileReference(newServiceTemplateId, "ServiceTemplate.tosca");
 
-        Definitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
+        TDefinitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
 
         defs.setId(newName + "Definitions");
         defs.setName(newName + "Definitions generated from Artifact " + artifactName);
@@ -485,27 +534,29 @@ public class RestUtils {
             }
         }
 
-        oldSTModel.setId(newName);
-        oldSTModel.setName(newName + " generated from Artifact " + artifactName);
+        if (oldSTModel != null) {
+            oldSTModel.setId(newName);
+            oldSTModel.setName(newName + " generated from Artifact " + artifactName);
 
-        // remove xaaspackager tags
-        Collection<TTag> toRemove = new ArrayList<TTag>();
+            // remove xaaspackager tags
+            Collection<TTag> toRemove = new ArrayList<>();
 
-        for (TTag tag : oldSTModel.getTags().getTag()) {
-            switch (tag.getName()) {
-                case "xaasPackageNode":
-                case "xaasPackageArtifactType":
-                case "xaasPackageDeploymentArtifact":
-                    toRemove.add(tag);
-                    break;
-                default:
-                    break;
+            for (TTag tag : oldSTModel.getTags()) {
+                switch (tag.getName()) {
+                    case "xaasPackageNode":
+                    case "xaasPackageArtifactType":
+                    case "xaasPackageDeploymentArtifact":
+                        toRemove.add(tag);
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            oldSTModel.getTags().removeAll(toRemove);
         }
 
-        oldSTModel.getTags().getTag().removeAll(toRemove);
-
-        JAXBContext context = JAXBContext.newInstance(Definitions.class);
+        JAXBContext context = JAXBContext.newInstance(TDefinitions.class);
         Marshaller m = context.createMarshaller();
         StringWriter sw = new StringWriter();
         m.marshal(defs, sw);
@@ -518,6 +569,10 @@ public class RestUtils {
     }
 
     public static boolean containsNodeType(TServiceTemplate serviceTemplate, QName nodeType) {
+        if (serviceTemplate == null || serviceTemplate.getTopologyTemplate() == null) {
+            return false;
+        }
+
         List<TEntityTemplate> templates = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
 
         return templates.stream().filter(template -> template instanceof TNodeTemplate).anyMatch(template -> template.getType().equals(nodeType));
@@ -573,7 +628,7 @@ public class RestUtils {
 
     public static String getTagValue(TServiceTemplate serviceTemplate, String tagKey) {
         if (serviceTemplate.getTags() != null) {
-            for (TTag tag : serviceTemplate.getTags().getTag()) {
+            for (TTag tag : serviceTemplate.getTags()) {
                 if (tag.getName().equals(tagKey)) {
                     return tag.getValue();
                 }
@@ -604,7 +659,7 @@ public class RestUtils {
      */
     public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
         try {
-            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType));
+            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -616,7 +671,7 @@ public class RestUtils {
         try {
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
             namespaceManager.addPermanentNamespace(res.getDefinitions().getTargetNamespace());
-            BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+            BackendUtils.persist(RepositoryFactory.getRepository(), res.getRepositoryFileReference(), res.getDefinitions());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -627,17 +682,17 @@ public class RestUtils {
     public static ResourceResult rename(DefinitionsChildId oldId, DefinitionsChildId newId) {
         ResourceResult result = new ResourceResult();
         IRepository repo = RepositoryFactory.getRepository();
-        WineryVersion version = VersionUtils.getVersion(oldId);
+        WineryVersion version = oldId.getVersion();
         DefinitionsChildId id = newId;
 
         if (version.toString().length() > 0) {
             // ensure that the version isn't changed by the user
-            String componentName = VersionUtils.getNameWithoutVersion(newId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            String componentName = newId.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version;
             id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
         }
 
         // If a definition was not committed yet, it is renamed, otherwise duplicate the definition.
-        if (repo instanceof GitBasedRepository && ((GitBasedRepository) repo).hasChangesInFile(BackendUtils.getRefOfDefinitions(oldId))) {
+        if (repo.hasChangesInFile(oldId)) {
             try {
                 repo.rename(oldId, id);
             } catch (IOException e) {
@@ -661,7 +716,7 @@ public class RestUtils {
     }
 
     public static Response renameAllVersionsOfOneDefinition(DefinitionsChildId oldId, DefinitionsChildId newId) {
-        SortedSet<? extends DefinitionsChildId> definitions = BackendUtils.getOtherVersionDefinitionsFromDefinition(oldId);
+        SortedSet<? extends DefinitionsChildId> definitions = WineryVersionUtils.getOtherVersionDefinitionsFromDefinition(oldId, RepositoryFactory.getRepository());
         Response finalResponse = null;
 
         for (DefinitionsChildId definition : definitions) {
@@ -773,7 +828,7 @@ public class RestUtils {
                 }
                 // we have to encode it twice to get correct URIs
                 path = Util.getUrlPath(path);
-                URI uri = RestUtils.createURI(path);
+                URI uri = URI.create(path);
                 res.setUri(uri);
                 res.setId(id);
             } else {
@@ -804,8 +859,8 @@ public class RestUtils {
     /**
      * This is not repository specific, but we leave it close to the only caller
      * <p>
-     * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an
-     * inputstream pointing to the path is returned
+     * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an input
+     * stream pointing to the path is returned
      */
     private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
         if (!RepositoryFactory.getRepository().exists(ref)) {
@@ -843,7 +898,10 @@ public class RestUtils {
             return Response.serverError();
         }
         // set filename
-        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
+        ContentDisposition contentDisposition = ContentDisposition.type("attachment")
+            .fileName(ref.getFileName())
+            .modificationDate(new Date(lastModified.toMillis()))
+            .build();
         res.header("Content-Disposition", contentDisposition);
         res.header("Cache-Control", "max-age=0");
         return res;
@@ -854,7 +912,7 @@ public class RestUtils {
      *
      * @param ref     Reference to the File to write to (overwrite)
      * @param content the data to write
-     * @return a JAX-RS Response containing the result. NOCONTENT if successful, InternalSeverError otherwise
+     * @return a JAX-RS Response containing the result. NO_CONTENT if successful, InternalSeverError otherwise
      */
     public static Response putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) {
         try {
@@ -944,19 +1002,20 @@ public class RestUtils {
 
     public static Response releaseVersion(DefinitionsChildId releasableComponent) {
         ResourceResult result = new ResourceResult();
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasableComponent);
+        final IRepository repository = RepositoryFactory.getRepository();
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(releasableComponent, repository);
 
         if (version.isReleasable()) {
-            if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+            if (repository instanceof GitBasedRepository) {
                 try {
                     freezeVersion(releasableComponent);
 
                     version.setWorkInProgressVersion(0);
-                    String newId = VersionUtils.getNameWithoutVersion(releasableComponent) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+                    String newId = releasableComponent.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version;
                     DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
                     result = duplicate(releasableComponent, newComponent);
 
-                    BackendUtils.commit(newComponent, "Release");
+                    BackendUtils.commit(newComponent, "Release", repository);
                 } catch (GitAPIException e) {
                     result.setStatus(Status.INTERNAL_SERVER_ERROR);
                 }
@@ -974,7 +1033,7 @@ public class RestUtils {
         ResourceResult result = new ResourceResult();
 
         try {
-            BackendUtils.commit(componentToCommit, "Freeze");
+            BackendUtils.commit(componentToCommit, "Freeze", RepositoryFactory.getRepository());
             result.setStatus(Status.OK);
         } catch (Exception e) {
             LOGGER.error("Error freezing component", e);
@@ -991,5 +1050,40 @@ public class RestUtils {
             .stream()
             .map(id -> adapter.marshal(id.getQName()))
             .collect(Collectors.toList());
+    }
+
+    public static List<ComponentId> getListOfIds(Set<? extends DefinitionsChildId> allDefinitionsChildIds,
+                                                 boolean includeFullDefinitions, boolean includeVersions) {
+        return allDefinitionsChildIds.stream()
+            .sorted()
+            .map(id -> {
+                String name = id.getXmlId().getDecoded();
+                TDefinitions definitions = null;
+                WineryVersion version = null;
+                if (Util.instanceSupportsNameAttribute(id.getClass())) {
+                    TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
+                    if (element instanceof IHasName) {
+                        name = ((IHasName) element).getName();
+                    }
+                }
+                if (includeFullDefinitions) {
+                    definitions = getFullComponentData(id);
+                }
+                if (includeVersions) {
+                    version = VersionUtils.getVersion(id.getXmlId().getDecoded());
+                }
+                return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
+            })
+            .collect(Collectors.toList());
+    }
+
+    public static TDefinitions getFullComponentData(DefinitionsChildId id) {
+        try {
+            return BackendUtils.getDefinitionsHavingCorrectImports(RepositoryFactory.getRepository(), id);
+        } catch (Exception e) {
+            RestUtils.LOGGER.error(e.getMessage(), e);
+        }
+
+        return null;
     }
 }

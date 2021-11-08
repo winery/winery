@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
@@ -21,22 +33,15 @@ import org.eclipse.winery.repository.rest.resources._support.ConstraintsResource
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * Bundles common properties of TRequirementDefinition and TCapabilityDefinition
  * <p>
- * We agreed in the project not to modify org.eclipse.winery.model.tosca.
- * Therefore, this resource models the common properties of a
- * TRequirementDefinition and a TCapabilityDefinition
+ * We agreed in the project not to modify org.eclipse.winery.model.tosca. Therefore, this resource models the common
+ * properties of a TRequirementDefinition and a TCapabilityDefinition
  */
 public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWithIdResource<ReqOrCapDef> implements IIdDetermination<ReqOrCapDef> {
 
@@ -45,15 +50,13 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
     protected NodeTypeResource parent;
 
     // the capability or the requirement
-    private Object reqOrCapDef;
+    protected Object reqOrCapDef;
 
     private List<TConstraint> constraints;
 
-
     /**
-     * @param constraints additional parameter (in comparison to the constructor
-     *                    of EntityWithIdResource) as we require that sublist for the
-     *                    constrinats sub resource
+     * @param constraints additional parameter (in comparison to the constructor of EntityWithIdResource) as we require
+     *                    that sublist for the constrinats sub resource
      */
     public AbstractReqOrCapDefResource(IIdDetermination<ReqOrCapDef> idDetermination, ReqOrCapDef reqOrCapDef, int idx, List<ReqOrCapDef> list, NodeTypeResource res, List<TConstraint> constraints) {
         super(idDetermination, reqOrCapDef, idx, list, res);
@@ -159,9 +162,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
     /**
      * required by the JSP.
      * <p>
-     * Therefore, we have two getters for the type: QName for the JSP and String
-     * for REST clients
+     * Therefore, we have two getters for the type: QName for the JSP and String for REST clients
      */
     public abstract QName getType();
-
 }

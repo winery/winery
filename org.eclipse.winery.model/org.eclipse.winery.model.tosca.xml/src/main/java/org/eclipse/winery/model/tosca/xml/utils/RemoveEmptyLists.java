@@ -1,0 +1,93 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+package org.eclipse.winery.model.tosca.xml.utils;
+
+import java.util.List;
+
+import org.eclipse.winery.model.tosca.xml.XTCapability;
+import org.eclipse.winery.model.tosca.xml.XTDeploymentArtifact;
+import org.eclipse.winery.model.tosca.xml.XTEntityTemplate;
+import org.eclipse.winery.model.tosca.xml.XTNodeTemplate;
+import org.eclipse.winery.model.tosca.xml.XTPolicy;
+import org.eclipse.winery.model.tosca.xml.XTPropertyConstraint;
+import org.eclipse.winery.model.tosca.xml.XTRelationshipTemplate;
+import org.eclipse.winery.model.tosca.xml.XTRequirement;
+import org.eclipse.winery.model.tosca.xml.XTTopologyTemplate;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
+
+import io.github.adr.embedded.ADR;
+
+/**
+ * This class removes empty lists. For instance, if a node template has a list of policies and this list is empty, it is
+ * removed. This is important for XSD validation.
+ *
+ * Use it by calling <code>removeEmptyLists(topologyTemplate)</code>
+ *
+ * TODO: Extend this for all model elements
+ */
+@ADR(22)
+public class RemoveEmptyLists extends Visitor {
+
+    @Override
+    public void visit(XTEntityTemplate entityTemplate) {
+        final List<XTPropertyConstraint> propertyConstraints = entityTemplate.getPropertyConstraints();
+        if ((propertyConstraints != null) && propertyConstraints.isEmpty()) {
+            entityTemplate.setPropertyConstraints(null);
+        }
+        XTEntityTemplate.Properties properties = entityTemplate.getProperties();
+        if ((properties != null) && (properties.getAny() == null)) {
+            entityTemplate.setProperties(null);
+        }
+        super.visit(entityTemplate);
+    }
+
+    @Override
+    public void visit(XTNodeTemplate nodeTemplate) {
+        final List<XTRequirement> requirements = nodeTemplate.getRequirements();
+        if (requirements != null && requirements.isEmpty()) {
+            nodeTemplate.setRequirements(null);
+        }
+        final List<XTCapability> capabilities = nodeTemplate.getCapabilities();
+        if ((capabilities != null) && capabilities.isEmpty()) {
+            nodeTemplate.setCapabilities(null);
+        }
+        final List<XTDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        if ((deploymentArtifacts != null) && deploymentArtifacts.isEmpty()) {
+            nodeTemplate.setDeploymentArtifacts(null);
+        }
+        final List<XTPolicy> policies = nodeTemplate.getPolicies();
+        if ((policies != null) && policies.isEmpty()) {
+            nodeTemplate.setPolicies(null);
+        }
+        super.visit(nodeTemplate);
+    }
+
+    @Override
+    public void visit(XTRelationshipTemplate relationshipTemplate) {
+        final XTRelationshipTemplate.RelationshipConstraints relationshipConstraints = relationshipTemplate.getRelationshipConstraints();
+        if ((relationshipConstraints != null) && relationshipConstraints.getRelationshipConstraint().isEmpty()) {
+            relationshipTemplate.setRelationshipConstraints(null);
+        }
+        super.visit(relationshipTemplate);
+    }
+
+    /**
+     * Removes the empty lists in the given topology template
+     *
+     * @param topologyTemplate the topology template to modify
+     */
+    public void removeEmptyLists(XTTopologyTemplate topologyTemplate) {
+        this.visit(topologyTemplate);
+    }
+}

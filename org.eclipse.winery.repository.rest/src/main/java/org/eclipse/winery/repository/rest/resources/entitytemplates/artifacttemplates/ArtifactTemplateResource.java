@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,8 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,11 +26,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
@@ -94,8 +96,8 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
     }
 
     @Path("files")
-    public FilesResource getFilesResource() {
-        return new FilesResource(this.filesDirectoryId);
+    public ArtifactTemplateFilesResource getFilesResource() {
+        return new ArtifactTemplateFilesResource(this.filesDirectoryId);
     }
 
     @GET
@@ -106,8 +108,8 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
     }
 
     @Path("source")
-    public FilesResource getSrcResource() {
-        return new FilesResource(this.sourceDirectoryId, getFilesResource());
+    public ArtifactTemplateFilesResource getSrcResource() {
+        return new ArtifactTemplateFilesResource(this.sourceDirectoryId, getFilesResource());
     }
 
     @GET
@@ -147,9 +149,9 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 
     @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
-        TEntityTemplate.PropertyConstraints constraints = this.getTArtifactTemplate().getPropertyConstraints();
+        List<TPropertyConstraint> constraints = this.getTArtifactTemplate().getPropertyConstraints();
         if (constraints == null) {
-            constraints = new TEntityTemplate.PropertyConstraints();
+            constraints = new ArrayList<>();
             this.getTArtifactTemplate().setPropertyConstraints(constraints);
         }
         return new PropertyConstraintsResource(constraints, this);

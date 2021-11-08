@@ -13,9 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations;
 
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.artifacts.ImplementationArtifactsResource;
@@ -40,13 +43,12 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
      */
     @Path("implementationartifacts/")
     public ImplementationArtifactsResource getImplementationArtifacts() {
-        TImplementationArtifacts implementationArtifacts;
-        implementationArtifacts = this.getRTI().getImplementationArtifacts();
+        List<TImplementationArtifact> implementationArtifacts = this.getRTI().getImplementationArtifacts();
         if (implementationArtifacts == null) {
-            implementationArtifacts = new TImplementationArtifacts();
+            implementationArtifacts = new ArrayList<>();
             this.getRTI().setImplementationArtifacts(implementationArtifacts);
         }
-        return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
+        return new ImplementationArtifactsResource(implementationArtifacts        , this);
     }
 
     @Override

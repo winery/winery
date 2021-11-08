@@ -14,27 +14,51 @@
 
 package org.eclipse.winery.repository.patterndetection;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.patterndetection.keywords.*;
-import org.eclipse.winery.repository.patterndetection.model.*;
-import org.eclipse.winery.repository.patterndetection.model.patterns.*;
+import org.eclipse.winery.repository.patterndetection.keywords.Messaging;
+import org.eclipse.winery.repository.patterndetection.keywords.OperatingSystem;
+import org.eclipse.winery.repository.patterndetection.keywords.Server;
+import org.eclipse.winery.repository.patterndetection.keywords.Service;
+import org.eclipse.winery.repository.patterndetection.keywords.Storage;
+import org.eclipse.winery.repository.patterndetection.keywords.VirtualHardware;
+import org.eclipse.winery.repository.patterndetection.model.AbstractTopology;
+import org.eclipse.winery.repository.patterndetection.model.PatternComponent;
+import org.eclipse.winery.repository.patterndetection.model.PatternPosition;
+import org.eclipse.winery.repository.patterndetection.model.RelationshipEdge;
+import org.eclipse.winery.repository.patterndetection.model.TNodeTemplateExtended;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ElasticLoadBalancerPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ElasticQueuePattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ElasticityManagerPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.EnvironmentBasedAvailabilityPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ExecutionEnvironmentPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.ExecutionEnvironmentPattern2;
+import org.eclipse.winery.repository.patterndetection.model.patterns.KeyValueStoragePattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.MessageOrientedMiddlewarePattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.NodeBasedAvailabilityPattern;
+import org.eclipse.winery.repository.patterndetection.model.patterns.RelationalDatabasePattern;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.IaaSTaxonomy;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.PaaSTaxonomy;
-import org.jgrapht.DirectedGraph;
+
 import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public class Detection {
 
@@ -359,7 +383,7 @@ public class Detection {
         abstractTopology.map(baseNodeExtended);
 
         // in the patternList all graphs of the pattern objects are added
-        List<DirectedGraph<PatternComponent, RelationshipEdge>> patternList = new ArrayList<>();
+        List<SimpleDirectedGraph<PatternComponent, RelationshipEdge>> patternList = new ArrayList<>();
         HashMap<Integer, String> patternNames = new HashMap<>();
 
         // create objects of all known patterns
@@ -400,7 +424,7 @@ public class Detection {
 
         int countIndex = 0;
         // abstractTopology represents the base graph, for each pattern graph search for a subgraph isomorphism between base graph & pattern graph
-        for (DirectedGraph<PatternComponent, RelationshipEdge> pattern : patternList) {
+        for (SimpleDirectedGraph<PatternComponent, RelationshipEdge> pattern : patternList) {
             VF2SubgraphIsomorphismInspector<TNodeTemplateExtended, RelationshipEdge> inspector = new VF2SubgraphIsomorphismInspector(abstractTopology.getGraph(), pattern);
             if (inspector.isomorphismExists()) {
                 Iterator it = inspector.getMappings();
@@ -411,7 +435,7 @@ public class Detection {
                     List<Boolean> matched = new ArrayList<>();
 
                     // this graph holds the nodes of the base graph in which the pattern occurs
-                    DirectedGraph<TNodeTemplateExtended, RelationshipEdge> originGraph = new SimpleDirectedGraph<>(RelationshipEdge.class);
+                    SimpleDirectedGraph<TNodeTemplateExtended, RelationshipEdge> originGraph = new SimpleDirectedGraph<>(RelationshipEdge.class);
 
                     // each node of the pattern graph is compared to the according node in the GraphMapping
                     for (PatternComponent p : pattern.vertexSet()) {
@@ -422,7 +446,6 @@ public class Detection {
                         if (p.getName().equals(v.getLabel())) {
                             matched.add(true);
                             originGraph.addVertex(v);
-
                         } else {
                             matched.add(false);
                         }

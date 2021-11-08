@@ -14,7 +14,7 @@
 package org.eclipse.winery.topologygraph.matching;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,10 +22,9 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
@@ -38,29 +37,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ToscaPrmPropertyMatcherTest {
 
     private static Stream<Arguments> compatiblePropertiesArguments() {
-        Map<String, String> allInOneLeftProperties = new HashMap<>();
+        Map<String, String> allInOneLeftProperties = new LinkedHashMap<>();
         allInOneLeftProperties.put("key0", null);
         allInOneLeftProperties.put("key1", "*");
         allInOneLeftProperties.put("key2", "");
         allInOneLeftProperties.put("key3", "special");
-        Map<String, String> allInOneRightProperties = new HashMap<>();
+        Map<String, String> allInOneRightProperties = new LinkedHashMap<>();
         allInOneRightProperties.put("key0", "");
         allInOneRightProperties.put("key1", "I must be set");
         allInOneRightProperties.put("key2", "I can have anything");
         allInOneRightProperties.put("key3", "special");
 
-        Map<String, String> mustBeSetLeftProperties = new HashMap<>();
+        Map<String, String> mustBeSetLeftProperties = new LinkedHashMap<>();
         mustBeSetLeftProperties.put("key", "*");
-        Map<String, String> mustBeSetRightProperties = new HashMap<>();
+        Map<String, String> mustBeSetRightProperties = new LinkedHashMap<>();
         mustBeSetRightProperties.put("key", "isSet");
-        Map<String, String> mustBeSetButIsNotRightProperties = new HashMap<>();
+        Map<String, String> mustBeSetButIsNotRightProperties = new LinkedHashMap<>();
         mustBeSetButIsNotRightProperties.put("key", "");
 
-        Map<String, String> mustBeEqualsLeftProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsLeftProperties = new LinkedHashMap<>();
         mustBeEqualsLeftProperties.put("key", "must be equals");
-        Map<String, String> mustBeEqualsRightProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsRightProperties = new LinkedHashMap<>();
         mustBeEqualsRightProperties.put("key", "must Be equals");
-        Map<String, String> mustBeEqualsButIsNotRightProperties = new HashMap<>();
+        Map<String, String> mustBeEqualsButIsNotRightProperties = new LinkedHashMap<>();
         mustBeEqualsButIsNotRightProperties.put("key", "who cares?");
 
         return Stream.of(
@@ -75,28 +74,21 @@ public class ToscaPrmPropertyMatcherTest {
 
     @ParameterizedTest(name = "{index} => ''{3}''")
     @MethodSource("compatiblePropertiesArguments")
-    public void compatibleProperties(Map<String, String> leftProperties, Map<String, String> rightProperties, boolean expected, String description) {
+    public void compatibleProperties(LinkedHashMap<String, String> leftProperties, LinkedHashMap<String, String> rightProperties, boolean expected, String description) {
         // region ***** left *****
         TNodeTemplate left = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {
-            TEntityTemplate.Properties properties = new TNodeTemplate.Properties();
-            properties.setKVProperties(leftProperties);
-            left.setProperties(properties);
+            ModelUtilities.setPropertiesKV(left, leftProperties);
         }
 
         ToscaNode leftEntity = new ToscaNode();
         leftEntity.setNodeTemplate(left);
-
-        List<TEntityTemplate> detectorElements = new ArrayList<>();
-        detectorElements.add(left);
         // endregion
 
         // region ***** right *****
         TNodeTemplate right = new TNodeTemplate();
         if (Objects.nonNull(leftProperties)) {
-            TEntityTemplate.Properties properties2 = new TNodeTemplate.Properties();
-            properties2.setKVProperties(rightProperties);
-            right.setProperties(properties2);
+            ModelUtilities.setPropertiesKV(right, rightProperties);
         }
 
         ToscaNode rightEntity = new ToscaNode();
@@ -105,7 +97,7 @@ public class ToscaPrmPropertyMatcherTest {
 
         assertEquals(
             expected,
-            new ToscaPrmPropertyMatcher(detectorElements, new MockNamespaceManager())
+            new ToscaPrmPropertyMatcher(new MockNamespaceManager())
                 .propertiesCompatible(leftEntity, rightEntity)
         );
     }
@@ -118,42 +110,44 @@ public class ToscaPrmPropertyMatcherTest {
                 return true;
             }
         };
-        
-        TPolicies leftPolicies1 = new TPolicies();
-        TPolicy leftPolicy1 = new TPolicy();
-        leftPolicy1.setPolicyType(QName.valueOf("{ns}policyType1"));
-        leftPolicies1.getPolicy().add(leftPolicy1);
 
-        TPolicies leftPolicies2 = new TPolicies();
-        TPolicy leftPolicy2 = new TPolicy();
-        leftPolicy2.setPolicyType(QName.valueOf("{ns}policyType1123"));
-        leftPolicies2.getPolicy().add(leftPolicy2);
-        
-        TPolicies rightPolicies1 = new TPolicies();
-        TPolicy rightPolicy1 = new TPolicy();
-        rightPolicy1.setPolicyType(QName.valueOf("{ns}policyType1"));
-        rightPolicies1.getPolicy().add(rightPolicy1);
-        
-        TPolicies rightPolicies2 = new TPolicies();
-        TPolicy rightPolicy2 = new TPolicy();
-        rightPolicy2.setPolicyType(QName.valueOf("{ns}policyType1"));
-        rightPolicy2.setPolicyRef(QName.valueOf("{ns2}policyTemplate1"));
-        rightPolicies2.getPolicy().add(rightPolicy2);
-        
+        List<TPolicy> leftPolicies1 = new ArrayList<>();
+        leftPolicies1.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1")).build()
+        );
+
+        List<TPolicy> leftPolicies2 = new ArrayList<>();
+        leftPolicies2.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1123")).build()
+        );
+
+        List<TPolicy> rightPolicies1 = new ArrayList<>();
+        rightPolicies1.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1")).build()
+        );
+
+        List<TPolicy> rightPolicies2 = new ArrayList<>();
+        rightPolicies2.add(
+            new TPolicy.Builder(QName.valueOf("{ns}policyType1")).build()
+        );
+        rightPolicies2.add(
+            new TPolicy.Builder(QName.valueOf("{ns2}policyTemplate1")).build()
+        );
+
         return Stream.of(
             Arguments.of(leftPolicies1, rightPolicies1, patternNamespaceManager, true, "Matching policy types without templates"),
             Arguments.of(leftPolicies1, rightPolicies2, patternNamespaceManager, true, "Matching policy types and more specific policy template in the candidate"),
             Arguments.of(rightPolicies2, leftPolicies1, patternNamespaceManager, false, "Matching policy types but a specific policy template in the detector"),
             Arguments.of(leftPolicies2, rightPolicies1, patternNamespaceManager, false, "Different policy types"),
             Arguments.of(leftPolicies2, null, patternNamespaceManager, false, "Patterns annotated at the detector but not at the candidate"),
-            Arguments.of(null, rightPolicies1, patternNamespaceManager, false, "Patterns annotated at the candidate but not at the detector"),
+            Arguments.of(null, rightPolicies1, patternNamespaceManager, true, "Patterns annotated at the candidate but not at the detector"),
             Arguments.of(null, rightPolicies1, namespaceManager, true, "Polices annotated at the candidate but not patterns")
         );
     }
-    
+
     @ParameterizedTest(name = "{index} => ''{4}''")
     @MethodSource("characterizingPatternsCompatibleArguments")
-    public void characterizingPatternsCompatibleTest(TPolicies leftPolicies, TPolicies rightPolicies,
+    public void characterizingPatternsCompatibleTest(List<TPolicy> leftPolicies, List<TPolicy> rightPolicies,
                                                      NamespaceManager namespaceManager, boolean expected, String description) {
         // region ***** left *****
         TNodeTemplate left = new TNodeTemplate();
@@ -163,9 +157,6 @@ public class ToscaPrmPropertyMatcherTest {
 
         ToscaNode leftEntity = new ToscaNode();
         leftEntity.setNodeTemplate(left);
-
-        List<TEntityTemplate> detectorElements = new ArrayList<>();
-        detectorElements.add(left);
         // endregion
 
         // region ***** right *****
@@ -180,7 +171,7 @@ public class ToscaPrmPropertyMatcherTest {
 
         assertEquals(
             expected,
-            new ToscaPrmPropertyMatcher(detectorElements, namespaceManager)
+            new ToscaPrmPropertyMatcher(namespaceManager)
                 .characterizingPatternsCompatible(leftEntity, rightEntity)
         );
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,9 +21,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
@@ -42,12 +44,12 @@ public class RelationshipTypesResource extends AbstractComponentsWithoutTypeRefe
     @GET
     @Path("allvisualappearancedata")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<VisualsApiData> getVisualAppearanceList() {
+    public List<VisualsApiData> getVisualAppearanceList(@Context UriInfo uriInfo) {
         SortedSet<RelationshipTypeId> relationshipTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(RelationshipTypeId.class);
         return relationshipTypeIds.stream()
             .map(id -> {
                 RelationshipTypeResource res = (RelationshipTypeResource) AbstractComponentsResource.getComponentInstanceResource(id);
-                return res.getVisualAppearanceResource().getJsonData();
+                return res.getVisualAppearanceResource().getJsonData(uriInfo);
             })
             .collect(Collectors.toList());
     }

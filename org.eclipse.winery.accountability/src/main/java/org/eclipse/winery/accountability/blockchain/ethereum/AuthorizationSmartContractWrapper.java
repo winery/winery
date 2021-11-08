@@ -16,7 +16,6 @@ package org.eclipse.winery.accountability.blockchain.ethereum;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,6 +25,7 @@ import org.eclipse.winery.accountability.model.authorization.AuthorizationElemen
 import org.eclipse.winery.accountability.model.authorization.AuthorizationInfo;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationTree;
 
+import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.abi.EventEncoder;
@@ -40,8 +40,6 @@ import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
-import rx.Subscriber;
-import rx.Subscription;
 
 /**
  * Provide access to the authorization smart contract
@@ -76,8 +74,7 @@ public class AuthorizationSmartContractWrapper extends SmartContractWrapper {
             Arrays.asList(new TypeReference<Utf8String>() {
             }, new TypeReference<Address>() {
             }, new TypeReference<Address>() {
-            }),
-            Collections.singletonList(new TypeReference<Utf8String>() {
+            }, new TypeReference<Utf8String>() {
             }));
         EthFilter filter = new EthFilter(DefaultBlockParameterName.EARLIEST, DefaultBlockParameterName.LATEST,
             contract.getContractAddress()).
@@ -92,38 +89,23 @@ public class AuthorizationSmartContractWrapper extends SmartContractWrapper {
             LOGGER.info(recordsCount + " authorization elements detected.");
 
             if (recordsCount > 0) {
-                final Subscription subscription = ((Authorization) contract).authorizedEventObservable(filter)
-                    .subscribe(new Subscriber<Authorization.AuthorizedEventResponse>() {
-                        private List<AuthorizationElement> authorizationElements = new ArrayList<>();
+                final List<AuthorizationElement> authorizationElements = new ArrayList<>();
+                final Disposable subscription = ((Authorization) contract).authorizedEventFlowable(filter)
+                    .subscribe(authorizedEventResponse -> {
+                        try {
+                            final AuthorizationElement currentElement = generateAuthorizationElement(authorizedEventResponse);
+                            authorizationElements.add(currentElement);
 
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-                            LOGGER.error("Error detected. Reason: " + throwable.getMessage());
-                            result.completeExceptionally(new EthereumException(throwable));
-                        }
-
-                        @Override
-                        public void onNext(Authorization.AuthorizedEventResponse authorizedEventResponse) {
-                            try {
-                                final AuthorizationElement currentElement = generateAuthorizationElement(authorizedEventResponse);
-                                authorizationElements.add(currentElement);
-
-                                if (authorizationElements.size() == recordsCount) {
-                                    final AuthorizationTree tree = new AuthorizationTree(authorizationElements);
-                                    result.complete(tree);
-                                }
-                            } catch (EthereumException e) {
-                                result.completeExceptionally(e);
+                            if (authorizationElements.size() == recordsCount) {
+                                final AuthorizationTree tree = new AuthorizationTree(authorizationElements);
+                                result.complete(tree);
                             }
+                        } catch (EthereumException e) {
+                            result.completeExceptionally(e);
                         }
                     });
                 // unsubscribe the observable when the CompletableFuture completes (this frees threads)
-                result.whenComplete((r, e) -> subscription.unsubscribe());
+                result.whenComplete((r, e) -> subscription.dispose());
             } else { // empty result
                 result.complete(null);
             }

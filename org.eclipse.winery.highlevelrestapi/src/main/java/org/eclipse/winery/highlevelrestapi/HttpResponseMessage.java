@@ -14,12 +14,12 @@
 package org.eclipse.winery.highlevelrestapi;
 
 /**
+ *
  */
 public class HttpResponseMessage {
 
     private int statusCode;
     private String responseBody;
-
 
     /**
      * @return the statusCode
@@ -48,5 +48,4 @@ public class HttpResponseMessage {
     protected void setResponseBody(String responseBody) {
         this.responseBody = responseBody;
     }
-
 }

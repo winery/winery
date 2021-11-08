@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
@@ -180,9 +179,9 @@ public class Generator {
 
         // Create Java Code Folder
         String[] splitPkg = this.javaPackage.split("\\.");
-        String javaFolderString = this.workingDir.getAbsolutePath() + File.separator + "src" + File.separator + "main" + File.separator + "java";
-        for (int i = 0; i < splitPkg.length; i++) {
-            javaFolderString += File.separator + splitPkg[i];
+        StringBuilder javaFolderString = new StringBuilder(this.workingDir.getAbsolutePath() + File.separator + "src" + File.separator + "main" + File.separator + "java");
+        for (String value : splitPkg) {
+            javaFolderString.append(File.separator).append(value);
         }
 
         // Copy and rename TEMPLATE_JAVA_TEMPLATE_SERVICE
@@ -212,7 +211,7 @@ public class Generator {
         // Generate methods
         StringBuilder sb = new StringBuilder();
 
-        for (TOperation op : this.tInterface.getOperation()) {
+        for (TOperation op : this.tInterface.getOperations()) {
             // Annotations
             sb.append("\t@WebMethod\n");
             sb.append("\t@SOAPBinding\n");
@@ -220,12 +219,12 @@ public class Generator {
 
             // Signatur
             String operationReturn = "void";
-            sb.append("\tpublic " + operationReturn + " " + op.getName() + "(\n");
+            sb.append("\tpublic ").append(operationReturn).append(" ").append(op.getName()).append("(\n");
 
             // Parameter
             boolean first = true;
             if (op.getInputParameters() != null) {
-                for (TParameter parameter : op.getInputParameters().getInputParameter()) {
+                for (TParameter parameter : op.getInputParameters()) {
                     String parameterName = parameter.getName();
 
                     if (first) {
@@ -236,15 +235,15 @@ public class Generator {
                     }
 
                     // Generate @WebParam
-                    sb.append("@WebParam(name=\"" + parameterName + "\", targetNamespace=\"" + this.namespace + "\") ");
+                    sb.append("@WebParam(name=\"").append(parameterName).append("\", targetNamespace=\"").append(this.namespace).append("\") ");
 
-                    sb.append("String " + parameterName);
+                    sb.append("String ").append(parameterName);
                 }
             }
             sb.append("\n\t) {\n");
 
             // If there are output parameters we generate the respective HashMap
-            boolean outputParamsExist = (op.getOutputParameters() != null) && (!op.getOutputParameters().getOutputParameter().isEmpty());
+            boolean outputParamsExist = (op.getOutputParameters() != null) && (!op.getOutputParameters().isEmpty());
             if (outputParamsExist) {
                 sb.append("\t\t// This HashMap holds the return parameters of this operation.\n");
                 sb.append("\t\tfinal HashMap<String,String> returnParameters = new HashMap<String, String>();\n\n");
@@ -254,16 +253,16 @@ public class Generator {
 
             // Generate code to set output parameters
             if (outputParamsExist) {
-                for (TParameter outputParam : op.getOutputParameters().getOutputParameter()) {
-                    sb.append("\n\n\t\t// Output Parameter '" + outputParam.getName() + "' ");
-                    if (outputParam.getRequired().equals(TBoolean.YES)) {
+                for (TParameter outputParam : op.getOutputParameters()) {
+                    sb.append("\n\n\t\t// Output Parameter '").append(outputParam.getName()).append("' ");
+                    if (outputParam.getRequired()) {
                         sb.append("(required)");
                     } else {
                         sb.append("(optional)");
                     }
-                    sb.append("\n\t\t// TODO: Set " + outputParam.getName() + " parameter here.");
+                    sb.append("\n\t\t// TODO: Set ").append(outputParam.getName()).append(" parameter here.");
                     sb.append("\n\t\t// Do NOT delete the next line of code. Set \"\" as value if you want to return nothing or an empty result!");
-                    sb.append("\n\t\treturnParameters.put(\"" + outputParam.getName() + "\", \"TODO\");");
+                    sb.append("\n\t\treturnParameters.put(\"").append(outputParam.getName()).append("\", \"TODO\");");
                 }
                 sb.append("\n\n\t\tsendResponse(returnParameters);\n");
             }

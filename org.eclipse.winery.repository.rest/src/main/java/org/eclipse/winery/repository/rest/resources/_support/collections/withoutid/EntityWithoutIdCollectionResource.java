@@ -13,17 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
-import com.sun.jersey.api.NotFoundException;
+import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.Objects;
+
+import javax.ws.rs.NotFoundException;
+
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Class managing a list of entities. It is intended to manage subresources, where the TOSCA specification did not
@@ -58,7 +60,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
         for (EntityT c : this.list) {
             idx++;
             // speed optimization - instead of using getId() we directly use the hash code
-            int hash = BackendUtils.getXMLAsString(c).hashCode();
+            int hash = BackendUtils.getXMLAsString(c, requestRepository).hashCode();
             if (hash == idInt) {
                 entity = c;
                 break;
@@ -73,7 +75,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 
     @Override
     public String getId(EntityT entity) {
-        return IdDeterminationWithHashCode.INSTANCE.getId(entity);
+        return new IdDeterminationWithHashCode(requestRepository).getId(entity);
     }
 
     @Override

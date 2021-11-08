@@ -5,7 +5,7 @@
     ],
     "otherAttributes": {
     },
-    "id": "winery-defs-for_testrefinementmodels-MyCoolTRM_w1-wip1",
+    "id": "testrefinementmodels-MyCoolTRM_w1-wip1",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
@@ -28,6 +28,8 @@
                 "relationshipTemplates": [
                 ]
             },
+            "relationMappings": [
+            ],
             "testFragment": {
                 "documentation": [
                 ],
@@ -39,7 +41,9 @@
                 ],
                 "relationshipTemplates": [
                 ]
-            }
+            },
+            "permutationMappings": [
+            ]
         }
     ],
     "targetNamespace": "http://plain.winery.opentosca.org/test/testrefinementmodels",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,12 +22,14 @@ import org.eclipse.winery.accountability.model.ProvenanceVerification;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\").exists())")
+// todo try to migrate to new accountability testing scheme (ganache with resets!)
+@Disabled
+//@EnabledIf("(new java.io.File(\"C:/Ethereum/keystore/UTC--2018-03-05T15-33-22.456000000Z--e4b51a3d4e77d2ce2a9d9ce107ec8ec7cff5571d.json\").exists())")
 class CsarImporterValidationTest extends TestWithGitBackedRepository {
 
     // Set explicitly to revision bbb39cdb32cbcf38bd691abe6a66ae62f4aba428 because the service template
@@ -40,11 +42,11 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     @BeforeEach
     void setUp() throws Exception {
         this.setRevisionTo("bbb39cdb32cbcf38bd691abe6a66ae62f4aba428");
-        csarImporter = new CsarImporter();
+        csarImporter = new CsarImporter(repository);
     }
 
     @Test
-    void testImportAndValidation() throws Exception {
+    public void testImportAndValidation() throws Exception {
         try (InputStream input = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants.csar")) {
 
             CsarImportOptions options = new CsarImportOptions();
@@ -62,7 +64,7 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    void testImportAndInvalidValidation() throws Exception {
+    public void testImportAndInvalidValidation() throws Exception {
         try (InputStream inputStream = new FileInputStream("src/test/resources/csar/ServiceTemplateWithAllReqCapVariants-Invalid.csar")) {
 
             CsarImportOptions options = new CsarImportOptions();
@@ -82,7 +84,7 @@ class CsarImporterValidationTest extends TestWithGitBackedRepository {
     }
 
     @Test
-    void testImportOfCsarWithoutAuthorship() throws Exception {
+    public void testImportOfCsarWithoutAuthorship() throws Exception {
         try (InputStream inputStream = new FileInputStream("src/test/resources/csar/ProvenanceCsarWithoutAuthorizedAuthors_w1-wip1.csar")) {
 
             CsarImportOptions options = new CsarImportOptions();

@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonBasedNamespaceManagerTest {
 
     @Test
-    void getNamespacePrefix() {
+    public void getNamespacePrefix() {
         String systemTmpDir = System.getProperty("java.io.tmpdir");
         File f = new File(systemTmpDir + "/org.eclipse.winery.test/namespace.json");
         f.delete();

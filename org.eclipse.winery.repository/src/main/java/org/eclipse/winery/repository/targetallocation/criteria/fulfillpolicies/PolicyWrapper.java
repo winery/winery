@@ -20,10 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -62,7 +63,11 @@ public class PolicyWrapper {
         PolicyTypeId policyTypeId = new PolicyTypeId(policy.getType());
         TPolicyType policyType = repository.getElement(policyTypeId);
 
-        LinkedHashMap<String, String> properties = policy.getProperties().getKVProperties();
+        LinkedHashMap<String, String> properties = ModelUtilities.getPropertiesKV(policy);
+        if (properties == null) {
+            // FIXME This needs to correctly deal with YamlProperties as well!!
+            return null;
+        }
         for (Map.Entry<String, String> property : properties.entrySet()) {
             if (property.getKey().equals(propertyKey)) {
                 String type = getType(policyType, propertyKey);
@@ -73,16 +78,17 @@ public class PolicyWrapper {
     }
 
     // TODO: find library for casting/change when Winery supports typed properties
-    private Object cast(String property, String type) {
+    // FIXME Assumption here is that the property only comes from a KVProperty and therefore the value is a String
+    private Object cast(Object property, String type) {
         switch (type) {
             case "xsd:boolean":
-                return Boolean.parseBoolean(property);
+                return Boolean.parseBoolean((String)property);
             case "xsd:double":
-                return Double.valueOf(property);
+                return Double.valueOf((String)property);
             case "xsd:string":
                 return property;
             case "xsd:float":
-                return Float.parseFloat(property);
+                return Float.parseFloat((String)property);
             case "xsd:decimal":
                 return NumberFormat.getInstance().format(property);
             default:
@@ -92,8 +98,7 @@ public class PolicyWrapper {
 
     private String getType(TPolicyType policyType, String propertyKey) {
         List<PropertyDefinitionKV> propertyDefinitions = policyType.getWinerysPropertiesDefinition()
-            .getPropertyDefinitionKVList()
-            .getPropertyDefinitionKVs();
+            .getPropertyDefinitions();
         for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
             if (propertyDefinition.getKey().equals(propertyKey)) {
                 return propertyDefinition.getType();

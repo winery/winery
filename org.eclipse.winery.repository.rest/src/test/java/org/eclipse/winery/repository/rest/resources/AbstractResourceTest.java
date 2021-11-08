@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,19 +15,21 @@ package org.eclipse.winery.repository.rest.resources;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Scanner;
 
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
+import org.eclipse.winery.common.json.JacksonProvider;
+import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -35,6 +37,8 @@ import org.xmlunit.matchers.CompareMatcher;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
@@ -43,20 +47,28 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
     private static Server server;
 
-    // Required for jersey 1.x, which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
+    // Required for jersey which uses java.util.logging.
     static {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
     }
 
-    @BeforeClass
+    public AbstractResourceTest() {
+        super();
+    }
+
+    public AbstractResourceTest(RepositoryConfigurationObject.RepositoryProvider provider) {
+        super(provider);
+    }
+
+    @BeforeAll
     public static void init() throws Exception {
         server = WineryUsingHttpServer.createHttpServer(9080);
         server.start();
         LOGGER.debug("Winery server started");
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutdown() throws Exception {
         server.stop();
         LOGGER.debug("Winery server stopped");
@@ -67,7 +79,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         if (inputStream == null) {
             throw new IllegalStateException("Could not find " + fileName + " on classpath");
         }
-        return new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
+        return new Scanner(inputStream, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
     }
 
     protected RequestSpecification start() {
@@ -77,7 +89,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     }
 
     protected String callURL(String restURL) {
-        return PREFIX + Util.URLdecode(restURL);
+        return PREFIX + EncodingUtil.URLdecode(restURL);
     }
 
     private boolean isXml(String fileName) {
@@ -134,7 +146,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
                 org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
             } else if (isZip(fileName)) {
                 // TODO  @pmeyer: Cool ZIP equal test
-                Assert.assertNotNull(receivedStr);
+                assertNotNull(receivedStr);
             } else {
                 JSONAssert.assertEquals(
                     expectedStr,
@@ -173,7 +185,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             if (isXml(fileName)) {
                 org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
             } else if (isTxt(fileName)) {
-                Assert.assertEquals(expectedStr, receivedStr);
+                assertEquals(expectedStr, receivedStr);
             } else {
                 JSONAssert.assertEquals(
                     expectedStr,
@@ -224,6 +236,15 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(204);
     }
 
+    public void assertPutWithResponse(String restURL, String fileName) {
+        start()
+            .body(readFromClasspath(fileName))
+            .contentType(getAccept(fileName))
+            .put(callURL(restURL))
+            .then()
+            .statusCode(200);
+    }
+
     /**
      * Maybe remove in order to force JSON.
      */
@@ -242,6 +263,13 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .body(contents)
             .contentType(getAccept(fileName))
             .accept(getAccept(fileName))
+            .post(callURL(restURL))
+            .then()
+            .statusCode(201);
+    }
+
+    protected void assertPost(String restURL) {
+        start()
             .post(callURL(restURL))
             .then()
             .statusCode(201);
@@ -269,6 +297,14 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(201);
     }
 
+    protected void assertNoContentPost(String restUrl, Path file) {
+        start()
+            .multiPart(file.toFile())
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(204);
+    }
+
     protected void assertDelete(String restURL) {
         try {
             start()
@@ -287,7 +323,44 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             .statusCode(204);
     }
 
-    public static String replacePathStringEncoding(String toConvert) {
+    protected static String replacePathStringEncoding(String toConvert) {
         return toConvert.replace("%3A", "%253A").replace("%2F", "%252F");
+    }
+
+    protected void assertPostWithOverwrite(String restUrl, Path file, boolean overwrite) {
+        start()
+            .multiPart(file.toFile())
+            .formParam("overwrite", overwrite)
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(201);
+    }
+
+    protected String assertPostWithNoContent(String restUrl, ContentType contentType) {
+        return start()
+            .accept(contentType)
+            .post(callURL(restUrl))
+            .then()
+            .statusCode(201)
+            .extract()
+            .response()
+            .body()
+            .asString();
+    }
+
+    protected <T> T getObjectFromGetRequest(String url, Class<T> clazz) throws Exception {
+        String s = start()
+            .accept(ContentType.JSON.toString())
+            .get(callURL(url))
+            .then()
+            .log()
+            .ifValidationFails()
+            .statusCode(200)
+            .extract()
+            .response()
+            .getBody()
+            .asString();
+
+        return JacksonProvider.mapper.readValue(s, clazz);
     }
 }

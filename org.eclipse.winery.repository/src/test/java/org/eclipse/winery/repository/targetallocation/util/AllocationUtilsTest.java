@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -84,7 +84,7 @@ public class AllocationUtilsTest extends TestWithGitBackedRepository {
         });
         TTopologyTemplate clone = BackendUtils.clone(topology);
         assertEquals(topology, clone);
-        TTopologyTemplate cloneNotEquals = AllocationUtils.deepcopy(topology);
+        TTopologyTemplate cloneNotEquals = AllocationUtils.deepCopy(topology);
         assertNotEquals(topology, cloneNotEquals);
     }
 
@@ -95,7 +95,7 @@ public class AllocationUtilsTest extends TestWithGitBackedRepository {
         original.setMaxInstances("1");
         TNodeTemplate clone = BackendUtils.clone(original);
         assertEquals(original, clone);
-        TNodeTemplate cloneNotEquals = AllocationUtils.cloneNotEqual(original);
+        TNodeTemplate cloneNotEquals = AllocationUtils.clone(original, true);
         assertNotEquals(original, cloneNotEquals);
     }
 
@@ -104,7 +104,7 @@ public class AllocationUtilsTest extends TestWithGitBackedRepository {
         TRelationshipTemplate original = topology.getRelationshipTemplates().get(0);
         TRelationshipTemplate clone = BackendUtils.clone(original);
         assertEquals(original, clone);
-        TRelationshipTemplate cloneNotEquals = AllocationUtils.cloneNotEqual(original);
+        TRelationshipTemplate cloneNotEquals = AllocationUtils.clone(original, true);
         assertNotEquals(original, cloneNotEquals);
     }
 }

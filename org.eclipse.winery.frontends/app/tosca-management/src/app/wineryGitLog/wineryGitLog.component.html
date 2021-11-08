@@ -1,0 +1,115 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div id="wineryGitLogFloat" *ngIf="show">
+    <div id="wineryGitLogContainer">
+        <div id="wineryGitLogExpander">
+            <span (click)="onExpand()"></span>
+            <h3>{{repos?.length}}</h3>
+            <div id="wineryGitLogLfsIndicator">LFS:
+                <div id="lfsAvailable" *ngIf="lfsAvailable; else lsfNotAvailable">
+                    available
+                </div>
+                <ng-template #lsfNotAvailable>
+                    <div id="lfsNA">not available</div>
+                </ng-template>
+            </div>
+        </div>
+        <textarea id="wineryGitLogDiffs" wrap="soft" readonly
+                  *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>
+        <div id="wineryGitLogGui" *ngIf="isExpanded">
+            <table class="gitTable" *ngFor="let repo of repos" role="presentation">
+                <thead>
+                <tr class="repoNameRow" [ngClass]="{selected: repo.name == selectedRepo}"
+                    (click)="selectRepo(repo.name)">
+                    <th colspan="0" class="repoName">{{repo.name}}</th>
+                </tr>
+                </thead>
+                <tbody class="files">
+                <div id="filesList">
+
+                    <p *ngIf="repo.changes.length == 0">No uncommitted changes</p>
+
+                    <tr *ngFor="let file of repo.changes" [ngClass]="{selected: file == selectedFile}"
+                    >
+                        <td><input type="checkbox"
+                                   [checked]="this.filesToCommit.includes(file.name) && selectedRepo==repo.name"
+                                   [value]="file.name" (change)="selectFileToCommit(file, repo.name, $event)"/></td>
+                        <td (click)="select(file, repo.name);">{{file.type}}:</td>
+                        <td (click)="select(file, repo.name);">{{file.name}}</td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="wineryGitLogCommit" *ngIf="isExpanded">
+            <button class="btn btn-sm btn-toolbar btn-primary" (click)="multipleRepositoryCheck('pull')">Pull</button>
+            <button class="btn btn-sm btn-toolbar btn-primary" (click)="commit()">Commit</button>
+            <button class="btn btn-sm btn-toolbar btn-primary" (click)="multipleRepositoryCheck('push')">Push</button>
+            <button class="btn btn-sm btn-toolbar" (click)="refreshLog()">Refresh</button>
+            <button class="btn btn-sm btn-toolbar btn-danger" (click)="confirmDiscardModal.show()">discard changes
+            </button>
+            <button class="btn btn-sm btn-toolbar btn-primary" (click)="getBranches()">Checkout</button>
+        </div>
+
+        <textarea placeholder="Enter your Commit Message here." *ngIf="isExpanded"
+                  (change)="doCommitMsgValueChange($event)" id="wineryGitLogCommitMsg"
+                  [(ngModel)]="commitMsg"></textarea>
+    </div>
+</div>
+
+<winery-modal bsModal #confirmDiscardModal="bs-modal" [modalRef]="confirmDiscardModal">
+    <winery-modal-header [title]="'Discard all Changes'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you really want to <b><i>discard all changes</i></b> made since the last commit?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="discardChanges();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmMassExecution="bs-modal" [modalRef]="confirmMassExecution">
+    <winery-modal-header [title]="'Execute command for all Repositories?'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you really want to <b><i> {{command}} all repositories?</i></b>
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="discardChanges();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #selectBranch="bs-modal" [modalRef]="selectBranch">
+    <winery-modal-header [title]="'Which branch do you want to checkout to?'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Select a branch:
+            <select [(ngModel)]="selectedBranch">
+                <option *ngFor="let branch of branches" [value]="branch">{{branch}}</option>
+            </select>
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="checkout();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>

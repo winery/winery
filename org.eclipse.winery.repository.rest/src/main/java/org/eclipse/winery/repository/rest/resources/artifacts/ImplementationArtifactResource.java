@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.tosca.TDeploymentOrImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -23,28 +24,22 @@ import org.eclipse.winery.repository.rest.resources._support.collections.IIdDete
 import java.util.List;
 import java.util.Objects;
 
-public class ImplementationArtifactResource extends GenericArtifactResource<ImplementationArtifact> {
+public class ImplementationArtifactResource extends GenericArtifactResource<TImplementationArtifact> {
 
-    private ImplementationArtifact a;
+    private TImplementationArtifact a;
 
 
-    public ImplementationArtifactResource(String artifactId, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
-        this(ImplementationArtifactResource.getImplementationArtifact(artifactId, implementationArtifacts), implementationArtifacts, res);
+    public ImplementationArtifactResource(String artifactId, List<TImplementationArtifact> implementationArtifacts, IPersistable res) {
+        this(ImplementationArtifactResource.getTImplementationArtifact(artifactId, implementationArtifacts), implementationArtifacts, res);
     }
 
-    public ImplementationArtifactResource(IIdDetermination<ImplementationArtifact> idDetermination, ImplementationArtifact o, int idx, List<ImplementationArtifact> list, IPersistable res) {
+    public ImplementationArtifactResource(IIdDetermination<TImplementationArtifact> idDetermination, TImplementationArtifact o, int idx, List<TImplementationArtifact> list, IPersistable res) {
         super(idDetermination, o, idx, list, res);
         this.a = o;
     }
 
-    public ImplementationArtifactResource(ImplementationArtifact a, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
-        this(new IIdDetermination<ImplementationArtifact>() {
-
-            @Override
-            public String getId(ImplementationArtifact e) {
-                return e.getName();
-            }
-        }, a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
+    public ImplementationArtifactResource(TImplementationArtifact a, List<TImplementationArtifact> implementationArtifacts, IPersistable res) {
+        this(TDeploymentOrImplementationArtifact::getName, a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
     }
 
     /**
@@ -53,10 +48,10 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
      * <em>SIDE EFFECT</em> Adds it to the implementationArtifacts list if it
      * does not yet exist.
      */
-    private static ImplementationArtifact getImplementationArtifact(String artifactId, List<ImplementationArtifact> implementationArtifacts) {
+    private static TImplementationArtifact getTImplementationArtifact(String artifactId, List<TImplementationArtifact> implementationArtifacts) {
         Objects.requireNonNull(artifactId);
         Objects.requireNonNull(implementationArtifacts);
-        for (ImplementationArtifact ia : implementationArtifacts) {
+        for (TImplementationArtifact ia : implementationArtifacts) {
             // ia.getName() might be null as TOSCA COS01 does not forsee a name on the implementation artifact
             // Therefore, we begin the test with "artifactId"
             if (artifactId.equals(ia.getName())) {
@@ -64,13 +59,13 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
             }
         }
         // IA does not exist in list
-        ImplementationArtifact ia = new ImplementationArtifact();
+        TImplementationArtifact ia = new TImplementationArtifact();
         ia.setName(artifactId);
         implementationArtifacts.add(ia);
         return ia;
     }
 
-    public ImplementationArtifact getImplementationArtifact() {
+    public TImplementationArtifact getImplementationArtifact() {
         return this.a;
     }
 
@@ -87,7 +82,7 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
     }
 
     @Override
-    public ImplementationArtifact getA() {
+    public TImplementationArtifact getA() {
         return this.a;
     }
 

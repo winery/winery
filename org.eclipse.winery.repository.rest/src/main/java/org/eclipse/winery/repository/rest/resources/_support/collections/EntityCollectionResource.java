@@ -13,23 +13,30 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.rest.resources._support.IPersistable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.common.json.JacksonProvider;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class managing a list of entities. It is intended to manage subresources, which are stored in a list. Either all
@@ -50,7 +57,8 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
     protected final Class<EntityT> entityTClazz;
 
     protected final Class<EntityResourceT> entityResourceTClazz;
-
+    
+    protected final IRepository requestRepository = RepositoryFactory.getRepository();
 
     /**
      * @param entityTClazz the class of EntityT. Required as it is not possible to call new EntityT (see
@@ -78,33 +86,30 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllEntityResources(@QueryParam(value = "noId") boolean noId) {
         return this.getListOfAllEntityIdsAsList().stream()
-            .map(id -> this.getEntityResourceFromDecodedId(id))
+            .map(this::getEntityResourceFromDecodedId)
             .map((EntityResourceT res) -> {
                 String id = this.getId(res.o);
                 // some objects already have an id field
                 // we set it nevertheless, because it might happen that the name of the id field is not "id", but something else (such as "name")
 
                 // general method, same as with data binding
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
-                // (note: can also use more specific type, like ArrayNode or
-                // ObjectNode!)
-                JsonNode jsonNode = mapper.valueToTree(res.o);
+                JsonNode jsonNode = JacksonProvider.mapper.valueToTree(res.o);
                 if (!noId) {
                     ((ObjectNode) jsonNode).put("id", id);
                 }
                 try {
-                    return mapper.writeValueAsString(jsonNode);
+                    return JacksonProvider.mapper.writeValueAsString(jsonNode);
                 } catch (JsonProcessingException e) {
                     throw new WebApplicationException(e);
                 }
-            }).collect(Collectors.joining(",", "[", "]"));
+            })
+            .collect(Collectors.joining(",", "[", "]"));
     }
 
     protected abstract EntityResourceT getEntityResourceFromDecodedId(String id);
 
     protected EntityResourceT getEntityResourceFromEncodedId(String id) {
-        return this.getEntityResourceFromDecodedId(Util.URLdecode(Objects.requireNonNull(id)));
+        return this.getEntityResourceFromDecodedId(EncodingUtil.URLdecode(Objects.requireNonNull(id)));
     }
 
     /**

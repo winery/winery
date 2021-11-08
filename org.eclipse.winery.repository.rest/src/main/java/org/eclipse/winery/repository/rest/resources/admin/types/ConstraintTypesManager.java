@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin.types;
 
-import org.eclipse.winery.common.ids.admin.ConstraintTypesId;
+import org.eclipse.winery.model.ids.admin.ConstraintTypesId;
 
 public class ConstraintTypesManager extends AbstractTypesManager {
 

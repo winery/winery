@@ -1,0 +1,319 @@
+<!--
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+
+<div class="node" [ngClass]="nodeClass"
+     style="padding: 3px; position: absolute; user-select: none;"
+     [style.top]="nodeTemplate.y + 'px'"
+     [style.left]="nodeTemplate.x + 'px'"
+     [style.borderColor]="nodeTemplate.visuals?.color"
+     [style.shadowColor]="nodeTemplate.visuals?.color"
+     [class.selected]="makeSelectionVisible"
+     [class.unselected]="!makeSelectionVisible"
+     id={{nodeTemplate.id}}
+     (mousedown)="mouseDownHandler($event)"
+     (mouseup)="mouseUpHandler()"
+     [@onCreateNodeTemplateAnimation]='visibilityState'
+     [class.removeZIndex]="removeZIndex">
+
+    <div *ngIf="nodeTemplate.state" style="margin-bottom: 4px; padding-left: 4px;">
+        {{ nodeTemplate.state }}
+    </div>
+
+    <div *ngIf="policyIcons" class="policyIconsAnnotation">
+        <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation"
+             alt="Policy icon">
+    </div>
+
+    <div *ngIf="newerVersions?.length !== 0">
+        <i *wineryRepositoryFeatureToggle="configEnum.updateTemplates"
+           class="fas fa-exclamation-triangle newVersionTriangle" (click)="openVersionModal()"></i>
+        <winery-versions #versionModal [aVersionElement]="newVersionElement" [nodeTemplateId]="nodeTemplate.id"
+                         [nodeType]="nodeTemplate.type" [entityTypes]="entityTypes"></winery-versions>
+    </div>
+
+    <div *ngIf="nodeClass !== 'pattern'; else showPattern"
+         class="row rounded col-sm-12 node-template-header"
+         (click)="openSidebar($event); closeConnectorEndpoints($event)">
+        <div class="col-sm-1" style="padding: 0;" *wineryRepositoryHideOnFeature="'yaml'">
+            <table class="table table-responsive table-active table-border--grey table-sm">
+                <tr style="padding: 0">
+                    <td class="td-maxinstances"
+                        [class.flashminmax]="setMaxFlash">{{nodeTemplate.maxInstances}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-spacer"><br/></td>
+                </tr>
+                <tr style="padding: 0">
+                    <td class="td-mininstances"
+                        [class.flashminmax]="setMinFlash">{{nodeTemplate.minInstances}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-3 winery-image">
+            <img *ngIf="!nodeTemplate.visuals?.imageUrl" src="https://via.placeholder.com/50x50"
+                 alt="Node Template icon placeholder"
+                 style="border-radius: 10%; margin-top: 1px; width: 50px; height: auto">
+            <img *ngIf="nodeTemplate.visuals?.imageUrl" src="{{nodeTemplate.visuals?.imageUrl}}"
+                 alt="Node Template icon placeholder">
+        </div>
+        <div id="specifierDiv" class="col-sm-8" style="padding-left: 0; padding-right: 0;">
+            <table class="header-table" style="margin-left: 6px">
+                <tr *ngIf="navbarButtonsState.buttonsState.idsButton" class="">
+                    <td class="td-value" style="text-decoration: underline;"
+                        [class.cell-with-comment]="isEllipsisActive(headerTableId)">
+                        <div #headerTableId>{{nodeTemplate.id}}</div>
+                        <span class="cell-comment">{{nodeTemplate.id}}</span>
+                    </td>
+                </tr>
+                <tr [class.flashit]="setFlash" class="">
+                    <td class="td-value"
+                        [class.cell-with-comment]="isEllipsisActive(headerTableName)">
+                        <div #headerTableName>{{nodeTemplate.name}}</div>
+                        <span class="cell-comment">{{nodeTemplate.name}}</span>
+                    </td>
+                </tr>
+                <tr *ngIf="navbarButtonsState.buttonsState.typesButton" class="">
+                    <ng-template #popTemplate>
+                        <div class="popover-component" style="font-size: x-small" (click)="linkType()"
+                             [innerHtml]="popoverHtml"></div>
+                    </ng-template>
+                    <td class="td-value"
+                        [popover]="popTemplate"
+                        containerClass="popover-component"
+                        [outsideClick]="true"
+                        (click)="$event.stopPropagation();"
+                        placement="bottom"
+                        container="body"
+                        style="color: #0275d8; pointer-events: all;"
+                        [class.cell-with-comment]="isEllipsisActive(headerTableType)">
+                        <div #headerTableType>({{nodeTypeLocalName}})</div>
+                        <span class="cell-comment">{{ (nodeTypeLocalName)}}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <ng-template #showPattern>
+        <div class="patternP" tooltip="{{ nodeTypeLocalName }}" placement="right"
+             (click)="openSidebar($event); closeConnectorEndpoints($event)">
+            <div class="col-sm-3">
+                <img *ngIf="!nodeTemplate.visuals.imageUrl" class="patternImage" src="https://via.placeholder.com/50x50"
+                     alt="Pattern icon placeholder"
+                     style="border-radius: 10%; width: 50px; height: auto">
+                <img *ngIf="nodeTemplate.visuals.imageUrl" class="patternImage"
+                     alt="Pattern icon"
+                     src="{{nodeTemplate.visuals.imageUrl}}">
+            </div>
+        </div>
+    </ng-template>
+
+    <div *wineryRepositoryHideOnFeature="'yaml'">
+        <div class="endpointContainer center-block row" style="border: 0; box-shadow: none"
+             *ngIf="connectorEndpointVisible && !readonly"
+             (mouseover)="makeSource()">
+            <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}
+                 (mousedown)="passCurrentType($event)">
+                <button *ngFor="let rel of entityTypes.relationshipTypes"
+                        type="button" class="btn btn-sm btn-outline-secondary btn-block"
+                        [style.color]="rel.color"
+                        style="font-size: x-small;">
+                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="padding-left: 1em;"></i> {{rel.id}}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Repaint jsPlumb on every accordion click -->
+    <accordion #accordion (click)="repaint($event)">
+        <!-- PROPERTIES -->
+        <accordion-group
+            class="card-header-node-accordions"
+            #propertiesgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.propertiesButton">
+            <div accordion-heading>
+                Properties
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': propertiesgroup?.isOpen, 'fa-chevron-right': !propertiesgroup?.isOpen}"
+                ></i>
+            </div>
+            <winery-properties [templateId]="nodeTemplate.id"
+                               [readonly]="readonly"
+                               [isNode]="true">
+            </winery-properties>
+        </accordion-group>
+
+        <!-- DEPLOYMENT ARTIFACTS -->
+        <accordion-group
+            #deploymentartifactsgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.deploymentArtifactsButton">
+            <div accordion-heading>
+                {{this.configurationService.isYaml() ? 'Artifacts' : 'Deployment Artifacts'}}
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': deploymentartifactsgroup?.isOpen,
+                   'fa-chevron-right': !deploymentartifactsgroup?.isOpen}"
+                ></i>
+            </div>
+            <winery-deployment-artifacts
+                [readonly]="readonly"
+                (toggleModalHandler)="sendToggleAction($event)"
+                [currentNodeData]="{currentNodeId: nodeTemplate.id,
+                                    currentNodePart: 'DEPLOYMENT_ARTIFACTS',
+                                    currentProperties: nodeTemplate}"
+                [deploymentArtifacts]="nodeTemplate.deploymentArtifacts"
+                [yamlArtifacts]="nodeTemplate.artifacts">
+            </winery-deployment-artifacts>
+        </accordion-group>
+
+        <!-- REQUIREMENTS-->
+        <accordion-group
+            #requirementsgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.requirementsCapabilitiesButton">
+            <div accordion-heading>
+                Requirements
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': requirementsgroup?.isOpen,
+           'fa-chevron-right': !requirementsgroup?.isOpen}"
+                ></i>
+            </div>
+            <winery-requirements
+                [readonly]="readonly"
+                (toggleModalHandler)="sendToggleAction($event)"
+                (relationshipTemplateIdClicked)="onRelationshipTemplateIdClicked($event)"
+                [currentNodeData]="{entityTypes: entityTypes,
+                                    nodeTemplate: nodeTemplate,
+                                    currentNodePart: 'REQUIREMENTS'}">
+            </winery-requirements>
+        </accordion-group>
+
+        <!-- CAPABILITIES -->
+        <accordion-group
+            #capabilitiesgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.requirementsCapabilitiesButton">
+            <div accordion-heading>
+                Capabilities
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': capabilitiesgroup?.isOpen,
+           'fa-chevron-right': !capabilitiesgroup?.isOpen}"
+                ></i>
+            </div>
+            <winery-capabilities
+                [readonly]="readonly"
+                (toggleModalHandler)="sendToggleAction($event)"
+                [currentNodeData]="{entityTypes: entityTypes,
+                                    nodeTemplate: nodeTemplate,
+                                    currentNodePart: 'CAPABILITIES'}">
+            </winery-capabilities>
+        </accordion-group>
+
+        <!-- GROUPS -->
+        <accordion-group
+            #groupsgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.yamlGroupsButton">
+            <div accordion-heading>
+                Groups
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': groupsgroup?.isOpen, 'fa-chevron-right': !groupsgroup?.isOpen}">
+                </i>
+            </div>
+            <winery-groups [readonly]="readonly"
+                           [groups]="groupDefinitions"
+                           [node]="nodeTemplate">
+            </winery-groups>
+        </accordion-group>
+
+        <!-- PARTICIPANTS -->
+        <accordion-group #participantsgroup panelClass="accordionGroupPanel"
+                         *ngIf="navbarButtonsState.buttonsState.assignParticipantsButton">
+            <div accordion-heading>
+                Participants
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': participantsgroup?.isOpen, 'fa-chevron-right': !participantsgroup?.isOpen}">
+                </i>
+            </div>
+            <winery-assign-participants [readonly]="readonly"
+                                        [participants]="participants" [node]="nodeTemplate">
+            </winery-assign-participants>
+        </accordion-group>
+
+        <!-- Deployment Technology -->
+        <accordion-group #deploymenttechnologygroup panelClass="accordionGroupPanel"
+                         *ngIf="navbarButtonsState.buttonsState.assignDeploymentTechnologyButton">
+            <div accordion-heading>
+                Deployment Technologies
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': deploymenttechnologygroup?.isOpen, 'fa-chevron-right': !deploymenttechnologygroup?.isOpen}">
+                </i>
+            </div>
+            <winery-assign-deployment-technology [readonly]="readonly" [node]="nodeTemplate">
+            </winery-assign-deployment-technology>
+        </accordion-group>
+
+        <!-- POLICIES -->
+        <accordion-group
+            #policiesgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.policiesButton">
+            <div accordion-heading>
+                Policies
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': policiesgroup?.isOpen, 'fa-chevron-right': !policiesgroup?.isOpen}">
+                </i>
+            </div>
+            <winery-policies *wineryRepositoryShowOnFeature="'yaml'"
+                             [readonly]="readonly"
+                             (toggleModalHandler)="sendToggleAction($event)"
+                             [currentNodeData]="{currentNodeId: nodeTemplate.id,
+                                    currentNodePart: 'POLICIES',
+                                    currentProperties: nodeTemplate}"
+                             [policies]="policiesOfNode"
+                             [entityTypes]="entityTypes"
+                             (showYamlPolicyManagementModal)="handleShowYamlPolicyManagementModal()">
+            </winery-policies>
+            <winery-policies *wineryRepositoryHideOnFeature="'yaml'"
+                             [readonly]="readonly"
+                             (toggleModalHandler)="sendToggleAction($event)"
+                             [currentNodeData]="{currentNodeId: nodeTemplate.id,
+                                    currentNodePart: 'POLICIES',
+                                    currentProperties: nodeTemplate}"
+                             [policies]="nodeTemplate.policies">
+            </winery-policies>
+        </accordion-group>
+
+        <!-- TARGET LOCATIONS -->
+        <accordion-group
+            #targetlocationsgroup
+            panelClass="accordionGroupPanel"
+            *ngIf="navbarButtonsState.buttonsState.targetLocationsButton">
+            <div accordion-heading>
+                Target Locations
+                <i class="pull-sm-0 float-sm-right fa icon-styling padding-top--2px"
+                   [ngClass]="{'fa-chevron-down': targetlocationsgroup?.isOpen,
+           'fa-chevron-right': !targetlocationsgroup?.isOpen}">
+                </i>
+            </div>
+            <winery-target-locations
+                [currentNodeData]="{currentNodeId: nodeTemplate.id,
+                                    currentNodePart: 'TARGET_LOCATIONS',
+                                    currentTargetLocation: nodeTemplate.otherAttributes}">
+            </winery-target-locations>
+        </accordion-group>
+    </accordion>
+</div>

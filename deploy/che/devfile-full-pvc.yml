@@ -1,0 +1,98 @@
+apiVersion: 1.0.0
+metadata:
+  generateName: radon-workspace-
+projects:
+  - name: radon-particles
+    source:
+      type: git
+      location: https://github.com/radon-h2020/radon-particles
+components:
+  - alias: theia-editor
+    type: cheEditor
+    id: eclipse/che-theia/next
+  - alias: radon-gmt
+    type: kubernetes
+    endpoints:
+      - name: radon-gmt
+        port: 8080
+        attributes:
+          protocol: http
+          secure: "false"
+          discoverable: "false"
+          public: "true"
+    referenceContent: |
+      ---
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: projects-volume
+        labels:
+          type: local
+      spec:
+        storageClassName: manual
+        capacity:
+          storage: 2Gi
+        accessModes:
+          - ReadWriteOnce
+        hostPath:
+          path: "/mnt/data"
+      ---
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: projects
+      spec:
+        storageClassName: manual
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      ---
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: winery-deployment
+        labels:
+          app: winery
+          tier: frontend
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: winery
+            tier: frontend
+        template:
+          metadata:
+            labels:
+              app: winery
+              tier: frontend
+          spec:
+            volumes:
+              - name: projects-storage
+                persistentVolumeClaim:
+                  claimName: projects
+            containers:
+              - name: winery
+                image: opentosca/radon-gmt:latest
+                imagePullPolicy: Always
+                ports:
+                  - containerPort: 8080
+                env:
+                  - name: WINERY_FEATURE_RADON
+                    value: "true"
+                  - name: WINERY_FEATURE_UPDATE_TEMPLATES
+                    value: "true"
+                  - name: WINERY_REPOSITORY_PROVIDER
+                    value: "yaml"
+                  - name: WINERY_REPOSITORY_URL
+                    value: "https://github.com/radon-h2020/radon-particles"
+                  - name: WINERY_REPOSITORY_PATH
+                    value: "/projects/radon-particles"
+                  - name: WINERY_CSAR_OUTPUT_PATH
+                    value: "/projects/radon-csars"
+                  - name: CHE_URL_PROTOCOL
+                    value: "http"
+                volumeMounts:
+                  - mountPath: "/projects"
+                    name: projects-storage

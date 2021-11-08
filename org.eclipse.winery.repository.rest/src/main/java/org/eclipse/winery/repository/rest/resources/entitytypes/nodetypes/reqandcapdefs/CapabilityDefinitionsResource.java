@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;

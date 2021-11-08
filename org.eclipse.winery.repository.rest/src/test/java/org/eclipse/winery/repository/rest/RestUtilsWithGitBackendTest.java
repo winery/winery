@@ -13,16 +13,20 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 
-import javax.ws.rs.core.Response;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
 
@@ -38,10 +42,10 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
     }
 
     @Test
@@ -56,10 +60,10 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(newNamespace)) + "/" + name + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(newNamespace)) + "/" + name + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
     }
 
     @Test
@@ -75,12 +79,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + version + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
-        Assert.assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId).size());
-        Assert.assertEquals(1, BackendUtils.getAllVersionsOfOneDefinition(newId).size());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(1, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -96,12 +100,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(newNamespace)) + "/" + name + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(newNamespace)) + "/" + name + version + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
-        Assert.assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId).size());
-        Assert.assertEquals(1, BackendUtils.getAllVersionsOfOneDefinition(newId).size());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(1, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -121,12 +125,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.rename(oldId, newId).getResponse();
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + version + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
-        Assert.assertEquals(4, BackendUtils.getAllVersionsOfOneDefinition(otherElement).size());
-        Assert.assertEquals(1, BackendUtils.getAllVersionsOfOneDefinition(newId).size());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
+        assertEquals(4, WineryVersionUtils.getAllVersionsOfOneDefinition(otherElement, repository).size());
+        assertEquals(1, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -142,12 +146,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.renameAllVersionsOfOneDefinition(oldId, newId);
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(namespace)) + "/" + newName + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(namespace)) + "/" + newName + version + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
-        Assert.assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId).size());
-        Assert.assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(newId).size());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -163,12 +167,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.renameAllVersionsOfOneDefinition(oldId, newId);
 
         String expectedEntity = "http://localhost:8080/winery/nodetypes/"
-            + Util.URLencode(Util.URLencode(newNamespace)) + "/" + name + version + "/";
+            + EncodingUtil.URLencode(EncodingUtil.URLencode(newNamespace)) + "/" + name + version + "/";
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(expectedEntity, response.getEntity());
-        Assert.assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(oldId).size());
-        Assert.assertEquals(5, BackendUtils.getAllVersionsOfOneDefinition(newId).size());
+        assertEquals(201, response.getStatus());
+        assertEquals(expectedEntity, response.getEntity());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(oldId, repository).size());
+        assertEquals(5, WineryVersionUtils.getAllVersionsOfOneDefinition(newId, repository).size());
     }
 
     @Test
@@ -176,12 +180,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         this.setRevisionTo("origin/plain");
         DefinitionsChildId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.4-w3", false);
 
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(id);
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(id, repository);
 
-        Assert.assertFalse(version.isReleasable());
-        Assert.assertFalse(version.isEditable());
-        Assert.assertTrue(version.isCurrentVersion());
-        Assert.assertTrue(version.isLatestVersion());
+        assertFalse(version.isReleasable());
+        assertFalse(version.isEditable());
+        assertTrue(version.isCurrentVersion());
+        assertTrue(version.isLatestVersion());
     }
 
     @Test
@@ -189,12 +193,12 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         this.setRevisionTo("d920a1a37e3e1c3be32bf282a4d240d83811fdb1");
         DefinitionsChildId id = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithImplementation_1.0-w1-wip1", false);
 
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(id);
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(id, repository);
 
-        Assert.assertTrue(version.isReleasable());
-        Assert.assertTrue(version.isCurrentVersion());
-        Assert.assertTrue(version.isLatestVersion());
-        Assert.assertFalse(version.isEditable());
+        assertTrue(version.isReleasable());
+        assertTrue(version.isCurrentVersion());
+        assertTrue(version.isLatestVersion());
+        assertFalse(version.isEditable());
     }
 
     @Test
@@ -203,17 +207,17 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         DefinitionsChildId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWithALowerReleasableManagementVersion_2-w2-wip1", false);
         DefinitionsChildId releasedId = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWithALowerReleasableManagementVersion_2-w2", false);
 
-        int formerVersionCount = BackendUtils.getAllVersionsOfOneDefinition(id).size();
+        int formerVersionCount = WineryVersionUtils.getAllVersionsOfOneDefinition(id, repository).size();
 
         Response response = RestUtils.releaseVersion(id);
 
-        int finalVersionCount = BackendUtils.getAllVersionsOfOneDefinition(releasedId).size();
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasedId);
+        int finalVersionCount = WineryVersionUtils.getAllVersionsOfOneDefinition(releasedId, repository).size();
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(releasedId, repository);
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(formerVersionCount + 1, finalVersionCount);
-        Assert.assertFalse(version.isReleasable());
-        Assert.assertTrue(version.getWorkInProgressVersion() == 0);
+        assertEquals(201, response.getStatus());
+        assertEquals(formerVersionCount + 1, finalVersionCount);
+        assertFalse(version.isReleasable());
+        assertEquals(0, version.getWorkInProgressVersion());
     }
 
     @Test
@@ -222,19 +226,19 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         NodeTypeId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWithALowerReleasableManagementVersion_2-w2-wip1", false);
         NodeTypeId releasedId = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWithALowerReleasableManagementVersion_2-w2", false);
 
-        int formerVersionCount = BackendUtils.getAllVersionsOfOneDefinition(id).size();
+        int formerVersionCount = WineryVersionUtils.getAllVersionsOfOneDefinition(id, repository).size();
 
         // simulate a non-committed component
         makeSomeChanges(id);
 
         Response response = RestUtils.releaseVersion(id);
 
-        int finalVersionCount = BackendUtils.getAllVersionsOfOneDefinition(releasedId).size();
-        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasedId);
+        int finalVersionCount = WineryVersionUtils.getAllVersionsOfOneDefinition(releasedId, repository).size();
+        WineryVersion version = WineryVersionUtils.getCurrentVersionWithAllFlags(releasedId, repository);
 
-        Assert.assertEquals(201, response.getStatus());
-        Assert.assertEquals(formerVersionCount + 1, finalVersionCount);
-        Assert.assertFalse(version.isReleasable());
-        Assert.assertTrue(version.getWorkInProgressVersion() == 0);
+        assertEquals(201, response.getStatus());
+        assertEquals(formerVersionCount + 1, finalVersionCount);
+        assertFalse(version.isReleasable());
+        assertEquals(0, version.getWorkInProgressVersion());
     }
 }

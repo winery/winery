@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,13 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -53,7 +52,7 @@ public class ServiceTemplateComplianceRuleRuleChecker {
             IRepository repository = RepositoryFactory.getRepository();
 
             for (ComplianceRuleId ruleId : ruleIds) {
-                TComplianceRule tComplianceRule = repository.getElement(ruleId);
+                OTComplianceRule tComplianceRule = repository.getElement(ruleId);
 
                 ComplianceRuleChecker checker = new ComplianceRuleChecker(tComplianceRule, serviceTemplate.getTopologyTemplate());
                 List<GraphMapping> graphMappings;
@@ -94,7 +93,7 @@ public class ServiceTemplateComplianceRuleRuleChecker {
             ).collect(Collectors.toList());
 
         for (Namespace space : relevantNamespaces) {
-            complianceRules.addAll((Collection<? extends ComplianceRuleId>) ((FilebasedRepository) RepositoryFactory.getRepository()).getAllIdsInNamespace(ComplianceRuleId.class, space));
+            complianceRules.addAll((Collection<? extends ComplianceRuleId>) RepositoryFactory.getRepository().getAllIdsInNamespace(ComplianceRuleId.class, space));
         }
         return complianceRules;
     }

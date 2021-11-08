@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,9 @@ package org.eclipse.winery.repository.backend.filebased;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder(value = {"namespace", "prefix", "readableName"}, alphabetic = true)
 public class NamespaceProperties implements Serializable, Comparable<NamespaceProperties> {
 
     private static final long serialVersionUID = -6867642303902116547L;
@@ -24,11 +27,9 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
     private String prefix;
     private String readableName = "";
 
-    /**
-     * Placeholder for future work: support multiple repositories in the backend
-     */
-    private String upstreamRepository = "";
     private boolean isPatternCollection = false;
+    private boolean isSecureCollection = false;
+    private boolean isGeneratedNamespace = false;
 
     /**
      * This constructor must not be used. It is only required for serialization.
@@ -41,11 +42,10 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
         this.prefix = prefix;
     }
 
-    public NamespaceProperties(String namespace, String prefix, String readableName, String upstreamRepository, boolean isPatternCollection) {
+    public NamespaceProperties(String namespace, String prefix, String readableName, boolean isPatternCollection) {
         this.namespace = namespace;
         this.prefix = prefix;
         this.readableName = readableName;
-        this.upstreamRepository = upstreamRepository;
         this.isPatternCollection = isPatternCollection;
     }
 
@@ -73,20 +73,28 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
         this.readableName = readableName;
     }
 
-    public String getUpstreamRepository() {
-        return upstreamRepository;
-    }
-
-    public void setUpstreamRepository(String upstreamRepository) {
-        this.upstreamRepository = upstreamRepository;
-    }
-
     public boolean isPatternCollection() {
         return isPatternCollection;
     }
 
     public void setPatternCollection(boolean patternCollection) {
         isPatternCollection = patternCollection;
+    }
+
+    public boolean isSecureCollection() {
+        return isSecureCollection;
+    }
+
+    public void setSecureCollection(boolean secureCollection) {
+        isSecureCollection = secureCollection;
+    }
+
+    public boolean isGeneratedNamespace() {
+        return isGeneratedNamespace;
+    }
+
+    public void setGeneratedNamespace(boolean generatedNamespace) {
+        isGeneratedNamespace = generatedNamespace;
     }
 
     @Override

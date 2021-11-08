@@ -24,7 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
@@ -37,19 +37,19 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptype
  * ImplementationArtifact instead of TImplementationArtifact has to be used because of difference in the XSD at
  * tImplementationArtifacts vs. tDeploymentArtifacts
  */
-public class ImplementationArtifactsResource extends GenericArtifactsResource<ImplementationArtifactResource, ImplementationArtifact> {
+public class ImplementationArtifactsResource extends GenericArtifactsResource<ImplementationArtifactResource, TImplementationArtifact> {
 
-    private List<ImplementationArtifact> implementationArtifacts;
+    private List<TImplementationArtifact> implementationArtifacts;
 
-    public ImplementationArtifactsResource(List<ImplementationArtifact> implementationArtifact, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
-        super(ImplementationArtifactResource.class, ImplementationArtifact.class, implementationArtifact, res);
+    public ImplementationArtifactsResource(List<TImplementationArtifact> implementationArtifact, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
+        super(ImplementationArtifactResource.class, TImplementationArtifact.class, implementationArtifact, res);
         this.implementationArtifacts = implementationArtifact;
     }
 
     @Override
     public Collection<ImplementationArtifactResource> getAllArtifactResources() {
         Collection<ImplementationArtifactResource> res = new ArrayList<>(this.implementationArtifacts.size());
-        for (ImplementationArtifact da : this.implementationArtifacts) {
+        for (TImplementationArtifact da : this.implementationArtifacts) {
             ImplementationArtifactResource r = new ImplementationArtifactResource(da, this.implementationArtifacts, this.res);
             res.add(r);
         }
@@ -84,7 +84,7 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
     }
 
     @Override
-    public String getId(ImplementationArtifact entity) {
+    public String getId(TImplementationArtifact entity) {
         return entity.getName();
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,46 +13,170 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
-import org.eclipse.winery.repository.backend.IRepositoryAdministration;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
+import java.io.InputStream;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.DataTypeId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.filebased.MultiRepository;
+import org.eclipse.winery.repository.filebased.MultiRepositoryManager;
+import org.eclipse.winery.repository.backend.filebased.RepositoryProperties;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RepositoryAdminResource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
 
     /**
      * Imports the given ZIP
      */
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
-        ((IRepositoryAdministration) RepositoryFactory.getRepository()).doImport(uploadedInputStream);
+    public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream,
+                                         @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        RepositoryFactory.getRepository().doImport(uploadedInputStream);
         return Response.noContent().build();
     }
 
     @DELETE
     public void deleteRepositoryData() {
-        ((IRepositoryAdministration) RepositoryFactory.getRepository()).doClear();
+        RepositoryFactory.getRepository().doClear();
     }
 
     @GET
     @Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
     public Response dumpRepository() {
-        StreamingOutput so = new StreamingOutput() {
+        StreamingOutput so = output -> RepositoryFactory.getRepository().doDump(output);
+        return Response.ok()
+            .header("Content-Disposition", "attachment;filename=\"repository.zip\"")
+            .type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
+            .entity(so)
+            .build();
+    }
 
-            @Override
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                ((IRepositoryAdministration) RepositoryFactory.getRepository()).doDump(output);
+    /**
+     * Deletes given repository
+     *
+     * @param name of repository to delete.
+     */
+    @DELETE
+    @Path("repositories/{repository}")
+    public Response deleteRepository(@PathParam("repository") String name) {
+        String repositoryUrl = "";
+
+        if (RepositoryFactory.getRepository() instanceof MultiRepository) {
+            IRepository gitRepo;
+            MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+
+            for (RepositoryProperties repo : multiRepositoryManager.getRepositoriesAsList()) {
+                if (repo.getName().equals(name)) {
+                    repositoryUrl = repo.getUrl();
+                    break;
+                }
             }
-        };
-        return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+
+            for (IRepository repo : ((MultiRepository) RepositoryFactory.getRepository()).getRepositories()) {
+                gitRepo = repo;
+
+                if (gitRepo instanceof GitBasedRepository) {
+                    if (((GitBasedRepository) gitRepo).getRepositoryUrl() != null) {
+                        if (((GitBasedRepository) gitRepo).getRepositoryUrl().equals(repositoryUrl)) {
+                            ((GitBasedRepository) gitRepo).forceClear();
+                            ((MultiRepository) RepositoryFactory.getRepository()).removeRepository(repositoryUrl);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return Response.ok().build();
+    }
+
+    /**
+     * returns List of Repositories to frontend
+     *
+     * @return List of Repositories
+     */
+    @GET
+    @Path("repositories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<RepositoryProperties> getRepositoriesAsJson() {
+        MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+        return multiRepositoryManager.getRepositoriesAsList();
+    }
+
+    /**
+     * get Repositories from frontend
+     */
+    @POST
+    @Path("repositories")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addRepository(List<RepositoryProperties> repositoriesList) {
+        if (repositoriesList == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Repositories list must be given.")
+                .build();
+        }
+
+        MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
+        multiRepositoryManager.addRepositoryToFile(repositoriesList);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("touch")
+    public Response touchAllDefinitions() {
+        try {
+            IRepository repository = RepositoryFactory.getRepository();
+            SortedSet<DefinitionsChildId> definitionIds = Stream.of(
+                ArtifactTypeId.class,
+                CapabilityTypeId.class,
+                NodeTypeId.class,
+                PolicyTypeId.class,
+                RelationshipTypeId.class,
+                RequirementTypeId.class,
+                ServiceTemplateId.class,
+                DataTypeId.class
+            ).flatMap(id -> repository.getAllDefinitionsChildIds(id).stream())
+                .collect(Collectors.toCollection(TreeSet::new));
+            for (DefinitionsChildId id : definitionIds) {
+                TDefinitions definitions = repository.getDefinitions(id);
+                BackendUtils.persist(repository, id, definitions);
+            }
+            return Response.ok().build();
+        } catch (Exception e) {
+            LOGGER.error("Error touching types: {}", e.getMessage(), e);
+            return Response.serverError().build();
+        }
     }
 }

@@ -10,6 +10,5 @@
                 "qName": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Saturating"
             }
         ]
-    },
-    "currentRequiredCapabilityType": null
+    }
 }

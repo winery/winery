@@ -1,0 +1,45 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div [formGroup]="group">
+    <label>Constraints</label>
+    <p>
+    <div *ngFor="let constraintClause of currentConstraints" [id]="config.key" class="constraintField">
+        <span><b>{{constraintClause.key}}</b>:
+        <span *ngIf="constraintClause.value != null">{{constraintClause.value}}</span>
+        <span *ngIf="constraintClause.list != null">{{constraintClause.list.toString()}}</span>
+        <button class="rightbutton btn btn-danger btn-xs" (click)="removeConstraint(constraintClause)">Delete</button>
+        </span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label" for="constraintKey">Add new constraint</label><br>
+    <select #selectedConstraintKey id="constraintKey">
+        <option *ngFor="let item of this.config.possibleConstraintKeys">{{ item }}</option>
+    </select>
+    <div *ngIf="this.config.listConstraintsKeys.includes(selectedConstraintKey.value)">
+        Please separate items by using ','
+    </div>
+    <div *ngIf="this.config.rangeConstraintsKeys.includes(selectedConstraintKey.value)">
+        Only two items are allowed. Please separate them by using ','
+    </div>
+    <div *ngIf="alreadyExists(toConstraint(selectedConstraintKey.value, constraintValue.value))">
+        This constraint already exists
+    </div>
+    <input #constraintValue id="constraintVal" class="form-control" type="text"/>
+    <button type="button" class="btn btn-default"
+            (click)="addConstraint(toConstraint(selectedConstraintKey.value, constraintValue.value))">
+        Add Constraint
+    </button>
+</div>

@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.Consumes;
@@ -42,10 +41,9 @@ import org.eclipse.winery.accountability.model.FileProvenanceElement;
 import org.eclipse.winery.accountability.model.ModelProvenanceElement;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationInfo;
 import org.eclipse.winery.accountability.model.authorization.AuthorizationNode;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.version.VersionSupport;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -58,14 +56,12 @@ public class AccountabilityResource {
     private final String provenanceId;
 
     AccountabilityResource(String provenanceId) {
-        this.provenanceId = Util.URLdecode(provenanceId);
+        this.provenanceId = EncodingUtil.URLdecode(provenanceId);
         LOGGER.info("AccountabilityManager process identifier: " + provenanceId);
     }
 
     private static AccountabilityManager getAccountabilityManager() throws AccountabilityException {
-        Properties props = RepositoryFactory.getRepository().getAccountabilityConfigurationManager().properties;
-
-        return AccountabilityManagerFactory.getAccountabilityManager(props);
+        return AccountabilityManagerFactory.getAccountabilityManager();
     }
 
     private static WebApplicationException createException(Exception cause) {
@@ -78,9 +74,9 @@ public class AccountabilityResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<FileProvenanceElement> getFileHistory(@QueryParam("fileId") String fileId) {
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(new QName(provenanceId));
-        String qNameWithComponentVersionOnly = VersionUtils.getQNameWithComponentVersionOnly(serviceTemplateId);
+        String qNameWithComponentVersionOnly = VersionSupport.getQNameWithComponentVersionOnly(serviceTemplateId);
         Objects.requireNonNull(fileId);
-        String fileIdDecoded = Util.URLdecode(fileId);
+        String fileIdDecoded = EncodingUtil.URLdecode(fileId);
 
         try {
             return getAccountabilityManager()
@@ -98,7 +94,7 @@ public class AccountabilityResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<ModelProvenanceElement> getModelHistory() {
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(new QName(provenanceId));
-        String qNameWithComponentVersionOnly = VersionUtils.getQNameWithComponentVersionOnly(serviceTemplateId);
+        String qNameWithComponentVersionOnly = VersionSupport.getQNameWithComponentVersionOnly(serviceTemplateId);
 
         try {
             return getAccountabilityManager()
@@ -141,7 +137,7 @@ public class AccountabilityResource {
     public String addParticipant(AuthorizationNode participant) {
         try {
             return getAccountabilityManager()
-                .authorize(Util.URLdecode(Util.URLdecode(provenanceId)), participant.getAddress(), participant.getIdentity())
+                .authorize(EncodingUtil.URLdecode(EncodingUtil.URLdecode(provenanceId)), participant.getAddress(), participant.getIdentity())
                 .exceptionally(error -> null)
                 .get();
         } catch (InterruptedException | ExecutionException | AccountabilityException e) {

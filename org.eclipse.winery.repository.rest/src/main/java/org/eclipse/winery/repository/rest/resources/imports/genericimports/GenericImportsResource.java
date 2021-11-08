@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.genericimports;
 
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.model.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 import javax.ws.rs.Path;

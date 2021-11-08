@@ -30,18 +30,18 @@ A reflection tests contains all information that is needed in the metadata of th
 
 Example:
 ```
-tosca_definitions_version: tosca_simple_yaml_1_1
+tosca_definitions_version: tosca_simple_yaml_1_3
 
 metadata:
   description: This test contains a valid service template (Not Complete)
-  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
   tosca.version: 1.1
   exception: None
   assert-typeof: |
       repositories.rp1 = TRepositoryDefinition 
   assert: |
     metadata.description = This test contains a valid service template (Not Complete)
-    metadata.targetNamespace = http://www.example.org/ns/simple/yaml/1.1/test
+    metadata.targetNamespace = http://www.example.org/ns/simple/yaml/1.3/test
     description = Description of service template
     repositories.rp1.url = http://github.com/kleinech
 

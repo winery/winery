@@ -15,5 +15,5 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 public enum PropertiesDefinitionEnum {
-    Custom, Element, Type, None
+    Custom, Element, Type, Yaml, None
 }

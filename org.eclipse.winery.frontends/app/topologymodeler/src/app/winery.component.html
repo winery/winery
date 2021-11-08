@@ -1,0 +1,65 @@
+<!--
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+<ng-sidebar-container style="height: 100vh;">
+
+    <ng-sidebar class="winery-sidebar"
+                [(opened)]="detailsSidebarVisible"
+                [position]="'right'"
+                (onClosed)="notifyClose('node-details')"
+                *ngIf="loaded?.loadedData">
+        <!-- need to wait for loading to know about repo configuration's yaml state -->
+        <winery-node-details-sidebar [readonly]="readonly"
+                                     (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)"
+                                     class="sidebar">
+        </winery-node-details-sidebar>
+    </ng-sidebar>
+    <ng-sidebar class="winery-sidebar"
+                *ngIf="activeResearchPlugin != undefined"
+                [opened]="activeResearchPlugin != undefined"
+                [position]="'right'">
+        <winery-research-plugins class="sidebar"
+                                 [selectedPlugin]="activeResearchPlugin">
+        </winery-research-plugins>
+    </ng-sidebar>
+
+    <div ng-sidebar-content>
+
+        <hotkeys-cheatsheet></hotkeys-cheatsheet>
+        <router-outlet *ngIf="!readonly"></router-outlet>
+
+        <winery-topology-renderer *ngIf="loaded?.loadedData"
+                                  [readonly]="backendService.configuration.isReadonly"
+                                  [entityTypes]="entityTypes"
+                                  [differencesData]="topologyDifferences"
+                                  [nodeTemplates]="nodeTemplates"
+                                  [relationshipTemplates]="relationshipTemplates"
+                                  [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
+                                  [templateParameter]="templateParameter"
+                                  (generatedReduxState)="onReduxReady()">
+        </winery-topology-renderer>
+
+        <div *ngIf="loaded?.generatedReduxState">
+            <div *ngIf="!hideNavBarState && templateParameter.elementPath !== prmModellingUrlFragment">
+                <winery-palette-component *ngIf="!topologyDifferences && !readonly"
+                                          style="width:300px;float:left;margin-top:50px;"
+                                          [entityTypes]="this.entityTypes">
+                </winery-palette-component>
+            </div>
+        </div>
+
+        <winery-version-slider *ngIf="showVersionSlider"></winery-version-slider>
+
+    </div>
+
+</ng-sidebar-container>

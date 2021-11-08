@@ -1,0 +1,25 @@
+[
+    {
+        "qName": "{http://opentosca.org/add/management/to/instances/nodetypes}MySQL-Database_w1",
+        "versions": [
+            {
+                "componentVersion": "",
+                "wineryVersion": 2,
+                "workInProgressVersion": 0,
+                "currentVersion": false,
+                "latestVersion": false,
+                "releasable": false,
+                "editable": false
+            },
+            {
+                "componentVersion": "",
+                "wineryVersion": 1,
+                "workInProgressVersion": 0,
+                "currentVersion": true,
+                "latestVersion": false,
+                "releasable": false,
+                "editable": false
+            }
+        ]
+    }
+]

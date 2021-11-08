@@ -1,0 +1,447 @@
+<!--
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+
+<nav class="navbar navbar-light bg-faded" *ngIf="!hideNavBarState" [@navbarInOut]>
+    <form class="form-inline" style="justify-content: center;">
+        <h3 style="margin-right: .5em;">winery</h3>
+        <button *ngIf="!readonly"
+                class="btn btn-sm align-middle btn-success" type="button"
+                (click)="saveTopologyTemplateToRepository()">Save
+        </button>
+
+        <button class="btn btn-sm align-middle btn-info button-group" (click)="openManagementUi()">
+            Manage
+        </button>
+        <div *ngIf="templateParameter.elementPath != 'graficprmmodelling'">
+            <div class="btn-group button-group" data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="layout"
+                        (click)="toggleButton($event)">
+                    Layout<i class="fa fa-th" aria-hidden="true" style="padding-left: .5em; pointer-events: none;"></i>
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="alignh"
+                        (click)="toggleButton($event)">
+                    Align<i class="fa fa-ellipsis-h" style="padding-left: .5em; pointer-events: none;"></i>
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="alignv"
+                        (click)="toggleButton($event)">
+                    Align<i class="fa fa-ellipsis-v" style="padding-left: .5em; pointer-events: none;"></i>
+                </button>
+                <button *ngIf="!readonly"
+                        class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="importTopology"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.importTopologyButton)">
+                    Import Topology
+                </button>
+            </div>
+        </div>
+        <div class="btn-group button-group" data-toggle="buttons">
+            <button *wineryRepositoryHideOnFeature="'yaml'"
+                    class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="ids"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.idsButton)">
+                Ids
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="types"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.typesButton)">
+                Types
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="properties"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.propertiesButton)">
+                Properties
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="deploymentArtifacts"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.deploymentArtifactsButton)">
+                {{this.configurationService.isYaml() ? 'Artifacts' : 'Deployment Artifacts'}}
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="requirementsCapabilities"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.requirementsCapabilitiesButton)">
+                Requirements & Capabilities
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style" *wineryRepositoryShowOnFeature="configEnum.Yaml"
+                    type="button"
+                    id="yamlGroups"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.yamlGroupsButton)">
+                Groups
+            </button>
+            <button class="btn btn-sm align-middle dark-button-style"
+                    type="button"
+                    id="policies"
+                    (click)="toggleButton($event)"
+                    [style.background-color]="getStyle(navbarButtonsState.buttonsState.policiesButton)">
+                Policies
+            </button>
+            <!--<button *ngIf="!readonly"
+                    class="btn btn-sm align-middle dark-button-style" type="button" style="margin-left: 4px">Print View
+            </button>-->
+        </div>
+
+        <div *ngIf="templateParameter.elementPath != 'graficprmmodelling'">
+            <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="targetLocations"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.targetLocationsButton)">
+                    Target Locations
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="split"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.splitTopologyButton)"
+                        [disabled]="splittingOngoing">
+                    {{splittingOngoing ? 'Splitting...' : 'Split'}}
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="match"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.matchTopologyButton)"
+                        [disabled]="matchingOngoing">
+                    {{matchingOngoing ? 'Matching...' : 'Match'}}
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="placement"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.placeComponentsButton)"
+                        [disabled]="placingOngoing">
+                    {{placingOngoing ? 'Placing...' : 'Place Components'}}
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.ProblemDetection" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="problemDetection"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.problemDetectionButton)">
+                    Detect Problems
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="enrichment"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.enrichmentButton)">
+                    Management Feature Enrichment
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="placement"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.placeComponentsButton)"
+                        [disabled]="placingOngoing">
+                    {{placingOngoing ? 'Placing...' : 'Place Components'}}
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        type="button"
+                        id="enrichment"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.enrichmentButton)">
+                    Management Feature Enrichment
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.FreezeAndDefrost" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="determineStatefulComponents"
+                        (click)="toggleButton($event)">
+                    Determine Stateful Components
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style" id="determineFreezableComponents"
+                        (click)="toggleButton($event)">
+                    Determine Freezable Components
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style" id="cleanFreezableComponents"
+                        (click)="toggleButton($event)">
+                    Clean Freezable Components
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="refinePatterns"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refinePatternsButton)">
+                    Refine Patterns
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel"
+                 class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
+                    Refine Topology
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.TestRefinement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="refineTopologyWithTests"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
+                    Refine Topology with Tests
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="refinePatterns"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refinePatternsButton)">
+                    Refine Patterns
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel"
+                 class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
+                    Refine Topology
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.TestRefinement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="refineTopologyWithTests"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
+                    Refine Topology with Tests
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.InstanceModelRefinement" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="instanceModelRefinement"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineInstanceModelButton)">
+                    Refine Instance Model
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.PatternDetection" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="detectPatterns"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.detectPatternsButton)">
+                    Detect Patterns
+                </button>
+            </div>
+
+            <div class="btn-group button-group" data-toggle="buttons" *wineryRepositoryShowOnFeature="configEnum.Yaml">
+                <button class="btn btn-sm align-middle dark-button-style" id="manageYamlGroups"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.manageYamlGroupsButton)">
+                    Manage Groups
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style" id="manageYamlPolicies"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.manageYamlPoliciesButton)">
+                    Manage Policies
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="edmmTransformationCheck"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.edmmTransformationCheck)">
+                    Show EDMM Transformation Check
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style" id="edmmExport"
+                        (click)="exportCsar($event, 'edmm')">
+                    Export EDMM
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button id="assignDeploymentTechnology" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Assign which nodes should be deployed using a certain deployment technology"
+                        tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignDeploymentTechnologyButton)">
+                    Assign Deployment Technology
+                </button>
+            </div>
+            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button id="manageParticipants" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Add or remove participants to the Topology" tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.manageParticipantsButton)">
+                    Manage Participants
+                </button>
+                <button id="assignParticipants" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Assign which nodes belong to which participant" tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignParticipantsButton)">
+                    Assign Participants
+                </button>
+            </div>
+
+            <div *wineryRepositoryFeatureToggle="configEnum.Radon" class="btn-group button-group"
+                 data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style"
+                        (click)="openChe()">
+                    Open in IDE
+                </button>
+                <button class="btn btn-sm align-middle dark-button-style" id="hideDependsOnRelations"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.hideDependsOnRelations)">
+                    Hide DependsOn Relations
+                </button>
+            </div>
+
+            <div *ngIf="showVersionSliderButton" class="btn-group button-group" data-toggle="buttons">
+                <button class="btn btn-sm align-middle dark-button-style" id="versionSlider"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.versionSliderButton)">
+                    Version Slider
+                </button>
+            </div>
+
+            <!-- TODO introduce new feature to toggle this -->
+            <div *wineryRepositoryFeatureToggle="configEnum.MultiParticipant" class="btn-group button-group" dropdown>
+                <button dropdownToggle type="button"
+                        class="btn btn-sm dark-button-style align-middle dropdown-toggle">
+                    Multi-Participant Features <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <li role="menuitem">
+                        <button id="manageParticipants" style="cursor: pointer" class="dropdown-item"
+                                tooltip="Add or remove participants to the Topology."
+                                (click)="toggleButton($event)">
+                            Manage Participants
+                        </button>
+                    </li>
+                    <li role="menuitem">
+                        <button id="assignParticipants" style="cursor: pointer" class="dropdown-item"
+                                tooltip="Assign which nodes belong to which participant."
+                                (click)="toggleButton($event)">
+                            Assign Participants
+                        </button>
+                    </li>
+                    <li role="menuitem">
+                        <button id="generateGDM" style="cursor: pointer" class="dropdown-item"
+                                tooltip="Generate placeholder for the application-specific components."
+                                (click)="toggleButton($event)">
+                            Generate GDM
+                        </button>
+                    </li>
+                    <li role="menuitem">
+                        <button id="extractLDM" style="cursor: pointer" class="dropdown-item"
+                                tooltip="Generate for each Participant a Service Template."
+                                (click)="toggleButton($event)">
+                            Extract Partner LDM
+                        </button>
+                    </li>
+                    <li role="menuitem">
+                        <button id="generatePlaceholderSubs" style="cursor: pointer" class="dropdown-item"
+                                tooltip="Substitute Placeholders that belong to the Participant."
+                                (click)="toggleButton($event)">
+                            Substitute Placeholder
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div *ngIf="!readonly" class="btn-group button-group" dropdown>
+                <button dropdownToggle type="button"
+                        class="btn btn-sm dark-button-style align-middle dropdown-toggle">
+                    Other <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                    <!--<li role="menuitem"><a class="dropdown-item" href="#">Complete Topology</a></li>-->
+                    <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
+                        <button style="cursor: pointer" #exportCsarButton target="_blank"
+                                tooltip="Hold CTRL key to export XML only."
+                                placement="left" class="dropdown-item" (click)="exportCsar($event)">Export CSAR
+                        </button>
+                    </li>
+                    <li role="menuitem" *wineryRepositoryShowOnFeature="configEnum.NFV">
+                        <button style="cursor: pointer" id="threatModeling" target="_blank"
+                                class="dropdown-item" (click)="toggleButton($event)">Threat Modeling
+                        </button>
+                    </li>
+                    <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
+                        <button style="cursor: pointer"
+                                class="dropdown-item"
+                                id="substituteTopology"
+                                (click)="toggleButton($event)">
+                            Substitute Topology
+                        </button>
+                    </li>
+                    <!--<li role="menuitem"><a class="dropdown-item" (click)="checkCompliance()">Check Compliance</a></li>-->
+                    <li role="menuitem"><a class="dropdown-item" href="#">About</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div *ngIf="!readonly && templateParameter.elementPath == 'graficprmmodelling'" class="btn-group button-group"
+             dropdown>
+            Only show selected Mapping Types:
+            <select (change)="selectRelationshipType($event)"
+                    class="btn btn-sm dark-button-style align-middle dropdown-toggle">
+                <label>Mapping Type</label>
+                <ng-container>
+                    <option>All</option>
+                    <option *ngFor="let mappingType of entityTypes.relationshipTypes" [value]="mappingType.id">
+                        {{mappingType.id}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+
+        <div *ngIf="!readonly && templateParameter.elementPath == 'graficprmmodelling'">
+            <p style="color:red;">Note: It's only possible to edit PRM Mappings here. Detector and Refinement Structure
+                must be defined separately </p>
+        </div>
+    </form>
+</nav>

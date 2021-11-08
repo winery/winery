@@ -14,7 +14,7 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.propertymappings;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyMappingsTest extends AbstractResourceTest {
 

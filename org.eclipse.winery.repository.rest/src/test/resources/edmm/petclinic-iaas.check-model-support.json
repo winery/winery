@@ -1,0 +1,107 @@
+[
+    {
+        "id": "ansible",
+        "name": "Ansible",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "azure",
+        "name": "Azure",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "cfn",
+        "name": "AWS CloudFormation",
+        "supports": 1.0,
+        "replacementRules": [
+            {
+                "reason": "preferred",
+                "unsupportedComponents": [
+                    "Compute",
+                    "Tomcat"
+                ],
+                "toTopology": {
+                    "AwsBeanstalk": {
+                        "type": "aws_beanstalk"
+                    }
+                },
+                "unsupported": false
+            },
+            {
+                "reason": "preferred",
+                "unsupportedComponents": [
+                    "Compute",
+                    "MySQL_DBMS"
+                ],
+                "toTopology": {
+                    "AwsAurora": {
+                        "type": "aws_aurora"
+                    }
+                },
+                "unsupported": false
+            }
+        ]
+    },
+    {
+        "id": "chef",
+        "name": "Chef",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "cloudify",
+        "name": "Cloudify",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "compose",
+        "name": "Docker Compose",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "heat",
+        "name": "Heat Orchestration Template",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "kubernetes",
+        "name": "Kubernetes",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "puppet",
+        "name": "Puppet",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "terraform",
+        "name": "Terraform",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "juju",
+        "name": "Juju",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "saltstack",
+        "name": "Saltstack",
+        "supports": 1.0,
+        "replacementRules": []
+    },
+    {
+        "id": "cfengine",
+        "name": "CFEngine",
+        "supports": 1.0,
+        "replacementRules": []
+    }
+]

@@ -83,6 +83,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "631"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "HypervisorEndpoint": "https://iaasvc.informatik.uni-stuttgart.de/sdk",
                     "HypervisorTenantID": "smartservices",
@@ -97,18 +98,10 @@
             "maxInstances": "1",
             "x": 678,
             "y": 631,
-            "capabilities": {
-                "capability": []
-            },
-            "requirements": {
-                "requirement": []
-            },
-            "deploymentArtifacts": {
-                "deploymentArtifact": []
-            },
-            "policies": {
-                "policy": []
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": []
         },
         {
             "documentation": [],
@@ -118,6 +111,7 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "514"
             },
             "properties": {
+                "propertyType": "KV",
                 "kvproperties": {
                     "VMIP": "",
                     "VMInstanceID": "",
@@ -136,18 +130,10 @@
             "maxInstances": "1",
             "x": 844,
             "y": 514,
-            "capabilities": {
-                "capability": []
-            },
-            "requirements": {
-                "requirement": []
-            },
-            "deploymentArtifacts": {
-                "deploymentArtifact": []
-            },
-            "policies": {
-                "policy": []
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": []
         },
         {
             "documentation": [],
@@ -164,18 +150,10 @@
             "maxInstances": "1",
             "x": 744,
             "y": 268,
-            "capabilities": {
-                "capability": []
-            },
-            "requirements": {
-                "requirement": []
-            },
-            "deploymentArtifacts": {
-                "deploymentArtifact": []
-            },
-            "policies": {
-                "policy": []
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": []
         },
         {
             "documentation": [],
@@ -192,27 +170,19 @@
             "maxInstances": "1",
             "x": 740,
             "y": 46,
-            "capabilities": {
-                "capability": []
-            },
-            "requirements": {
-                "requirement": []
-            },
-            "deploymentArtifacts": {
-                "deploymentArtifact": [
-                    {
-                        "documentation": [],
-                        "any": [],
-                        "otherAttributes": {},
-                        "name": "Pi_Estimation_DA",
-                        "artifactType": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact",
-                        "artifactRef": "{http://opentosca.org/artifacttemplates}Pi_Estimation_DA"
-                    }
-                ]
-            },
-            "policies": {
-                "policy": []
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [
+                {
+                    "documentation": [],
+                    "any": [],
+                    "otherAttributes": {},
+                    "name": "Pi_Estimation_DA",
+                    "artifactType": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact",
+                    "artifactRef": "{http://opentosca.org/artifacttemplates}Pi_Estimation_DA"
+                }
+            ],
+            "policies": []
         },
         {
             "documentation": [],
@@ -229,18 +199,10 @@
             "maxInstances": "1",
             "x": 501,
             "y": 419,
-            "capabilities": {
-                "capability": []
-            },
-            "requirements": {
-                "requirement": []
-            },
-            "deploymentArtifacts": {
-                "deploymentArtifact": []
-            },
-            "policies": {
-                "policy": []
-            }
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": []
         }
     ]
 }

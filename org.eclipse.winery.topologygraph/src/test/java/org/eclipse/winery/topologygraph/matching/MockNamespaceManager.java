@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -65,6 +65,16 @@ public class MockNamespaceManager implements NamespaceManager {
 
     @Override
     public boolean isPatternNamespace(String namespace) {
+        return false;
+    }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        return false;
+    }
+
+    @Override
+    public boolean isGeneratedNamespace(String namespace) {
         return false;
     }
 }

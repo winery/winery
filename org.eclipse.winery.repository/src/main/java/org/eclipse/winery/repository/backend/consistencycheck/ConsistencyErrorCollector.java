@@ -19,8 +19,8 @@ import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.IdUtil;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -65,7 +65,7 @@ public class ConsistencyErrorCollector {
         ElementErrorList element = this.errorList.get(id.getQName());
 
         if (Objects.isNull(element)) {
-            String toscaType = Util.getEverythingBetweenTheLastDotAndBeforeId(id.getClass());
+            String toscaType = IdUtil.getEverythingBetweenTheLastDotAndBeforeId(id.getClass());
             element = new ElementErrorList(toscaType);
             this.errorList.put(id.getQName(), element);
         }

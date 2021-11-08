@@ -15,6 +15,7 @@ package org.eclipse.winery.bpmn2bpel.parser;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,317 +53,297 @@ import org.slf4j.LoggerFactory;
  */
 public class Bpmn4JsonParser extends Parser {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Bpmn4JsonParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bpmn4JsonParser.class);
 
-	@Override
-	public ManagementFlow parse(URI jsonFileUrl) throws ParseException {
+    @Override
+    public ManagementFlow parse(URI jsonFileUrl) throws ParseException {
 
-		try {
-			// general method, same as with data binding
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.enable(SerializationFeature.INDENT_OUTPUT);
-			// (note: can also use more specific type, like ArrayNode or
-			// ObjectNode!)
-			JsonNode rootNode = mapper.readValue(jsonFileUrl.toURL(), JsonNode.class);
+        try {
+            // general method, same as with data binding
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            // (note: can also use more specific type, like ArrayNode or
+            // ObjectNode!)
+            JsonNode rootNode = mapper.readValue(jsonFileUrl.toURL(), JsonNode.class);
 
-			String prettyPrintedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
-			LOGGER.debug("Creating management flow from following Json model:" + prettyPrintedJson);
+            String prettyPrintedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
+            LOGGER.debug("Creating management flow from following Json model:" + prettyPrintedJson);
 
-			Map<String, Node> nodeMap = new HashMap<String, Node>();
-			/* Contains the ids (values) of the target nodes of a certain node
-			 * (key is node id of this node) */
-			Map<String, Set<String>> nodeWithTargetsMap = new HashMap<String, Set<String>>();
+            Map<String, Node> nodeMap = new HashMap<>();
+            /* Contains the ids (values) of the target nodes of a certain node
+             * (key is node id of this node) */
+            Map<String, Set<String>> nodeWithTargetsMap = new HashMap<>();
 
-			/* Create model objects from Json nodes */
-			LOGGER.debug("Creating node models...");
-			Iterator<JsonNode> iter = rootNode.iterator();
-			while (iter.hasNext()) {
-				JsonNode jsonNode = (JsonNode) iter.next();
+            /* Create model objects from Json nodes */
+            LOGGER.debug("Creating node models...");
+            for (JsonNode jsonNode : rootNode) {
+                /*
+                 * As top level elements just start events, end events, gateway and
+                 * management tasks expected which are transformed to tasks in
+                 * our management model
+                 */
+                Node node = createNodeFromJson(jsonNode);
+                /*
+                 * Node may be null if it could not be created due to missing or
+                 * incorrect fields/values in the Json node
+                 */
+                if (node != null) {
+                    nodeMap.put(node.getId(), node);
+                    nodeWithTargetsMap.put(node.getId(), extractNodeTargetIds(jsonNode));
+                } else {
+                    String ignoredJsonNode = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
+                    LOGGER.warn("No model element could be created from following node due to missing or invalid keys/values :" + ignoredJsonNode);
+                }
+            }
 
-				/*
-				 * As top level elements just start events, end events, gateway and
-				 * management tasks expected which are transformed to tasks in
-				 * our management model
-				 */
-				Node node = createNodeFromJson(jsonNode);
-				/*
-				 * Node may be null if it could not be created due to missing or
-				 * incorrect fields/values in the Json node
-				 */
-				if (node != null) {
-					nodeMap.put(node.getId(), node);
-					nodeWithTargetsMap.put(node.getId(), extractNodeTargetIds(jsonNode));
-				} else {
-					String ignoredJsonNode = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
-					LOGGER.warn("No model element could be created from following node due to missing or invalid keys/values :" + ignoredJsonNode);
-				}
-			}
+            /*
+             * Now since all node models are created they can be linked with each other in the management flow
+             */
+            return new SortParser(nodeMap, nodeWithTargetsMap).buildManagementFlow();
+        } catch (Exception e) {
+            LOGGER.error("Error while creating management flow : " + e.getMessage());
+            throw new ParseException(e);
+        }
+    }
 
-			/*
-			 * Now since all node models are created they can be linked with each other in the management flow
-			 */
-			ManagementFlow managementFlow =
-					new SortParser(nodeMap, nodeWithTargetsMap).buildManagementFlow();
-			return managementFlow;
+    protected Node createNodeFromJson(JsonNode jsonNode) {
+        // TODO check if type attributes are set and are correct
 
-		} catch (Exception e) {
-			LOGGER.error("Error while creating management flow : " + e.getMessage());
-			throw new ParseException(e);
-		}
+        if (!hasRequiredFields(jsonNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.NAME, JsonKeys.ID))) {
+            LOGGER.warn("Ignoring gateway/task/event node: One of the fields '" + JsonKeys.TYPE + "', '" + JsonKeys.NAME + "' or '"
+                + JsonKeys.ID + "' is missing");
+            return null;
+        }
 
-	}
+        Node node = null;
+        String nodeType = jsonNode.get(JsonKeys.TYPE).asText();
+        String nodeName = jsonNode.get(JsonKeys.NAME).asText();
+        String nodeId = jsonNode.get(JsonKeys.ID).asText();
 
-	protected Node createNodeFromJson(JsonNode jsonNode) {
-		// TODO check if type attributes are set and are correct
+        LOGGER.debug("Parsing JSON task or event node with id '" + nodeId + "', name '" + nodeName + "', type '" + nodeType
+            + "'");
 
-		if (!hasRequiredFields(jsonNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.NAME, JsonKeys.ID))) {
-			LOGGER.warn("Ignoring gateway/task/event node: One of the fields '" + JsonKeys.TYPE + "', '" + JsonKeys.NAME + "' or '"
-					+ JsonKeys.ID + "' is missing");
-			return null;
-		}
+        switch (nodeType) {
+            case JsonKeys.NODE_TYPE_START_EVENT:
+                node = createStartTaskFromJson(jsonNode);
+                break;
+            case JsonKeys.NODE_TYPE_MGMT_TASK:
+                node = createManagementTaskFromJson(jsonNode);
+                break;
+            case JsonKeys.NODE_TYPE_END_EVENT:
+                node = createEndTaskFromJson(jsonNode);
+                break;
+            case JsonKeys.NODE_TYPE_GATEWAY_EXCLUSIVE:
+                node = createOrGatewaySplitFromJson(jsonNode);
+                break;
+            case JsonKeys.NODE_TYPE_GATEWAY_EXCLUSIVE_END:
+                node = createOrGatewayMergeFromJson(jsonNode);
+                break;
+            default:
+                LOGGER.warn("Ignoring node: type '" + nodeType + "' is unkown");
+                return null;
+        }
 
-		Node node = null;
-		String nodeType = jsonNode.get(JsonKeys.TYPE).asText();
-		String nodeName = jsonNode.get(JsonKeys.NAME).asText();
-		String nodeId = jsonNode.get(JsonKeys.ID).asText();
+        /* Set generic node attributes */
+        node.setId(nodeId);
+        node.setName(nodeName);
+        node.setType(nodeType);
+        if (node instanceof Task) {
+            loadParameter4Task((Task) node, jsonNode);
+        }
 
-		LOGGER.debug("Parsing JSON task or event node with id '" + nodeId + "', name '" + nodeName + "', type '" + nodeType
-				+ "'");
+        return node;
+    }
 
-		switch (nodeType) {
-			case JsonKeys.NODE_TYPE_START_EVENT:
-				node = createStartTaskFromJson(jsonNode);
-				break;
-			case JsonKeys.NODE_TYPE_MGMT_TASK:
-				node = createManagementTaskFromJson(jsonNode);
-				break;
-			case JsonKeys.NODE_TYPE_END_EVENT:
-				node = createEndTaskFromJson(jsonNode);
-				break;
-			case JsonKeys.NODE_TYPE_GATEWAY_EXCLUSIVE:
-				node = createOrGatewaySplitFromJson(jsonNode);
-				break;
-			case JsonKeys.NODE_TYPE_GATEWAY_EXCLUSIVE_END:
-				node = createOrGatewayMergeFromJson(jsonNode);
-				break;
-			default:
-				LOGGER.warn("Ignoring node: type '" + nodeType + "' is unkown");
-				return null;
-		}
+    private void loadParameter4Task(Task task, JsonNode jsonNode) {
+        /* Add input parameters to task */
+        JsonNode inputParams = jsonNode.get(JsonKeys.INPUT);
+        String taskId = jsonNode.get(JsonKeys.ID).asText();
 
-		/* Set generic node attributes */
-		node.setId(nodeId);
-		node.setName(nodeName);
-		node.setType(nodeType);
-		if (node instanceof Task) {
-			loadParameter4Task((Task) node, jsonNode);
-		}
+        if (inputParams != null) {
+            /*
+             * Iterator map required to retrieve the name of the parameter node
+             *
+             * @see
+             * http://stackoverflow.com/questions/7653813/jackson-json-get-node-
+             * name-from-json-tree
+             */
+            Iterator<Map.Entry<String, JsonNode>> inputParamIter = inputParams.fields();
+            while (inputParamIter.hasNext()) {
+                Map.Entry<String, JsonNode> inputParamEntry = (Map.Entry<String, JsonNode>) inputParamIter.next();
+                Parameter inputParam = createParameterFromJson(inputParamEntry.getKey(), inputParamEntry.getValue());
+                task.addInputParameter(inputParam);
+            }
+        } else {
+            LOGGER.debug("No input parameters found for node with id '" + taskId + "'");
+        }
 
-		return node;
-	}
+        /* Add output Parameters to task */
+        JsonNode outputParams = jsonNode.get(JsonKeys.OUTPUT);
+        if (outputParams != null) {
+            Iterator<Map.Entry<String, JsonNode>> outputParamIter = outputParams.fields();
+            while (outputParamIter.hasNext()) {
+                Map.Entry<String, JsonNode> outputParamEntry = (Map.Entry<String, JsonNode>) outputParamIter.next();
+                Parameter outputParam = createParameterFromJson(outputParamEntry.getKey(), outputParamEntry.getValue());
+                task.addOutputParameter(outputParam);
+            }
+        } else {
+            LOGGER.debug("No output parameters found for node with id '" + taskId + "'");
+        }
+    }
 
-	private void loadParameter4Task(Task task, JsonNode jsonNode) {
-		/* Add input parameters to task */
-		JsonNode inputParams = jsonNode.get(JsonKeys.INPUT);
-		String taskId = jsonNode.get(JsonKeys.ID).asText();
+    protected StartTask createStartTaskFromJson(JsonNode startTaskNode) {
+        return new StartTask();
+    }
 
-		if (inputParams != null) {
-			/*
-			 * Iterator map required to retrieve the name of the parameter node
-			 *
-			 * @see
-			 * http://stackoverflow.com/questions/7653813/jackson-json-get-node-
-			 * name-from-json-tree
-			 */
-			Iterator<Map.Entry<String, JsonNode>> inputParamIter = inputParams.fields();
-			while (inputParamIter.hasNext()) {
-				Map.Entry<String, JsonNode> inputParamEntry = (Map.Entry<String, JsonNode>) inputParamIter.next();
-				Parameter inputParam = createParameterFromJson(inputParamEntry.getKey(), inputParamEntry.getValue());
-				task.addInputParameter(inputParam);
-			}
-		} else {
-			LOGGER.debug("No input parameters found for node with id '" + taskId + "'");
-		}
+    protected EndTask createEndTaskFromJson(JsonNode endTaskNode) {
+        return new EndTask();
+    }
 
-		/* Add output Parameters to task */
-		JsonNode outputParams = jsonNode.get(JsonKeys.OUTPUT);
-		if (outputParams != null) {
-			Iterator<Map.Entry<String, JsonNode>> outputParamIter = outputParams.fields();
-			while (outputParamIter.hasNext()) {
-				Map.Entry<String, JsonNode> outputParamEntry = (Map.Entry<String, JsonNode>) outputParamIter.next();
-				Parameter outputParam = createParameterFromJson(outputParamEntry.getKey(), outputParamEntry.getValue());
-				task.addOutputParameter(outputParam);
-			}
+    protected OrGatewaySplit createOrGatewaySplitFromJson(JsonNode jsonNode) {
+        OrGatewaySplit gatewaySplit = new OrGatewaySplit();
+        JsonNode conditionsNode = jsonNode.findValue(JsonKeys.CONDITIONS);
 
-		} else {
-			LOGGER.debug("No output parameters found for node with id '" + taskId + "'");
-		}
-	}
+        ConditionBranch defaultBranch = null;
 
-	protected StartTask createStartTaskFromJson(JsonNode startTaskNode) {
-		return new StartTask();
-	}
+        if (conditionsNode != null && conditionsNode.isArray()) {
+            for (JsonNode entry : conditionsNode) {
+                if (hasRequiredFields(entry, Collections.singletonList(JsonKeys.ID))) {
 
-	protected EndTask createEndTaskFromJson(JsonNode endTaskNode) {
-		return new EndTask();
-	}
+                    String id = entry.get(JsonKeys.ID).asText();
 
-	protected OrGatewaySplit createOrGatewaySplitFromJson(JsonNode jsonNode) {
-		OrGatewaySplit gatewaySplit = new OrGatewaySplit();
-		JsonNode conditionsNode = jsonNode.findValue(JsonKeys.CONDITIONS);
+                    String condition = "";
+                    if (entry.has(JsonKeys.CONDITION)) {
+                        condition = entry.get(JsonKeys.CONDITION).asText();
+                    }
 
-		ConditionBranch defaultBranch = null;
+                    boolean isDefault = false;
+                    if (entry.has(JsonKeys.DEFAULT)) {
+                        isDefault = entry.get(JsonKeys.DEFAULT).asBoolean();
+                    }
 
-		if (conditionsNode != null && conditionsNode.isArray()) {
-			Iterator<JsonNode> iter = conditionsNode.iterator();
-			while (iter.hasNext()) {
-				JsonNode entry = (JsonNode) iter.next();
-				if (hasRequiredFields(entry, Arrays.asList(JsonKeys.ID))) {
+                    ConditionBranch branch = new ConditionBranch(id, condition, isDefault);
 
-					String id = entry.get(JsonKeys.ID).asText();
+                    if (isDefault) { // default branch
+                        defaultBranch = branch;
+                    } else {
+                        gatewaySplit.getBranchList().add(branch);
+                    }
+                }
+            }
+        }
 
-					String condition = "";
-					if (entry.has(JsonKeys.CONDITION)) {
-						condition = entry.get(JsonKeys.CONDITION).asText();
-					}
+        if (defaultBranch != null) {
+            gatewaySplit.getBranchList().add(defaultBranch);
+        }
+        return gatewaySplit;
+    }
 
-					boolean isDefault = false;
-					if (entry.has(JsonKeys.DEFAULT)) {
-						isDefault = entry.get(JsonKeys.DEFAULT).asBoolean();
-					}
+    protected OrGatewayMerge createOrGatewayMergeFromJson(JsonNode jsonNode) {
+        return new OrGatewayMerge();
+    }
 
-					ConditionBranch branch = new ConditionBranch(id, condition, isDefault);
+    protected ManagementTask createManagementTaskFromJson(JsonNode managementTaskNode) {
 
-					if (isDefault) { // default branch
-						defaultBranch = branch;
-					} else {
-						gatewaySplit.getBranchList().add(branch);
-					}
-				}
-			}
-		}
+        if (!hasRequiredFields(managementTaskNode, Arrays.asList(JsonKeys.NODE_TEMPLATE, JsonKeys.NODE_OPERATION))) {
+            LOGGER.warn("Ignoring mangement node: One of the fields '" + JsonKeys.NODE_TEMPLATE + "' or '"
+                + JsonKeys.NODE_OPERATION + "' is missing");
+            return null;
+        }
+        String nodeTemplate = managementTaskNode.get(JsonKeys.NODE_TEMPLATE).asText();
+        String nodeInterfaceName = managementTaskNode.get(JsonKeys.NODE_INTERFACE_NAME).asText();
+        String nodeOperation = managementTaskNode.get(JsonKeys.NODE_OPERATION).asText();
 
-		if (defaultBranch != null) {
-			gatewaySplit.getBranchList().add(defaultBranch);
-		}
-		return gatewaySplit;
-	}
+        LOGGER.debug("Creating management task with id '" + managementTaskNode.get(JsonKeys.ID) + "', name '" + managementTaskNode.get(JsonKeys.NAME)
+            + "', node template '" + nodeTemplate + "', node operation '" + "', node operation '" + nodeOperation + "'");
 
-	protected OrGatewayMerge createOrGatewayMergeFromJson(JsonNode jsonNode) {
-		OrGatewayMerge gatewaySplit = new OrGatewayMerge();
-		return gatewaySplit;
-	}
+        ManagementTask task = new ManagementTask();
+        task.setNodeTemplateId(QName.valueOf(nodeTemplate));
+        task.setNodeOperation(nodeOperation);
+        task.setInterfaceName(nodeInterfaceName);
 
-	protected ManagementTask createManagementTaskFromJson(JsonNode managementTaskNode) {
+        return task;
+    }
 
-		if (!hasRequiredFields(managementTaskNode, Arrays.asList(JsonKeys.NODE_TEMPLATE, JsonKeys.NODE_OPERATION))) {
-			LOGGER.warn("Ignoring mangement node: One of the fields '" + JsonKeys.NODE_TEMPLATE + "' or '"
-					+ JsonKeys.NODE_OPERATION + "' is missing");
-			return null;
-		}
-		String nodeTemplate = managementTaskNode.get(JsonKeys.NODE_TEMPLATE).asText();
-		String nodeInterfaceName = managementTaskNode.get(JsonKeys.NODE_INTERFACE_NAME).asText();
-		String nodeOperation = managementTaskNode.get(JsonKeys.NODE_OPERATION).asText();
+    protected Parameter createParameterFromJson(String paramName, JsonNode paramNode) {
 
-		LOGGER.debug("Creating management task with id '" + managementTaskNode.get(JsonKeys.ID) + "', name '" + managementTaskNode.get(JsonKeys.NAME)
-				+ "', node template '" + nodeTemplate + "', node operation '" + "', node operation '" + nodeOperation + "'");
+        if (!hasRequiredFields(paramNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.VALUE))) {
+            LOGGER.warn("Ignoring parameter node: One of the fields '" + JsonKeys.TYPE + "' or '"
+                + JsonKeys.VALUE + "' is missing");
+            return null;
+        }
+        String paramType = paramNode.get(JsonKeys.TYPE).asText();
+        String paramValue = paramNode.get(JsonKeys.VALUE).asText();
 
-		ManagementTask task = new ManagementTask();
-		task.setNodeTemplateId(QName.valueOf(nodeTemplate));
-		task.setNodeOperation(nodeOperation);
-		task.setInterfaceName(nodeInterfaceName);
+        LOGGER.debug("Parsing JSON parameter node with name '" + paramName + "', type '" + paramType + "' and value '" + paramValue + "'");
 
-		return task;
+        Parameter param = null;
+        switch (paramType) {
+            case JsonKeys.PARAM_TYPE_VALUE_CONCAT:
+                param = new ConcatParameter(); // TODO add concat operands
+                break;
+            case JsonKeys.PARAM_TYPE_VALUE_DA:
+                param = new DeploymentArtefactParameter();
+                break;
+            case JsonKeys.PARAM_TYPE_VALUE_IA:
+                param = new ImplementationArtefactParameter();
+                break;
+            case JsonKeys.PARAM_TYPE_VALUE_PLAN:
+                param = new PlanParameter(); // TODO add task name
+                break;
+            case JsonKeys.PARAM_TYPE_VALUE_STRING:
+                param = new StringParameter();
+                break;
+            case JsonKeys.PARAM_TYPE_VALUE_TOPOLOGY:
+                param = new TopologyParameter();
+                break;
+            default:
+                LOGGER.warn("JSON parameter type '" + paramType + "' unknown");
+                return null;
+        }
 
-	}
+        /* Set generic parameter attributes */
+        param.setName(paramName);
+        param.setValue(paramValue);
 
-	protected Parameter createParameterFromJson(String paramName, JsonNode paramNode) {
+        return param;
+    }
 
-		if (!hasRequiredFields(paramNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.VALUE))) {
-			LOGGER.warn("Ignoring parameter node: One of the fields '" + JsonKeys.TYPE + "' or '"
-					+ JsonKeys.VALUE + "' is missing");
-			return null;
-		}
-		String paramType = paramNode.get(JsonKeys.TYPE).asText();
-		String paramValue = paramNode.get(JsonKeys.VALUE).asText();
+    protected Set<String> extractNodeTargetIds(JsonNode node) {
+        Set<String> linkTargetIds = new HashSet<String>();
+        /* Look for the 'connections' element within the node or its children */
+        JsonNode connectionsNode = node.findValue(JsonKeys.CONNECTIONS);
+        /*
+         * The connection node hosts an array of all outgoing connections to
+         * other nodes
+         */
+        if (connectionsNode != null && connectionsNode.isArray()) {
+            for (JsonNode connectionEntry : connectionsNode) {
+                /*
+                 * Should always be true as the connection entry is the id of
+                 * the target node
+                 */
+                if (connectionEntry.isTextual()) {
+                    linkTargetIds.add(connectionEntry.asText());
+                } else {
+                    // TODO warn
+                }
+            }
+        } else {
+            LOGGER.debug("Node with id '" + node.get(JsonKeys.ID) + "' has no connections to other nodes");
+            return null;
+        }
+        return linkTargetIds;
+    }
 
-		LOGGER.debug("Parsing JSON parameter node with name '" + paramName + "', type '" + paramType + "' and value '" + paramValue + "'");
+    protected boolean hasRequiredFields(JsonNode jsonNode, List<String> reqFieldNames) {
 
-		Parameter param = null;
-		switch (paramType) {
-			case JsonKeys.PARAM_TYPE_VALUE_CONCAT:
-				param = new ConcatParameter(); // TODO add concat operands
-				break;
-			case JsonKeys.PARAM_TYPE_VALUE_DA:
-				param = new DeploymentArtefactParameter();
-				break;
-			case JsonKeys.PARAM_TYPE_VALUE_IA:
-				param = new ImplementationArtefactParameter();
-				break;
-			case JsonKeys.PARAM_TYPE_VALUE_PLAN:
-				param = new PlanParameter(); // TODO add task name
-				break;
-			case JsonKeys.PARAM_TYPE_VALUE_STRING:
-				param = new StringParameter();
-				break;
-			case JsonKeys.PARAM_TYPE_VALUE_TOPOLOGY:
-				param = new TopologyParameter();
-				break;
-			default:
-				LOGGER.warn("JSON parameter type '" + paramType + "' unknown");
-				return null;
-		}
-
-		/* Set generic parameter attributes */
-		param.setName(paramName);
-		param.setValue(paramValue);
-
-		return param;
-
-	}
-
-	protected Set<String> extractNodeTargetIds(JsonNode node) {
-		Set<String> linkTargetIds = new HashSet<String>();
-		/* Look for the 'connections' element within the node or its children */
-		JsonNode connectionsNode = node.findValue(JsonKeys.CONNECTIONS);
-		/*
-		 * The connection node hosts an array of all outgoing connections to
-		 * other nodes
-		 */
-		if (connectionsNode != null && connectionsNode.isArray()) {
-			Iterator<JsonNode> iter = connectionsNode.iterator();
-			while (iter.hasNext()) {
-				JsonNode connectionEntry = (JsonNode) iter.next();
-				/*
-				 * Should always be true as the connection entry is the id of
-				 * the target node
-				 */
-				if (connectionEntry.isTextual()) {
-					linkTargetIds.add(connectionEntry.asText());
-				} else {
-					// TODO warn
-				}
-
-			}
-		} else {
-			LOGGER.debug("Node with id '" + node.get(JsonKeys.ID) + "' has no connections to other nodes");
-			return null;
-		}
-		return linkTargetIds;
-	}
-
-	protected boolean hasRequiredFields(JsonNode jsonNode, List<String> reqFieldNames) {
-		Iterator<String> fieldNAmeIter = reqFieldNames.iterator();
-
-		/* Returns false if one of the field names is missing */
-		while (fieldNAmeIter.hasNext()) {
-			String reqField = (String) fieldNAmeIter.next();
-			if (jsonNode.get(reqField) == null) {
-				return false;
-			}
-
-		}
-		return true;
-	}
-
+        /* Returns false if one of the field names is missing */
+        for (String reqField : reqFieldNames) {
+            if (jsonNode.get(reqField) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

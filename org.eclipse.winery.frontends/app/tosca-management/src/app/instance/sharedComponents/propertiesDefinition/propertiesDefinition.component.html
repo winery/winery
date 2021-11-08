@@ -1,0 +1,228 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+
+<div *ngIf="!loading">
+    <div class="radioWrapper" *wineryRepositoryHideOnFeature="configEnum.Yaml">
+        <div class="left">
+            <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.None">
+            <label for="nopropdef" class="cursorpointer">(none)</label>
+            <br>
+            <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Element">
+            <label for="xsdelementradio" class="cursorpointer">XML element</label>
+            <br>
+            <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Type">
+            <label for="xsdtyperadio" class="cursorpointer">XML type</label>
+            <br>
+            <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
+                   [disabled]="!sharedData?.currentVersion?.editable"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Custom">
+            <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
+        </div>
+        <div class="right">
+            <button class="btn btn-primary" name="save" [disabled]="!sharedData?.currentVersion?.editable"
+                    (click)="save()">Save
+            </button>
+        </div>
+    </div>
+    <div>
+        <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
+            || resourceApiData.selectedValue === propertiesEnum.Type)">
+            <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)"
+                       [active]="[activeElement]"></ng-select>
+        </div>
+
+        <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
+            <tabset *wineryRepositoryHideOnFeature="configEnum.Yaml">
+                <tab heading="Properties">
+                    <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
+                                          [tableTitle]="tableTitle"
+                                          [modalTitle]="modalTitle"
+                                          [data]="this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
+                                          [avoidDuplicateProperties]="['key']"
+                                          (entryAdded)="onChangeProperty()"
+                                          (entryEdited)="onChangeProperty()"
+                                          (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
+                </tab>
+                <tab heading="Wrapper">
+                    <div class="wrapperTab">
+                        <label for="wrapperName">Name of Wrapper Element</label><br>
+                        <input id="wrapperName"
+                               class="form-control"
+                               autocomplete=off
+                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
+                    </div>
+                    <div class="wrapperTabButtom">
+                        <!-- pattern parameter is required to enable form validation -->
+                        <winery-namespace-selector
+                            [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace" pattern="^\S*$"
+                            [useStartNamespace]="false">
+                        </winery-namespace-selector>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+        <div *wineryRepositoryShowOnFeature="configEnum.Yaml">
+            <!-- 
+                FIXME winery-dynamic-table currently CAN NOT deal with keySchema and entrySchema 
+                  being dependent on the type selected in the type field, so we're falling back to winery-table 
+                  lacking better options right now
+             -->
+            <winery-table [data]="tableData"
+                          [columns]="columns"
+                          [enableEditButton]="true"
+                          (removeBtnClicked)="onRemoveClick($event)"
+                          (addBtnClicked)="onAddClick()"
+                          (editBtnClicked)="onEditClick($event)">
+            </winery-table>
+        </div>
+    </div>
+</div>
+
+<ng-template #editorModal>
+    <winery-modal-header [modalRef]="editorModalRef" [title]="propertyOperation + ' a Property Definition'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <!-- editor is not a separate component to allow communication between it and this component -->
+        <form id="editPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="name">Name</label>
+                <input #nameInput
+                       #propName="ngModel"
+                       id="name"
+                       class="form-control"
+                       type="text"
+                       [name]="isYaml ? 'name' : 'key'"
+                       autocomplete=off
+                       required
+                       [disabled]="propertyOperation === 'Edit'"
+                       [(ngModel)]="isYaml ? editedProperty.name : editedProperty.key"
+                       [wineryDuplicateValidator]="validatorObject"/>
+                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!propName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="propType">Type</label>
+                <select #typeSelect name="type" class="form-control" id="propType"
+                        [value]="editedProperty.type">
+                    <option *ngFor="let type of availableTypes" value="{{ type }}">
+                        {{ type }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group" [hidden]="typeSelect.value !== 'map' && typeSelect.value !== 'list'">
+                <label class="control-label" for="entrySchema">Entry Schema</label>
+                <!-- for now we do not support or condone nesting maps or lists -->
+                <select #entrySchemaSelect name="entrySchema" class="form-control" id="entrySchema"
+                        [value]="editedProperty.entrySchema.type">
+                    <option *ngFor="let type of availableTypes" value="{{ type }}">
+                        {{ type }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group" [hidden]="typeSelect.value !== 'map'">
+                <label class="control-label" for="keySchema">Key Schema</label>
+                <!-- for now we do not support or condone nesting maps or lists -->
+                <select #keySchemaSelect name="keySchema" class="form-control" id="keySchema"
+                        [value]="editedProperty.keySchema.type">
+                    <option *ngFor="let type of availableTypes" value="{{ type }}">
+                        {{ type }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="defaultValue">Default Value</label>
+                <input #defaultValueInput id="defaultValue" class="form-control" type="text"
+                       [value]="editedProperty.defaultValue"/>
+            </div>
+            <div class="form-group">
+                <input #requiredCheckbox type="checkbox" id="isRequired" style="margin-right: 7px"
+                       [checked]="editedProperty.required"/>
+                <label class="control-label" for="isRequired">Is required</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <input #descriptionInput id="description" class="form-control" type="text"
+                       [value]="editedProperty.description"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="constraints">Constraints</label>
+                <p>
+                <div *ngFor="let constraintClause of editedConstraints" id="constraints" class="constraintField">
+            <span><b>{{constraintClause.key}}</b>:
+                <span *ngIf="constraintClause.value != null">{{constraintClause.value}}</span>
+                <span *ngIf="constraintClause.list != null">{{constraintClause.list.toString()}}</span>
+                <button class="rightbutton btn btn-danger btn-xs"
+                        (click)="removeConstraint(constraintClause)">Delete</button>
+            </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="constraintKey">Add new constraint</label><br>
+                <select #selectedConstraintKey id="constraintKey">
+                    <option *ngFor="let item of valid_constraint_keys">{{ item }}</option>
+                </select>
+                <div *ngIf="list_constraint_keys.includes(selectedConstraintKey.value)">
+                    Please separate items by using ','
+                </div>
+                <div *ngIf="range_constraint_keys.includes(selectedConstraintKey.value)">
+                    Only two items are allowed.
+                </div>
+                <input #constraintValue id="constraintVal" class="form-control" type="text"/>
+                <button type="button" class="btn btn-default"
+                        (click)="addConstraint(selectedConstraintKey.value, constraintValue.value)">
+                    Add Constraint
+                </button>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="handleEditorSubmit(nameInput.value, typeSelect.value, entrySchemaSelect.value, keySchemaSelect.value, defaultValueInput.value, requiredCheckbox.checked, descriptionInput.value)"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="propertyOperation"
+        [modalRef]="editorModalRef"
+        [disableOkButton]="!propName.valid && !propName.disabled">
+    </winery-modal-footer>
+</ng-template>
+
+<ng-template #confirmDeleteModal>
+    <winery-modal-header [title]="'Delete Property Definition'" [modalRef]="confirmDeleteModalRef">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [modalRef]="confirmDeleteModalRef"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</ng-template>

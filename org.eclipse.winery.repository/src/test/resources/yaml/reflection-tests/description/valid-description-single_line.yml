@@ -1,0 +1,13 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: Valid single line desrcription.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.5.1
+  exception: None
+  assert: |
+    description = This is an example of a single line description (no folding).
+
+description: This is an example of a single line description (no folding).
+

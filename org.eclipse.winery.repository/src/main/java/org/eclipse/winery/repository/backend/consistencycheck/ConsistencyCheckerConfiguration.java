@@ -29,21 +29,15 @@ public class ConsistencyCheckerConfiguration {
     private EnumSet<ConsistencyCheckerVerbosity> verbosity;
     private IRepository repository;
 
+    /**
+     * Needed for initialization from the UI.
+     */
+    @SuppressWarnings("unused")
     public ConsistencyCheckerConfiguration() {
         this.serviceTemplatesOnly = false;
         this.checkDocumentation = false;
         this.verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
         this.repository = RepositoryFactory.getRepository();
-        this.testMode = false;
-    }
-
-    /**
-     * Constructor used for testing the ConsistencyChecker functionality. Otherwise: Must not be used
-     */
-    public ConsistencyCheckerConfiguration(boolean serviceTemplatesOnly, boolean checkDocumentation, @NonNull EnumSet<ConsistencyCheckerVerbosity> verbosity) {
-        this.serviceTemplatesOnly = serviceTemplatesOnly;
-        this.checkDocumentation = checkDocumentation;
-        this.verbosity = Objects.requireNonNull(verbosity);
         this.testMode = false;
     }
 

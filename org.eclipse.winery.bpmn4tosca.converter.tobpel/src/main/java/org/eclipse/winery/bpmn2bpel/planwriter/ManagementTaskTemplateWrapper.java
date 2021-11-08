@@ -13,13 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
 import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
 import org.eclipse.winery.bpmn2bpel.model.param.TopologyParameter;
-
-import javax.xml.namespace.QName;
-import java.util.*;
-
 
 /**
  * Add convenience methods to the {@link ManagementTask} that can be used in the Velocity template.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,17 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.capabilitytypes;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.ValidTypesListApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class CapabilityTypeResource extends EntityTypeResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityTypeResource.class);
-
 
     /**
      * Constructor has to be public because of test cases
@@ -46,4 +56,22 @@ public final class CapabilityTypeResource extends EntityTypeResource {
         return new TCapabilityType();
     }
 
+    @GET
+    @Path("constraints/")
+    public ValidTypesListApiData getValidSourceTypes() {
+        return new ValidTypesListApiData(getCapabilityType().getValidNodeTypes());
+    }
+
+    @PUT
+    @Path("constraints/")
+    public Response saveValidSourceTypes(ValidTypesListApiData newValidSourceTypes) {
+        TCapabilityType t = this.getCapabilityType();
+        t.setValidNodeTypes(newValidSourceTypes
+            .getNodes()
+            .stream()
+            .map(QNameApiData::asQName)
+            .collect(Collectors.toList()));
+
+        return RestUtils.persist(this);
+    }
 }

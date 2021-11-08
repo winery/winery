@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2014-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2014-2021 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -16,14 +16,16 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %-40.40logger{39}:%-4line %-35method - %msg%n</pattern>
         </encoder>
     </appender>
 
     <logger name="org.eclipse.winery" level="DEBUG"/>
+    <logger name="org.glassfish.jersey" level="DEBUG"/>
     <logger name="org.apache.catalina.core.ApplicationDispatcher" level="SEVERE"/>
+    <logger name="org.eclipse.jgit" level="INFO"/>
 
-    <root level="info">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

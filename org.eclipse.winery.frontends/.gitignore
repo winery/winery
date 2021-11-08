@@ -1,0 +1,8 @@
+dist/
+/node/
+node_modules/
+target/
+/app/tosca-management/src/assets/built-codeEdit15_1/
+
+*.iml
+/app/tosca-management/src/assets/licenses/

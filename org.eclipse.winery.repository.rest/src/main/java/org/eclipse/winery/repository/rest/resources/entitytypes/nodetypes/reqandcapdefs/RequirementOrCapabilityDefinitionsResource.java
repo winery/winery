@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,13 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.eclipse.winery.repository.rest.resources.apiData.CapabilityDefinitionPostData;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -27,13 +22,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
-import java.util.Collection;
-import java.util.List;
+
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.rest.resources.apiData.RequirementOrCapabilityDefinitionPostData;
+import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * This superclass has only a few methods as we cannot easily abstract from the
- * subclasses: We would need Java reflection to invoke "getName" (to get the
- * subresource). The hope is that this copy'n'paste programming will not
+ * This superclass has only a few methods as we cannot easily abstract from the subclasses: We would need Java
+ * reflection to invoke "getName" (to get the subresource). The hope is that this copy'n'paste programming will not
  * introduce bugs when changing childs
  * <p>
  * We try to abstract from the problems by using generics and reflections
@@ -45,8 +46,9 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 
     protected final NodeTypeResource res;
 
-
-    public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz, Class<ReqDefOrCapDef> entityTClazz, List<ReqDefOrCapDef> list, NodeTypeResource res) {
+    public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz,
+                                                      Class<ReqDefOrCapDef> entityTClazz,
+                                                      List<ReqDefOrCapDef> list, NodeTypeResource res) {
         super(entityResourceTClazz, entityTClazz, list, res);
         this.res = res;
     }
@@ -58,23 +60,40 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 
     @POST
     // As there is no supertype of TCapabilityType and TRequirementType containing the common attributes, we have to rely on unchecked casts
-    @SuppressWarnings("unchecked")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response onPost(CapabilityDefinitionPostData postData) {
+    public Response onPost(RequirementOrCapabilityDefinitionPostData postData) {
+        return this.performPost(postData);
+    }
+
+    @Override
+    public String getId(ReqDefOrCapDef reqDefOrCapDef) {
+        return AbstractReqOrCapDefResource.getName(reqDefOrCapDef);
+    }
+
+    protected Response performPost(RequirementOrCapabilityDefinitionPostData postData) {
         if (StringUtils.isEmpty(postData.name)) {
             return Response.status(Status.BAD_REQUEST).entity("Name has to be provided").build();
         }
+
         if (StringUtils.isEmpty(postData.type)) {
             return Response.status(Status.BAD_REQUEST).entity("Type has to be provided").build();
         }
 
+        try {
+            ReqDefOrCapDef def = this.createBasicReqOrCapDef(postData);
+            this.handleDefType(def, postData);
+
+            return this.persistDef(def, postData);
+        } catch (NumberFormatException e) {
+            return Response.status(Status.BAD_REQUEST).entity("Bad format of lower bound: " + e.getMessage()).build();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected ReqDefOrCapDef createBasicReqOrCapDef(RequirementOrCapabilityDefinitionPostData postData) throws NumberFormatException {
         int lbound = 1;
         if (!StringUtils.isEmpty(postData.lowerBound)) {
-            try {
-                lbound = Integer.parseInt(postData.lowerBound);
-            } catch (NumberFormatException e) {
-                return Response.status(Status.BAD_REQUEST).entity("Bad format of lowerbound: " + e.getMessage()).build();
-            }
+            lbound = Integer.parseInt(postData.lowerBound);
         }
 
         String ubound = "1";
@@ -82,7 +101,50 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
             ubound = postData.upperBound;
         }
 
-        // we also support replacement of existing requirements
+        // Create object and put type in it
+        ReqDefOrCapDef def;
+
+        if (this instanceof CapabilityDefinitionsResource) {
+            def = (ReqDefOrCapDef) new TCapabilityDefinition.Builder(
+                postData.name,
+                QName.valueOf(postData.type)
+            )
+                .setUpperBound(ubound)
+                .setLowerBound(lbound)
+                .build();
+        } else {
+            assert (this instanceof RequirementDefinitionsResource);
+            def = (ReqDefOrCapDef) new TRequirementDefinition.Builder(
+                postData.name,
+                QName.valueOf(postData.type)
+            )
+                .setUpperBound(ubound)
+                .setLowerBound(lbound)
+                .build();
+        }
+
+        return def;
+    }
+
+    protected void handleDefType(ReqDefOrCapDef def, RequirementOrCapabilityDefinitionPostData postData) {
+        if (postData.type != null) {
+            QName typeQName = QName.valueOf(postData.type);
+
+            if (def instanceof TCapabilityDefinition) {
+                ((TCapabilityDefinition) def).setCapabilityType(typeQName);
+                if (postData.validSourceTypes != null) {
+                    if (!postData.validSourceTypes.isEmpty()) {
+                        ((TCapabilityDefinition) def).setValidSourceTypes(postData.validSourceTypes);
+                    }
+                }
+            } else {
+                ((TRequirementDefinition) def).setRequirementType(typeQName);
+            }
+        }
+    }
+
+    protected Response persistDef(ReqDefOrCapDef def, RequirementOrCapabilityDefinitionPostData postData) {
+        // we support replacement of existing requirements
         // therefore, we loop through the existing requirements
         int idx = -1;
         boolean found = false;
@@ -94,23 +156,6 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
             }
         }
 
-        QName typeQName = QName.valueOf(postData.type);
-        // Create object and put type in it
-        ReqDefOrCapDef def;
-        if (this instanceof CapabilityDefinitionsResource) {
-            def = (ReqDefOrCapDef) new TCapabilityDefinition();
-            ((TCapabilityDefinition) def).setCapabilityType(typeQName);
-        } else {
-            assert (this instanceof RequirementDefinitionsResource);
-            def = (ReqDefOrCapDef) new TRequirementDefinition();
-            ((TRequirementDefinition) def).setRequirementType(typeQName);
-        }
-
-        // copy all other data into object
-        AbstractReqOrCapDefResource.invokeSetter(def, "setName", postData.name);
-        AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
-        AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
-
         if (found) {
             // replace element
             this.list.set(idx, def);
@@ -118,12 +163,6 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
             // add new element
             this.list.add(def);
         }
-
         return RestUtils.persist(this.res);
-    }
-
-    @Override
-    public String getId(ReqDefOrCapDef reqDefOrCapDef) {
-        return AbstractReqOrCapDefResource.getName(reqDefOrCapDef);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,18 +21,17 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPatternRefinementModel;
-import org.eclipse.winery.model.tosca.TRelationMapping;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelMappingsResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractRefinementModelResource;
 import org.eclipse.winery.repository.rest.resources.apiData.RelationMappingApiData;
 
-public class RelationMappingsResource extends AbstractRefinementModelMappingsResource {
+public class RelationMappingsResource extends AbstractRefinementModelMappingsResource<OTRelationMapping> {
 
-    public RelationMappingsResource(AbstractRefinementModelResource res, TPatternRefinementModel.TRelationMappings relationMappings) {
+    public RelationMappingsResource(AbstractRefinementModelResource res, List<OTRelationMapping> relationMappings) {
         super(res);
-        this.mappings = relationMappings.getRelationMapping();
+        this.mappings = relationMappings;
     }
 
     @PUT
@@ -42,9 +41,9 @@ public class RelationMappingsResource extends AbstractRefinementModelMappingsRes
       We need to use another Class since the JSON representation cannot resolve the ids to the <code>detectorNode</code> and <code>refinementNode</code>.
       Therefore, we do it manually.
      */
-    public List<TRelationMapping> addRelationMappingFromApi(RelationMappingApiData mapping) {
-        TNodeTemplate detectorNode = this.getDetectorNodeTemplate(mapping.detectorNode);
-        TNodeTemplate refinementNode = this.getRefinementNodeTemplate(mapping.refinementNode);
-        return (List<TRelationMapping>) this.addMapping(mapping.createTRelationMapping(detectorNode, refinementNode));
+    public List<OTRelationMapping> addRelationMappingFromApi(RelationMappingApiData mapping) {
+        TNodeTemplate detectorElement = this.res.getDetectorResource().getTopologyTemplate().getNodeTemplate(mapping.detectorElement);
+        TNodeTemplate refinementElement = this.res.getRefinementTopologyResource().getTopologyTemplate().getNodeTemplate(mapping.refinementElement);
+        return this.addMapping(mapping.createTRelationMapping(detectorElement, refinementElement));
     }
 }

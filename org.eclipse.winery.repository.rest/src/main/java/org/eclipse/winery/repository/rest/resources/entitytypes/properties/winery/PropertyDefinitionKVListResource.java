@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties.winery;
 
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import java.util.List;
+
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
@@ -27,7 +28,7 @@ import javax.ws.rs.PathParam;
  */
 public class PropertyDefinitionKVListResource extends EntityWithIdCollectionResource<PropertyDefinitionKVResource, PropertyDefinitionKV> {
 
-    public PropertyDefinitionKVListResource(EntityTypeResource res, PropertyDefinitionKVList list) {
+    public PropertyDefinitionKVListResource(EntityTypeResource res, List<PropertyDefinitionKV> list) {
         super(PropertyDefinitionKVResource.class, PropertyDefinitionKV.class, list, res);
     }
 

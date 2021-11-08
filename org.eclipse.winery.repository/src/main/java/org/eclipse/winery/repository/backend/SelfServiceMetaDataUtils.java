@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -34,11 +34,11 @@ public class SelfServiceMetaDataUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SelfServiceMetaDataUtils.class);
 
-    public static void ensureDataXmlExists(SelfServiceMetaDataId id) throws IOException {
+    public static void ensureDataXmlExists(IRepository repository, SelfServiceMetaDataId id) throws IOException {
         RepositoryFileReference data_xml_ref = getDataXmlRef(id);
-        if (!RepositoryFactory.getRepository().exists(data_xml_ref)) {
+        if (!repository.exists(data_xml_ref)) {
             final Application application = new Application();
-            BackendUtils.persist(application, data_xml_ref, MediaTypes.MEDIATYPE_TEXT_XML);
+            BackendUtils.persist(application, data_xml_ref, MediaTypes.MEDIATYPE_TEXT_XML, repository);
         }
     }
 
@@ -54,26 +54,26 @@ public class SelfServiceMetaDataUtils {
         return new RepositoryFileReference(id, "image.jpg");
     }
 
-    public static Application getApplication(SelfServiceMetaDataId id) {
+    public static Application getApplication(IRepository repository, SelfServiceMetaDataId id) {
         RepositoryFileReference data_xml_ref = getDataXmlRef(id);
-        if (RepositoryFactory.getRepository().exists(data_xml_ref)) {
+        if (repository.exists(data_xml_ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
-            try (InputStream is = RepositoryFactory.getRepository().newInputStream(data_xml_ref)) {
+            try (InputStream is = repository.newInputStream(data_xml_ref)) {
                 return (Application) u.unmarshal(is);
             } catch (IOException | JAXBException e) {
                 LOGGER.error("Could not read from " + data_xml_ref, e);
                 return new Application();
             }
         } else {
-            return getDefaultApplicationData(id);
+            return getDefaultApplicationData(repository, id);
         }
     }
 
-    private static Application getDefaultApplicationData(SelfServiceMetaDataId id) {
+    private static Application getDefaultApplicationData(IRepository repository, SelfServiceMetaDataId id) {
         Application app = new Application();
         app.setIconUrl("icon.jpg");
         app.setImageUrl("image.jpg");
-        final TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement((ServiceTemplateId) id.getParent());
+        final TServiceTemplate serviceTemplate = repository.getElement((ServiceTemplateId) id.getParent());
         app.setDisplayName(serviceTemplate.getName());
         List<TDocumentation> documentation = serviceTemplate.getDocumentation();
         if ((documentation != null) && (!documentation.isEmpty())) {

@@ -15,22 +15,19 @@ package org.eclipse.winery.repository.rest.datatypes;
 
 import java.util.Objects;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocalNameForAngular {
 
     private final String id;
     private final String text;
-    private final Definitions full;
+    private final TDefinitions full;
 
     public LocalNameForAngular(String id, String text) {
         this(id, text, null);
     }
 
-    public LocalNameForAngular(String id, String text, Definitions full) {
+    public LocalNameForAngular(String id, String text, TDefinitions full) {
         this.id = id;
         this.text = text;
         this.full = full;
@@ -44,7 +41,7 @@ public class LocalNameForAngular {
         return text;
     }
 
-    public Definitions getFull() {
+    public TDefinitions getFull() {
         return full;
     }
 

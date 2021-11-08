@@ -1,0 +1,66 @@
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+@import url('https://fonts.googleapis.com/css?family=Roboto:300');
+
+.dark-button-style {
+    color: #212121;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: lighter;
+    font-size: 12px;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.dark-button-style:focus {
+    border-color: #424242;
+    box-shadow: none;
+}
+
+.dark-button-style:hover {
+    background-color: #ffffff;
+    color: #000;
+    border-color: #424242;
+}
+
+.dropdown-menu li:hover a {
+    background-color: #ffffff !important;
+}
+
+.dropdown-menu li {
+    border: 1px solid transparent;
+}
+
+.dropdown-menu li:hover {
+    border-color: #fff;
+}
+
+.dropdown-menu {
+    background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
+    padding: 0px;
+}
+
+.dropdown-item {
+    color: #000 !important;
+}
+
+.navbar-light {
+    background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
+}
+
+.button-group {
+    margin-left: 5px;
+}

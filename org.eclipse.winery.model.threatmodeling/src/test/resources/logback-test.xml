@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${user.home}/winery-debug.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.eclipse.winery" level="TRACE"/>
+    <logger name="org.eclipse.winery.repository.export.ToscaExportUtil" level="TRACE"/>
+    <logger name="org.eclipse.winery.repository.export.CsarExporter" level="TRACE"/>
+    <logger name="org.eclipse.winery.repository.backend.filebased.GitBasedRepository" level="TRACE"/>
+    <logger name="org.eclipse.winery.repository.importing.CsarImporter" level="TRACE"/>
+    <logger name="org.eclipse.winery.repository.JAXBSupport" level="DEBUG"/>
+    <logger name="org.eclipse.winery.repository.Utils" level="TRACE"/>
+
+    <logger name="com.sun.jersey" level="WARN"/>
+    <logger name="org.apache.catalina.core.ApplicationDispatcher" level="SEVERE"/>
+    <logger name="org.apache.http" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.eclipse.jgit" level="WARN"/>
+
+    <logger name="org.eclipse.winery.model.threatmodeling" level="WARN" />
+    
+    <root level="TRACE">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

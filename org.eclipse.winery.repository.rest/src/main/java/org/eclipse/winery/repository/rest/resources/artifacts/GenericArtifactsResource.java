@@ -22,10 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -40,22 +40,22 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.generators.ia.Generator;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.model.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -64,6 +64,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
+import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -71,7 +72,6 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentIn
 import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.apiData.GenerateArtifactApiData;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
@@ -155,7 +155,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
                 doc = db.parse(is);
             } catch (Exception e) {
                 // FIXME: currently we allow a single element only. However, the content should be internally wrapped by an (arbitrary) XML element as the content will be nested in the artifact element, too
-                GenericArtifactsResource.LOGGER.debug("Invalid content", e);
+                LOGGER.debug("Invalid content", e);
                 return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
             }
         }
@@ -164,7 +164,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
         ArtifactTypeId artifactTypeId;
         ArtifactTemplateId artifactTemplateId = null;
-        ArtifactTemplateResource artifactTemplateResource = null;
 
         boolean doAutoCreateArtifactTemplate = !(StringUtils.isEmpty(apiData.autoCreateArtifactTemplate) || apiData.autoCreateArtifactTemplate.equalsIgnoreCase("no") || apiData.autoCreateArtifactTemplate.equalsIgnoreCase("false"));
         if (!doAutoCreateArtifactTemplate) {
@@ -240,50 +239,42 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         ArtifactT resultingArtifact;
 
         if (this instanceof ImplementationArtifactsResource) {
-            ImplementationArtifact a = new ImplementationArtifact();
-            // Winery internal id is the name of the artifact:
-            // store the name
-            a.setName(apiData.artifactName);
-            a.setInterfaceName(apiData.interfaceName);
-            a.setOperationName(apiData.operationName);
-            assert (artifactTypeId != null);
-            a.setArtifactType(artifactTypeId.getQName());
+            TImplementationArtifact.Builder builder = new TImplementationArtifact.Builder(artifactTypeId.getQName())
+                .setName(apiData.artifactName)
+                .setInterfaceName(apiData.interfaceName)
+                .setOperationName(apiData.operationName);
             if (artifactTemplateId != null) {
-                a.setArtifactRef(artifactTemplateId.getQName());
+                builder.setArtifactRef(artifactTemplateId.getQName());
             }
             if (doc != null) {
                 // the content has been checked for validity at the beginning of the method.
                 // If this point in the code is reached, the XML has been parsed into doc
                 // just copy over the dom node. Hopefully, that works...
-                a.getAny().add(doc.getDocumentElement());
+                builder.setAny(Collections.singletonList(doc.getDocumentElement()));
             }
 
-            this.list.add((ArtifactT) a);
-            resultingArtifact = (ArtifactT) a;
+            resultingArtifact = (ArtifactT) builder.build();
         } else {
             // for comments see other branch
 
-            TDeploymentArtifact a = new TDeploymentArtifact();
-            a.setName(apiData.artifactName);
-            assert (artifactTypeId != null);
-            a.setArtifactType(artifactTypeId.getQName());
+            TDeploymentArtifact.Builder builder = new TDeploymentArtifact.Builder(apiData.artifactName, artifactTypeId.getQName());
             if (artifactTemplateId != null) {
-                a.setArtifactRef(artifactTemplateId.getQName());
+                builder.setArtifactRef(artifactTemplateId.getQName());
             }
             if (doc != null) {
-                a.getAny().add(doc.getDocumentElement());
+                builder.setAny(Collections.singletonList(doc.getDocumentElement()));
             }
 
-            this.list.add((ArtifactT) a);
-            resultingArtifact = (ArtifactT) a;
+            resultingArtifact = (ArtifactT) builder.build();
         }
+        this.list.add(resultingArtifact);
 
         // TODO: Check for error, and in case one found return it
         RestUtils.persist(super.res);
 
         if (StringUtils.isEmpty(apiData.autoGenerateIA)) {
             // No IA generation
-            return Response.created(RestUtils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
+            return Response.created(URI.create(EncodingUtil.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
         } else {
             // after everything was created, we fire up the artifact generation
             return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId);
@@ -329,7 +320,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         try {
             workingDir = Files.createTempDirectory("winery");
         } catch (IOException e2) {
-            GenericArtifactsResource.LOGGER.debug("Could not create temporary directory", e2);
+            LOGGER.debug("Could not create temporary directory", e2);
             return Response.serverError().entity("Could not create temporary directory").build();
         }
 
@@ -338,7 +329,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         try {
             artifactTemplateFilesUrl = artifactTemplateFilesUri.toURL();
         } catch (MalformedURLException e2) {
-            GenericArtifactsResource.LOGGER.debug("Could not convert URI to URL", e2);
+            LOGGER.debug("Could not convert URI to URL", e2);
             return Response.serverError().entity("Could not convert URI to URL").build();
         }
 
@@ -380,26 +371,26 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
     }
 
     private Optional<TInterface> findInterface(EntityTypeId id, String interfaceName) {
-        TInterface i = null;
+        TInterface i;
         List<TInterface> interfaces = new ArrayList<>();
         IRepository repository = RepositoryFactory.getRepository();
         if (this.res instanceof NodeTypeImplementationResource
             || this.res instanceof NodeTypeImplementationsResource) {
             TNodeType nodeType = repository.getElement((NodeTypeId) id);
             if (nodeType.getInterfaces() != null) {
-                interfaces.addAll(nodeType.getInterfaces().getInterface());
+                interfaces.addAll(nodeType.getInterfaces());
             }
         } else if (this.res instanceof RelationshipTypeImplementationResource
             || this.res instanceof RelationshipTypeImplementationsResource) {
             TRelationshipType relationshipType = repository.getElement((RelationshipTypeId) id);
             if (relationshipType.getSourceInterfaces() != null) {
-                interfaces.addAll(relationshipType.getSourceInterfaces().getInterface());
+                interfaces.addAll(relationshipType.getSourceInterfaces());
             }
             if (relationshipType.getTargetInterfaces() != null) {
-                interfaces.addAll(relationshipType.getTargetInterfaces().getInterface());
+                interfaces.addAll(relationshipType.getTargetInterfaces());
             }
             if (relationshipType.getInterfaces() != null) {
-                interfaces.addAll(relationshipType.getInterfaces().getInterface());
+                interfaces.addAll(relationshipType.getInterfaces());
             }
         }
         Iterator<TInterface> it = interfaces.iterator();
@@ -421,7 +412,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         try {
             builder = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            GenericArtifactsResource.LOGGER.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return;
         }
         Document doc = builder.newDocument();
@@ -444,7 +435,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         element.appendChild(text);
         root.appendChild(element);
 
-        Properties properties = new Properties();
+        TEntityTemplate.XmlProperties properties = new TEntityTemplate.XmlProperties();
         properties.setAny(root);
 
         final IRepository repository = RepositoryFactory.getRepository();
@@ -460,30 +451,9 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
     /**
      * Required for artifacts.jsp
      *
-     * @return list of known artifact types.
-     */
-    public List<QName> getAllArtifactTypes() {
-        SortedSet<ArtifactTypeId> allArtifactTypes = RepositoryFactory.getRepository().getAllDefinitionsChildIds(ArtifactTypeId.class);
-        List<QName> res = new ArrayList<>(allArtifactTypes.size());
-        for (ArtifactTypeId id : allArtifactTypes) {
-            res.add(id.getQName());
-        }
-        return res;
-    }
-
-    /**
-     * Required for artifacts.jsp
-     *
      * @return list of all contained artifacts.
      */
     public abstract Collection<ArtifactResource> getAllArtifactResources();
-
-    /**
-     * Required by artifact.jsp to decide whether to display "Deployment Artifact" or "Implementation Artifact"
-     */
-    public boolean getIsDeploymentArtifacts() {
-        return (this instanceof DeploymentArtifactsResource);
-    }
 
     /**
      * required by artifacts.jsp

@@ -13,16 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withid;
 
-import com.sun.jersey.api.NotFoundException;
-import org.eclipse.winery.repository.rest.resources._support.IPersistable;
-import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
-import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Objects;
+
+import javax.ws.rs.NotFoundException;
+
+import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
+import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class EntityWithIdCollectionResource<EntityResourceT extends EntityWithIdResource<EntityT>, EntityT> extends EntityCollectionResource<EntityResourceT, EntityT> {
 

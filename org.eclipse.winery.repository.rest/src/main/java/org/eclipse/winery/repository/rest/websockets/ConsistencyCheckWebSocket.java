@@ -15,58 +15,45 @@ package org.eclipse.winery.repository.rest.websockets;
 
 import java.io.IOException;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerProgressListener;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorCollector;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ServerEndpoint("/checkconsistency")
-public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressListener {
+public class ConsistencyCheckWebSocket extends AbstractWebSocket implements ConsistencyCheckerProgressListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
-    private Session session;
+    private static final Logger logger = LoggerFactory.getLogger(ConsistencyCheckWebSocket.class);
 
-    @OnOpen
-    public void onOpen(Session session) {
-        this.session = session;
-        LOGGER.info("Opened consistency check web-socket with id: " + session.getId());
+    @Override
+    protected void onOpen() {
     }
 
-    @OnClose
-    public void onClose(Session session) throws IOException {
-        LOGGER.info("Closing session " + session.getId());
-        this.session.close();
-        this.session = null;
-    }
-
-    @OnError
-    public void onError(Throwable t) throws Throwable {
-        LOGGER.trace("Error in session " + session.getId(), t);
-    }
-
+    @Override
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ConsistencyCheckerConfiguration config = JacksonProvider.mapper.readValue(message, ConsistencyCheckerConfiguration.class);
 
-        ConsistencyCheckerConfiguration config = mapper.readValue(message, ConsistencyCheckerConfiguration.class);
+        logger.info("Start checking using config: {}", message);
+        long startTime = System.currentTimeMillis();
 
         final ConsistencyChecker consistencyChecker = new ConsistencyChecker(config, this);
         consistencyChecker.checkCorruption();
         ConsistencyErrorCollector errorList = consistencyChecker.getErrorCollector();
 
+        long duration = (System.currentTimeMillis() - startTime) / 1000;
+        logger.info("Finished checking repository consistency! Duration: {}min, {}s", (int) duration / 60, duration % 60);
+
         // Transform object to JSON and send it.
-        this.session.getBasicRemote().sendText(mapper.writeValueAsString(errorList));
+        this.session.getBasicRemote().sendText(JacksonProvider.mapper.writeValueAsString(errorList));
 
         // Close the connection after the check has passed.
         onClose(session);

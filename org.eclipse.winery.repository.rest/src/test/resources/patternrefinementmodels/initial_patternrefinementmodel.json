@@ -8,7 +8,7 @@
     "otherAttributes": {
 
     },
-    "id": "winery-defs-for_patternrefinementmodels-MyCoolPRM_w1-wip1",
+    "id": "patternrefinementmodels-MyCoolPRM_w1-wip1",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
@@ -39,6 +39,9 @@
 
                 ]
             },
+            "relationMappings": [
+
+            ],
             "refinementStructure": {
                 "documentation": [
 
@@ -55,7 +58,16 @@
                 "nodeTemplates": [
 
                 ]
-            }
+            },
+            "attributeMappings": [
+                
+            ],
+            "deploymentArtifactMappings": [
+                
+            ],
+            "stayMappings": [
+                
+            ]
         }
     ],
     "targetNamespace": "http://plain.winery.opentosca.org/test/patternrefinementmodels",

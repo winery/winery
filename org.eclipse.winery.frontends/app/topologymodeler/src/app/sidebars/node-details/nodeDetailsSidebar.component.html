@@ -1,0 +1,179 @@
+<!--
+   * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+   *
+   * See the NOTICE file(s) distributed with this work for additional
+   * information regarding copyright ownership.
+   *
+   * This program and the accompanying materials are made available under the
+   * terms of the Eclipse Public License 2.0 which is available at
+   * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+   * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+   *
+   * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+   -->
+<div id="NTPropertiesView"
+     class="sidebar-root"
+     style="display: block;">
+    <div id="nodeTemplateInformationSection" style="margin: 8px"  *ngIf="sidebarState.template">
+        <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()" closeSidebar>
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <fieldset>
+            <div class="form-group">
+                <label for="nodetemplateid">Id</label>
+                <input id="nodetemplateid" disabled="disabled" class="form-control" value="{{sidebarState.template.id}}">
+            </div>
+            <div class="form-group">
+                <label for="nodetemplatename" class="control-label">Name</label>
+                <input id="nodetemplatename" name="name" class="form-control"
+                       value="{{sidebarState.template.name}}"
+                       [disabled]="readonly"
+                       (keyup)="nodeNameKeyUp.next($event.target.value)"
+                       (focus)="onFocus($event)"
+                       (blur)="onBlur($event)">
+            </div>
+            <div class="form-group">
+                <label for="nodetemplateType">Type</label>
+                <a id="nodetemplateType"
+                   target="_blank"
+                   [routerLink]=""
+                   (click)="linkType($event)"
+                   class="form-control">
+                    {{sidebarState.template.type}}
+                </a>
+            </div>
+            <div class="form-group">
+                <label>Properties</label>
+                <winery-properties
+                    [templateId]="sidebarState.template.id"
+                    [readonly]="readonly"
+                    [isNode]="sidebarState.nodeClicked">
+                </winery-properties>
+            </div>
+            <div *ngIf="sidebarState.nodeClicked == false">
+                <label for="connectionSource"> Source </label>
+                <a id="connectionSource"
+                   target="_blank"
+                   class="form-control">
+                    {{sidebarState.source}}
+                </a>
+                <label for="connectionTarget"> Target </label>
+                <a id="connectionTarget"
+                   target="_blank"
+                   class="form-control">
+                    {{sidebarState.target}}
+                </a>
+                <div class="form-group" *wineryRepositoryHideOnFeature="'yaml'">
+                    <label>Policies</label>
+                    <winery-policies
+                        [readonly]=false
+                        (toggleModalHandler)="addNewPolicy($event)"
+                        [currentNodeData]="{currentNodeId: sidebarState.relationshipTemplate?.id,
+                                    currentNodePart: 'POLICIES',
+                                    currentProperties: sidebarState.relationshipTemplate}"
+                        [policies]="sidebarState.relationshipTemplate?.policies?.policy">
+                    </winery-policies>
+                </div>
+            </div>
+            <div *ngIf="sidebarState.nodeClicked">
+                <div class="form-group" *wineryRepositoryHideOnFeature="'yaml'">
+                    <label for="maxInstances">max</label>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="input-sm">
+                                <div class="input-group bootstrap-touchspin">
+                        <span class="input-group-addon bootstrap-touchspin-prefix"
+                              style="display: none;">6
+                        </span>
+                                    <input id="maxInstances"
+                                           (keyup)="nodeMaxInstancesKeyUp.next($event.target.value)"
+                                           value="{{sidebarState.maxInstances}}"
+                                           min="0"
+                                           max="9999999"
+                                           type="number"
+                                           name="maxInstances"
+                                           class="form-control"
+                                           [readonly]="!maxInputEnabled || readonly"
+                                           placeholder="∞"
+                                           style="display: block; border-radius: 0.25rem; margin-right: 3px">
+                                    <span class="input-group-addon bootstrap-touchspin-postfix"
+                                          style="display: none;"></span>
+                                    <span class="input-group-btn-vertical">
+                        <button class="btn btn-default"
+                                type="button"
+                                style="box-shadow: none; border: 2px solid #dddddd; height: 38px"
+                                [disabled]="readonly"
+                                [style.background-color]="getInfinityButtonStyle()"
+                                (click)="maxInstancesChanged('inf');">
+                        <span class="h6" style="font-weight: bolder;">∞</span>
+                        </button>
+                        <button class="btn btn-default bootstrap-touchspin-up"
+                                type="button"
+                                [disabled]="readonly"
+                                (click)="maxInstancesChanged('inc');">
+                        <i class="fa fa-chevron-up"></i>
+                        </button>
+                        <button class="btn btn-default bootstrap-touchspin-down"
+                                type="button"
+                                [disabled]="readonly"
+                                (click)="maxInstancesChanged('dec');">
+                        <i class="fa fa-chevron-down"></i>
+                        </button>
+                        </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label for="minInstances">min</label>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="input-sm">
+                                <div class="input-group bootstrap-touchspin">
+                                    <span class="input-group-addon bootstrap-touchspin-prefix"
+                                          style="display: none;">
+                                    </span>
+                                    <input id="minInstances"
+                                           (keyup)="nodeMinInstancesKeyUp.next($event.target.value)"
+                                           [disabled]="readonly"
+                                           value="{{sidebarState.minInstances}}"
+                                           min="0"
+                                           max="9999999"
+                                           type="number"
+                                           name="minInstances"
+                                           class="form-control"
+                                           style="display: block; border-radius: 0.25rem; margin-right: 3px">
+                                    <span class="input-group-addon bootstrap-touchspin-postfix"
+                                          style="display: none;"></span>
+                                    <span class="input-group-btn-vertical">
+                                        <button class="btn btn-default bootstrap-touchspin-up"
+                                                type="button"
+                                                [disabled]="readonly"
+                                                (click)="minInstancesChanged('inc');">
+                                        <i class="fa fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn btn-default bootstrap-touchspin-down"
+                                                type="button"
+                                                [disabled]="readonly"
+                                                (click)="minInstancesChanged('dec');">
+                                        <i class="fa fa-chevron-down"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                        <button (click)="deleteButtonSidebarClicked($event)" type="button" class="btn btn-danger"
+                                style="width: 100%">Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>

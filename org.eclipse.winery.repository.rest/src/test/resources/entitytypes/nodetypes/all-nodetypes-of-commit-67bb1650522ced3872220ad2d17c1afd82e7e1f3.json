@@ -19,24 +19,19 @@
                             "documentation": [
                             ],
                             "any": [
-                                {
-                                    "namespace": "http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery",
-                                    "elementName": "properties",
-                                    "propertyDefinitionKVList": [
-                                        {
-                                            "key": "key",
-                                            "type": "xsd:string"
-                                        }
-                                    ],
-                                    "isDerivedFromXSD": null
-                                }
                             ],
                             "otherAttributes": {
                                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#d4b160"
                             },
                             "propertiesDefinition": {
-                                "element": null,
-                                "type": "{http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery}properties"
+                                "namespace": "http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery",
+                                "elementName": "properties",
+                                "propertyDefinitionKVList": [
+                                    {
+                                        "key": "key",
+                                        "type": "xsd:string"
+                                    }
+                                ]
                             },
                             "name": "NodeTypeWithOneKVProperty",
                             "targetNamespace": "http://plain.winery.opentosca.org/nodetypes",
@@ -46,18 +41,6 @@
                     ],
                     "targetNamespace": "http://plain.winery.opentosca.org/nodetypes",
                     "import": [
-                        {
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}wpd": "true"
-                            },
-                            "namespace": "http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery",
-                            "location": "../nodetypes/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypes/NodeTypeWithOneKVProperty/propertiesdefinition/properties.xsd",
-                            "importType": "http://www.w3.org/2001/XMLSchema"
-                        }
                     ]
                 }
             },
@@ -108,28 +91,23 @@
                             "documentation": [
                             ],
                             "any": [
-                                {
-                                    "namespace": "http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery",
-                                    "elementName": "properties",
-                                    "propertyDefinitionKVList": [
-                                        {
-                                            "key": "key1",
-                                            "type": "xsd:string"
-                                        },
-                                        {
-                                            "key": "key2",
-                                            "type": "xsd:string"
-                                        }
-                                    ],
-                                    "isDerivedFromXSD": null
-                                }
                             ],
                             "otherAttributes": {
                                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#081588"
                             },
                             "propertiesDefinition": {
-                                "element": null,
-                                "type": "{http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery}properties"
+                                "namespace": "http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery",
+                                "elementName": "properties",
+                                "propertyDefinitionKVList": [
+                                    {
+                                        "key": "key1",
+                                        "type": "xsd:string"
+                                    },
+                                    {
+                                        "key": "key2",
+                                        "type": "xsd:string"
+                                    }
+                                ]
                             },
                             "name": "NodeTypeWithTwoKVProperties",
                             "targetNamespace": "http://plain.winery.opentosca.org/nodetypes",
@@ -139,18 +117,6 @@
                     ],
                     "targetNamespace": "http://plain.winery.opentosca.org/nodetypes",
                     "import": [
-                        {
-                            "documentation": [
-                            ],
-                            "any": [
-                            ],
-                            "otherAttributes": {
-                                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}wpd": "true"
-                            },
-                            "namespace": "http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery",
-                            "location": "../nodetypes/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypes/NodeTypeWithTwoKVProperties/propertiesdefinition/properties.xsd",
-                            "importType": "http://www.w3.org/2001/XMLSchema"
-                        }
                     ]
                 }
             },
@@ -175,8 +141,7 @@
                                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#82aedc"
                             },
                             "propertiesDefinition": {
-                                "element": "{https://www.w3schools.com/xml/schema_example.asp}shiporder",
-                                "type": null
+                                "element": "{https://www.w3schools.com/xml/schema_example.asp}shiporder"
                             },
                             "name": "NodeTypeWithXmlElementProperty",
                             "targetNamespace": "http://plain.winery.opentosca.org/nodetypes",

@@ -1,0 +1,84 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<button class="btn btn-default sidebar-btn" id="sectionCreateFromDataFlowBtn" (click)="onCreateFromDataFlow()">Create
+    from Data Flow
+</button>
+<winery-modal *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" id="createFromDataFlowModal"
+              bsModal #createFromDataFlowModal="bs-modal"
+              [modalRef]="createFromDataFlowModal">
+    <winery-modal-header [title]="'Create ServiceTemplate from Data Flow'"></winery-modal-header>
+
+    <winery-modal-body>
+        <form #createFromDataFlowForm="ngForm">
+            <fieldset>
+                <div class="form-group">
+                    <label for="createFromDataFlowFormUpload">Select Data Flow Model:</label>
+
+                    <input id="createFromDataFlowFormUpload"
+                           name="file"
+                           type="file"
+                           (change)="fileChange($event)"
+                           placeholder="Upload file"/>
+                </div>
+                <label for="componentName" class="control-label">Name of Service Template</label>
+                <input type="text"
+                       class="form-control"
+                       id="componentName"
+                       name="componentName"
+                       #newName="ngModel"
+                       [(ngModel)]="newSTemplateName"
+                       (input)="onInputChange()"
+                       required>
+                <div *ngIf="(newName.errors || validation?.noDuplicatesAllowed)
+                                && (newName.dirty || newName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!validation?.noDuplicatesAllowed">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!newName?.errors?.required">
+                        Name is required!
+                    </div>
+                </div>
+                <div *ngIf="validation?.differentNamespaceDuplicateWarning
+                                    || validation?.differentCaseDuplicateWarning"
+                     class="alert alert-warning">
+                    <div [hidden]="!validation.differentCaseDuplicateWarning">
+                        There is a duplicate with a different case!
+                    </div>
+                    <div [hidden]="!validation.differentNamespaceDuplicateWarning">
+                        There is a duplicate in another namespace!
+                    </div>
+                </div>
+                <label for="componentNamespace" class="control-label">Namespace</label>
+                <input type="text"
+                       class="form-control"
+                       id="componentNamespace"
+                       name="componentNamespace"
+                       #newName="ngModel"
+                       [(ngModel)]="newSTemplateNamespace"
+                       required>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" [checked]='true' (change)="toggleEditable($event)">
+                        Open in new tab
+                    </label>
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+
+    <winery-modal-footer [showDefaultButtons]="true" [disableOkButton]="!isFormValid" (onOk)="onAddClick()"
+                         (onCancel)="hideCreateFromDataFlowModal()">
+    </winery-modal-footer>
+</winery-modal>

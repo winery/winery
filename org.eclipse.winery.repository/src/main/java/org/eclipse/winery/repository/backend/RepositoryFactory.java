@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,21 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
+import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
-import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
-import org.eclipse.winery.repository.configuration.JCloudsConfiguration;
+import org.eclipse.winery.repository.filebased.MultiRepository;
+import org.eclipse.winery.repository.filebased.TenantRepository;
+import org.eclipse.winery.repository.xml.XmlRepository;
+import org.eclipse.winery.repository.yaml.YamlRepository;
+
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
-import java.util.Optional;
 
 public class RepositoryFactory {
 
@@ -35,63 +41,80 @@ public class RepositoryFactory {
 
     private static GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = null;
     private static FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = null;
-    private static JCloudsConfiguration jCloudsConfiguration;
 
     private static IRepository repository = null;
 
-    public static void reconfigure(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, GitAPIException {
-        RepositoryFactory.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
-        RepositoryFactory.fileBasedRepositoryConfiguration = null;
-        RepositoryFactory.jCloudsConfiguration = null;
-
-        repository = new GitBasedRepository(gitBasedRepositoryConfiguration);
+    public static boolean repositoryContainsMultiRepositoryConfiguration(FileBasedRepositoryConfiguration config) {
+        return repositoryContainsRepoConfig(config, Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
     }
 
-    public static void reconfigure(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-        RepositoryFactory.fileBasedRepositoryConfiguration = fileBasedRepositoryConfiguration;
-        RepositoryFactory.gitBasedRepositoryConfiguration = null;
-        RepositoryFactory.jCloudsConfiguration = null;
-
-        repository = new FilebasedRepository(fileBasedRepositoryConfiguration);
+    public static boolean repositoryContainsRepoConfig(FileBasedRepositoryConfiguration config, String fileName) {
+        if (config.getRepositoryPath().isPresent()) {
+            return new File(config.getRepositoryPath().get().toString(), fileName).exists();
+        } else {
+            return new File(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), fileName).exists();
+        }
     }
 
-    public static void reconfigure(JCloudsConfiguration jCloudsConfiguration) {
-        RepositoryFactory.jCloudsConfiguration = jCloudsConfiguration;
+    public static AbstractFileBasedRepository createXmlOrYamlRepository(FileBasedRepositoryConfiguration configuration, Path repositoryRoot) {
+        if (RepositoryConfigurationObject.RepositoryProvider.YAML.equals(configuration.getRepositoryProvider())) {
+            return new YamlRepository(repositoryRoot);
+        } else {
+            return new XmlRepository(repositoryRoot);
+        }
+    }
+
+    public static void reconfigure(GitBasedRepositoryConfiguration configuration) throws IOException, GitAPIException {
+        RepositoryFactory.gitBasedRepositoryConfiguration = configuration;
         RepositoryFactory.fileBasedRepositoryConfiguration = null;
+
+        if (repositoryContainsMultiRepositoryConfiguration(configuration)) {
+            repository = new MultiRepository(configuration.getRepositoryPath().get());
+        } else if (Environments.getInstance().getRepositoryConfig().isTenantRepository()) {
+            repository = new TenantRepository(configuration.getRepositoryPath().get());
+        } else {
+            // if a repository root is specified, use it instead of the root specified in the config
+            AbstractFileBasedRepository localRepository = configuration.getRepositoryPath().isPresent()
+                ? createXmlOrYamlRepository(configuration, configuration.getRepositoryPath().get())
+                : createXmlOrYamlRepository(configuration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
+            repository = new GitBasedRepository(configuration, localRepository);
+        }
+    }
+
+    public static void reconfigure(FileBasedRepositoryConfiguration configuration) {
+        RepositoryFactory.fileBasedRepositoryConfiguration = configuration;
         RepositoryFactory.gitBasedRepositoryConfiguration = null;
 
-        // TODO
+        if (repositoryContainsMultiRepositoryConfiguration(configuration)) {
+            try {
+                repository = new MultiRepository(configuration.getRepositoryPath().get());
+            } catch (IOException | GitAPIException e) {
+                LOGGER.error("Error while initializing Multi-Repository!");
+            }
+        } else if (Environments.getInstance().getRepositoryConfig().isTenantRepository()) {
+            try {
+                repository = new TenantRepository(configuration.getRepositoryPath().get());
+            } catch (IOException | GitAPIException e) {
+                LOGGER.error("Error while initializing Tenant-Repository");
+            }
+        } else {
+            // if a repository root is specified, use it instead of the root specified in the config
+            repository = configuration.getRepositoryPath().isPresent()
+                ? createXmlOrYamlRepository(configuration, configuration.getRepositoryPath().get())
+                : createXmlOrYamlRepository(configuration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
+        }
     }
 
     /**
      * Reconfigures based on Environment
      */
     public static void reconfigure() throws Exception {
-        final Optional<JCloudsConfiguration> jCloudsConfiguration = Environment.getJCloudsConfiguration();
-        if (jCloudsConfiguration.isPresent()) {
-            reconfigure(jCloudsConfiguration.get());
-        } else {
-            final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environment.getGitBasedRepositoryConfiguration();
-            final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environment.getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
-
-            // Determine whether the filebased repository could be git repository.
-            // We do not use JGit's capabilities, but do it just by checking for the existance of a ".git" directory.
-            final Path repositoryRoot = FilebasedRepository.getRepositoryRoot(filebasedRepositoryConfiguration);
-            final Path gitDirectory = repositoryRoot.resolve(".git");
-            boolean isGit = (Files.exists(gitDirectory) && Files.isDirectory(gitDirectory));
-
-            if (gitBasedRepositoryConfiguration.isPresent()) {
-                reconfigure(gitBasedRepositoryConfiguration.get());
-            } else if (isGit) {
-                reconfigure(new GitBasedRepositoryConfiguration(false, filebasedRepositoryConfiguration));
-            } else {
-                reconfigure(filebasedRepositoryConfiguration);
-            }
-        }
+        final GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = Environments.getInstance().getGitBasedRepositoryConfiguration();
+        reconfigure(gitBasedRepositoryConfiguration);
     }
 
     public static IRepository getRepository() {
-        if ((gitBasedRepositoryConfiguration == null) && (fileBasedRepositoryConfiguration == null) && (jCloudsConfiguration == null)) {
+        if ((gitBasedRepositoryConfiguration == null) && (fileBasedRepositoryConfiguration == null)) {
             // in case nothing is configured, use the file-based repository as fallback
             LOGGER.debug("No repository configuration available. Using default configuration.");
             reconfigure(new FileBasedRepositoryConfiguration());
@@ -100,18 +123,31 @@ public class RepositoryFactory {
     }
 
     /**
-     * Generates a new IRepository working on the specified path. No git support, just plain file system
+     * Generates a new IRepository working on the specified path.
      */
     public static IRepository getRepository(Path path) {
         Objects.requireNonNull(path);
-        FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(path);
-        return getRepository(fileBasedRepositoryConfiguration);
+        GitBasedRepositoryConfiguration config = new GitBasedRepositoryConfiguration(
+            false,
+            new FileBasedRepositoryConfiguration(path)
+        );
+        try {
+            reconfigure(config);
+        } catch (IOException | GitAPIException e) {
+            LOGGER.error("Error while reconfiguring the repository", e);
+        }
+        return repository;
     }
 
     public static IRepository getRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-        // FIXME: currently, the CSAR export does not reuse the repository instance returned here. Thus, we have to reconfigure the repository.
-        // This should be fixed by always passing IRepository when working with the repository
+        // FIXME: currently, the CSAR export does not reuse the repository instance returned here. 
+        //  Thus, we have to reconfigure the repository.
+        //  This should be fixed by always passing IRepository when working with the repository
         reconfigure(fileBasedRepositoryConfiguration);
-        return new FilebasedRepository(Objects.requireNonNull(fileBasedRepositoryConfiguration));
+        if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
+            return createXmlOrYamlRepository(fileBasedRepositoryConfiguration, fileBasedRepositoryConfiguration.getRepositoryPath().get());
+        } else {
+            return createXmlOrYamlRepository(fileBasedRepositoryConfiguration, Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot()));
+        }
     }
 }

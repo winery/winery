@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,16 +16,20 @@ package org.eclipse.winery.repository;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
+import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TInstanceState;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
-import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -43,6 +47,8 @@ public abstract class TestWithGitBackedRepository {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);
 
+    public final Path repositoryPath;
+
     public final IRepository repository;
 
     public final Git git;
@@ -53,8 +59,14 @@ public abstract class TestWithGitBackedRepository {
      * @throws RuntimeException wraps an Exception
      */
     public TestWithGitBackedRepository() {
+        this(RepositoryConfigurationObject.RepositoryProvider.FILE);
+    }
+
+    protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider) {
+        this.repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
+        String remoteUrl = "https://github.com/winery/test-repository.git";
+
         try {
-            Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
             LOGGER.debug("Testing with repository directory {}", repositoryPath);
 
             if (!Files.exists(repositoryPath)) {
@@ -63,8 +75,9 @@ public abstract class TestWithGitBackedRepository {
 
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             if (!Files.exists(repositoryPath.resolve(".git"))) {
+                FileUtils.cleanDirectory(repositoryPath.toFile());
                 this.git = Git.cloneRepository()
-                    .setURI("https://github.com/winery/test-repository.git")
+                    .setURI(remoteUrl)
                     .setBare(false)
                     .setCloneAllBranches(true)
                     .setDirectory(repositoryPath.toFile())
@@ -81,7 +94,9 @@ public abstract class TestWithGitBackedRepository {
             }
 
             // inject the current path to the repository factory
-            FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath);
+            FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath, provider);
+            // force xml repository provider
+            fileBasedRepositoryConfiguration.setRepositoryProvider(provider);
             GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(false, fileBasedRepositoryConfiguration);
             RepositoryFactory.reconfigure(gitBasedRepositoryConfiguration);
 
@@ -93,24 +108,23 @@ public abstract class TestWithGitBackedRepository {
     }
 
     protected void setRevisionTo(String ref) throws GitAPIException {
-        git.clean().setForce(true).setCleanDirectories(true).call();
-
+        git.clean()
+            .setForce(true)
+            .setCleanDirectories(true)
+            .call();
         git.reset()
             .setMode(ResetCommand.ResetType.HARD)
             .setRef(ref)
             .call();
-
         LOGGER.debug("Switched to commit {}", ref);
     }
 
     protected void makeSomeChanges(NodeTypeId id) throws Exception {
         IRepository repo = RepositoryFactory.getRepository();
         TNodeType element = repo.getElement(id);
-        TTopologyElementInstanceStates states = new TTopologyElementInstanceStates();
-        TTopologyElementInstanceStates.InstanceState instanceState = new TTopologyElementInstanceStates.InstanceState();
-        instanceState.setState("mySuperExtraStateWhichNobodyWouldHaveGuessed");
-        states.getInstanceState().add(instanceState);
-        element.setInstanceStates(states);
+        List<TInstanceState> instanceState = new ArrayList<>();
+        instanceState.add(new TInstanceState("mySuperExtraStateWhichNobodyWouldHaveGuessed"));
+        element.setInstanceStates(instanceState);
         BackendUtils.persist(repo, id, element);
     }
 }

@@ -13,16 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import org.eclipse.winery.repository.Constants;
-
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.eclipse.winery.common.Constants;
+
 /**
- * Only non-hidden files. Also excludes file names ending with
- * Constants.SUFFIX_MIMETYPE
+ * Only non-hidden files. Also excludes file names ending with Constants.SUFFIX_MIMETYPE
  */
 public class OnlyNonHiddenFiles implements DirectoryStream.Filter<Path> {
 

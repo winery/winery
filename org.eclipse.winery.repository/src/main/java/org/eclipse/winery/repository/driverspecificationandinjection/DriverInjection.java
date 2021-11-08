@@ -14,16 +14,25 @@
 
 package org.eclipse.winery.repository.driverspecificationandinjection;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.model.tosca.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class DriverInjection {
 
@@ -32,22 +41,25 @@ public class DriverInjection {
         List<TNodeTemplate> nodeTemplatesWithAbstractDA = DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate);
 
         for (TNodeTemplate nodeTemplateWithAbstractDA : nodeTemplatesWithAbstractDA) {
-            List<TDeploymentArtifact> abstractDAsAttachedToNodeTemplate = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().stream()
-                .filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract() == TBoolean.YES)
-                .collect(Collectors.toList());
-            for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
-                Map<TRelationshipTemplate, TNodeTemplate> nodeTemplatesWithConcreteDA = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);
+            if (nodeTemplateWithAbstractDA.getDeploymentArtifacts() != null) {
+                List<TDeploymentArtifact> abstractDAsAttachedToNodeTemplate = nodeTemplateWithAbstractDA.getDeploymentArtifacts().stream()
+                    .filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract())
+                    .collect(Collectors.toList());
+                for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
+                    Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplatesWithConcreteDA
+                        = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);
+                    for (Pair<TRelationshipTemplate, TNodeTemplate> pair : nodeTemplatesWithConcreteDA) {
+                        TRelationshipTemplate relationshipTemplate = pair.getLeft();
+                        TNodeTemplate nodeTemplate = pair.getRight();
+                        TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplate);
 
-                if (nodeTemplatesWithConcreteDA != null) {
-                    for (TRelationshipTemplate relationshipTemplate : nodeTemplatesWithConcreteDA.keySet()) {
-                        TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplatesWithConcreteDA.get(relationshipTemplate));
-                        nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().add(concreteDeploymentArtifact);
-                        setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
+                        if (concreteDeploymentArtifact != null) {
+                            nodeTemplateWithAbstractDA.getDeploymentArtifacts().add(concreteDeploymentArtifact);
+                            setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
+                        }
                     }
-                    //concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
-                    nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().remove(abstractDA);
-                } else {
-                    throw new WineryRepositoryException("No concrete DA found for the abstract DA");
+                    // concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
+                    nodeTemplateWithAbstractDA.getDeploymentArtifacts().remove(abstractDA);
                 }
             }
         }
@@ -60,11 +72,12 @@ public class DriverInjection {
         TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
 
         Map<String, String> artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
-        Map<String, String> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
+        LinkedHashMap<String, String> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
 
-        if ((artifactProperties != null) && (relationshipProperties != null) && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
+        if ((artifactProperties != null) && (relationshipProperties != null)
+            && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
             relationshipProperties.put("Driver", artifactProperties.get("Driver"));
-            relationshipTemplate.getProperties().setKVProperties(relationshipProperties);
+            ModelUtilities.setPropertiesKV(relationshipTemplate, relationshipProperties);
         } else {
             throw new WineryRepositoryException("No Property found to set to the driver classname");
         }

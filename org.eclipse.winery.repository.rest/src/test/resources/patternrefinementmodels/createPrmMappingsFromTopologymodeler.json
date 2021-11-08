@@ -1,0 +1,231 @@
+{
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "relationshipTemplates": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "sourceElement": {
+                "ref": "rs_NodeTypeWith5Versions_0.3.4-w3_0"
+            },
+            "targetElement": {
+                "ref": "rs_NodeTypeWithoutProperties_0"
+            },
+            "name": "HostedOn",
+            "id": "rs_con_HostedOn_0",
+            "type": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}HostedOn",
+            "properties": {
+                "propertyType": "XML",
+                "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<Properties xmlns=\"http://www.example.org\" xmlns:ToscaBaseTypes=\"http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"/>"
+            }
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "sourceElement": {
+                "ref": "d_FirstPattern_w1_0"
+            },
+            "targetElement": {
+                "ref": "rs_NodeTypeWith5Versions_0.3.4-w3_0"
+            },
+            "name": "PermutationMapping",
+            "id": "con_PermutationMapping_0",
+            "type": "{http://opentosca.org/prmMappingTypes}PermutationMapping",
+            "properties": {
+                "kvproperties": {
+                },
+                "propertyType": "KV"
+            }
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "sourceElement": {
+                "ref": "d_FirstPattern_w1_0"
+            },
+            "targetElement": {
+                "ref": "rs_NodeTypeWithoutProperties_0"
+            },
+            "name": "RelationshipMapping",
+            "id": "con_RelationshipMapping_0",
+            "type": "{http://opentosca.org/prmMappingTypes}RelationshipMapping",
+            "properties": {
+                "kvproperties": {
+                    "direction": "ingoing",
+                    "applicableRelationshipType": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithoutProperties",
+                    "validEndpointType": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties"
+                },
+                "propertyType": "KV"
+            }
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "sourceElement": {
+                "ref": "d_FirstPattern_w1_0"
+            },
+            "targetElement": {
+                "ref": "rs_NodeTypeWithoutProperties_0"
+            },
+            "name": "DeploymentArtifactMapping",
+            "id": "con_DeploymentArtifactMapping_0",
+            "type": "{http://opentosca.org/prmMappingTypes}DeploymentArtifactMapping",
+            "properties": {
+                "kvproperties": {
+                    "requiredDeploymentArtifactType": "{http://plain.winery.opentosca.org/artifacttypes}ArtifactTypeWithoutProperties"
+                },
+                "propertyType": "KV"
+            }
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "sourceElement": {
+                "ref": "d_FirstPattern_w1_0"
+            },
+            "targetElement": {
+                "ref": "rs_NodeTypeWithoutProperties_0"
+            },
+            "name": "AttributeMapping",
+            "id": "con_AttributeMapping_0",
+            "type": "{http://opentosca.org/prmMappingTypes}AttributeMapping",
+            "properties": {
+                "kvproperties": {
+                    "type": "ALL"
+                },
+                "propertyType": "KV"
+            }
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "sourceElement": {
+                "ref": "d_FirstPattern_w1_0"
+            },
+            "targetElement": {
+                "ref": "rs_NodeTypeWith5Versions_0.3.4-w3_0"
+            },
+            "name": "StayMapping",
+            "id": "con_StayMapping_0",
+            "type": "{http://opentosca.org/prmMappingTypes}StayMapping",
+            "properties": {
+                "kvproperties": {
+                },
+                "propertyType": "KV"
+            }
+        }
+    ],
+    "nodeTemplates": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "771",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "400"
+            },
+            "properties": {
+                "propertyType": "XML",
+                "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<Properties xmlns=\"http://www.example.org\" xmlns:ot-patterns=\"http://plain.winery.opentosca.org/patterns\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"/>"
+            },
+            "id": "d_FirstPattern_w1_0",
+            "type": "{http://plain.winery.opentosca.org/patterns}FirstPattern_w1",
+            "name": "FirstPattern_w1",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": 771,
+            "y": 400,
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": [
+            ],
+            "artifacts": [
+            ]
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1451",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "382"
+            },
+            "properties": {
+                "propertyType": "XML",
+                "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<Properties xmlns=\"http://www.example.org\" xmlns:nodetypes=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"/>"
+            },
+            "id": "rs_NodeTypeWithoutProperties_0",
+            "type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties",
+            "name": "NodeTypeWithoutProperties",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": 1451,
+            "y": 382,
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": [
+            ],
+            "artifacts": []
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1448",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "203"
+            },
+            "properties": {
+                "propertyType": "XML",
+                "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<Properties xmlns=\"http://www.example.org\" xmlns:nodetypes1=\"http://opentosca.org/nodetypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"/>"
+            },
+            "id": "rs_NodeTypeWith5Versions_0.3.4-w3_0",
+            "type": "{http://opentosca.org/nodetypes}NodeTypeWith5Versions_0.3.4-w3",
+            "name": "NodeTypeWith5Versions",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": 1448,
+            "y": 203,
+            "capabilities": [],
+            "requirements": [],
+            "deploymentArtifacts": [],
+            "policies": [
+            ],
+            "artifacts": []
+        }
+    ],
+    "policies": []
+}

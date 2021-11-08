@@ -13,42 +13,46 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.taglibs.standard.functions.Functions;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
 
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.taglibs.standard.functions.Functions;
 
 public class BoundaryDefinitionsJSPData {
 
     private final TServiceTemplate ste;
     private final TBoundaryDefinitions defs;
     private final URI baseURI;
+    private final IRepository repository;
 
     /**
      * @param ste     the service template of the boundary definitions. Required to get a list of all plans
      * @param baseURI the base URI of the service. Requried for rendering the topology template for the selections
      */
-    public BoundaryDefinitionsJSPData(TServiceTemplate ste, URI baseURI) {
+    public BoundaryDefinitionsJSPData(TServiceTemplate ste, URI baseURI, IRepository repository) {
         this.ste = ste;
         this.defs = ste.getBoundaryDefinitions();
         this.baseURI = baseURI;
+        this.repository = repository;
     }
 
     private String getDefinedProperties() {
@@ -59,7 +63,8 @@ public class BoundaryDefinitionsJSPData {
             return "";
         } else {
             // something stored --> return that
-            return BackendUtils.getXMLAsString(p.getAny());
+            assert o instanceof org.w3c.dom.Element;
+            return BackendUtils.getXMLAsString(p.getAny(), repository);
         }
     }
 
@@ -88,12 +93,12 @@ public class BoundaryDefinitionsJSPData {
     }
 
     public String getBoundaryDefinitionsAsXMLStringEncoded() {
-        String res = BackendUtils.getXMLAsString(this.defs);
+        String res = BackendUtils.getXMLAsString(this.defs, repository);
         return Functions.escapeXml(res);
     }
 
     public String getBoundaryDefinitionsAsXMLString() {
-        String res = BackendUtils.getXMLAsString(this.defs);
+        String res = BackendUtils.getXMLAsString(this.defs, repository);
         return res;
     }
 
@@ -110,19 +115,14 @@ public class BoundaryDefinitionsJSPData {
         return this.baseURI.toString();
     }
 
-    public List<Select2DataItem> getlistOfAllPlans() {
-        TPlans plans = this.ste.getPlans();
+    public List<Select2DataItem> getListOfAllPlans() {
+        List<TPlan> plans = this.ste.getPlans();
         if (plans == null) {
             return null;
-        } else {
-            List<Select2DataItem> res = new ArrayList<>(plans.getPlan().size());
-            for (TPlan plan : plans.getPlan()) {
-                String id = plan.getId();
-                String name = ModelUtilities.getNameWithIdFallBack(plan);
-                Select2DataItem di = new Select2DataItem(id, name);
-                res.add(di);
-            }
-            return res;
         }
+
+        return plans.stream()
+            .map(plan -> new Select2DataItem(plan.getId(), plan.getName()))
+            .collect(Collectors.toList());
     }
 }

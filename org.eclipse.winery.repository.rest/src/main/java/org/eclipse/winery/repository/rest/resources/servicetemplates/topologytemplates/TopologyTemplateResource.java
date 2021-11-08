@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,8 +15,15 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 
 import java.io.IOException;
 import java.net.URI;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,18 +38,40 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
+import org.eclipse.winery.model.adaptation.enhance.TopologyAndErrorList;
+import org.eclipse.winery.model.adaptation.placement.PlacementUtils;
+import org.eclipse.winery.model.adaptation.problemsolving.SolutionFactory;
+import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
+import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.HasTags;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
+import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
+import org.eclipse.winery.repository.rest.resources.apiData.AvailableFeaturesApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.NewVersionListElement;
+import org.eclipse.winery.repository.rest.resources.apiData.PropertyDiffList;
+import org.eclipse.winery.repository.rest.resources.apiData.UpdateInfo;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
@@ -60,6 +89,8 @@ public class TopologyTemplateResource {
 
     private final AbstractComponentInstanceResourceContainingATopology parent;
     private final String type;
+
+    private final IRepository requestRepository = RepositoryFactory.getRepository();
 
     /**
      * A topology template is always nested in a service template
@@ -83,12 +114,12 @@ public class TopologyTemplateResource {
         // @formatter:on
         Response res;
         String JSPName;
-        String location = Environment.getUrlConfiguration().getTopologyModelerUrl();
+        String location = Environments.getInstance().getUiConfig().getEndpoints().get("topologymodeler");
         location = uriInfo.getBaseUri().resolve(location).toString();
         // at the topology modeler, jersey needs to have an absolute path
         URI repositoryURI = uriInfo.getBaseUri();
         location = location + "/?repositoryURL=";
-        location = location + Util.URLencode(repositoryURI.toString());
+        location = location + EncodingUtil.URLencode(repositoryURI.toString());
         ServiceTemplateId serviceTemplate = (ServiceTemplateId) this.parent.getId();
         location = location + "&ns=";
         location = location + serviceTemplate.getNamespace().getEncoded();
@@ -97,11 +128,11 @@ public class TopologyTemplateResource {
         if (edit == null) {
             // TODO: Render-only mode
             // currently also the edit mode
-            URI uri = RestUtils.createURI(location);
+            URI uri = URI.create(location);
             res = Response.seeOther(uri).build();
         } else {
             // edit mode
-            URI uri = RestUtils.createURI(location);
+            URI uri = URI.create(location);
             res = Response.seeOther(uri).build();
         }
         return res;
@@ -115,7 +146,7 @@ public class TopologyTemplateResource {
         "@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
     @Produces(MediaType.APPLICATION_JSON)
     // @formatter:on
-    public TTopologyTemplate getComponentInstanceJSON() {
+    public TTopologyTemplate getTopologyTemplate() {
         return this.topologyTemplate;
     }
 
@@ -130,7 +161,7 @@ public class TopologyTemplateResource {
         ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
         ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.parent.getId();
         try {
-            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId, thisServiceTemplateId);
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId, thisServiceTemplateId, RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not merge", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -172,9 +203,20 @@ public class TopologyTemplateResource {
     public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
         ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
         ModelUtilities.patchAnyAttributes(topologyTemplate.getRelationshipTemplates());
+        // FIXME patching the topology with the inputs and outputs stored on the server, so long as they are empty
+        //  this is necessary because the topologymodeler does not in any way interact with inputs and outputs and
+        //  thus does not store or include any information about them here
+        if (topologyTemplate.getInputs() == null) {
+            topologyTemplate.setInputs(this.parent.getTopology().getInputs());
+        }
+        if (topologyTemplate.getOutputs() == null) {
+            topologyTemplate.setOutputs(this.parent.getTopology().getOutputs());
+        }
+
         // the following method includes patching of the topology template (removing empty lists, ..)
         this.parent.setTopology(topologyTemplate, this.type);
-        return RestUtils.persist(this.parent);
+        requestRepository.putDefinition(parent.getId(), this.parent.getDefinitions());
+        return Response.noContent().build();
     }
 
     // @formatter:off
@@ -189,7 +231,7 @@ public class TopologyTemplateResource {
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     // @formatter:on
     public Response getComponentInstanceXML() {
-        return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate);
+        return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate, requestRepository);
     }
 
     @Path("split/")
@@ -249,7 +291,7 @@ public class TopologyTemplateResource {
         Splitting splitting = new Splitting();
         String newComposedSolutionServiceTemplateId = compositionData.getTargetid();
         List<ServiceTemplateId> compositionServiceTemplateIDs = new ArrayList<>();
-        compositionData.getCspath().stream().forEach(entry -> {
+        compositionData.getCspath().forEach(entry -> {
             QName qName = QName.valueOf(entry);
             compositionServiceTemplateIDs.add(new ServiceTemplateId(qName.getNamespaceURI(), qName.getLocalPart(), false));
         });
@@ -269,7 +311,7 @@ public class TopologyTemplateResource {
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(parent.getId()));
         String location = url.toString();
         location = location + "topologytemplate?edit";
-        url = RestUtils.createURI(location);
+        url = URI.create(location);
         LOGGER.debug("URI of the composed Service Template {}", url.toString());
         return Response.created(url).build();
     }
@@ -284,6 +326,246 @@ public class TopologyTemplateResource {
             return Response.ok().build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("kvcomparison")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PropertyDiffList computeDi(UpdateInfo updateInfo) {
+        List<String> resolvedProperties = new ArrayList<>();
+        List<String> removedProperties = new ArrayList<>();
+        List<String> newProperties = new ArrayList<>();
+
+        Optional<TEntityTemplate> foundTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+            .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
+            .filter(template -> template.getProperties() != null)
+            .findFirst();
+
+        if (foundTemplate.isPresent() && Objects.nonNull(foundTemplate.get().getProperties()) &&
+            Objects.nonNull(ModelUtilities.getPropertiesKV(foundTemplate.get()))) {
+            HashMap<String, String> oldKvs = ModelUtilities.getPropertiesKV(foundTemplate.get());
+
+            QName qNameType = QName.valueOf(updateInfo.getNewComponentType());
+            IRepository repository = RepositoryFactory.getRepository();
+            TEntityType newNodeTypeVersion = repository.getElement(new NodeTypeId(qNameType));
+
+            if (Objects.nonNull(newNodeTypeVersion) && Objects.nonNull(newNodeTypeVersion.getWinerysPropertiesDefinition())) {
+                List<PropertyDefinitionKV> newKvs = newNodeTypeVersion.getWinerysPropertiesDefinition()
+                    .getPropertyDefinitions();
+
+                resolvedProperties = newKvs.stream()
+                    .map(PropertyDefinitionKV::getKey)
+                    .filter(keys -> oldKvs.keySet()
+                        .stream()
+                        .map(String::toLowerCase)
+                        .collect(Collectors.toList())
+                        .contains(keys.toLowerCase())
+                    )
+                    .collect(Collectors.toList());
+
+                removedProperties = oldKvs.keySet().stream()
+                    .filter(keys -> !newKvs.stream()
+                        .map(newProp -> newProp.getKey().toLowerCase())
+                        .collect(Collectors.toList())
+                        .contains(keys.toLowerCase())
+                    )
+                    .collect(Collectors.toList());
+
+                newProperties = newKvs.stream()
+                    .map(PropertyDefinitionKV::getKey)
+                    .filter(keys -> !oldKvs.keySet()
+                        .stream()
+                        .map(String::toLowerCase)
+                        .collect(Collectors.toList())
+                        .contains(keys.toLowerCase())
+                    )
+                    .collect(Collectors.toList());
+            }
+        }
+
+        return new PropertyDiffList(resolvedProperties, removedProperties, newProperties);
+    }
+
+    @POST
+    @Path("update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public TTopologyTemplate updateVersionOfNodeTemplate(UpdateInfo updateInfo) {
+        TTopologyTemplate localTemplate = updateInfo.getTopologyTemplate() == null ? this.topologyTemplate : updateInfo.getTopologyTemplate();
+
+        TNodeTemplate nodeTemplate = localTemplate.getNodeTemplate(updateInfo.getNodeTemplateId());
+        if (nodeTemplate != null && nodeTemplate.getProperties() != null) {
+            Map<String, String> propertyMappings = new LinkedHashMap<>();
+            updateInfo.getMappingList().forEach(
+                propertyMatching -> propertyMappings.put(propertyMatching.getOldKey(), propertyMatching.getNewKey())
+            );
+
+            LinkedHashMap<String, String> resultKvs = new LinkedHashMap<>();
+            Map<String, String> oldKvs = ModelUtilities.getPropertiesKV(nodeTemplate);
+            if (oldKvs != null) {
+                oldKvs.forEach((key, value) -> {
+                    if (propertyMappings.containsKey(key)) {
+                        resultKvs.put(propertyMappings.get(key), value);
+                    }
+                    if (updateInfo.getResolvedList().contains(key)) {
+                        resultKvs.put(key, value);
+                    }
+                });
+                updateInfo.getNewList().forEach(key -> {
+                    if (!resultKvs.containsKey(key)) {
+                        resultKvs.put(key, "");
+                    }
+                });
+                ModelUtilities.setPropertiesKV(nodeTemplate, resultKvs);
+            }
+        }
+
+        BackendUtils.updateVersionOfNodeTemplate(localTemplate, updateInfo.getNodeTemplateId(), updateInfo.getNewComponentType());
+
+        if (updateInfo.isSaveAfterUpdate()) {
+            this.setModel(localTemplate);
+        }
+
+        return localTemplate;
+    }
+
+    @POST
+    @Path("applysolution")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TTopologyTemplate applySolution(SolutionInputData data) {
+        SolutionStrategy strategy = SolutionFactory.getSolution(data);
+        if (strategy.applySolution(this.topologyTemplate, data)) {
+            RestUtils.persist(parent);
+        } else {
+            throw new InternalError("Could not apply the given algorithm to the topology!");
+        }
+
+        return this.topologyTemplate;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("determinestatefulcomponents")
+    public TTopologyTemplate determineStatefulComponents() {
+        return EnhancementUtils.determineStatefulComponents(this.topologyTemplate);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("determinefreezablecomponents")
+    public TopologyAndErrorList determineFreezableComponents() {
+        return EnhancementUtils.determineFreezableComponents(this.topologyTemplate);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("cleanfreezablecomponents")
+    public TTopologyTemplate cleanFreezableComponents() {
+        return EnhancementUtils.cleanFreezableComponents(this.topologyTemplate);
+    }
+
+    @GET
+    @Path("availablefeatures")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArrayList<AvailableFeaturesApiData> getAvailableFeatures() {
+        ArrayList<AvailableFeaturesApiData> apiData = new ArrayList<>();
+
+        String deploymentTechnology = null;
+        if (this.parent.getElement() instanceof HasTags && ((HasTags) this.parent.getElement()).getTags() != null) {
+            for (TTag tag : ((HasTags) this.parent.getElement()).getTags()) {
+                // To enable the usage of "technology" and "technologies", we only check for "technolog"
+                if (tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())) {
+                    deploymentTechnology = tag.getValue();
+                    break;
+                }
+            }
+        }
+
+        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnology)
+            .forEach((nodeTemplateId, featuresMap) -> {
+                ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
+                featuresMap.forEach(
+                    (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
+                );
+                apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
+            });
+
+        return apiData;
+    }
+
+    @PUT
+    @Path("availablefeatures")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TTopologyTemplate applyAvailableFeatures(ArrayList<AvailableFeaturesApiData> featuresList) {
+        Map<String, Map<QName, String>> featureMap = new HashMap<>();
+
+        featuresList.forEach(availableFeaturesApiData -> {
+            HashMap<QName, String> featureTypesMap = new HashMap<>();
+            if (Objects.nonNull(availableFeaturesApiData.getFeatures())
+                && availableFeaturesApiData.getFeatures().size() > 0) {
+                availableFeaturesApiData.getFeatures()
+                    .forEach(features -> featureTypesMap.put(features.getType(), features.getFeatureName()));
+                featureMap.put(availableFeaturesApiData.getNodeTemplateId(), featureTypesMap);
+            }
+        });
+
+        TTopologyTemplate enrichedTopology = EnhancementUtils.applyFeaturesForTopology(this.topologyTemplate, featureMap);
+        this.parent.setTopology(enrichedTopology, this.type);
+        RestUtils.persist(this.parent);
+
+        return enrichedTopology;
+    }
+
+    @GET
+    @Path("newversions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<NewVersionListElement> getNewVersionList() {
+        IRepository repository = RepositoryFactory.getRepository();
+
+        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        Map<QName, List<WineryVersion>> versionElements = new HashMap<>();
+
+        for (TNodeTemplate node : this.topologyTemplate.getNodeTemplates()) {
+            if (nodeTypes.containsKey(node.getType())) {
+                NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
+                if (!versionElements.containsKey(nodeTypeId.getQName())) {
+                    List<WineryVersion> versionList = WineryVersionUtils.getAllVersionsOfOneDefinition(nodeTypeId, repository).stream()
+                        .filter(wineryVersion -> {
+                            QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
+                            NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
+                            return !(namespaceProperties.isGeneratedNamespace()
+                                || ModelUtilities.isFeatureType(qName, nodeTypes));
+                        })
+                        .collect(Collectors.toList());
+
+                    versionElements.put(nodeTypeId.getQName(), versionList);
+                }
+            }
+        }
+
+        return versionElements.entrySet().stream()
+            .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
+            .collect(Collectors.toList());
+    }
+
+    @POST
+    @Path("applyplacement")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response applyGroupingAndPlacement(@Context UriInfo uriInfo) {
+        try {
+            TTopologyTemplate topology =
+                PlacementUtils.groupAndPlaceComponents((ServiceTemplateId) this.parent.getId(), this.topologyTemplate);
+            this.parent.setTopology(topology, this.type);
+            RestUtils.persist(this.parent);
+            ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.parent.getId();
+            URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(thisServiceTemplateId));
+            return Response.created(url).build();
+        } catch (InvalidParameterException e) {
+            LOGGER.debug("Error while grouping and placing: {}", e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 }

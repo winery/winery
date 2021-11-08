@@ -1,0 +1,57 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div>
+    <button class="btn btn-primary" (click)="start()" *ngIf="!started; else showIsRunning">
+        Start Instance Model Refinement
+    </button>
+    <ng-template #showIsRunning>
+        <div class="loader" *ngIf="running; else showInputs"></div>
+        <ng-template #showInputs>
+            <ul *ngIf="applicablePlugins?.plugins && !inputMap">
+                <li *ngFor="let plugin of applicablePlugins.plugins">
+                    {{ plugin.id }}
+                    <ul>
+                        <li *ngFor="let subGraph of plugin.subGraphs"
+                            (mouseover)="highlight(subGraph.nodeIdsToBeReplaced)"
+                            (mouseleave)="hoverOut()">
+                            {{ subGraph.id }}
+                            <button class="btn btn-primary" (click)="selectPlugin(plugin, subGraph)">
+                                Select
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div *ngIf="inputs">
+                <h6>This operation requires some more input parameters:</h6>
+                <form #inputVarsFrom="ngForm" id="inputVarsForm">
+                    <ul>
+                        <li *ngFor="let input of inputs">
+                            <label for="{{ input + 'inputVar' }}" class="control-label">{{ input }}</label>
+                            <input id="{{ input + 'inputVar' }}" name="{{ input }}"
+                                   [(ngModel)]="inputMap[input]"
+                                   class="form-control"
+                                   type="text"
+                                   required/>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary" (click)="sendRequest()"
+                            [disabled]="!inputVarsFrom?.form.valid">
+                        Perform refinement
+                    </button>
+                </form>
+            </div>
+        </ng-template>
+    </ng-template>
+</div>

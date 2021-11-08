@@ -1,0 +1,217 @@
+/*******************************************************************************
+ * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+
+package org.eclipse.winery.model.tosca.xml;
+
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.xml.utils.RemoveEmptyLists;
+import org.eclipse.winery.model.tosca.xml.visitor.Visitor;
+
+import org.eclipse.jdt.annotation.Nullable;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tServiceTemplate", propOrder = {
+    "tags",
+    "boundaryDefinitions",
+    "topologyTemplate",
+    "plans"
+})
+public class XTServiceTemplate extends XHasIdAndTags implements XHasName, XHasTargetNamespace {
+
+    @XmlElement(name = "BoundaryDefinitions")
+    protected XTBoundaryDefinitions boundaryDefinitions;
+
+    @XmlElement(name = "TopologyTemplate", required = true)
+    protected XTTopologyTemplate topologyTemplate;
+
+    @XmlElementWrapper(name = "Plans")
+    @XmlElement(name = "Plan", required = true)
+    protected List<XTPlan> plans;
+
+    @XmlAttribute(name = "name")
+    protected String name;
+
+    @XmlAttribute(name = "targetNamespace")
+    @XmlSchemaType(name = "anyURI")
+    protected String targetNamespace;
+
+    @XmlAttribute(name = "substitutableNodeType")
+    protected QName substitutableNodeType;
+
+    @Deprecated // required for XML deserialization
+    public XTServiceTemplate() {
+    }
+
+    public XTServiceTemplate(Builder builder) {
+        super(builder);
+        this.boundaryDefinitions = builder.boundaryDefinitions;
+        this.topologyTemplate = builder.topologyTemplate;
+        this.plans = builder.plans;
+        this.name = builder.name;
+        this.targetNamespace = builder.targetNamespace;
+        this.substitutableNodeType = builder.substitutableNodeType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof XTServiceTemplate)) return false;
+        if (!super.equals(o)) return false;
+        XTServiceTemplate that = (XTServiceTemplate) o;
+        return Objects.equals(tags, that.tags) &&
+            Objects.equals(boundaryDefinitions, that.boundaryDefinitions) &&
+            Objects.equals(topologyTemplate, that.topologyTemplate) &&
+            Objects.equals(plans, that.plans) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(targetNamespace, that.targetNamespace) &&
+            Objects.equals(substitutableNodeType, that.substitutableNodeType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tags, boundaryDefinitions, topologyTemplate, plans, name, targetNamespace, substitutableNodeType);
+    }
+
+    @Nullable
+    public XTBoundaryDefinitions getBoundaryDefinitions() {
+        return boundaryDefinitions;
+    }
+
+    public void setBoundaryDefinitions(@Nullable XTBoundaryDefinitions value) {
+        this.boundaryDefinitions = value;
+    }
+
+    /**
+     * Even though the XSD requires that the topology template is always set, during modeling, it might be null
+     */
+    @Nullable
+    public XTTopologyTemplate getTopologyTemplate() {
+        return topologyTemplate;
+    }
+
+    public void setTopologyTemplate(@Nullable XTTopologyTemplate value) {
+        if (value != null) {
+            RemoveEmptyLists removeEmptyLists = new RemoveEmptyLists();
+            removeEmptyLists.removeEmptyLists(value);
+        }
+
+        this.topologyTemplate = value;
+    }
+
+    @Nullable
+    public List<XTPlan> getPlans() {
+        return plans;
+    }
+
+    public void setPlans(List<XTPlan> value) {
+        this.plans = value;
+    }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@Nullable String value) {
+        this.name = value;
+    }
+
+    @Nullable
+    public String getTargetNamespace() {
+        return targetNamespace;
+    }
+
+    public void setTargetNamespace(@Nullable String value) {
+        this.targetNamespace = value;
+    }
+
+    @Nullable
+    public QName getSubstitutableNodeType() {
+        return substitutableNodeType;
+    }
+
+    public void setSubstitutableNodeType(@Nullable QName value) {
+        this.substitutableNodeType = value;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public static class Builder extends XHasIdAndTags.Builder<Builder> {
+
+        private final XTTopologyTemplate topologyTemplate;
+
+        private XTBoundaryDefinitions boundaryDefinitions;
+        private List<XTPlan> plans;
+        private String name;
+        private String targetNamespace;
+        private QName substitutableNodeType;
+
+        public Builder(String id) {
+            super(id);
+            topologyTemplate = null;
+        }
+
+        public Builder(String id, XTTopologyTemplate topologyTemplate) {
+            super(id);
+            this.topologyTemplate = topologyTemplate;
+        }
+
+        public Builder setBoundaryDefinitions(XTBoundaryDefinitions boundaryDefinitions) {
+            this.boundaryDefinitions = boundaryDefinitions;
+            return this;
+        }
+
+        public Builder setPlans(List<XTPlan> plans) {
+            this.plans = plans;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setTargetNamespace(String targetNamespace) {
+            this.targetNamespace = targetNamespace;
+            return this;
+        }
+
+        public Builder setSubstitutableNodeType(QName substitutableNodeType) {
+            this.substitutableNodeType = substitutableNodeType;
+            return this;
+        }
+
+        @Override
+        public Builder self() {
+            return this;
+        }
+
+        public XTServiceTemplate build() {
+            return new XTServiceTemplate(this);
+        }
+    }
+}

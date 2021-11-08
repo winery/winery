@@ -1,0 +1,665 @@
+<!--
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+<div id="container" style="height: 100%; width: 100%"
+     (mousedown)="showSelectionRange($event)"
+     (click)="this.revalidateContainer()">
+    <div id="grid"
+         (mousedown)="trackTimeOfMouseDown()"
+         (mouseup)="trackTimeOfMouseUp()"
+         [class.crosshair]="this.gridTemplate.crosshair"
+         [style.width.vw]="this.gridTemplate.gridDimension"
+         [style.height.vh]="this.gridTemplate.gridDimension"
+         [style.marginLeft.px]="this.gridTemplate.marginLeft">
+        <div class="selection" id="selection"
+             [class.selection-active]="this.gridTemplate.selectionActive"
+             [style.left.px]="this.gridTemplate.pageX"
+             [style.top.px]="this.gridTemplate.pageY"
+             [style.width.px]="this.gridTemplate.selectionWidth"
+             [style.height.px]="this.gridTemplate.selectionHeight"
+             #selection>
+            <span></span>
+        </div>
+    </div>
+    <div #nodes>
+        <winery-node *ngFor="let nodeTemplate of allNodeTemplates"
+                     [readonly]="readonly"
+                     [nodeTemplate]="nodeTemplate"
+                     [entityTypes]="this.entityTypes"
+                     (sendId)="activateNewNode($event)"
+                     [navbarButtonsState]="topologyRendererState"
+                     (askForRepaint)="revalidateContainer()"
+                     (askForRemoval)="removeElement($event)"
+                     (setDragSource)="setDragSource($event)"
+                     (closedEndpoint)="toggleClosedEndpoint($event)"
+                     (sendSelectedRelationshipType)="setSelectedRelationshipType($event)"
+                     [dragSource]="nodeTemplate.id + '_Endpoint'"
+                     (handleNodeClickedActions)="handleNodeClickedActions($event)"
+                     (updateSelectedNodes)="updateSelectedNodes()"
+                     (unmarkConnections)="unmarkConnections()"
+                     (relationshipTemplateIdClicked)="onClickRelationshipTemplateName($event)"
+                     (sendNodeData)="toggleModalHandler($event)"
+                     (showYamlPolicyManagementModal)="showYamlPolicyManagementModal()">
+        </winery-node>
+    </div>
+    <!-- workaround for a jsPlumb connection bug, where upon loading node templates without relationships
+        the two dummy points are connected, eluding the bug where no creation of connections are possible -->
+    <div id="dummy1" style="width: 1px; height: 1px;"></div>
+    <div id="dummy2" style="width: 1px; height: 1px;"></div>
+</div>
+
+<!-- CAPABILITIES MODAL -->
+<winery-modal *ngIf="!readonly" bsModal #capabilitiesModal="bs-modal" [modalRef]="capabilitiesModal">
+    <winery-modal-header [title]="!showCurrentCapability?'Add Capability':'Modify/Delete Capability'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #capForm="ngForm" id="addCapForm" enctype="multipart/form-data">
+            <fieldset>
+
+                <div *wineryRepositoryHideOnFeature="'yaml'" class="form-group" id="capIdGroup">
+                    <label for="capId" class="control-label">Id:</label>
+                    <input [(ngModel)]="capabilities.capId"
+                           id="capId"
+                           class="form-control"
+                           [class.duplicateId]="duplicateId"
+                           name="capId"
+                           type="text"
+                           required
+                           (keyup)="onChangeCapId($event.target.value)"
+                           #capId="ngModel">
+                    <div [hidden]="capId.valid || capId.pristine"
+                         class="alert alert-danger">
+                        Id is required
+                    </div>
+                    <div class="idExists" [hidden]="!duplicateId"
+                         class="alert alert-danger">
+                        Id already exists
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="CapNameChooser" class="control-label">Definition Name:</label>
+                    <div *ngIf="!showCurrentCapability;else disabledCapName">
+                        <select [(ngModel)]="capabilities.capDefinitionName"
+                                name="capName"
+                                id="CapNameChooser"
+                                class="form-control"
+                                type="text"
+                                required
+                                (change)="onChangeCapDefinitionName($event.target.value)">
+                            <option *ngFor="let capDefinitionName of capabilities.capDefinitionNames"
+                                    [value]="capDefinitionName">{{ capDefinitionName }}
+                            </option>
+                        </select>
+                    </div>
+                    <ng-template #disabledCapName>
+                        <input [(ngModel)]="capabilities.capDefinitionName"
+                               id="CapName"
+                               class="form-control"
+                               name="CapName"
+                               type="text"
+                               required
+                               disabled="disabled"/>
+                    </ng-template>
+                </div>
+
+                <div class="form-group">
+                    <label for="CapTypeDisplay" class="control-label">Cap Type:</label>
+                    <input id="CapTypeDisplay"
+                           class="form-control"
+                           type="text"
+                           required
+                           name="CapTypeDisplay"
+                           disabled="disabled"
+                           [(ngModel)]="capabilities.capQNameLocalName"/>
+                </div>
+
+                <div class="form-group" *ngIf="showCurrentCapability || showDefaultProperties">
+                    <div *ngIf="capabilities.propertyType === 'KV'">
+                        <div *ngFor="let key of capabilities.properties | keysPipe">
+                            <label for="CapKVPropertyDisplay" class="control-label">{{key.key}}</label>
+                            <textarea
+                                id="CapKVPropertyDisplay"
+                                #KVTextareas
+                                style="width:100%; overflow-y: scroll;"
+                                rows="1"
+                                placeholder="Edit your value here."
+                                required
+                                value="{{key.value}}">
+                                </textarea>
+                        </div>
+                    </div>
+                    <div *ngIf="capabilities.propertyType === 'XML'">
+                        <label for="CapXMLPropertyDisplay" class="control-label">XML Property:</label>
+                        <textarea
+                            id="CapXMLPropertyDisplay"
+                            #XMLTextareas
+                            style="width:100%; overflow-y: scroll;"
+                            rows="10"
+                            placeholder="Edit your value here."
+                            required
+                            value="{{capabilities.properties}}">
+                        </textarea>
+                    </div>
+
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" id="cancelCapabilities" class="btn btn-default"
+                (click)="closeAndResetCapabilities(); capForm.reset()">Cancel
+        </button>
+
+        <button *ngIf="!showCurrentCapability; else deleteCapButton"
+                (click)="saveCapabilityToModel(); capForm.reset()" type="button" id="addCapbtn"
+                class="btn btn-primary"
+                [disabled]="!capForm.form.valid || duplicateId">Add
+        </button>
+
+        <ng-template #deleteCapButton>
+            <div *wineryRepositoryHideOnFeature="'yaml'">
+                <button type="button" id="updateCapabilitiesBtn" (click)="updateCaps(); capForm.reset()"
+                        class="btn btn-primary" [disabled]="!capForm.form.valid || duplicateId">Update
+                </button>
+                <button (click)="deleteCapability(); capForm.reset()"
+                        type="button"
+                        id="deleteCapbtn"
+                        class="btn btn-primary">Delete
+                </button>
+            </div>
+            <div *wineryRepositoryShowOnFeature="'yaml'">
+                <button type="button" (click)="updateCaps(); capForm.reset()"
+                        class="btn btn-primary"> Update
+                </button>
+            </div>
+        </ng-template>
+    </winery-modal-footer>
+</winery-modal>
+
+<!-- REQUIREMENTS MODAL -->
+<winery-modal *ngIf="!readonly" bsModal #requirementsModal="bs-modal" [modalRef]="requirementsModal">
+    <winery-modal-header [title]="!showCurrentRequirement?'Add Requirement':'Modify/Delete Requirement'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #reqForm="ngForm" id="addReqForm" enctype="multipart/form-data">
+            <fieldset>
+
+                <div class="form-group" id="ReqIdGroup">
+                    <label for="reqId" class="control-label">Id:</label>
+                    <input [(ngModel)]="requirements.reqId"
+                           id="reqId"
+                           class="form-control"
+                           [class.duplicateId]="duplicateId"
+                           name="reqId"
+                           type="text"
+                           required
+                           (keyup)="onChangeReqId($event.target.value)"
+                           #reqId="ngModel">
+                    <div [hidden]="reqId.valid || reqId.pristine"
+                         class="alert alert-danger">
+                        Id is required
+                    </div>
+                    <div class="idExists" [hidden]="!duplicateId"
+                         class="alert alert-danger">
+                        Id already exists
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ReqNameChooser" class="control-label">Definition Name:</label>
+                    <div *ngIf="!showCurrentRequirement;else disabledReqName">
+                        <select [(ngModel)]="requirements.reqDefinitionName"
+                                id="ReqNameChooser"
+                                name="ReqNameChooser"
+                                class="form-control"
+                                type="text"
+                                required
+                                (change)="onChangeReqDefinitionName($event.target.value)">
+                            <option *ngFor="let reqDefinitionName of requirements.reqDefinitionNames"
+                                    [value]="reqDefinitionName">
+                                {{reqDefinitionName}}
+                            </option>
+                        </select>
+                    </div>
+                    <ng-template #disabledReqName>
+                        <input [(ngModel)]="requirements.reqDefinitionName"
+                               id="ReqName"
+                               class="form-control"
+                               name="ReqName"
+                               type="text"
+                               required="required"
+                               disabled="disabled"/>
+                    </ng-template>
+                </div>
+
+                <div class="form-group">
+                    <label for="ReqTypeDisplay" class="control-label">Req Type:</label>
+                    <input [(ngModel)]="requirements.reqQNameLocalName"
+                           id="ReqTypeDisplay"
+                           name="ReqTypeDisplay"
+                           class="form-control"
+                           type="text"
+                           required
+                           disabled="disabled"/>
+                </div>
+                <div class="form-group" *ngIf="showCurrentRequirement || showDefaultProperties">
+                    <div *ngIf="requirements.propertyType === 'KV'">
+                        <div *ngFor="let key of requirements.properties | keysPipe">
+                            <label for="reqKVPropertyDisplay" class="control-label">{{key.key}}</label>
+                            <textarea
+                                id="reqKVPropertyDisplay"
+                                #KVTextareas
+                                style="width:100%; overflow-y: scroll;"
+                                rows="1"
+                                placeholder="Edit your value here."
+                                required
+                                value="{{key.value}}">
+                </textarea>
+                        </div>
+                    </div>
+                    <div *ngIf="requirements.propertyType === 'XML'">
+                        <label for="ReqXMLPropertyDisplay" class="control-label">XML Property:</label>
+                        <textarea
+                            id="ReqXMLPropertyDisplay"
+                            #XMLTextareas
+                            style="width:100%; overflow-y: scroll;"
+                            rows="10"
+                            placeholder="Edit your value here."
+                            required
+                            value="{{requirements.properties}}">
+                </textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" id="cancelRequirements" class="btn btn-default"
+                (click)="closeAndResetRequirements(); reqForm.reset()">Cancel
+        </button>
+        <button *ngIf="!showCurrentRequirement; else deleteReqButton"
+                (click)="saveRequirementsToModel(); reqForm.reset()" type="button" id="addReqbtn"
+                class="btn btn-primary" [disabled]="!reqForm.form.valid || duplicateId">Add
+        </button>
+        <ng-template #deleteReqButton>
+            <button type="button" id="updateRequirementsBtn" (click)="updateReqs(); reqForm.reset()"
+                    class="btn btn-primary" [disabled]="!reqForm.form.valid || duplicateId">Update
+            </button>
+            <button (click)="deleteRequirement(); reqForm.reset()" type="button" id="deleteReqBtn"
+                    class="btn btn-primary">Delete
+            </button>
+        </ng-template>
+    </winery-modal-footer>
+</winery-modal>
+
+<!-- IMPORT TOPOLOGY MODAL -->
+<winery-modal *ngIf="!readonly" bsModal #importTopologyModal="bs-modal" [modalRef]="importTopologyModal">
+    <winery-modal-header [title]="'Select Topology to Import'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #importTopologyForm="ngForm" id="importTopologyForm" enctype="multipart/form-data">
+            <fieldset>
+                <div class="form-group">
+                    <label for="ImportTopology" class="control-label">Topology Template:</label>
+                    <select [(ngModel)]="importTopologyData.selectedTopologyTemplateId"
+                            name="ImportTopology"
+                            id="ImportTopology"
+                            class="form-control"
+                            type="text"
+                            required
+                            (change)="onChangeTopologyTemplate($event.target.value)">
+                        <option *ngFor="let topologyTemplate of importTopologyData.allTopologyTemplates"
+                                [value]="topologyTemplate.id">{{ topologyTemplate.id }}
+                        </option>
+                    </select>
+                    <div *ngIf="importTopologyData.topologySelected"
+                         style="display: flex; justify-content: center; align-items: center">
+                        <i class="fa fa-3x fa-refresh fa-spin" style="max-width: 50%;"></i>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" id="cancelImportTopology" class="btn btn-default" (click)="closeImportTopology();
+        importTopologyForm.reset()">Cancel
+        </button>
+        <button (click)="importTopology(); importTopologyForm.reset()"
+                type="button" id="importTopologyBtn" class="btn btn-primary"
+                [disabled]="!importTopologyForm.form.valid || importTopologyData.topologySelected">Add
+        </button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal style="z-index: 1060" *ngIf="!readonly" bsModal #addYamlPolicyModal="bs-modal"
+              [modalRef]="addYamlPolicyModal">
+    <winery-modal-header title="Add New Policy"></winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <label for="newPolicyName">Policy Name</label>
+                <input type="text" class="form-control" #newPolicyName id="newPolicyName" required>
+            </div>
+            <div class="form-group">
+                <label for="newPolicyType">Policy Type</label>
+                <select class="form-control" id="newPolicyType" [(ngModel)]="selectedNewPolicyType" name="newPolicyType"
+                        required>
+                    <option *ngFor="let policyType of entityTypes.policyTypes"
+                            [value]="policyType.qName">
+                        {{policyType.qName}}
+                    </option>
+                </select>
+            </div>
+        </form>
+
+    </winery-modal-body>
+    <winery-modal-footer closeButtonLabel="Cancel" okButtonLabel="Add" (onOk)="addNewYamlPolicy(newPolicyName.value)">
+
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal style="z-index: 1050" *ngIf="!readonly" bsModal #manageYamlPoliciesModal="bs-modal"
+              [modalRef]="manageYamlPoliciesModal">
+    <winery-modal-header title="Manage Policies"></winery-modal-header>
+    <winery-modal-body>
+        <h5>Existing Policies:</h5>
+        <winery-table *ngIf="copyOfYamlPolicies"
+                      [columns]="yamlPoliciesColumns"
+                      [data]="copyOfYamlPolicies"
+                      (removeBtnClicked)="handleRemoveYamlPolicyClick($event)"
+                      (addBtnClicked)="handleAddNewYamlPolicyClick()"
+                      (cellSelected)="handleYamlPolicySelected($event)"
+        ></winery-table>
+        <div *ngIf="selectedYamlPolicy">
+            <hr style="margin-top: 20px;">
+            <div class="form-group" *ngIf="showPropertiesOfSelectedYamlPolicy()">
+                <h5>Properties of {{selectedYamlPolicy.name}}:</h5>
+                <form>
+                    <div *ngFor="let prop of selectedYamlPolicy.properties.properties | keysPipe">
+                        <label class="control-label">{{prop.key}}</label>
+                        <textarea rows="1"
+                                  placeholder="Edit your value here."
+                                  style="width:100%; overflow-y: scroll;"
+                                  [(ngModel)]="prop.value"
+                                  [ngModelOptions]="{standalone: true}"
+                                  #YamlPolicyProperties>
+                        </textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                            (click)="savePolicyProperties()"> Save Properties
+                    </button>
+                </form>
+            </div>
+            <div class="form-group" *ngIf="!showPropertiesOfSelectedYamlPolicy()">
+                <h5>Policy: {{selectedYamlPolicy.name}} has no properties to show!</h5>
+            </div>
+        </div>
+    </winery-modal-body>
+</winery-modal>
+
+
+<winery-modal *ngIf="!readonly" bsModal #threatModelingModal="bs-modal" [modalRef]="threatModelingModal">
+    <winery-modal-header [title]="'Threat Model'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" (click)="this.threatModalTab='create'">Create New Threat</button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse" [class.show]="this.threatModalTab==='create'">
+                    <div class="card-body">
+                        <form (ngSubmit)="this.createNewThreat()">
+                            <div class="form-group row">
+                                <label for="text" class="col-sm-4 col-form-label">Threat name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="name" name="name" required
+                                           [(ngModel)]="this.threatModelingData.threatCreation.name">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="text" class="col-sm-4 col-form-label">Description</label>
+                                <div class="col-sm-8"><textarea class="form-control" id="description" name="description"
+                                                                required
+                                                                [(ngModel)]="this.threatModelingData.threatCreation.description"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="stride" class="col-sm-4 col-form-label">STRIDE</label>
+                                <div class="col-sm-8"><select class="form-control" id="stride" name="stride"
+                                                              [(ngModel)]="this.threatModelingData.threatCreation.stride">
+                                    <option>Spoofing</option>
+                                    <option>Tampering</option>
+                                    <option>Repudiation</option>
+                                    <option>Information Disclosure</option>
+                                    <option>Denial of Service</option>
+                                    <option>Elevation of Privilege</option>
+                                </select></div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="severity" class="col-sm-4 col-form-label">Severity</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="severity" name="severity"
+                                            [(ngModel)]="this.threatModelingData.threatCreation.severity">
+                                        <option>Low</option>
+                                        <option>Middle</option>
+                                        <option>High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='mitigations'">Available
+                            Mitigations
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" [class.show]="this.threatModalTab==='mitigations'">
+                    <div class="card-body">
+                        <p>Click on a Mitigation to directly add it to the topology</p>
+                        <button class="btn btn-primary" style="margin-right:10px;margin-bottom:10px"
+                                *ngFor="let mitigation of this.threatModelingData.mitigations"
+                                (click)="addMitigationToTopology(mitigation)">{{mitigation.localName}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" (click)="this.threatModalTab='catalog'">Threat Catalog
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseThree" class="collapse" [class.show]="this.threatModalTab==='catalog'">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let threat of this.threatModelingData.threatCatalog">
+                                <h5 class="">{{threat.templateName}}</h5>
+                                <p>{{threat.properties.description}}</p>
+                                <div class="pull-right">
+                                    <span class="badge badge-pill badge-warning"
+                                          style="margin-right: 10px;">{{threat.properties.strideClassification}}</span>
+                                    <span class="badge badge-pill badge-danger"
+                                          style="">{{threat.properties.severity}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" id="cancelThreatModeling" class="btn btn-primary" (click)="closeThreatModeling()">Cancel
+        </button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #prmPropertiesModal="bs-modal" [modalRef]="prmPropertiesModal">
+    <winery-modal-header title="Add Properties"></winery-modal-header>
+    <winery-modal-body>
+        <div *ngIf="selectedRelationshipType.id == 'DeploymentArtifactMapping'">
+            <label>Required Deployment Artifact Type</label>
+            <select
+                name="artifactTypeChooser"
+                class="form-control"
+                id="artifactTypeChooser"
+                type="text"
+                required="required"
+                (change)="setRequiredDAType($event.target.value)">
+                <ng-container>
+                    <option *ngFor="let artifactType of entityTypes.artifactTypes"
+                            [value]="artifactType.qName">{{artifactType.name}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+        <div *ngIf="selectedRelationshipType.id == 'RelationshipMapping'">
+            <div class="form-group">
+                <span><b>Relation Direction</b></span>
+                <br>
+                <input type="radio" name="direction" id="ingoing" (click)="direction = 'ingoing'">
+                <label for="ingoing">Ingoing</label>
+                <br>
+                <input type="radio" name="direction" id="outgoing" (click)="direction = 'outgoing'">
+                <label for="outgoing">Outgoing</label>
+            </div>
+
+            <label>Applicable Relationship Type</label>
+            <select
+                name="relationshipTypeChooser"
+                class="form-control"
+                id="relationshipTypeChooser"
+                type="text"
+                required="required"
+                (change)="setApplicableRelationshipType($event.target.value)">
+                <ng-container>
+                    <option *ngFor="let relationshipType of relationshipTypes"
+                            [value]="relationshipType.qName">{{relationshipType.name}}
+                    </option>
+                </ng-container>
+            </select>
+
+            <label>Valid Endpoint Type</label>
+            <select
+                name="nodeTypeChooser"
+                class="form-control"
+                id="nodeTypeChooser"
+                type="text"
+                required="required"
+                (change)="setValidEndpointType($event.target.value)">
+                <ng-container>
+                    <option *ngFor="let nodeType of entityTypes.unGroupedNodeTypes"
+                            [value]="nodeType.qName">{{nodeType.name}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+        <div *ngIf="selectedRelationshipType.id == 'AttributeMapping'">
+            <div class="form-group">
+                <span><b>Attribute Mapping Type</b></span>
+                <br>
+                <input type="radio" name="type" id="all" (click)="type = attributeMappingType.ALL">
+                <label for="all">All</label>
+                <br>
+                <input type="radio" name="type" id="selective" (click)="type = attributeMappingType.SELECTIVE">
+                <label for="selective">Selective</label>
+            </div>
+            <div *ngIf="type == attributeMappingType.SELECTIVE">
+                <label>Detector Node Property</label>
+                <select
+                    name="detectorNodePropertyChooser"
+                    class="form-control"
+                    id="detectorNodePropertyChooser"
+                    type="text"
+                    required="required"
+                    (change)="setDetectorNodeProperty($event.target.value)">
+                    <ng-container>
+                        <option *ngFor="let property of detectorNodeProperties"
+                                [value]="property.key">{{property.key}}
+                        </option>
+                    </ng-container>
+                </select>
+
+                <label>Refinement Node Property</label>
+                <select
+                    name="refinementNodePropertyChooser"
+                    class="form-control"
+                    id="refinementNodePropertyChooser"
+                    type="text"
+                    required="required"
+                    [(ngModel)]="refinementProperty">
+                    <ng-container>
+                        <option *ngFor="let property of refinementNodeProperties"
+                                [ngValue]="property">{{property}}
+                        </option>
+                    </ng-container>
+                </select>
+            </div>
+        </div>
+        <div *ngIf="selectedRelationshipType.id == 'BehaviorPatternMapping'">
+            <label>Behavior Pattern</label>
+            <select
+                name="behaviorPatternChooser"
+                class="form-control"
+                id="behaviorPatternChooser"
+                type="text"
+                required="required"
+                [(ngModel)]="behaviorPattern">
+                <ng-container>
+                    <option *ngFor="let behaviorPattern of behaviorPatterns"
+                            [ngValue]="behaviorPattern">{{behaviorPattern.name}}
+                    </option>
+                </ng-container>
+            </select>
+
+            <label>Refinement Element Property</label>
+            <select
+                name="refinementElementPropertyChooser"
+                class="form-control"
+                id="refinementElementPropertyChooser"
+                type="text"
+                required="required"
+                [(ngModel)]="refinementProperty">
+                <ng-container>
+                    <option *ngFor="let property of refinementNodeProperties"
+                            [ngValue]="property">{{property}}
+                    </option>
+                </ng-container>
+            </select>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer closeButtonLabel="Cancel"
+                         okButtonLabel="Add"
+                         [disableOkButton]="checkDisableButton()"
+                         (onOk)="onSavePrmProperties()">
+    </winery-modal-footer>
+</winery-modal>
+
+<!-- XML Policies and Deployment Artifacts Modal -->
+<winery-entities-modal *ngIf="!readonly"
+                       [(modalVariantAndState)]="modalData"
+                       [entityTypes]="entityTypes"
+                       [currentNodeData]="currentModalData">
+</winery-entities-modal>

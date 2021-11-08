@@ -1,0 +1,41 @@
+<TopologyTemplate xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
+    <NodeTemplate xmlns:nodetypes="http://plain.winery.opentosca.org/nodetypes" id="NodeTypeWithoutProperties" maxInstances="1" minInstances="1" name="NodeTypeWithoutProperties" type="nodetypes:NodeTypeWithoutProperties" winery:location="" winery:x="617" winery:y="44"/>
+    <NodeTemplate xmlns:nodetypes="http://plain.winery.opentosca.org/nodetypes" id="NodeTypeWithXmlElementProperty" maxInstances="1" minInstances="1" name="NodeTypeWithXmlElementProperty" type="nodetypes:NodeTypeWithXmlElementProperty" winery:location="" winery:x="874" winery:y="462">
+        <Properties>
+            <ns0:shiporder xmlns:nodetypes1="http://plain.winery.opentosca.org/nodetypes" xmlns:ns0="https://www.w3schools.com/xml/schema_example.asp" orderid="123456">
+                <ns0:orderperson/>
+                <ns0:shipto>
+                    <ns0:name>Name</ns0:name>
+                    <ns0:address>Address</ns0:address>
+                    <ns0:city>City</ns0:city>
+                    <ns0:country>Country</ns0:country>
+                </ns0:shipto>
+                <ns0:item>
+                    <ns0:title>Title</ns0:title>
+                    <ns0:quantity>5</ns0:quantity>
+                    <ns0:price>5.5</ns0:price>
+                </ns0:item>
+            </ns0:shiporder>
+        </Properties>
+    </NodeTemplate>
+    <NodeTemplate xmlns:nodetypes="http://plain.winery.opentosca.org/nodetypes" id="NodeTypeWithTwoKVProperties" maxInstances="1" minInstances="1" name="NodeTypeWithTwoKVProperties" type="nodetypes:NodeTypeWithTwoKVProperties" winery:location="" winery:x="387" winery:y="461">
+        <Properties>
+            <ex:Properties xmlns:ex="http://www.example.org">
+                <ex:key1>testValue</ex:key1>
+                <ex:key2/>
+            </ex:Properties>
+        </Properties>
+    </NodeTemplate>
+    <RelationshipTemplate xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes" id="NodeTypeWithoutProperties_RelationshipTypeWithoutProperties_NodeTypeWithTwoKVProperties" name="con_16" type="relationshiptypes:RelationshipTypeWithoutProperties">
+        <SourceElement ref="NodeTypeWithoutProperties"/>
+        <TargetElement ref="NodeTypeWithTwoKVProperties"/>
+    </RelationshipTemplate>
+    <RelationshipTemplate xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes" id="NodeTypeWithoutProperties_RelationshipTypeWithTwoKvPropertie_NodeTypeWithXmlElementProperty" name="con_28" type="relationshiptypes:RelationshipTypeWithTwoKvPropertie">
+        <SourceElement ref="NodeTypeWithoutProperties"/>
+        <TargetElement ref="NodeTypeWithXmlElementProperty"/>
+    </RelationshipTemplate>
+    <RelationshipTemplate xmlns:relationshiptypes="http://plain.winery.opentosca.org/relationshiptypes" id="NodeTypeWithTwoKVProperties_RelationshipTypeWithXmlElementProperty_NodeTypeWithXmlElementProperty" name="con_40" type="relationshiptypes:RelationshipTypeWithXmlElementProperty">
+        <SourceElement ref="NodeTypeWithTwoKVProperties"/>
+        <TargetElement ref="NodeTypeWithXmlElementProperty"/>
+    </RelationshipTemplate>
+</TopologyTemplate>

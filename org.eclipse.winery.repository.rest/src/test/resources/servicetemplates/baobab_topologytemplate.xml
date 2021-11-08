@@ -1,15 +1,14 @@
 <TopologyTemplate xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
                   xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab" name="baobab"
+    <NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab" maxInstances="1" minInstances="1" name="baobab"
                   type="wfn:baobab" winery:location="undefined" winery:x="678" winery:y="287">
         <Properties>
-            <wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
-                                  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
-                <ty:Antioxidants/>
-                <ty:VitaminC/>
-                <ty:Potassium/>
-                <ty:Superfood/>
-                <ty:HarvestedAt/>
+            <wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits">
+                <wfn:Antioxidants/>
+                <wfn:VitaminC/>
+                <wfn:Potassium/>
+                <wfn:Superfood/>
+                <wfn:HarvestedAt/>
             </wfn:BaobabProperties>
         </Properties>
     </NodeTemplate>

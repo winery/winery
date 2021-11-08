@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,15 +13,24 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -37,32 +46,34 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
-import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.Namespace;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
-import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTags;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.version.ToscaDiff;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.export.CsarExportOptions;
+import org.eclipse.winery.repository.filebased.RepositoryUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.NewVersionApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
@@ -75,8 +86,8 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResour
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.tags.TagsResource;
+import org.eclipse.winery.repository.yaml.export.YamlExporter;
 
-import com.sun.jersey.api.NotFoundException;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +116,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResource.class);
 
     protected final DefinitionsChildId id;
+    protected final IRepository requestRepository;
 
     // shortcut for this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
     protected TExtensibleElements element = null;
@@ -112,7 +124,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     private final RepositoryFileReference ref;
 
     // the object representing the data of this resource
-    private Definitions definitions = null;
+    private TDefinitions definitions = null;
 
     /**
      * Instantiates the resource. Assumes that the resource should exist (assured by the caller)
@@ -122,19 +134,19 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
      */
     public AbstractComponentInstanceResource(DefinitionsChildId id) {
         this.id = id;
-
+        this.requestRepository = RepositoryFactory.getRepository();
         // the resource itself exists
-        if (!RepositoryFactory.getRepository().exists(id)) {
+        if (!requestRepository.exists(id)) {
             throw new IllegalStateException(String.format("The resource %s does not exist", id));
         }
 
         // the data file might not exist
         this.ref = BackendUtils.getRefOfDefinitions(id);
-        if (RepositoryFactory.getRepository().exists(this.ref)) {
+        if (requestRepository.exists(this.ref)) {
             LOGGER.debug("data file exists");
             this.load();
         } else {
-            LOGGER.debug("Data file does not exist. Creating a new one.");
+            LOGGER.debug("Data file {} does not exist. Creating a new one.", this.ref);
             this.createNew();
         }
     }
@@ -202,7 +214,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else if (Objects.nonNull(release)) {
             return RestUtils.releaseVersion(this.id);
         } else {
-            String newId = VersionUtils.getNameWithoutVersion(this.id) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersionApiData.version.toString();
+            String newId = id.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersionApiData.version.toString();
             DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(this.id.getClass(), this.id.getNamespace().getDecoded(), newId, false);
             return RestUtils.addNewVersion(this.id, newComponent, newVersionApiData.componentsToUpdate);
         }
@@ -238,18 +250,18 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MimeTypes.MIMETYPE_ZIP)
-    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance) {
-        if (!RepositoryFactory.getRepository().exists(this.id)) {
+    public final Response getCSAR(@QueryParam(value = "addToProvenance") String addToProvenance, @QueryParam(value = "includeDependencies") String includeDependencies) {
+        if (!requestRepository.exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
         }
         CsarExportOptions options = new CsarExportOptions();
         options.setAddToProvenance(Objects.nonNull(addToProvenance));
+        options.setIncludeDependencies(Objects.nonNull(includeDependencies));
         return RestUtils.getCsarOfSelectedResource(this, options);
     }
 
     /**
-     * Returns the definitions of this resource. Includes required imports of other definitions.
-     * Also called by the UI
+     * Returns the definitions of this resource. Includes required imports of other definitions. Also called by the UI
      *
      * @param csar used because plan generator's GET request lands here
      */
@@ -258,12 +270,18 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     public Response getDefinitionsAsResponse(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "edmm") String edmm,
+        @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "includeDependencies") String includeDependencies,
         @Context UriInfo uriInfo
     ) {
-        final IRepository repository = RepositoryFactory.getRepository();
-        if (!repository.exists(this.id)) {
+        if (!requestRepository.exists(this.id)) {
             return Response.status(Status.NOT_FOUND).build();
+        }
+
+        if (edmm != null && this.element instanceof TServiceTemplate) {
+            return RestUtils.getEdmmModel((TServiceTemplate) this.element, edmmUseAbsolutePaths != null);
         }
 
         // TODO: It should be possible to specify ?yaml&csar to retrieve a CSAR and ?yaml to retrieve the .yaml representation
@@ -279,9 +297,31 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else {
             CsarExportOptions options = new CsarExportOptions();
             options.setAddToProvenance(Objects.nonNull(addToProvenance));
-            
+            options.setIncludeDependencies(Objects.nonNull(includeDependencies));
             return RestUtils.getCsarOfSelectedResource(this, options);
         }
+    }
+
+    @POST
+    @Path("exportToFilesystem")
+    public Response exportToFilesystem() {
+        if (RepositoryUtils.isYamlRepository(requestRepository)) {
+            LocalDateTime start = LocalDateTime.now();
+            YamlExporter exporter = new YamlExporter(RepositoryFactory.getRepository());
+            Map<String, Object> exportConfiguration = new HashMap<>();
+            String filename = getXmlId().getEncoded() + Constants.SUFFIX_CSAR;
+            File file = new File(Environments.getInstance().getRepositoryConfig().getCsarOutputPath(), filename);
+            try (FileOutputStream fos = new FileOutputStream(file, false)) {
+                exporter.writeCsar(getId(), fos, exportConfiguration);
+                LOGGER.debug("CSAR export to filesystem lasted {}", Duration.between(LocalDateTime.now(), start).toString());
+            } catch (Exception e) {
+                LOGGER.error("Error exporting CSAR to filesystem", e);
+                return Response.serverError().build();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return Response.noContent().build();
     }
 
     @GET
@@ -289,17 +329,20 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     public Response redirectToAngularUi(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "edmm") String edmm,
         @QueryParam(value = "addToProvenance") String addToProvenance,
+        @QueryParam(value = "includeDependencies") String includeDependencies,
+        @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "xml") String xml,
         @Context UriInfo uriInfo) {
         // in case there is an URL requested directly via the browser UI, the accept cannot be put at the link.
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
-        if ((csar != null) || (yaml != null) || (xml != null)) {
-            return this.getDefinitionsAsResponse(csar, yaml, addToProvenance, uriInfo);
+        if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
+            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, includeDependencies, uriInfo);
         }
-        String repositoryUiUrl = Environment.getUrlConfiguration().getRepositoryUiUrl();
-        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environment.getUrlConfiguration().getRepositoryApiUrl(), repositoryUiUrl);
+        String repositoryUiUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryUiUrl");
+        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
         return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
 
@@ -311,18 +354,17 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Object getElementAsJson(@QueryParam("versions") @ApiParam("If set, a list of availbale versions is returned.") String versions,
+    public Object getElementAsJson(@QueryParam("versions") @ApiParam("If set, a list of available versions is returned.") String versions,
                                    @QueryParam("subComponents") String subComponents,
                                    @QueryParam("compareTo") String compareTo, @QueryParam("asChangeLog") String asChangeLog) {
-        final IRepository repository = RepositoryFactory.getRepository();
-        if (!repository.exists(this.id)) {
+        if (!requestRepository.exists(this.id)) {
             throw new NotFoundException();
         }
         try {
             if (Objects.nonNull(versions)) {
-                return BackendUtils.getAllVersionsOfOneDefinition(this.id);
+                return WineryVersionUtils.getAllVersionsOfOneDefinition(this.id, requestRepository);
             } else if (Objects.nonNull(subComponents)) {
-                return repository.getReferencedDefinitionsChildIds(this.id)
+                return requestRepository.getReferencedDefinitionsChildIds(this.id)
                     .stream()
                     .map(item -> new QNameWithTypeApiData(
                         item.getXmlId().getDecoded(),
@@ -332,16 +374,17 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
                     .collect(Collectors.toList());
             } else if (Objects.nonNull(compareTo)) {
                 WineryVersion version = VersionUtils.getVersion(compareTo);
-                ToscaDiff compare = BackendUtils.compare(this.id, version);
+                ToscaDiff compare = BackendUtils.compare(this.id, version, requestRepository);
                 if (Objects.nonNull(asChangeLog)) {
                     return compare.getChangeLog();
                 } else {
                     return compare;
                 }
             } else {
-                return BackendUtils.getDefinitionsHavingCorrectImports(repository, this.id);
+                return BackendUtils.getDefinitionsHavingCorrectImports(requestRepository, this.id);
             }
         } catch (Exception e) {
+            LOGGER.warn("Failed to return element at {} as JSON due to exception.", this.id, e);
             throw new WebApplicationException(e);
         }
     }
@@ -358,14 +401,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         try {
             this.element = this.definitions.getElement();
         } catch (IndexOutOfBoundsException e) {
-            if (this instanceof GenericImportResource) {
-                //noinspection StatementWithEmptyBody
-                // everything allright:
-                // ImportResource is a quick hack using 99% of the functionality offered here
-                // As only 1% has to be "quick hacked", we do that instead of a clean design
-                // Clean design: Introduce a class between this and AbstractComponentInstanceResource, where this class and ImportResource inhertis from
-                // A clean design introducing a super class AbstractDefinitionsBackedResource does not work, as we currently also support PropertiesBackedResources and such a super class would required multi-inheritance
-            } else {
+            // everything alright:
+            // ImportResource is a quick hack using 99% of the functionality offered here
+            // As only 1% has to be "quick hacked", we do that instead of a clean design
+            // Clean design: Introduce a class between this and AbstractComponentInstanceResource, where this class and ImportResource inherits from
+            // A clean design introducing a super class AbstractDefinitionsBackedResource does not work, as we currently also support PropertiesBackedResources and such a super class would required multi-inheritance
+            if (!(this instanceof GenericImportResource)) {
                 throw new IllegalStateException("Wrong storage format: No ServiceTemplateOrNodeTypeOrNodeTypeImplementation found.");
             }
         }
@@ -375,7 +416,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
      * Creates a new instance of the object represented by this resource
      */
     private void createNew() {
-        this.definitions = BackendUtils.createWrapperDefinitions(this.getId());
+        this.definitions = BackendUtils.createWrapperDefinitions(this.getId(), requestRepository);
 
         // create empty element
         this.element = this.createNewElement();
@@ -424,13 +465,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
      * We return the complete definitions to allow the user changes to it, such as adding imports, etc.
      */
     public String getDefinitionsAsXMLString() {
-        return BackendUtils.getDefinitionsAsXMLString(this.getDefinitions());
+        return BackendUtils.getDefinitionsAsXMLString(this.getDefinitions(), requestRepository);
     }
 
     /**
      * @return the reference to the internal Definitions object
      */
-    public Definitions getDefinitions() {
+    public TDefinitions getDefinitions() {
         return this.definitions;
     }
 
@@ -442,7 +483,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Consumes( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public Response updateDefinitions(InputStream requestBodyStream) {
         Unmarshaller u;
-        Definitions defs;
+        TDefinitions defs;
         Document doc;
         final StringBuilder sb = new StringBuilder();
         try {
@@ -456,7 +497,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         }
         try {
             u = JAXBSupport.createUnmarshaller();
-            defs = (Definitions) u.unmarshal(doc);
+            defs = (TDefinitions) u.unmarshal(doc);
         } catch (JAXBException e) {
             AbstractComponentInstanceResource.LOGGER.debug("Could not unmarshal from request body stream", e);
             return RestUtils.getResponseForException(e);
@@ -488,7 +529,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         BackendUtils.copyIdToFields((HasIdInIdOrNameField) element, this.getId());
 
         try {
-            BackendUtils.persist(this.getDefinitions(), this.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+            requestRepository.putDefinition(this.getId(), this.getDefinitions());
         } catch (IOException e) {
             throw new WebApplicationException(e);
         }
@@ -497,7 +538,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         if (validationError.isEmpty()) {
             return Response.noContent().build();
         } else {
-            // ADR-0005: well-formed XML, but non-schema-conforming XML is saved, but triggers warning at the iser
+            // ADR-0005: well-formed XML, but non-schema-conforming XML is saved, but triggers warning to the user
             return Response.ok().entity(validationError).build();
         }
     }
@@ -516,49 +557,49 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @Path("tags/")
     public final TagsResource getTags() {
-        TTags tags = null;
+        List<TTag> tags;
         if (this.element instanceof TServiceTemplate) {
             tags = ((TServiceTemplate) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((ServiceTemplateResource) this).getServiceTemplate().setTags(tags);
             }
         } else if (this.element instanceof TEntityType) {
             tags = ((TEntityType) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((EntityTypeResource) this).getEntityType().setTags(tags);
             }
         } else if (this.element instanceof TNodeTypeImplementation) {
             tags = ((TNodeTypeImplementation) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((NodeTypeImplementationResource) this).getNTI().setTags(tags);
             }
         } else if (this.element instanceof TRelationshipTypeImplementation) {
             tags = ((TRelationshipTypeImplementation) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
+                tags = new ArrayList<>();
                 ((RelationshipTypeImplementationResource) this).getRTI().setTags(tags);
             }
-        } else if (this.element instanceof TComplianceRule) {
-            tags = ((TComplianceRule) this.element).getTags();
+        } else if (this.element instanceof OTComplianceRule) {
+            tags = ((OTComplianceRule) this.element).getTags();
             if (tags == null) {
-                tags = new TTags();
-                ((ComplianceRuleResource) this).getCompliancerule().setTags(tags);
+                tags = new ArrayList<>();
+                ((ComplianceRuleResource) this).getComplianceRule().setTags(tags);
             }
         } else {
             throw new IllegalStateException("tags was called on a resource not supporting tags");
         }
 
-        return new TagsResource(this, tags.getTag());
+        return new TagsResource(this, tags);
     }
 
     @GET
     @Path("LICENSE")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getLicense() {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("LICENSE"));
         return RestUtils.returnRepoPath(ref, null);
     }
 
@@ -566,7 +607,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("LICENSE")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response putLicense(String data) {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("LICENSE"));
         return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
     }
 
@@ -574,7 +615,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("README.md")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getReadme() {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("README.md"));
         return RestUtils.returnRepoPath(ref, null);
     }
 
@@ -582,7 +623,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @Path("README.md")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response putFile(String data) {
-        RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, EncodingUtil.URLdecode("README.md"));
         return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
     }
 }

@@ -1,5 +1,5 @@
-/********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,7 +10,7 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
+ *******************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
 import java.util.Collections;
@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,12 +41,12 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
     @BeforeEach
     public void initializeConsistencyChecker() {
-        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE));
+        ConsistencyCheckerConfiguration consistencyCheckerConfiguration = new ConsistencyCheckerConfiguration(false, true, EnumSet.of(ConsistencyCheckerVerbosity.NONE), repository);
         consistencyChecker = new ConsistencyChecker(consistencyCheckerConfiguration);
     }
 
     @Test
-    public void nodeTypeImplementationNamespaceHasNoErrors() throws Exception {
+    public void nodeTypeImplementationNamespaceHasNoErrors() {
         NodeTypeImplementationId id = new NodeTypeImplementationId("http://winery.opentosca.org/test/nodetypeimplementations/fruits", "baobab_impl", false);
         ConsistencyErrorCollector errorLogger = new ConsistencyErrorCollector();
         consistencyChecker.checkNamespaceUri(id);
@@ -90,7 +90,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         ConsistencyErrorCollector errorLogger = new ConsistencyErrorCollector();
         consistencyChecker.checkNamespaceUri(id);
         assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
-
     }
 
     public ConsistencyErrorCollector checkRevisionWithoutDocumentation(String revision) throws Exception {
@@ -100,7 +99,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             (false, false, verbosity, repository, true);
         final ConsistencyChecker consistencyChecker = new ConsistencyChecker(configuration);
         consistencyChecker.checkCorruption();
-        return  consistencyChecker.getErrorCollector();
+        return consistencyChecker.getErrorCollector();
     }
 
     @ParameterizedTest
@@ -123,11 +122,13 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" does not exist!");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w2-wip1"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" does not exist!");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w2-wip2"), elementErrorList);
 
@@ -145,11 +146,13 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'location' is not allowed to appear in element 'NodeTemplate'.\n");
         elementErrorList.addError("type is null");
         elementErrorList.addError("Referenced element \"RelationshlpTypeWithValidSourceAndTarget_w1-wip1\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshlpTypeWithValidSourceAndTarget_w1-wip1\" does not exist!");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties_2 is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties_2 is null");
-        elementErrorList.addError("java.lang.NullPointerException");
+//        elementErrorList.addError("java.lang.NullPointerException");
+        elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshlpTypeWithValidSourceAndTarget_w1-wip1 in namespace  does not exist.");
         expected.put(new QName("http://plain.winery.opentosca.org/servicetemplates", "ServiceTemplateWithTwoNodeTemplates_w1-wip4"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -164,6 +167,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'y' is not allowed to appear in element 'NodeTemplate'.\n" +
             "Fatal Error: cvc-complex-type.3.2.2: Attribute 'location' is not allowed to appear in element 'NodeTemplate'.\n");
         elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" is not a full QName");
+        elementErrorList.addError("Referenced element \"RelationshipTypeWithoutProperties\" does not exist!");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("propertiesKV of node template NodeTypeWithTwoKVProperties is null");
         elementErrorList.addError("Corrupt: Component instance RelationshipType RelationshipTypeWithoutProperties in namespace  does not exist.");
@@ -176,18 +180,9 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         Map<QName, ElementErrorList> expected = new HashMap<>();
         ElementErrorList elementErrorList;
 
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "WesternEquipment_Pony"), elementErrorList);
-
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "DressageEquipment_Unicorn"), elementErrorList);
-
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
         elementErrorList.addError("Properties required, but no properties defined");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DressageEquipment_Unicorn"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -217,14 +212,12 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "WesternEquipment_Pony"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("propertiesKV of node template shetland_pony is null");
         elementErrorList.addError("propertiesKV of node template ponycompetition is null");
         elementErrorList.addError("propertiesKV of node template ponycompetition_2 is null");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -256,7 +249,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
         elementErrorList.addError("Properties required, but no properties defined");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "WesternEquipment_Unicorn"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
@@ -269,10 +261,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-complex-type.2.4.b: The content of element 'Requirements' is not complete. One of '{\"http://docs.oasis-open.org/tosca/ns/2011/12\":Requirement}' is expected.\n" +
             "Fatal Error: cvc-complex-type.2.4.b: The content of element 'DeploymentArtifacts' is not complete. One of '{\"http://docs.oasis-open.org/tosca/ns/2011/12\":DeploymentArtifact}' is expected.\n");
         expected.put(new QName("http://www.opentosca.org/providers/FieldProvider", "FieldProvider"), elementErrorList);
-
-        elementErrorList = new ElementErrorList("ServiceTemplate");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://www.opentosca.org/providers/EquipmentProvider", "EquipmentProvider"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Fatal Error: cvc-datatype-valid.1.2.1: '1' is not a valid value for 'NCName'.\n" +
@@ -289,12 +277,7 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
 
         elementErrorList = new ElementErrorList("ArtifactTemplate");
         elementErrorList.addError("Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
         expected.put(new QName("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DressageEquipment_Pony"), elementErrorList);
-
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "DressageEquipment_Pony"), elementErrorList);
 
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("Fatal Error: cvc-datatype-valid.1.2.1: '1' is not a valid value for 'NCName'.\n" +
@@ -361,10 +344,6 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
             "Fatal Error: cvc-attribute.3: The value '20' of attribute 'id' on element 'Requirement' is not valid with respect to its type, 'ID'.\n");
         expected.put(new QName("http://www.winery.opentosca.org/test/targetallocation/servicetemplates", "MinExternalConnectionsTest2"), elementErrorList);
 
-        elementErrorList = new ElementErrorList("ArtifactType");
-        elementErrorList.addError("java.lang.UnsupportedOperationException");
-        expected.put(new QName("http://winery.opentosca.org/test/ponyuniverse", "WesternEquipment_Unicorn"), elementErrorList);
-
         elementErrorList = new ElementErrorList("ServiceTemplate");
         elementErrorList.addError("propertiesKV of node template straw is null");
         elementErrorList.addError("propertiesKV of node template stall is null");
@@ -421,14 +400,31 @@ public class ConsistencyCheckerTest extends TestWithGitBackedRepository {
                 "304b62b06556afa1a7227164a9c0d2c9a1178b8f",
                 // origin/fruits in a non-working version
                 getErrorsFor304b62b06556afa1a7227164a9c0d2c9a1178b8f()
+            ),
+            Arguments.of(
+                "c09263f4fa112ff9093f9d52c6dc756f03d710b9",
+                getErrorsForc09263f4fa112ff9093f9d52c6dc756f03d710b9()
             )
         );
     }
 
+    private static Map<QName, ElementErrorList> getErrorsForc09263f4fa112ff9093f9d52c6dc756f03d710b9() {
+        Map<QName, ElementErrorList> expected = new HashMap<>();
+        ElementErrorList elementErrorList;
+
+        elementErrorList = new ElementErrorList("ArtifactTemplate");
+        elementErrorList.addError("Corrupt: Namespace in the TOSCA-file does not match the folder's name!");
+        elementErrorList.addError("Corrupt: Wrapping Definitions Id in the TOSCA-file does not match the folder's name!");
+        elementErrorList.addError("Corrupt: Id/Name in the TOSCA-file does not match the folder's name!");
+        expected.put(new QName("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithWrongTargetNamespace"), elementErrorList);
+        
+        return expected;
+    }
+
     /**
-     * If this method fails, reconfigure IntelliJ and rebuild the complete project <br>
-     * Settings | Build, Execution, Deployment | Compiler | [ ] Add runtime assertions for not-null-annotated methods and parameters.
-     * 
+     * If this method fails, reconfigure IntelliJ and rebuild the complete project <br> Settings | Build, Execution,
+     * Deployment | Compiler | [ ] Add runtime assertions for not-null-annotated methods and parameters.
+     *
      * See https://stackoverflow.com/a/40847858/873282 for more information
      */
     @ParameterizedTest

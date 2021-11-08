@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,7 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.AbstractNamespaceManager;
 
 import org.apache.commons.configuration2.Configuration;
+import org.eclipse.jdt.annotation.NonNull;
 
 @Deprecated
 public class ConfigurationBasedNamespaceManager extends AbstractNamespaceManager {
@@ -147,13 +148,23 @@ public class ConfigurationBasedNamespaceManager extends AbstractNamespaceManager
     }
 
     @Override
-    public NamespaceProperties getNamespaceProperties(String namespace) {
+    public @NonNull NamespaceProperties getNamespaceProperties(String namespace) {
         String prefix = this.getPrefix(namespace);
         return new NamespaceProperties(namespace, prefix);
     }
 
     @Override
     public boolean isPatternNamespace(String namespace) {
+        return false;
+    }
+
+    @Override
+    public boolean isSecureCollection(String namespace) {
+        return false;
+    }
+
+    @Override
+    public boolean isGeneratedNamespace(String namespace) {
         return false;
     }
 }

@@ -1,0 +1,251 @@
+{
+    "$schema": "./node_modules/@angular-devkit/core/src/workspace/workspace-schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "tosca-management": {
+            "root": "",
+            "projectType": "application",
+            "prefix": "winery",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/app/tosca-management",
+                        "index": "app/tosca-management/src/index.html",
+                        "main": "app/tosca-management/src/main.ts",
+                        "tsConfig": "app/tosca-management/src/tsconfig.app.json",
+                        "polyfills": "app/tosca-management/src/polyfills.ts",
+                        "assets": [
+                            {
+                                "glob": "**/*",
+                                "input": "app/tosca-management/src/assets",
+                                "output": "/assets"
+                            },
+                            {
+                                "glob": "favicon-winery.ico",
+                                "input": "app/tosca-management/src/",
+                                "output": "/"
+                            }
+                        ],
+                        "styles": [
+                            "app/tosca-management/src/css/bootstrap.min.css",
+                            "app/tosca-management/src/css/wineryCommon.css",
+                            "app/tosca-management/src/css/wineryRepository.css",
+                            "node_modules/ngx-toastr/toastr.css",
+                            "node_modules/font-awesome/css/font-awesome.css",
+                            "app/tosca-management/src/assets/built-codeEdit15_1/code_edit/built-codeEdit.css"
+                        ],
+                        "scripts": [
+                            "app/tosca-management/src/assets/built-codeEdit15_1/code_edit/built-codeEdit.min.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "app/tosca-management/src/environments/environment.ts",
+                                    "with": "app/tosca-management/src/environments/environment.prod.ts"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "tosca-management:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "tosca-management:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "tosca-management:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "app/tosca-management/src/tsconfig.app.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
+        },
+        "topologymodeler": {
+            "root": "",
+            "projectType": "application",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/app/topologymodeler",
+                        "index": "app/topologymodeler/src/index.html",
+                        "main": "app/topologymodeler/src/main.ts",
+                        "tsConfig": "app/topologymodeler/src/tsconfig.app.json",
+                        "polyfills": "app/topologymodeler/src/polyfills.ts",
+                        "assets": [
+                            {
+                                "glob": "**/*",
+                                "input": "app/topologymodeler/src/assets",
+                                "output": "/assets"
+                            },
+                            {
+                                "glob": "favicon.ico",
+                                "input": "app/topologymodeler/src/",
+                                "output": "/"
+                            }
+                        ],
+                        "styles": [
+                            "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                            "node_modules/font-awesome/css/font-awesome.css",
+                            "node_modules/ngx-toastr/toastr.css",
+                            "app/topologymodeler/src/assets/styles/styles.scss"
+                        ],
+                        "scripts": [
+                            "node_modules/jsplumb/dist/js/jsplumb.min.js",
+                            "node_modules/css-element-queries/src/ResizeSensor.js",
+                            "node_modules/css-element-queries/src/ElementQueries.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "app/topologymodeler/src/environments/environment.ts",
+                                    "with": "app/topologymodeler/src/environments/environment.prod.ts"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "topologymodeler:build",
+                        "port": 4201
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "topologymodeler:build:production"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "topologymodeler:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "app/topologymodeler/src/tsconfig.app.json"
+                        ],
+                        "exclude": []
+                    }
+                }
+            }
+        },
+        "workflowmodeler": {
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "b4t",
+            "projectType": "application",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/app/workflowmodeler",
+                        "index": "app/workflowmodeler/src/index.html",
+                        "main": "app/workflowmodeler/src/main.ts",
+                        "tsConfig": "app/workflowmodeler/src/tsconfig.app.json",
+                        "polyfills": "app/workflowmodeler/src/polyfills.ts",
+                        "styles": [
+                            "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                            "app/workflowmodeler/src/index.css"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "extractCss": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "app/workflowmodeler/src/environments/environment.ts",
+                                    "with": "app/workflowmodeler/src/environments/environment.prod.ts"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "workflowmodeler:build",
+                        "port": 9527
+                    },
+                    "configurations": {
+                        "prod": {
+                            "browserTarget": "workflowmodeler:build:prod"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "workflowmodeler:build"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "app/workflowmodeler/src/tsconfig.app.json"
+                        ],
+                        "tslintConfig": "app/workflowmodeler/src/tslint.app.json",
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "defaultProject": "tosca-management"
+}

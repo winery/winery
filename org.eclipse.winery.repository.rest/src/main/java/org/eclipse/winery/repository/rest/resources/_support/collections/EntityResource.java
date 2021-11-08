@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections;
 
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 
@@ -20,6 +22,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import java.util.List;
 
 /**
@@ -41,6 +44,8 @@ public abstract class EntityResource<EntityT> {
     protected final IPersistable res;
 
     protected IIdDetermination<EntityT> idDetermination;
+    
+    protected final IRepository requestRepository = RepositoryFactory.getRepository();
 
 
     /**
@@ -81,7 +86,7 @@ public abstract class EntityResource<EntityT> {
     public Response getXML() {
         assert (this.o != null);
         // Utils.getXML has to be used as Jersey can only serialize XMLRootElements
-        return RestUtils.getXML((Class<EntityT>) this.o.getClass(), this.o);
+        return RestUtils.getXML((Class<EntityT>) this.o.getClass(), this.o, requestRepository);
     }
 
     /**

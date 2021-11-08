@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.model.ids.GenericId;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -24,7 +24,7 @@ public class ResourceResult {
     private Status status = null;
     private URI uri = null;
     private GenericId id = null;
-    private String message = null;
+    private Object message = null;
 
     public ResourceResult() {
     }
@@ -67,7 +67,7 @@ public class ResourceResult {
         return this.getStatus() == Status.CREATED || this.getStatus() == Status.OK;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Object message) {
         this.message = message;
     }
 

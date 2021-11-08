@@ -14,21 +14,23 @@
 
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
-import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResource;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResource;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 public class DeploymentArtifactsResource extends GenericArtifactsResource<DeploymentArtifactResource, TDeploymentArtifact> {
 
-    private List<TDeploymentArtifact> deploymentArtifacts;
-
+    private final List<TDeploymentArtifact> deploymentArtifacts;
 
     public DeploymentArtifactsResource(TNodeTemplate nodeTemplate, INodeTemplateResourceOrNodeTypeImplementationResource res) {
         this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
@@ -42,17 +44,16 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
     /**
      * Determines the list of DAs belonging to the given node template.
      * <p>
-     * If no DAs are existing, an empty list is created in the model for the
-     * node template
+     * If no DAs are existing, an empty list is created in the model for the node template
      */
     private static List<TDeploymentArtifact> getDeploymentArtifacts(TNodeTemplate nodeTemplate) {
-        TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        List<TDeploymentArtifact> deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
         final List<TDeploymentArtifact> res;
         if (deploymentArtifacts == null) {
-            deploymentArtifacts = new TDeploymentArtifacts();
+            deploymentArtifacts = new ArrayList<>();
             nodeTemplate.setDeploymentArtifacts(deploymentArtifacts);
         }
-        res = deploymentArtifacts.getDeploymentArtifact();
+        res = deploymentArtifacts;
         return res;
     }
 
@@ -64,6 +65,11 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
             res.add(r);
         }
         return res;
+    }
+
+    @NonNull
+    public List<TDeploymentArtifact> getDeploymentArtifacts() {
+        return Objects.nonNull(this.deploymentArtifacts) ? this.deploymentArtifacts : new ArrayList<>();
     }
 
     @Override

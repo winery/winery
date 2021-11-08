@@ -13,12 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -28,13 +30,11 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydef
 public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E> {
 
     /**
-     * This constructor is used for both entity templates nested in an component
-     * instance as well as for entity templates being component instances
-     * itself.
+     * This constructor is used for both entity templates nested in an component instance as well as for entity
+     * templates being component instances itself.
      * <p>
-     * As Java does not support multi-inheritance, we implemented a quick hack
-     * to re-use this class as inner implementation at templates extending
-     * AbstractComponentInstanceResourceDefinitionsBacked
+     * As Java does not support multi-inheritance, we implemented a quick hack to re-use this class as inner
+     * implementation at templates extending AbstractComponentInstanceResourceDefinitionsBacked
      */
     public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
         super(idDetermination, o, idx, list, res);
@@ -48,9 +48,9 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
     @GET
     @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
-        TEntityTemplate.PropertyConstraints constraints = this.o.getPropertyConstraints();
+        List<TPropertyConstraint> constraints = this.o.getPropertyConstraints();
         if (constraints == null) {
-            constraints = new TEntityTemplate.PropertyConstraints();
+            constraints = new ArrayList<>();
         }
         return new PropertyConstraintsResource(constraints, (AbstractComponentInstanceResource) this.res);
     }

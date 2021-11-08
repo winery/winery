@@ -15,22 +15,19 @@ package org.eclipse.winery.repository.rest.datatypes;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.common.version.WineryVersion;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComponentId {
 
     private String id;
     private String name;
     private String namespace;
     private QName qName;
-    private Definitions full;
+    private TDefinitions full;
     private WineryVersion version;
 
-    public ComponentId(String id, String name, String namespace, QName qName, Definitions full, WineryVersion version) {
+    public ComponentId(String id, String name, String namespace, QName qName, TDefinitions full, WineryVersion version) {
         this.id = id;
         this.name = name;
         this.namespace = namespace;
@@ -55,7 +52,7 @@ public class ComponentId {
         return qName;
     }
 
-    public Definitions getFull() {
+    public TDefinitions getFull() {
         return full;
     }
 

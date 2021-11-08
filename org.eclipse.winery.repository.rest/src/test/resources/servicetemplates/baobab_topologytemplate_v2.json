@@ -22,6 +22,9 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "287"
             },
             "properties": {
+                "propertyType": "KV",
+                "namespace" : "http://www.example.org",
+                "elementName" : "Properties",
                 "kvproperties": {
                     "Antioxidants": "",
                     "VitaminC": "",

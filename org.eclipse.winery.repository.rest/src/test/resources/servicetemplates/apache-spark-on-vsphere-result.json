@@ -83,6 +83,9 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "631"
             },
             "properties": {
+                "propertyType": "KV",
+                "namespace": "http://www.example.org",
+                "elementName": "Properties",
                 "kvproperties": {
                     "HypervisorEndpoint": "https://iaasvc.informatik.uni-stuttgart.de/sdk",
                     "HypervisorTenantID": "smartservices",
@@ -106,6 +109,9 @@
                 "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "514"
             },
             "properties": {
+                "propertyType": "KV",
+                "namespace": "http://www.example.org",
+                "elementName": "Properties",
                 "kvproperties": {
                     "VMIP": "",
                     "VMInstanceID": "",
@@ -154,18 +160,16 @@
             "maxInstances": "1",
             "x": "740",
             "y": "46",
-            "deploymentArtifacts": {
-                "deploymentArtifact": [
-                    {
-                        "documentation": [],
-                        "any": [],
-                        "otherAttributes": {},
-                        "name": "Pi_Estimation_DA",
-                        "artifactType": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact",
-                        "artifactRef": "{http://opentosca.org/artifacttemplates}Pi_Estimation_DA"
-                    }
-                ]
-            }
+            "deploymentArtifacts": [
+                {
+                    "documentation": [],
+                    "any": [],
+                    "otherAttributes": {},
+                    "name": "Pi_Estimation_DA",
+                    "artifactType": "{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact",
+                    "artifactRef": "{http://opentosca.org/artifacttemplates}Pi_Estimation_DA"
+                }
+            ]
         },
         {
             "documentation": [],

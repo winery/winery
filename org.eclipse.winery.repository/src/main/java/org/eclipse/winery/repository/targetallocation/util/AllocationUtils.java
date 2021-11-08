@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
@@ -36,7 +36,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 public class AllocationUtils {
 
     public static long idCounter = 0;
-    private static IRepository repository = RepositoryFactory.getRepository();
+    private static final IRepository repository = RepositoryFactory.getRepository();
 
     /**
      * Calculates the permutations of the given lists.
@@ -81,7 +81,7 @@ public class AllocationUtils {
         List<TopologyWrapper> topologies = new ArrayList<>();
 
         for (List<PermutationHelper> permutation : permutations) {
-            TopologyWrapper newTopology = new TopologyWrapper(deepcopy(topology.getTopology()));
+            TopologyWrapper newTopology = new TopologyWrapper(deepCopy(topology.getTopology()));
             Map<String, TNodeTemplate> topLevelNtsByIds = newTopology.getTopLevelNtsByIds();
 
             for (PermutationHelper possibility : permutation) {
@@ -100,7 +100,7 @@ public class AllocationUtils {
         List<TPolicyTemplate> policyTemplates = new ArrayList<>();
 
         if (nodeTemplate.getPolicies() != null) {
-            List<TPolicy> tPolicies = nodeTemplate.getPolicies().getPolicy();
+            List<TPolicy> tPolicies = nodeTemplate.getPolicies();
             for (TPolicy tPolicy : tPolicies) {
                 policyTemplates.add(toPolicyTemplate(tPolicy));
             }
@@ -114,21 +114,27 @@ public class AllocationUtils {
     }
 
     /**
-     * Still no complete copy of all TOSCA constructs.
-     * Cloned so that !original.equals(clone).
+     * Still no complete copy of all TOSCA constructs. Cloned so that !original.equals(clone).
      */
-    public static TTopologyTemplate deepcopy(TTopologyTemplate topologyTemplate) {
-        TTopologyTemplate clone = new TTopologyTemplate();
+    public static TTopologyTemplate deepCopy(TTopologyTemplate topologyTemplate) {
+        return deepCopy(topologyTemplate, true);
+    }
+
+    /**
+     * Still no complete copy of all TOSCA constructs.
+     */
+    public static TTopologyTemplate deepCopy(TTopologyTemplate topologyTemplate, boolean changeNames) {
+        TTopologyTemplate.Builder clone = new TTopologyTemplate.Builder();
         Map<String, TNodeTemplate> clonedNTsByIds = new HashMap<>();
 
         for (TNodeTemplate nodeTemplate : topologyTemplate.getNodeTemplates()) {
-            TNodeTemplate clonedNT = cloneNotEqual(nodeTemplate);
+            TNodeTemplate clonedNT = clone(nodeTemplate, changeNames);
             clone.addNodeTemplate(clonedNT);
             clonedNTsByIds.put(clonedNT.getId(), clonedNT);
         }
 
         for (TRelationshipTemplate relationshipTemplate : topologyTemplate.getRelationshipTemplates()) {
-            TRelationshipTemplate clonedRT = cloneNotEqual(relationshipTemplate);
+            TRelationshipTemplate clonedRT = clone(relationshipTemplate, changeNames);
             // source
             if (relationshipTemplate.getSourceElement().getRef() instanceof TNodeTemplate) {
                 clonedRT.setSourceNodeTemplate(clonedNTsByIds.get(relationshipTemplate.getSourceElement().getRef().getId()));
@@ -147,28 +153,43 @@ public class AllocationUtils {
             }
             clone.addRelationshipTemplate(clonedRT);
         }
-        return clone;
+        return clone.build();
     }
 
     /**
-     * Clone so that !original.equals(clone).
-     * This is done by changing the name of the clone.
+     * Clone the NodeTemplate and change the name of the clone if requested, so that !original.equals(clone).
+     *
+     * @param nodeTemplate the NodeTemplate to clone
+     * @param changeNames <code>true</code> if name shall be changed by adding a number suffix, <code>false</code> 
+     *                    otherwise
+     * @return the cloned NodeTemplate
      */
-    public static TNodeTemplate cloneNotEqual(TNodeTemplate nodeTemplate) {
+    public static TNodeTemplate clone(TNodeTemplate nodeTemplate, boolean changeNames) {
         TNodeTemplate cloned = BackendUtils.clone(nodeTemplate);
+
         // name used in equals -> make unique to avoid equals bugs caused by cloning
-        cloned.setName(cloned.getId() + idCounter++);
+        if (changeNames) {
+            cloned.setName(cloned.getId() + idCounter++);
+        }
         return cloned;
     }
 
     /**
-     * Clone so that !original.equals(clone).
-     * This is done by changing the name of the clone.
+     * Clone the RelationshipTemplate and change the name of the clone if requested, so that !original.equals(clone).
+     *
+     * @param relationshipTemplate the RelationshipTemplate to clone
+     * @param changeNames          <code>true</code> if name shall be changed by adding a number suffix,
+     *                             <code>false</code>
+     *                             otherwise
+     * @return the cloned RelationshipTemplate
      */
-    public static TRelationshipTemplate cloneNotEqual(TRelationshipTemplate relationshipTemplate) {
+    public static TRelationshipTemplate clone(TRelationshipTemplate relationshipTemplate, boolean changeNames) {
         TRelationshipTemplate cloned = BackendUtils.clone(relationshipTemplate);
+
         // name used in equals -> make unique to avoid equals bugs caused by cloning
-        cloned.setName(cloned.getId() + idCounter++);
+        if (changeNames) {
+            cloned.setName(cloned.getId() + idCounter++);
+        }
         return cloned;
     }
 }

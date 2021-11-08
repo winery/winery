@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model;
 
-import org.jgrapht.graph.SimpleDirectedGraph;
-
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 @SuppressWarnings("serial")
 public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
@@ -61,5 +61,4 @@ public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
         // TODO Auto-generated method stub
         return super.toStringFromSets(vertexSet, edgeSet, directed);
     }
-
 }

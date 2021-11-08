@@ -18,15 +18,20 @@ import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ModelUtilitiesTest extends TestWithGitBackedRepository {
@@ -50,7 +55,7 @@ public class ModelUtilitiesTest extends TestWithGitBackedRepository {
     // region ********** isOfType **********
 
     @Test
-    void isOfType() {
+    public void isOfType() {
         TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
         derivedFrom.setType(QName.valueOf("{https://ex.org/nt}parent"));
 
@@ -66,4 +71,18 @@ public class ModelUtilitiesTest extends TestWithGitBackedRepository {
     }
 
     // endregion
+
+    @Test
+    public void instantiateNodeTemplate() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        IRepository repository = RepositoryFactory.getRepository();
+        TNodeType nodeType = repository.getElement(new NodeTypeId(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}Ubuntu_16.04-w1")));
+
+        TNodeTemplate nodeTemplate = ModelUtilities.instantiateNodeTemplate(nodeType);
+
+        assertNotNull(nodeTemplate);
+        assertNotNull(nodeTemplate.getProperties());
+        assertEquals(8, ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties().size());
+    }
 }

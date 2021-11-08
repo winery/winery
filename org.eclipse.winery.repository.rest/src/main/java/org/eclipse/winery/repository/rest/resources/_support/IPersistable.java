@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.model.tosca.TDefinitions;
 
 /**
- * Indicates that BackendUtils.persist() can te used
+ * Indicates that BackendUtils.persist() can be used
  */
 public interface IPersistable {
 

@@ -15,7 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RequirementTypeResourceTest extends AbstractResourceTest {
     private static final String FOLDERPATH = "http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Frequirementtypes%2Ffruits/MaximumWeight";

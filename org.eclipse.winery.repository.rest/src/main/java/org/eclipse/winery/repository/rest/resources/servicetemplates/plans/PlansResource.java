@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -22,34 +23,35 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.XmlId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
+import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.model.ids.EncodingUtil;
+import org.eclipse.winery.model.ids.XmlId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.elements.PlanId;
+import org.eclipse.winery.model.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +96,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
         Response response = this.saveFile(newPlan, null, null, null);
         if (response.getStatus() == 204) {
-            return Response.created(RestUtils.createURI(Util.URLencode(xmlId))).entity(newPlan).build();
+            return Response.created(URI.create(EncodingUtil.URLencode(xmlId))).entity(newPlan).build();
         }
 
         return response;
@@ -122,7 +124,8 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
         return plan[0];
     }
 
-    private Response saveFile(TPlan tPlan, InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body) {
+    private Response saveFile(TPlan tPlan, InputStream uploadedInputStream, FormDataContentDisposition fileDetail,
+                              FormDataBodyPart body) {
         boolean bpmn4toscaMode = Namespaces.URI_BPMN4TOSCA_20.equals(tPlan.getPlanLanguage());
 
         if (uploadedInputStream != null || bpmn4toscaMode) {
@@ -149,7 +152,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
             } else {
                 // We use the filename also as local file name. Alternatively, we could use the xml id
                 // With URL encoding, this should not be an issue
-                fileName = Util.URLencode(fileDetail.getFileName());
+                fileName = EncodingUtil.URLencode(fileDetail.getFileName());
 
                 // Really store it
                 RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
@@ -183,7 +186,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
         LOGGER.info("Generating plans for Service Template...");
         // Only if plan builder endpoint is available
         String planBuilderBaseUrl =
-            Environment.getUrlConfiguration().getContainerApiUrl() + "/containerapi/planbuilder";
+            Environments.getInstance().getUiConfig().getEndpoints().get("container") + "/planbuilder";
         if (RestUtils.isResourceAvailable(planBuilderBaseUrl)) {
             // Determine URIs
             String plansURI = uriInfo.getAbsolutePath().resolve("../plans").toString();
@@ -195,16 +198,11 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
             request += plansURI;
             request += "</PLANPOSTURL></generatePlanForTopology>";
             // Create client and execute request (handle exceptions generally)
-            WebResource.Builder wr = Client.create()
-                .resource(planBuilderBaseUrl + "/sync")
-                .type(MediaType.APPLICATION_XML);
-            try {
-                wr.post(String.class, request);
-                LOGGER.info("Plans successfully generated");
-            } catch (Exception e) {
-                LOGGER.error("Could not create plans: {}", e.getMessage(), e);
-                return Response.serverError().entity(e.getMessage()).build();
-            }
+            ClientBuilder.newClient()
+                .target(planBuilderBaseUrl + "/sync")
+                .request()
+                .post(Entity.xml(request), String.class);
+            LOGGER.info("Plans successfully generated");
         } else {
             String message = "Plan Builder service is not available. No plans were generated.";
             LOGGER.warn(message);

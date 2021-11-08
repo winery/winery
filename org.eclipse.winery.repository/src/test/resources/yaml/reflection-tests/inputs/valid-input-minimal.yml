@@ -1,0 +1,41 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  description: This test contains a valid input (parameter definition).
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.3/test
+  tosca.version: 1.1
+  reference: 3.5.12
+  exception: None
+  keyname: topology_template.inputs
+  assert-typeof: |
+    ipt1 = TParameterDefinition  
+  assert: |
+    ipt1.type = integer
+    ipt1.description = Topology template input description
+    ipt1.value = 42
+    ipt1.required = false
+    ipt1.default = 99
+    ipt1.status = deprecated
+    ipt1.constraints.0.key = greater_or_equal
+    ipt1.constraints.0.value = 42
+    ipt1.entry_schema.description = entry_schema description
+    ipt1.entry_schema.type = integer
+    ipt1.entry_schema.constraints.0.key = greater_or_equal
+    ipt1.entry_schema.constraints.0.value = 42    
+
+topology_template:  
+  inputs: 
+    ipt1: 
+      type: integer
+      description: Topology template input description
+      value: 42
+      required: false
+      default: 99
+      status: deprecated
+      constraints:
+        - greater_or_equal: 42
+      entry_schema:
+        description: entry_schema description
+        type: integer
+        constraints:
+          - greater_or_equal: 42

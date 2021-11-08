@@ -15,12 +15,16 @@ package org.eclipse.winery.repository.rest.datatypes;
 
 import java.util.List;
 
-import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
-
 public class GitData {
-    
+
     public boolean reset;
     public boolean refresh;
+    public boolean pull;
+    public boolean push;
+    public boolean commit;
+    public boolean branches;
+    public String checkout;
     public String commitMessage;
-    public List<QNameWithTypeApiData> itemsToCommit;
+    public List<String> itemsToCommit;
+    public String repository;
 }

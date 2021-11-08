@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -26,16 +27,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.model.tosca.TPolicies;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Capabilities;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Interfaces;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Requirements;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
+import org.eclipse.winery.model.tosca.TExportedInterface;
+import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TPropertyConstraint;
+import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces.InterfacesResource;
@@ -51,24 +53,25 @@ public class BoundaryDefinitionsResource {
 
     private final ServiceTemplateResource serviceTemplateResource;
     private final TBoundaryDefinitions boundaryDefinitions;
-
+    private final IRepository repository;
 
     public BoundaryDefinitionsResource(ServiceTemplateResource serviceTemplateResource, TBoundaryDefinitions boundaryDefinitions) {
         this.serviceTemplateResource = serviceTemplateResource;
         this.boundaryDefinitions = boundaryDefinitions;
+        this.repository = RepositoryFactory.getRepository();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public TBoundaryDefinitions getJSON(@Context UriInfo uriInfo) {
-        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getDefs();
+        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri(), repository).getDefs();
     }
 
     @Path("xml/")
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String getXML(@Context UriInfo uriInfo) {
-        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getBoundaryDefinitionsAsXMLString();
+        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri(), repository).getBoundaryDefinitionsAsXMLString();
     }
 
     @PUT
@@ -83,12 +86,13 @@ public class BoundaryDefinitionsResource {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String getProperties(@Context UriInfo uriInfo) {
-        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getPropertiesAsXMLString();
+        return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri(), repository).getPropertiesAsXMLString();
     }
 
     /**
      * The well-formedness of the XML element is done using the framework. If you see <code>[Fatal Error] :1:19: The
-     * prefix "tosca" for element "tosca:properties" is not bound.</code> in the console, it is an indicator that the XML element is not well-formed.
+     * prefix "tosca" for element "tosca:properties" is not bound.</code> in the console, it is an indicator that the
+     * XML element is not well-formed.
      */
     @Path("properties/")
     @PUT
@@ -101,41 +105,38 @@ public class BoundaryDefinitionsResource {
     }
 
     @Path("requirements/")
-    public RequirementsResource getRequiremensResource() {
-        Requirements requirements = this.boundaryDefinitions.getRequirements();
+    public RequirementsResource getRequirementsResource() {
+        List<TRequirementRef> requirements = this.boundaryDefinitions.getRequirements();
         if (requirements == null) {
-            requirements = new Requirements();
+            requirements = new ArrayList<>();
             this.boundaryDefinitions.setRequirements(requirements);
         }
-        List<TRequirementRef> refs = requirements.getRequirement();
-        return new RequirementsResource(this.serviceTemplateResource, refs);
+        return new RequirementsResource(this.serviceTemplateResource, requirements);
     }
 
     @Path("capabilities/")
     public CapabilitiesResource getCapabilitiesResource() {
-        Capabilities caps = this.boundaryDefinitions.getCapabilities();
+        List<TCapabilityRef> caps = this.boundaryDefinitions.getCapabilities();
         if (caps == null) {
-            caps = new Capabilities();
+            caps = new ArrayList<>();
             this.boundaryDefinitions.setCapabilities(caps);
         }
-        List<TCapabilityRef> refs = caps.getCapability();
-        return new CapabilitiesResource(this.serviceTemplateResource, refs);
+        return new CapabilitiesResource(this.serviceTemplateResource, caps);
     }
 
     @Path("policies/")
     public PoliciesResource getPoliciesResource() {
-        TPolicies policies = this.boundaryDefinitions.getPolicies();
+        List<TPolicy> policies = this.boundaryDefinitions.getPolicies();
         if (policies == null) {
-            policies = new TPolicies();
+            policies = new ArrayList<>();
             this.boundaryDefinitions.setPolicies(policies);
         }
-        return new PoliciesResource(policies.getPolicy(), this.serviceTemplateResource);
+        return new PoliciesResource(policies, this.serviceTemplateResource);
     }
 
     /**
-     * This path is below "boundary definitions" to ease implementation If it
-     * was modeled following the XSD, it would have been nested below
-     * "properties". We did not do that
+     * This path is below "boundary definitions" to ease implementation If it was modeled following the XSD, it would
+     * have been nested below "properties". We did not do that
      */
     @Path("propertymappings/")
     public PropertyMappingsResource getPropertyMappings() {
@@ -144,9 +145,9 @@ public class BoundaryDefinitionsResource {
             properties = new Properties();
             this.boundaryDefinitions.setProperties(properties);
         }
-        PropertyMappings propertyMappings = properties.getPropertyMappings();
+        List<TPropertyMapping> propertyMappings = properties.getPropertyMappings();
         if (propertyMappings == null) {
-            propertyMappings = new PropertyMappings();
+            propertyMappings = new ArrayList<>();
             properties.setPropertyMappings(propertyMappings);
         }
         return new PropertyMappingsResource(propertyMappings, this.serviceTemplateResource);
@@ -154,9 +155,9 @@ public class BoundaryDefinitionsResource {
 
     @Path("propertyconstraints")
     public PropertyConstraintsResource getPropertyConstraints() {
-        TBoundaryDefinitions.PropertyConstraints constraints = this.boundaryDefinitions.getPropertyConstraints();
+        List<TPropertyConstraint> constraints = this.boundaryDefinitions.getPropertyConstraints();
         if (constraints == null) {
-            constraints = new TBoundaryDefinitions.PropertyConstraints();
+            constraints = new ArrayList<>();
             this.boundaryDefinitions.setPropertyConstraints(constraints);
         }
         return new PropertyConstraintsResource(constraints, this.serviceTemplateResource);
@@ -164,11 +165,11 @@ public class BoundaryDefinitionsResource {
 
     @Path("interfaces/")
     public InterfacesResource getInterfacesResource() {
-        Interfaces interfaces = this.boundaryDefinitions.getInterfaces();
+        List<TExportedInterface> interfaces = this.boundaryDefinitions.getInterfaces();
         if (interfaces == null) {
-            interfaces = new Interfaces();
+            interfaces = new ArrayList<>();
             this.boundaryDefinitions.setInterfaces(interfaces);
         }
-        return new InterfacesResource(interfaces.getInterface(), this.serviceTemplateResource);
+        return new InterfacesResource(interfaces, this.serviceTemplateResource);
     }
 }

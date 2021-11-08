@@ -18,4 +18,5 @@
 
 <suppressions>
     <suppress files="[\\/]gen[\\/]" checks="[a-zA-Z0-9]*"/>
+    <suppress files="[\\/]target[\\/]" checks="[a-zA-Z0-9]*"/>
 </suppressions>
