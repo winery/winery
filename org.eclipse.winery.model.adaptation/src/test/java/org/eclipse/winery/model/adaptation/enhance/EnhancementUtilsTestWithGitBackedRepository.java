@@ -15,6 +15,7 @@
 package org.eclipse.winery.model.adaptation.enhance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +147,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
             // As we do not want to filter the features based on the deployment technology, the second parameter is null.
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(),
+                    Collections.emptyList());
 
         assertEquals(2, availableFeaturesForTopology.size());
         assertEquals(1, availableFeaturesForTopology.get("MySQL-Database_w1").size());
@@ -166,7 +168,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
             // As we do not want to filter the features based on the deployment technology, the second parameter is null.
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(),
+                    Collections.emptyList());
 
         assertEquals(1, availableFeaturesForTopology.size());
         assertEquals(1, availableFeaturesForTopology.get("MySQL-Database_w2").size()
@@ -186,7 +189,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         Map<String, Map<QName, String>> availableFeaturesForTopology =
             // As we do not want to filter the features based on the deployment technology, the second parameter is null.
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), null);
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(),
+                    Collections.emptyList());
 
         assertEquals(2, availableFeaturesForTopology.size());
         assertEquals(2, availableFeaturesForTopology.get("MySQL-Database_w2").size());
@@ -249,7 +253,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             ).getTopologyTemplate();
 
         // As we do not want to filter the features based on the deployment technology, the second parameter is null.
-        EnhancementUtils.applyFeaturesForTopology(topology, EnhancementUtils.getAvailableFeaturesForTopology(topology, null));
+        EnhancementUtils.applyFeaturesForTopology(topology, EnhancementUtils.getAvailableFeaturesForTopology(topology,
+                Collections.emptyList()));
 
         String ubuntuNodeTemplateId = "Ubuntu_16.04-w1";
         String mySqlNodeTemplateId = "MySQL-Database_w1";
@@ -287,7 +292,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
             );
 
         Map<String, Map<QName, String>> openStackFeatures =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "OpenStackHeat");
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(),
+                    Collections.emptyList());
         assertEquals(1, openStackFeatures.size());
         Map<QName, String> openStackFeature = openStackFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
         assertEquals(2, openStackFeature.size());
@@ -295,7 +301,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertEquals("ping", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
         Map<String, Map<QName, String>> kubernetesFeatures =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Kubernetes");
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(),
+                    Collections.emptyList());
         assertEquals(1, kubernetesFeatures.size());
         Map<QName, String> kubernetesFeature = kubernetesFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
         assertEquals(2, kubernetesFeature.size());
@@ -303,7 +310,8 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         assertEquals("ping", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
         Map<String, Map<QName, String>> chefFeatures =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), "Chef");
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(),
+                    Collections.emptyList());
         assertEquals(1, chefFeatures.size());
         Map<QName, String> chefFeature = chefFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
         assertEquals(1, chefFeature.size());

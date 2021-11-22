@@ -124,10 +124,10 @@ class InstanceModelUtilsTest extends TestWithGitRepoAndSshServer {
         InputStream resourceAsStream = ClassLoader.getSystemClassLoader().getResourceAsStream("winery.test");
         assertNotNull(resourceAsStream);
 
-        inputs.put(InstanceModelUtils.vmPrivateKey, IOUtils.toString(resourceAsStream));
-        inputs.put(InstanceModelUtils.vmUser, "test");
-        inputs.put(InstanceModelUtils.vmIP, "localhost");
-        inputs.put(InstanceModelUtils.vmSshPort, Integer.toString(sshPort));
+        inputs.put(InstanceModelUtils.VM_PRIVATE_KEY, IOUtils.toString(resourceAsStream));
+        inputs.put(InstanceModelUtils.VM_USER, "test");
+        inputs.put(InstanceModelUtils.VM_IP, "localhost");
+        inputs.put(InstanceModelUtils.VM_SSH_PORT, Integer.toString(sshPort));
 
         List<String> nodeIds = Collections.singletonList("OperatingSystem_0");
         InstanceModelUtils.setUserInputs(inputs, serviceTemplate.getTopologyTemplate(), nodeIds);

@@ -5,7 +5,8 @@
     <scripts>
       <script value="start-tosca-management" />
     </scripts>
-    <node-interpreter value="project" />
+    <node-interpreter value="$PROJECT_DIR$/org.eclipse.winery.frontends/node/node" />
+    <package-manager value="npm" />
     <envs />
     <method v="2" />
   </configuration>

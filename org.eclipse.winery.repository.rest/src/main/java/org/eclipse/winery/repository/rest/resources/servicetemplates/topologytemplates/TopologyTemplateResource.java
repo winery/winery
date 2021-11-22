@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,13 +50,13 @@ import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
 import org.eclipse.winery.model.tosca.HasTags;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -76,6 +77,7 @@ import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -95,7 +97,10 @@ public class TopologyTemplateResource {
     /**
      * A topology template is always nested in a service template
      */
-    public TopologyTemplateResource(AbstractComponentInstanceResourceContainingATopology parent, TTopologyTemplate topologyTemplate, String type) {
+    public TopologyTemplateResource(
+        AbstractComponentInstanceResourceContainingATopology parent,
+        TTopologyTemplate topologyTemplate,
+        String type) {
         this.topologyTemplate = topologyTemplate;
         this.parent = parent;
         this.type = type;
@@ -161,7 +166,9 @@ public class TopologyTemplateResource {
         ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
         ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.parent.getId();
         try {
-            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId, thisServiceTemplateId, RepositoryFactory.getRepository());
+            BackendUtils.mergeTopologyTemplateAinTopologyTemplateB(otherServiceTemplateId,
+                thisServiceTemplateId,
+                RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not merge", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -243,7 +250,9 @@ public class TopologyTemplateResource {
         try {
             splitServiceTemplateId = splitting.splitTopologyOfServiceTemplate((ServiceTemplateId) this.parent.getId());
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("Could not split. " + e.getMessage())
+                .build();
         }
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(splitServiceTemplateId));
         return Response.created(url).build();
@@ -258,7 +267,9 @@ public class TopologyTemplateResource {
         try {
             matchedServiceTemplateId = splitting.matchTopologyOfServiceTemplate((ServiceTemplateId) this.parent.getId());
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not match. " + e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("Could not match. " + e.getMessage())
+                .build();
         }
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(matchedServiceTemplateId));
         return Response.created(url).build();
@@ -293,13 +304,16 @@ public class TopologyTemplateResource {
         List<ServiceTemplateId> compositionServiceTemplateIDs = new ArrayList<>();
         compositionData.getCspath().forEach(entry -> {
             QName qName = QName.valueOf(entry);
-            compositionServiceTemplateIDs.add(new ServiceTemplateId(qName.getNamespaceURI(), qName.getLocalPart(), false));
+            compositionServiceTemplateIDs.add(new ServiceTemplateId(qName.getNamespaceURI(),
+                qName.getLocalPart(),
+                false));
         });
 
         ServiceTemplateId composedServiceTemplateId;
 
         try {
-            composedServiceTemplateId = splitting.composeServiceTemplates(newComposedSolutionServiceTemplateId, compositionServiceTemplateIDs);
+            composedServiceTemplateId = splitting.composeServiceTemplates(newComposedSolutionServiceTemplateId,
+                compositionServiceTemplateIDs);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -421,7 +435,9 @@ public class TopologyTemplateResource {
             }
         }
 
-        BackendUtils.updateVersionOfNodeTemplate(localTemplate, updateInfo.getNodeTemplateId(), updateInfo.getNewComponentType());
+        BackendUtils.updateVersionOfNodeTemplate(localTemplate,
+            updateInfo.getNodeTemplateId(),
+            updateInfo.getNewComponentType());
 
         if (updateInfo.isSaveAfterUpdate()) {
             this.setModel(localTemplate);
@@ -472,22 +488,19 @@ public class TopologyTemplateResource {
     public ArrayList<AvailableFeaturesApiData> getAvailableFeatures() {
         ArrayList<AvailableFeaturesApiData> apiData = new ArrayList<>();
 
-        String deploymentTechnology = null;
+        List<DeploymentTechnologyDescriptor> deploymentTechnologies = Collections.emptyList();
         if (this.parent.getElement() instanceof HasTags && ((HasTags) this.parent.getElement()).getTags() != null) {
-            for (TTag tag : ((HasTags) this.parent.getElement()).getTags()) {
-                // To enable the usage of "technology" and "technologies", we only check for "technolog"
-                if (tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())) {
-                    deploymentTechnology = tag.getValue();
-                    break;
-                }
-            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            deploymentTechnologies = ModelUtilities.extractDeploymentTechnologiesFromTags(((HasTags) this.parent.getElement()).getTags(),
+                objectMapper);
         }
 
-        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnology)
+        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnologies)
             .forEach((nodeTemplateId, featuresMap) -> {
                 ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
                 featuresMap.forEach(
-                    (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
+                    (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType,
+                        featureName))
                 );
                 apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
             });
@@ -512,7 +525,8 @@ public class TopologyTemplateResource {
             }
         });
 
-        TTopologyTemplate enrichedTopology = EnhancementUtils.applyFeaturesForTopology(this.topologyTemplate, featureMap);
+        TTopologyTemplate enrichedTopology = EnhancementUtils.applyFeaturesForTopology(this.topologyTemplate,
+            featureMap);
         this.parent.setTopology(enrichedTopology, this.type);
         RestUtils.persist(this.parent);
 
@@ -532,10 +546,13 @@ public class TopologyTemplateResource {
             if (nodeTypes.containsKey(node.getType())) {
                 NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
                 if (!versionElements.containsKey(nodeTypeId.getQName())) {
-                    List<WineryVersion> versionList = WineryVersionUtils.getAllVersionsOfOneDefinition(nodeTypeId, repository).stream()
+                    List<WineryVersion> versionList = WineryVersionUtils.getAllVersionsOfOneDefinition(nodeTypeId,
+                            repository).stream()
                         .filter(wineryVersion -> {
-                            QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
-                            NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
+                            QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion)
+                                .getQName();
+                            NamespaceProperties namespaceProperties = repository.getNamespaceManager()
+                                .getNamespaceProperties(qName.getNamespaceURI());
                             return !(namespaceProperties.isGeneratedNamespace()
                                 || ModelUtilities.isFeatureType(qName, nodeTypes));
                         })

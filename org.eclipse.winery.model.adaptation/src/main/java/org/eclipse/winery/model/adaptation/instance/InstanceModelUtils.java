@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -30,7 +31,6 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -44,34 +44,36 @@ import org.slf4j.LoggerFactory;
 
 public abstract class InstanceModelUtils {
 
-    public static String vmUser = "VMUserName";
-    public static String vmPrivateKey = "VMPrivateKey";
-    public static String vmIP = "VMIP";
-    public static String vmSshPort = "VMSSHPort";
+    public static final String VM_USER = "VMUserName";
+    public static final String VM_PRIVATE_KEY = "VMPrivateKey";
+    public static final String VM_IP = "VMIP";
+    public static final String VM_SSH_PORT = "VMSSHPort";
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
 
     public static Set<String> getRequiredSSHInputs(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Set<String> inputs = new HashSet<>();
         Map<String, String> sshCredentials = getSSHCredentials(template, nodeIdsToBeReplaced);
-        if (sshCredentials.get(vmPrivateKey) == null || sshCredentials.get(vmPrivateKey).isEmpty()
-            || sshCredentials.get(vmPrivateKey).toLowerCase().startsWith("get_input")) {
-            inputs.add(vmPrivateKey);
+        String extractedPrivateKey = sshCredentials.get(VM_PRIVATE_KEY);
+        if (extractedPrivateKey == null || extractedPrivateKey.isEmpty()
+            || extractedPrivateKey.toLowerCase().startsWith("get_input")) {
+            inputs.add(VM_PRIVATE_KEY);
         }
-        if (sshCredentials.get(vmUser) == null || sshCredentials.get(vmUser).isEmpty()
-            || sshCredentials.get(vmUser).toLowerCase().startsWith("get_input")) {
-            inputs.add(vmUser);
+        String extractedUser = sshCredentials.get(VM_USER);
+        if (extractedUser == null || extractedUser.isEmpty()
+            || extractedUser.toLowerCase().startsWith("get_input")) {
+            inputs.add(VM_USER);
         }
-        if (sshCredentials.get(vmIP) == null || sshCredentials.get(vmIP).isEmpty()
-            || sshCredentials.get(vmIP).toLowerCase().startsWith("get_input")) {
-            inputs.add(vmIP);
+        String extractedIp = sshCredentials.get(VM_IP);
+        if (extractedIp == null || extractedIp.isEmpty()
+            || extractedIp.toLowerCase().startsWith("get_input")) {
+            inputs.add(VM_IP);
         }
         return inputs;
     }
 
     public static Map<String, String> getSSHCredentials(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Map<String, String> properties = new HashMap<>();
-        Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository().getQNameToElementMapping(NodeTypeId.class);
 
         template.getNodeTemplates().stream()
             .filter(node -> nodeIdsToBeReplaced.contains(node.getId()))
@@ -80,19 +82,18 @@ public abstract class InstanceModelUtils {
                 hostedOnSuccessors.add(node);
 
                 for (TNodeTemplate host : hostedOnSuccessors) {
-                    if (ModelUtilities.isOfType(OpenToscaBaseTypes.OperatingSystem, host.getType(), nodeTypes)
-                        && host.getProperties() != null && host.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                    if (host.getProperties() != null && host.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) host.getProperties())
                             .getKVProperties();
                         kvProperties.forEach((key, value) -> {
-                            if (vmUser.equalsIgnoreCase(key)) {
-                                properties.put(vmUser, value);
-                            } else if (vmPrivateKey.equalsIgnoreCase(key)) {
-                                properties.put(vmPrivateKey, value);
-                            } else if (vmIP.equalsIgnoreCase(key)) {
-                                properties.put(vmIP, value);
-                            } else if (vmSshPort.equalsIgnoreCase(key)) {
-                                properties.put(vmSshPort, value);
+                            if (VM_USER.equalsIgnoreCase(key)) {
+                                properties.put(VM_USER, value);
+                            } else if (VM_PRIVATE_KEY.equalsIgnoreCase(key)) {
+                                properties.put(VM_PRIVATE_KEY, value);
+                            } else if (VM_IP.equalsIgnoreCase(key)) {
+                                properties.put(VM_IP, value);
+                            } else if (VM_SSH_PORT.equalsIgnoreCase(key)) {
+                                properties.put(VM_SSH_PORT, value);
                             }
                         });
                     }
@@ -108,13 +109,15 @@ public abstract class InstanceModelUtils {
         try {
             JSch jsch = new JSch();
             File key = File.createTempFile("key", "tmp", FileUtils.getTempDirectory());
-            FileUtils.write(key, sshCredentials.get(vmPrivateKey), "UTF-8");
+            FileUtils.write(key, sshCredentials.get(VM_PRIVATE_KEY), "UTF-8");
             logger.info("tmp key file created: {}", key.exists());
 
             jsch.addIdentity(key.getAbsolutePath());
-            Session session = sshCredentials.containsKey(vmSshPort)
-                ? jsch.getSession(sshCredentials.get(vmUser), sshCredentials.get(vmIP), Integer.parseInt(sshCredentials.get(vmSshPort)))
-                : jsch.getSession(sshCredentials.get(vmUser), sshCredentials.get(vmIP));
+            Session session = sshCredentials.containsKey(VM_SSH_PORT)
+                ? jsch.getSession(sshCredentials.get(VM_USER),
+                sshCredentials.get(VM_IP),
+                Integer.parseInt(sshCredentials.get(VM_SSH_PORT)))
+                : jsch.getSession(sshCredentials.get(VM_USER), sshCredentials.get(VM_IP));
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
@@ -123,12 +126,18 @@ public abstract class InstanceModelUtils {
 
             return session;
         } catch (JSchException | IOException e) {
-            logger.error("Failed to connect to {} using user {}.", sshCredentials.get(vmIP), sshCredentials.get(vmUser), e);
+            logger.error("Failed to connect to {} using user {}.",
+                sshCredentials.get(VM_IP),
+                sshCredentials.get(VM_USER),
+                e);
             throw new RuntimeException(e);
         }
     }
 
-    public static void setUserInputs(Map<String, String> userInputs, TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
+    public static void setUserInputs(
+        Map<String, String> userInputs,
+        TTopologyTemplate template,
+        List<String> nodeIdsToBeReplaced) {
         nodeIdsToBeReplaced.forEach(nodeId -> {
             TNodeTemplate node = template.getNodeTemplate(nodeId);
             List<TNodeTemplate> nodes = ModelUtilities.getHostedOnSuccessors(template, node);
@@ -136,12 +145,13 @@ public abstract class InstanceModelUtils {
 
             nodes.forEach(nodeTemplate -> {
                 if (nodeTemplate.getProperties() != null && nodeTemplate.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties();
-                    userInputs.forEach((key, value) -> {
+                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties())
+                        .getKVProperties();
+                    Optional.ofNullable(userInputs).ifPresent(inputs -> inputs.forEach((key, value) -> {
                         if (kvProperties.containsKey(key)) {
                             kvProperties.put(key, value);
                         }
-                    });
+                    }));
                 }
             });
         });
