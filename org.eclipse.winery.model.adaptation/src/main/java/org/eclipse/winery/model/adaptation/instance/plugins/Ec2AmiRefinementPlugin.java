@@ -59,13 +59,12 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(
-        TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
         List<TNodeTemplate> nodesToRefineByAmi = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId()) && Objects.equals(node.getType(),
                 COMPUTE_QNAME))
             .collect(Collectors.toList());
-        
+
         Set<String> discoveredNodeIds = new HashSet<>();
         for (TNodeTemplate curNode : nodesToRefineByAmi) {
             Optional.ofNullable(curNode.getProperties())
@@ -79,7 +78,7 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
                     discoveredNodeIds.add(curNode.getId());
                 });
         }
-        
+
         return discoveredNodeIds;
     }
 

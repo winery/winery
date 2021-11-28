@@ -50,8 +50,7 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(
-        TTopologyTemplate topology) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
         Optional<TNodeTemplate> first = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())

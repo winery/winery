@@ -50,8 +50,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(
-        TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
         Set<String> discoveredNodeIds = new HashSet<>();
         Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
         String mySqlDatabases = InstanceModelUtils.executeCommand(

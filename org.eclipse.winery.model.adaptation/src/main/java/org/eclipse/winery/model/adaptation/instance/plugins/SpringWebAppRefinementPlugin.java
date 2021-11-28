@@ -50,8 +50,7 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
     }
 
     @Override
-    public Set<String> apply(
-        TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
         Set<String> discoveredNodeIds = new HashSet<>();
         Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
         String contextPath = InstanceModelUtils.executeCommand(
@@ -91,7 +90,7 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
                     Objects.requireNonNull(aSuccessor.getType(), "type is null"),
                     nodeTypes)).findAny();
             if (dockerContainer.isPresent()) {
-                
+
             } else {
                 Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
                 return sshInputs.isEmpty() ? null : sshInputs;

@@ -56,8 +56,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(
-        TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
         Set<String> discoveredNodeIds = new HashSet<>();
         try {
             Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);

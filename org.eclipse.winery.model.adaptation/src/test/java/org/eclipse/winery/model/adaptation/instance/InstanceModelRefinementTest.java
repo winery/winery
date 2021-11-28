@@ -142,24 +142,24 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                                 Map<String, String> inputs = new HashMap<>();
                                 plugin.getSubGraphs().get(0).additionalInputs
                                     .forEach(input -> {
-                                        if (input.equals(InstanceModelUtils.VM_IP)) {
-                                            inputs.put(InstanceModelUtils.VM_IP, "localhost");
-                                        } else if (input.equals(InstanceModelUtils.VM_PRIVATE_KEY)) {
+                                        if (input.equals(InstanceModelUtils.vmIP)) {
+                                            inputs.put(InstanceModelUtils.vmIP, "localhost");
+                                        } else if (input.equals(InstanceModelUtils.vmPrivateKey)) {
                                             InputStream resourceAsStream = Objects.requireNonNull(
                                                 ClassLoader.getSystemClassLoader().getResourceAsStream("winery.test")
                                             );
                                             try {
-                                                inputs.put(InstanceModelUtils.VM_PRIVATE_KEY, IOUtils.toString(resourceAsStream));
+                                                inputs.put(InstanceModelUtils.vmPrivateKey, IOUtils.toString(resourceAsStream));
                                             } catch (IOException e) {
                                                 logger.error("Error while retrieving private key", e);
                                             }
-                                        } else if (input.equals(InstanceModelUtils.VM_USER)) {
-                                            inputs.put(InstanceModelUtils.VM_USER, "test");
-                                        } else if (input.equals(InstanceModelUtils.VM_SSH_PORT)) {
-                                            inputs.put(InstanceModelUtils.VM_SSH_PORT, Integer.toString(sshPort));
+                                        } else if (input.equals(InstanceModelUtils.vmUser)) {
+                                            inputs.put(InstanceModelUtils.vmUser, "test");
+                                        } else if (input.equals(InstanceModelUtils.vmSshPort)) {
+                                            inputs.put(InstanceModelUtils.vmSshPort, Integer.toString(sshPort));
                                         }
                                     });
-                                inputs.put(InstanceModelUtils.VM_SSH_PORT, Integer.toString(sshPort));
+                                inputs.put(InstanceModelUtils.vmSshPort, Integer.toString(sshPort));
                                 plugin.setUserInputs(inputs, template, 0);
                             }
 

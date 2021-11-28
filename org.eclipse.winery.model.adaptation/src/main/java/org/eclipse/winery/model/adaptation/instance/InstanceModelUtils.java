@@ -39,30 +39,27 @@ import org.slf4j.LoggerFactory;
 
 public abstract class InstanceModelUtils {
 
-    public static final String VM_USER = "VMUserName";
-    public static final String VM_PRIVATE_KEY = "VMPrivateKey";
-    public static final String VM_IP = "VMIP";
-    public static final String VM_SSH_PORT = "VMSSHPort";
+    public static final String vmUser = "VMUserName";
+    public static final String vmPrivateKey = "VMPrivateKey";
+    public static final String vmIP = "VMIP";
+    public static final String vmSshPort = "VMSSHPort";
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
 
     public static Set<String> getRequiredSSHInputs(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Set<String> inputs = new HashSet<>();
         Map<String, String> sshCredentials = getSSHCredentials(template, nodeIdsToBeReplaced);
-        String extractedPrivateKey = sshCredentials.get(VM_PRIVATE_KEY);
-        if (extractedPrivateKey == null || extractedPrivateKey.isEmpty()
-            || extractedPrivateKey.toLowerCase().startsWith("get_input")) {
-            inputs.add(VM_PRIVATE_KEY);
+        if (sshCredentials.get(vmPrivateKey) == null || sshCredentials.get(vmPrivateKey).isEmpty()
+            || sshCredentials.get(vmPrivateKey).toLowerCase().startsWith("get_input")) {
+            inputs.add(vmPrivateKey);
         }
-        String extractedUser = sshCredentials.get(VM_USER);
-        if (extractedUser == null || extractedUser.isEmpty()
-            || extractedUser.toLowerCase().startsWith("get_input")) {
-            inputs.add(VM_USER);
+        if (sshCredentials.get(vmUser) == null || sshCredentials.get(vmUser).isEmpty()
+            || sshCredentials.get(vmUser).toLowerCase().startsWith("get_input")) {
+            inputs.add(vmUser);
         }
-        String extractedIp = sshCredentials.get(VM_IP);
-        if (extractedIp == null || extractedIp.isEmpty()
-            || extractedIp.toLowerCase().startsWith("get_input")) {
-            inputs.add(VM_IP);
+        if (sshCredentials.get(vmIP) == null || sshCredentials.get(vmIP).isEmpty()
+            || sshCredentials.get(vmIP).toLowerCase().startsWith("get_input")) {
+            inputs.add(vmIP);
         }
         return inputs;
     }
@@ -81,14 +78,14 @@ public abstract class InstanceModelUtils {
                         Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) host.getProperties())
                             .getKVProperties();
                         kvProperties.forEach((key, value) -> {
-                            if (VM_USER.equalsIgnoreCase(key)) {
-                                properties.put(VM_USER, value);
-                            } else if (VM_PRIVATE_KEY.equalsIgnoreCase(key)) {
-                                properties.put(VM_PRIVATE_KEY, value);
-                            } else if (VM_IP.equalsIgnoreCase(key)) {
-                                properties.put(VM_IP, value);
-                            } else if (VM_SSH_PORT.equalsIgnoreCase(key)) {
-                                properties.put(VM_SSH_PORT, value);
+                            if (vmUser.equalsIgnoreCase(key)) {
+                                properties.put(vmUser, value);
+                            } else if (vmPrivateKey.equalsIgnoreCase(key)) {
+                                properties.put(vmPrivateKey, value);
+                            } else if (vmIP.equalsIgnoreCase(key)) {
+                                properties.put(vmIP, value);
+                            } else if (vmSshPort.equalsIgnoreCase(key)) {
+                                properties.put(vmSshPort, value);
                             }
                         });
                     }
@@ -104,15 +101,13 @@ public abstract class InstanceModelUtils {
         try {
             JSch jsch = new JSch();
             File key = File.createTempFile("key", "tmp", FileUtils.getTempDirectory());
-            FileUtils.write(key, sshCredentials.get(VM_PRIVATE_KEY), "UTF-8");
+            FileUtils.write(key, sshCredentials.get(vmPrivateKey), "UTF-8");
             logger.info("tmp key file created: {}", key.exists());
 
             jsch.addIdentity(key.getAbsolutePath());
-            Session session = sshCredentials.containsKey(VM_SSH_PORT)
-                ? jsch.getSession(sshCredentials.get(VM_USER),
-                sshCredentials.get(VM_IP),
-                Integer.parseInt(sshCredentials.get(VM_SSH_PORT)))
-                : jsch.getSession(sshCredentials.get(VM_USER), sshCredentials.get(VM_IP));
+            Session session = sshCredentials.containsKey(vmSshPort)
+                ? jsch.getSession(sshCredentials.get(vmUser), sshCredentials.get(vmIP), Integer.parseInt(sshCredentials.get(vmSshPort)))
+                : jsch.getSession(sshCredentials.get(vmUser), sshCredentials.get(vmIP));
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
@@ -121,10 +116,7 @@ public abstract class InstanceModelUtils {
 
             return session;
         } catch (JSchException | IOException e) {
-            logger.error("Failed to connect to {} using user {}.",
-                sshCredentials.get(VM_IP),
-                sshCredentials.get(VM_USER),
-                e);
+            logger.error("Failed to connect to {} using user {}.", sshCredentials.get(vmIP), sshCredentials.get(vmUser), e);
             throw new RuntimeException(e);
         }
     }

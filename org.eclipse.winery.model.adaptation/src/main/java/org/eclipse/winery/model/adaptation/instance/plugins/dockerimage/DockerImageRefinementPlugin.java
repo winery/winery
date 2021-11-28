@@ -68,8 +68,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(
-        TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
         List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && Objects.equals(node.getType(), QNAME_DOCKER_CONTAINER))
