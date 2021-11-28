@@ -50,8 +50,7 @@ public abstract class InstanceModelRefinementPlugin {
      * @param template the topology template to be refined
      * @return the ids of the nodes that have been altered by the plugin
      */
-    public abstract Set<String> apply(
-        TTopologyTemplate template);
+    public abstract Set<String> apply(TTopologyTemplate template);
 
     public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced);
 
@@ -94,8 +93,6 @@ public abstract class InstanceModelRefinementPlugin {
      * to their needs. An alternative would be to use a matcher that receives the plugin as an argument and calls the
      * plugin where needed. However the approach of providing a custom matcher allows for more flexibility.
      * </p>
-     *
-     * @return the {@code IToscaMatcher} to be used, for finding refineable sub graphs
      */
     @JsonIgnore
     protected IToscaMatcher getToscaMatcher() {

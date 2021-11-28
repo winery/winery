@@ -75,8 +75,7 @@ public class InstanceModelRefinement {
             if (serviceTemplate.getTags() == null) {
                 serviceTemplate.setTags(new ArrayList<>());
             }
-            serviceTemplate.getTags()
-                .removeIf(tTag -> Objects.equals(tTag.getName(), TAG_DISCOVERY_PLUGINS));
+            serviceTemplate.getTags().removeIf(tTag -> Objects.equals(tTag.getName(), TAG_DISCOVERY_PLUGINS));
             serviceTemplate.getTags().add(updatedTag);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Could not write terraform deployment technology to JSON string");
@@ -107,9 +106,7 @@ public class InstanceModelRefinement {
         TServiceTemplate serviceTemplate = repository.getElement(serviceTemplateId);
         TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
 
-        List<DiscoveryPluginDescriptor> discoveryPluginDescriptors = extractDiscoveryPluginsFromServiceTemplate(
-            serviceTemplate,
-            new ObjectMapper());
+        List<DiscoveryPluginDescriptor> discoveryPluginDescriptors = extractDiscoveryPluginsFromServiceTemplate(serviceTemplate, new ObjectMapper());
 
         if (topologyTemplate == null) {
             logger.error("Cannot refine empty instance model!");
@@ -133,9 +130,7 @@ public class InstanceModelRefinement {
                         DiscoveryPluginDescriptor discoveryPluginDescriptor = new DiscoveryPluginDescriptor();
                         discoveryPluginDescriptor.setId(selectedPlugin.getId());
                         discoveryPluginDescriptor.setDiscoveredIds(Collections.emptyList());
-
                         discoveryPluginDescriptors.add(discoveryPluginDescriptor);
-
                         return discoveryPluginDescriptor;
                     });
                 Set<String> pluginDiscoveredNodeIds = selectedPlugin.apply(topologyTemplate);
