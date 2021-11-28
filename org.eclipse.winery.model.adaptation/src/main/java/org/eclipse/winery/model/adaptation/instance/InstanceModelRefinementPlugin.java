@@ -34,10 +34,9 @@ import org.jgrapht.GraphMapping;
 
 public abstract class InstanceModelRefinementPlugin {
 
-    protected RefineableSubgraph matchToBeRefined;
-
     private final ToscaIsomorphismMatcher isomorphismMatcher;
     private final String id;
+    protected RefineableSubgraph matchToBeRefined;
     private ArrayList<RefineableSubgraph> subGraphs;
 
     public InstanceModelRefinementPlugin(String id) {
@@ -54,9 +53,7 @@ public abstract class InstanceModelRefinementPlugin {
     public abstract Set<String> apply(
         TTopologyTemplate template);
 
-    public abstract Set<String> determineAdditionalInputs(
-        TTopologyTemplate template,
-        ArrayList<String> nodeIdsToBeReplaced);
+    public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced);
 
     public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph) {
         List<TTopologyTemplate> detectors = getDetectorGraphs();
@@ -79,11 +76,7 @@ public abstract class InstanceModelRefinementPlugin {
                 if (!nodeIdsToBeReplaced.isEmpty()) {
                     Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
 
-                    this.subGraphs.add(new RefineableSubgraph(match,
-                        detectorGraph,
-                        nodeIdsToBeReplaced,
-                        additionalInputs,
-                        ids[0]++));
+                    this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
                 }
             });
         });
@@ -97,9 +90,9 @@ public abstract class InstanceModelRefinementPlugin {
     /**
      * <p>Returns the {@code IToscaMatcher} to use for finding refineable sub graphs.</p>
      * <p>
-     * There is a default Matcher provided, however every plugin implmentation may choose a different matcher, according to their needs.
-     * An alternative would be to use a matcher that receives the plugin as an argument and calls the plugin where needed.
-     * However the approach of providing a custom matcher allows for more flexibility.
+     * There is a default Matcher provided, however every plugin implmentation may choose a different matcher, according
+     * to their needs. An alternative would be to use a matcher that receives the plugin as an argument and calls the
+     * plugin where needed. However the approach of providing a custom matcher allows for more flexibility.
      * </p>
      *
      * @return the {@code IToscaMatcher} to be used, for finding refineable sub graphs
@@ -130,18 +123,16 @@ public abstract class InstanceModelRefinementPlugin {
 
     public static class RefineableSubgraph {
 
-        public int id;
-        public List<String> nodeIdsToBeReplaced;
-        public Set<String> additionalInputs;
-
         @JsonIgnore
         private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;
         @JsonIgnore
         private final ToscaGraph detectorGraph;
+        public int id;
+        public List<String> nodeIdsToBeReplaced;
+        public Set<String> additionalInputs;
 
-        public RefineableSubgraph(
-            GraphMapping<ToscaNode, ToscaEdge> graphMapping, ToscaGraph detectorGraph,
-            ArrayList<String> nodeIdsToBeReplaced, Set<String> additionalInputs, int id) {
+        public RefineableSubgraph(GraphMapping<ToscaNode, ToscaEdge> graphMapping, ToscaGraph detectorGraph,
+                                  ArrayList<String> nodeIdsToBeReplaced, Set<String> additionalInputs, int id) {
             this.graphMapping = graphMapping;
             this.detectorGraph = detectorGraph;
             this.nodeIdsToBeReplaced = nodeIdsToBeReplaced;

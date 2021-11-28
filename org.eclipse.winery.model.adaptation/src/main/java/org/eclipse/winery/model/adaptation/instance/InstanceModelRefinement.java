@@ -50,9 +50,9 @@ import org.slf4j.LoggerFactory;
 public class InstanceModelRefinement {
 
     public static final String TAG_DISCOVERY_PLUGINS = "jsonDiscoveryPlugins";
-    Logger logger = LoggerFactory.getLogger(InstanceModelRefinement.class);
     private final InstanceModelPluginChooser pluginChooser;
     private final List<InstanceModelRefinementPlugin> plugins;
+    Logger logger = LoggerFactory.getLogger(InstanceModelRefinement.class);
 
     public InstanceModelRefinement(InstanceModelPluginChooser chooser) {
         this.pluginChooser = chooser;
@@ -122,8 +122,7 @@ public class InstanceModelRefinement {
             List<InstanceModelRefinementPlugin> executablePlugins = this.plugins.stream()
                 .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph))
                 .collect(Collectors.toList());
-            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate,
-                executablePlugins);
+            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
 
             if (selectedPlugin != null) {
                 DiscoveryPluginDescriptor discoveryPlugin = discoveryPluginDescriptors.stream()

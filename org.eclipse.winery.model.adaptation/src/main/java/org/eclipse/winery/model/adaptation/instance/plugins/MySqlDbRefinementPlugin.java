@@ -66,10 +66,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
             template.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && Objects.requireNonNull(node.getType())
-                    .getLocalPart()
-                    .toLowerCase()
-                    .startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
+                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
                 .findFirst()
                 .ifPresent(db -> {
                     discoveredNodeIds.add(db.getId());

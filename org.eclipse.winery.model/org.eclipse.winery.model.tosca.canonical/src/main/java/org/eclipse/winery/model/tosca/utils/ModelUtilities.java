@@ -980,14 +980,10 @@ public abstract class ModelUtilities {
         return createRelationshipTemplateAndAddToTopology(sourceNode, targetNode, type, type.getLocalPart(), topology);
     }
 
-    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(
-        TNodeTemplate sourceNode,
-        TNodeTemplate targetNode, QName type,
-        String connectionDescription, TTopologyTemplate topology) {
-        TRelationshipTemplate relationshipTemplate = createRelationshipTemplate(sourceNode,
-            targetNode,
-            type,
-            connectionDescription);
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode,
+                                                                                   TNodeTemplate targetNode, QName type,
+                                                                                   String connectionDescription, TTopologyTemplate topology) {
+        TRelationshipTemplate relationshipTemplate = createRelationshipTemplate(sourceNode, targetNode, type, connectionDescription);
         generateNewIdOfTemplate(relationshipTemplate, topology);
         topology.addRelationshipTemplate(relationshipTemplate);
         return relationshipTemplate;

@@ -72,8 +72,7 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                 ? null
                 : new InstanceModelRefinementPlugin("noop") {
                 @Override
-                public Set<String> apply(
-                    TTopologyTemplate template) {
+                public Set<String> apply(TTopologyTemplate template) {
                     template.addNodeTemplate(mySpecialNode);
                     Set<String> discoveredNodeIds = new HashSet<>();
                     discoveredNodeIds.add(mySpecialNode.getId());

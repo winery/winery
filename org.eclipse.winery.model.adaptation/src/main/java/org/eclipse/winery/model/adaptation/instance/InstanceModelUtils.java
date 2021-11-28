@@ -39,12 +39,11 @@ import org.slf4j.LoggerFactory;
 
 public abstract class InstanceModelUtils {
 
-    public static final String vmUser = "VMUserName";
-    public static final String vmPrivateKey = "VMPrivateKey";
-    public static final String vmIP = "VMIP";
-    public static final String vmSshPort = "VMSSHPort";
-
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
+    public static String vmUser = "VMUserName";
+    public static String vmPrivateKey = "VMPrivateKey";
+    public static String vmIP = "VMIP";
+    public static String vmSshPort = "VMSSHPort";
 
     public static Set<String> getRequiredSSHInputs(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Set<String> inputs = new HashSet<>();
@@ -121,10 +120,7 @@ public abstract class InstanceModelUtils {
         }
     }
 
-    public static void setUserInputs(
-        Map<String, String> userInputs,
-        TTopologyTemplate template,
-        List<String> nodeIdsToBeReplaced) {
+    public static void setUserInputs(Map<String, String> userInputs, TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         nodeIdsToBeReplaced.forEach(nodeId -> {
             TNodeTemplate node = template.getNodeTemplate(nodeId);
             List<TNodeTemplate> nodes = ModelUtilities.getHostedOnSuccessors(template, node);
@@ -132,8 +128,7 @@ public abstract class InstanceModelUtils {
 
             nodes.forEach(nodeTemplate -> {
                 if (nodeTemplate.getProperties() != null && nodeTemplate.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties())
-                        .getKVProperties();
+                    Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties();
                     Optional.ofNullable(userInputs).ifPresent(inputs -> inputs.forEach((key, value) -> {
                         if (kvProperties.containsKey(key)) {
                             kvProperties.put(key, value);
