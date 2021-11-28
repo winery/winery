@@ -162,8 +162,7 @@ public abstract class ModelUtilities {
         if (!ModelUtilities.allRequiredFieldsNonNull(wpd)) {
             // wpd not fully filled -> valid XSD cannot be provided
             // fallback: add comment and return "empty" document
-            Comment comment = doc.createComment(
-                "Required fields are missing in Winery's key/value properties definition.");
+            Comment comment = doc.createComment("Required fields are missing in Winery's key/value properties definition.");
             doc.appendChild(comment);
             return doc;
         }
@@ -375,9 +374,7 @@ public abstract class ModelUtilities {
      * @param targetObjectRef  the object ref as String
      * @return null if not found, otherwise the entity template in the topology
      */
-    public static TEntityTemplate findNodeTemplateOrRequirementOfNodeTemplateOrCapabilityOfNodeTemplateOrRelationshipTemplate(
-        TTopologyTemplate topologyTemplate,
-        String targetObjectRef) {
+    public static TEntityTemplate findNodeTemplateOrRequirementOfNodeTemplateOrCapabilityOfNodeTemplateOrRelationshipTemplate(TTopologyTemplate topologyTemplate, String targetObjectRef) {
         // We cannot use XMLs id pointing capabilities as we work on the Java model
         // Other option: modify the stored XML directly. This is more error prune than walking through the whole topology
         for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
@@ -493,8 +490,7 @@ public abstract class ModelUtilities {
         return null;
     }
 
-    public static TRelationshipTemplate resolveRelationshipTemplate(
-        TServiceTemplate serviceTemplate, String reference) {
+    public static TRelationshipTemplate resolveRelationshipTemplate(TServiceTemplate serviceTemplate, String reference) {
         if (serviceTemplate.getTopologyTemplate() != null) {
             for (TEntityTemplate tmpl : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
                 if (tmpl instanceof TRelationshipTemplate) {
@@ -537,7 +533,6 @@ public abstract class ModelUtilities {
                 TCapability capability = new TCapability.Builder(
                     cd.getName() + nodeTemplateId,
                     cd.getCapabilityType(),
-
                     cd.getName()
                 ).build();
                 builder.addCapability(capability);
@@ -581,10 +576,9 @@ public abstract class ModelUtilities {
      * @param targetNodeTemplate the target {@link TNodeTemplate} of the connection
      * @return the instantiated {@link TRelationshipTemplate}
      */
-    public static TRelationshipTemplate instantiateRelationshipTemplate(
-        TRelationshipType relationshipType,
-        TNodeTemplate sourceNodeTemplate,
-        TNodeTemplate targetNodeTemplate) {
+    public static TRelationshipTemplate instantiateRelationshipTemplate(TRelationshipType relationshipType,
+                                                                        TNodeTemplate sourceNodeTemplate,
+                                                                        TNodeTemplate targetNodeTemplate) {
         if (relationshipType == null || relationshipType.getName() == null) {
             return null;
         }
@@ -633,9 +627,8 @@ public abstract class ModelUtilities {
         otherAttributes.put(QNAME_LOCATION, targetLabel.toLowerCase());
     }
 
-    public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate(
-        TTopologyTemplate
-            topologyTemplate, TRelationshipTemplate relationshipTemplate) {
+    public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate(TTopologyTemplate
+                                                                                topologyTemplate, TRelationshipTemplate relationshipTemplate) {
         if (relationshipTemplate.getSourceElement().getRef() instanceof TRequirement) {
             TRequirement requirement = (TRequirement) relationshipTemplate.getSourceElement().getRef();
             return topologyTemplate.getNodeTemplates().stream()
@@ -776,15 +769,13 @@ public abstract class ModelUtilities {
             return doc.getDocumentElement();
         }
         if (!(item instanceof Element)) {
-            LOGGER.warn("any item to be converter was not an XML-String or an Element, but of unexpected type {}!",
-                item.getClass().getName());
+            LOGGER.warn("any item to be converter was not an XML-String or an Element, but of unexpected type {}!", item.getClass().getName());
             // TODO: consider implications of this, if it ever happens
         }
         return item;
     }
 
-    public static boolean isOfType(
-        QName requiredType, QName givenType, Map<QName, ? extends
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends
         TEntityType> elements) {
         if (!givenType.equals(requiredType)) {
             TEntityType entityType = elements.get(givenType);
@@ -857,8 +848,7 @@ public abstract class ModelUtilities {
             .anyMatch(tag -> "feature".equals(tag.getName()));
     }
 
-    public static void updateNodeTemplate(
-        TTopologyTemplate topology, String oldComponentId, QName
+    public static void updateNodeTemplate(TTopologyTemplate topology, String oldComponentId, QName
         newType, TNodeType newComponentType) {
         TNodeTemplate nodeTemplate = topology.getNodeTemplate(oldComponentId);
 
@@ -872,30 +862,23 @@ public abstract class ModelUtilities {
     /**
      * This is specific to the TOSCA hostedOn relationship type.
      */
-    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(
-        TTopologyTemplate topologyTemplate,
-        String nodeTemplate) {
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, String nodeTemplate) {
         return getHostedOnSuccessors(topologyTemplate, topologyTemplate.getNodeTemplate(nodeTemplate));
     }
 
-    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(
-        TTopologyTemplate topologyTemplate,
-        TNodeTemplate nodeTemplate) {
+    public static ArrayList<TNodeTemplate> getHostedOnSuccessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
         ArrayList<TNodeTemplate> hostedOnSuccessors = new ArrayList<>();
 
         Optional<TRelationshipTemplate> hostedOn;
 
         do {
-            List<TRelationshipTemplate> outgoingRelationshipTemplates = getOutgoingRelationshipTemplates(
-                topologyTemplate,
-                nodeTemplate);
+            List<TRelationshipTemplate> outgoingRelationshipTemplates = getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
 
             hostedOn = outgoingRelationshipTemplates.stream()
                 .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
                 .findFirst();
             if (hostedOn.isPresent()) {
-                nodeTemplate = getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate,
-                    hostedOn.get().getTargetElement().getRef());
+                nodeTemplate = getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.get().getTargetElement().getRef());
                 hostedOnSuccessors.add(nodeTemplate);
             }
         } while (hostedOn.isPresent());
@@ -913,9 +896,8 @@ public abstract class ModelUtilities {
      * @param relationshipSourceOrTarget the source or target element the relationship points to.
      * @return the actual TNodeTemplate the TRelationshipTemplate is referring to.
      */
-    public static TNodeTemplate getNodeTemplateFromRelationshipSourceOrTarget(
-        TTopologyTemplate topologyTemplate,
-        RelationshipSourceOrTarget relationshipSourceOrTarget) {
+    public static TNodeTemplate getNodeTemplateFromRelationshipSourceOrTarget(TTopologyTemplate topologyTemplate,
+                                                                              RelationshipSourceOrTarget relationshipSourceOrTarget) {
         Optional<TNodeTemplate> nodeTemplate = Optional.empty();
 
         if (relationshipSourceOrTarget instanceof TNodeTemplate) {
@@ -938,9 +920,7 @@ public abstract class ModelUtilities {
         return nodeTemplate.orElseThrow(NullPointerException::new);
     }
 
-    public static void collectIdsOfExistingTopologyElements(
-        TTopologyTemplate topologyTemplateB,
-        Map<String, String> idMapping) {
+    public static void collectIdsOfExistingTopologyElements(TTopologyTemplate topologyTemplateB, Map<String, String> idMapping) {
         // collect existing node & relationship template ids
         topologyTemplateB.getNodeTemplateOrRelationshipTemplate()
             // the existing ids are left unchanged
@@ -978,15 +958,11 @@ public abstract class ModelUtilities {
         element.setId(newId);
     }
 
-    public static TRelationshipTemplate createRelationshipTemplate(
-        TNodeTemplate sourceNode,
-        TNodeTemplate targetNode,
-        QName type) {
+    public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate targetNode, QName type) {
         return createRelationshipTemplate(sourceNode, targetNode, type, "");
     }
 
-    public static TRelationshipTemplate createRelationshipTemplate(
-        TNodeTemplate sourceNode, TNodeTemplate
+    public static TRelationshipTemplate createRelationshipTemplate(TNodeTemplate sourceNode, TNodeTemplate
         targetNode, QName type, String connectionDescription) {
         return new TRelationshipTemplate.Builder(
             "con-" + sourceNode.getId() + "-" + connectionDescription + "-" + targetNode.getId(),
@@ -998,10 +974,9 @@ public abstract class ModelUtilities {
             .build();
     }
 
-    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(
-        TNodeTemplate sourceNode,
-        TNodeTemplate targetNode, QName type,
-        TTopologyTemplate topology) {
+    public static TRelationshipTemplate createRelationshipTemplateAndAddToTopology(TNodeTemplate sourceNode,
+                                                                                   TNodeTemplate targetNode, QName type,
+                                                                                   TTopologyTemplate topology) {
         return createRelationshipTemplateAndAddToTopology(sourceNode, targetNode, type, type.getLocalPart(), topology);
     }
 
