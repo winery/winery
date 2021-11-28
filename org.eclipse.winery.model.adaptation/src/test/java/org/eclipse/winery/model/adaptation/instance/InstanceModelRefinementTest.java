@@ -186,7 +186,7 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                 if (this.getCommand().startsWith("sudo netstat -tulpen | grep mysqld")) {
                     return expectedMySqlPort;
                 }
-                if (this.getCommand().startsWith("sudo mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA")
+                if (this.getCommand().startsWith("sudo -i mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA")
                     || (this.getCommand().startsWith("sudo cat /opt/tomcat/latest/webapps/")
                     && this.getCommand().endsWith("| sed -r 's/USE (.*);$/\\1/'"))) {
                     return expectedDatabaseName;

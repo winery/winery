@@ -72,6 +72,9 @@ public class InstanceModelRefinement {
         try {
             TTag updatedTag = new TTag.Builder(TAG_DISCOVERY_PLUGINS, objectMapper.writeValueAsString(discoveryPlugins))
                 .build();
+            if (serviceTemplate.getTags() == null) {
+                serviceTemplate.setTags(new ArrayList<>());
+            }
             serviceTemplate.getTags()
                 .removeIf(tTag -> Objects.equals(tTag.getName(), TAG_DISCOVERY_PLUGINS));
             serviceTemplate.getTags().add(updatedTag);
