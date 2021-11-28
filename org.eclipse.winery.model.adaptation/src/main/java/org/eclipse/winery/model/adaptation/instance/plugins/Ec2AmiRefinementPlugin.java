@@ -105,11 +105,7 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
 
         compute.setProperties(computeProperties);
 
-        return Collections.singletonList(
-            new TTopologyTemplate.Builder()
-                .addNodeTemplate(compute)
-                .build()
-        );
+        return Collections.singletonList(new TTopologyTemplate.Builder().addNodeTemplate(compute).build());
     }
 
     @Override
