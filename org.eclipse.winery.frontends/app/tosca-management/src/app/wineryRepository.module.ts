@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -51,6 +51,7 @@ import { TopologyFragmentRefinementModelModule } from './wineryMainModules/topol
 import { WineryFeatureToggleModule } from './wineryFeatureToggleModule/winery-feature-toggle.module';
 import { DataTypeModule } from './wineryMainModules/dataTypes/dataType.module';
 import { CheService } from '../../../topologymodeler/src/app/services/che.service';
+import { InterfacesService } from '../../../tosca-management/src/app/instance/sharedComponents/interfaces/interfaces.service';
 
 @NgModule({
     imports: [
@@ -96,6 +97,7 @@ import { CheService } from '../../../topologymodeler/src/app/services/che.servic
     providers: [
         ExistService,
         WineryRepositoryConfigurationService,
+        InterfacesService,
         CheService
     ],
     bootstrap: [WineryRepositoryComponent]

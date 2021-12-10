@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -12,6 +12,24 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <h3>Configure the visibility of the following features:</h3>
+
+<div class="form-group">
+    <label class="control-label" for="containerUrl2">Modeler URL</label>
+    <input id="containerUrl2"
+           class="form-control"
+           type="text"
+           name="containerUrl2"
+           autocomplete=off
+           required
+           (ngModelChange)="checkModelerAvailability()"
+           (ended)="checkModelerAvailability()"
+           [formControl]="containerUrlControl"
+           [ngStyle]= "{'border-color':containerUrlAvailable ?  'green' : 'red'}"
+    />
+    <span *ngIf="containerUrlAvailable"><i class="fa fa-check"></i></span>
+    <span *ngIf="!containerUrlAvailable"><i class="fa fa-times"></i></span>
+    <button class="btn btn-info btn-xs" (click)="saveModelerURL()">Save</button>
+</div>
 
 <div class="form-group">
     <input type="checkbox" [(ngModel)]="config.features.accountability" id="accountability" name="accountability"
@@ -40,8 +58,7 @@
            [checked]="config.features.patternRefinement">
     <label for="patternRefinement">Pattern Refinement</label>
     <br>
-    <input type="checkbox" [(ngModel)]="config.features.topologyFragmentRefinementModel"
-           id="topologyFragmentRefinementModel"
+    <input type="checkbox" [(ngModel)]="config.features.topologyFragmentRefinementModel" id="topologyFragmentRefinementModel"
            name="topologyFragmentRefinementModel"
            [checked]="config.features.topologyFragmentRefinementModel">
     <label for="topologyFragmentRefinementModel">Topology Fragment Refinement</label>

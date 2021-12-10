@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,8 +14,9 @@
 import { Component, OnInit } from '@angular/core';
 import { WineryConfiguration, WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { HttpClient } from '@angular/common/http';
-import { backendBaseURL } from '../../../configuration';
+import { backendBaseURL, modelerURL } from '../../../configuration';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'winery-instance-configuration-component',
@@ -27,7 +28,9 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 
 export class FeatureConfigurationComponent implements OnInit {
     config: WineryConfiguration;
-
+    public containerUrlAvailable: boolean;
+    public containerUrlControl: FormControl = new FormControl();
+    public containerUrl;
     constructor(private http: HttpClient,
                 private configData: WineryRepositoryConfigurationService,
                 private notify: WineryNotificationService) {
@@ -35,6 +38,40 @@ export class FeatureConfigurationComponent implements OnInit {
 
     ngOnInit(): void {
         this.config = this.configData.configuration;
+        this.containerUrlControl.setValue(modelerURL);
+        this.containerUrl = modelerURL;
+        this.checkModelerAvailability();
+    }
+
+    checkModelerAvailability() {
+        const containerURL = (<HTMLInputElement> document.getElementById('containerUrl2')).value;
+        if (containerURL) {
+            this.containerUrl = containerURL;
+            this.http.get(this.containerUrl, { responseType: 'text' }).subscribe(
+                () => this.containerUrlAvailable = true,
+                () => this.containerUrlAvailable = false
+            );
+        } else if (this.containerUrl) {
+            this.http.get(this.containerUrl, { responseType: 'text' }).subscribe(
+                () => this.containerUrlAvailable = true,
+                () => this.containerUrlAvailable = false
+            );
+        }
+    }
+
+    saveModelerURL() {
+        this.checkModelerAvailability();
+        if (this.containerUrlAvailable) {
+            const containerURL = (<HTMLInputElement>document.getElementById('containerUrl2')).value;
+            this.config.endpoints.bpmnModeler = containerURL;
+            this.http.put<WineryConfiguration>(backendBaseURL + '/admin' + '/config', this.config)
+                .subscribe(
+                    () => this.notify.success('Successfully saved Modeler URL!'),
+                    () => this.notify.error('Error while saving Modeler URL')
+                );
+        } else {
+            this.notify.error('Modeler URL is not available');
+        }
     }
 
     saveChanges() {

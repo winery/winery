@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,21 +35,51 @@ export class InterfacesService {
         this.setImplementationsUrl();
     }
 
+    setConfigurationForPlans(path) {
+        // returns the index of the second occurrence of servicetemplates
+        const secondOccurrence = path.split('servicetemplates', 2).join('servicetemplates').length;
+        const plansIndex = path.search('/plans');
+        const pathToCsarName = path.substring(secondOccurrence, plansIndex);
+        const csarName = pathToCsarName.split('/')[1];
+        const url = path.split(csarName)[0].split(backendBaseURL)[1] + csarName + '/boundarydefinitions';
+        return url;
+    }
+
     getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
         if (!url) {
             return this.get<InterfacesApiData[]>(this.path + '?noId=true');
         } else if (relationshipInterfaces) {
             return this.getRelationshipInterfaces(url);
         } else {
+            url = this.setConfigurationForPlans(url);
             return this.get<InterfacesApiData[]>(backendBaseURL + url + '/interfaces/');
         }
     }
 
     save(interfacesData: InterfacesApiData[]): Observable<HttpResponse<string>> {
+        if (this.path.includes('plans')) {
+            const path = this.setConfigurationForPlans(this.path) + '/interfaces/';
+            // replace operations by operation otherwise operation is null
+            return this.http
+                .post(
+                    backendBaseURL + path,
+                    JSON.stringify(interfacesData).replace(new RegExp('operations', 'g'), 'operation'),
+                    { headers: this.header, observe: 'response', responseType: 'text' }
+                );
+        }
         return this.http
             .post(
                 this.path,
-                interfacesData,
+                JSON.stringify(interfacesData).replace(new RegExp('operations', 'g'), 'operation'),
+                { headers: this.header, observe: 'response', responseType: 'text' }
+            );
+    }
+    clear(path: string): Observable<HttpResponse<string>> {
+        const path2 = this.setConfigurationForPlans(path) + '/interfaces/';
+        return this.http
+            .post(
+                backendBaseURL + path2,
+                [],
                 { headers: this.header, observe: 'response', responseType: 'text' }
             );
     }
@@ -107,4 +137,13 @@ export class InterfacesService {
             this.implementationsUrl = Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType) + '/';
         }
     }
+
+    private decode(param: string): string {
+        return decodeURIComponent(decodeURIComponent(param));
+    }
+
+    private encode(param: string): string {
+        return encodeURIComponent(encodeURIComponent(param));
+    }
+
 }
