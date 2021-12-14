@@ -50,9 +50,11 @@ import org.slf4j.LoggerFactory;
 public class InstanceModelRefinement {
 
     public static final String TAG_DISCOVERY_PLUGINS = "jsonDiscoveryPlugins";
+
+    private static final Logger logger = LoggerFactory.getLogger(InstanceModelRefinement.class);
+
     private final InstanceModelPluginChooser pluginChooser;
     private final List<InstanceModelRefinementPlugin> plugins;
-    Logger logger = LoggerFactory.getLogger(InstanceModelRefinement.class);
 
     public InstanceModelRefinement(InstanceModelPluginChooser chooser) {
         this.pluginChooser = chooser;

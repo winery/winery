@@ -39,11 +39,12 @@ import org.slf4j.LoggerFactory;
 
 public abstract class InstanceModelUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
     public static String vmUser = "VMUserName";
     public static String vmPrivateKey = "VMPrivateKey";
     public static String vmIP = "VMIP";
     public static String vmSshPort = "VMSSHPort";
+
+    private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
 
     public static Set<String> getRequiredSSHInputs(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Set<String> inputs = new HashSet<>();

@@ -34,9 +34,10 @@ import org.jgrapht.GraphMapping;
 
 public abstract class InstanceModelRefinementPlugin {
 
+    protected RefineableSubgraph matchToBeRefined;
+
     private final ToscaIsomorphismMatcher isomorphismMatcher;
     private final String id;
-    protected RefineableSubgraph matchToBeRefined;
     private ArrayList<RefineableSubgraph> subGraphs;
 
     public InstanceModelRefinementPlugin(String id) {
@@ -120,13 +121,14 @@ public abstract class InstanceModelRefinementPlugin {
 
     public static class RefineableSubgraph {
 
+        public int id;
+        public List<String> nodeIdsToBeReplaced;
+        public Set<String> additionalInputs;
+
         @JsonIgnore
         private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;
         @JsonIgnore
         private final ToscaGraph detectorGraph;
-        public int id;
-        public List<String> nodeIdsToBeReplaced;
-        public Set<String> additionalInputs;
 
         public RefineableSubgraph(GraphMapping<ToscaNode, ToscaEdge> graphMapping, ToscaGraph detectorGraph,
                                   ArrayList<String> nodeIdsToBeReplaced, Set<String> additionalInputs, int id) {
