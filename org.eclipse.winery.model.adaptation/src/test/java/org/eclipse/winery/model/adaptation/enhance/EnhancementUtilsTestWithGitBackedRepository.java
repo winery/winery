@@ -26,6 +26,7 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -287,24 +288,31 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
                 )
             );
 
+        DeploymentTechnologyDescriptor deploymentTechnologyDescriptor = new DeploymentTechnologyDescriptor();
+        deploymentTechnologyDescriptor.setId("OpenStackHeat");
+        deploymentTechnologyDescriptor.setTechnologyId("OpenStackHeat");
+        deploymentTechnologyDescriptor.setManagedIds(Collections.singletonList("NodeTypeWithDifferentFeatures_w1-wip1_0"));
+        deploymentTechnologyDescriptor.setProperties(Collections.emptyMap());
         Map<String, Map<QName, String>> openStackFeatures =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), Collections.emptyList());
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), Collections.singletonList(deploymentTechnologyDescriptor));
         assertEquals(1, openStackFeatures.size());
         Map<QName, String> openStackFeature = openStackFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
         assertEquals(2, openStackFeature.size());
         assertEquals("scalable AWS and Heat", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_AWS-OpenStack-w1-wip1")));
         assertEquals("ping", openStackFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
+        deploymentTechnologyDescriptor.setTechnologyId("Kubernetes");
         Map<String, Map<QName, String>> kubernetesFeatures =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), Collections.emptyList());
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), Collections.singletonList(deploymentTechnologyDescriptor));
         assertEquals(1, kubernetesFeatures.size());
         Map<QName, String> kubernetesFeature = kubernetesFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
         assertEquals(2, kubernetesFeature.size());
         assertEquals("scalable Kubernetes", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}ScaleFeature_Kubernetes-w1-wip1")));
         assertEquals("ping", kubernetesFeature.get(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}TechIndependentFeature_w1-wip1")));
 
+        deploymentTechnologyDescriptor.setTechnologyId("Chef");
         Map<String, Map<QName, String>> chefFeatures =
-            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), Collections.emptyList());
+            EnhancementUtils.getAvailableFeaturesForTopology(serviceTemplate.getTopologyTemplate(), Collections.singletonList(deploymentTechnologyDescriptor));
         assertEquals(1, chefFeatures.size());
         Map<QName, String> chefFeature = chefFeatures.get("NodeTypeWithDifferentFeatures_w1-wip1_0");
         assertEquals(1, chefFeature.size());
