@@ -35,6 +35,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
 import org.eclipse.winery.model.tosca.HasId;
 import org.eclipse.winery.model.tosca.RelationshipSourceOrTarget;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -59,6 +60,10 @@ import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -69,12 +74,14 @@ import org.xml.sax.SAXException;
 public abstract class ModelUtilities {
 
     public static final QName QNAME_LOCATION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "location");
-    public static final QName QNAME_PARTICIPANT = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "participant");
+    public static final QName QNAME_PARTICIPANT = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
+        "participant");
     public static final QName NODE_TEMPLATE_REGION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "region");
     public static final QName NODE_TEMPLATE_PROVIDER = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE,
         "provider");
     public static final QName RELATIONSHIP_TEMPLATE_TRANSFER_TYPE =
         new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "dataTransferType");
+    public static final String TAG_DEPLOYMENT_TECHNOLOGIES = "jsonDeploymentTechnologies";
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
     private static final DocumentBuilder DOCUMENT_BUILDER;
@@ -799,26 +806,31 @@ public abstract class ModelUtilities {
      * based on the underlying <code>deploymentTechnology</code>. If the filtering by the
      * <code>deploymentTechnology</code> is not required, <code>null</code> should be passed.
      *
-     * @param givenType            The QName of the type to be investigated.
-     * @param elements             The set of Types available.
-     * @param deploymentTechnology The underlying deployment technology, the features must comply to.
-     * @param <T>                  The type of the Elements
+     * @param givenType              The QName of the type to be investigated.
+     * @param elements               The set of Types available.
+     * @param deploymentTechnologies The underlying deployment technology, the features must comply to.
+     * @param <T>                    The type of the Elements
      * @return The set of applicable features.
      */
     public static <T extends
-        TEntityType> Map<T, String> getAvailableFeaturesOfType(QName givenType, Map<QName, T> elements,
-                                                               String deploymentTechnology) {
+        TEntityType> Map<T, String> getAvailableFeaturesOfType(
+        QName givenType, Map<QName, T> elements,
+        List<String> deploymentTechnologies) {
         HashMap<T, String> features = new HashMap<>();
         getChildrenOf(givenType, elements).forEach((qName, t) -> {
             if (Objects.nonNull(t.getTags())) {
                 List<TTag> list = t.getTags();
 
-                if (deploymentTechnology == null
-                    || list.stream().anyMatch(
-                    // To enable the usage of "technology" and "technologies", we only check for "technolog"
-                    tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())
-                        && (tag.getValue().toLowerCase().contains(deploymentTechnology.toLowerCase())
-                        || "*".equals(tag.getValue())))) {
+                // To enable the usage of "technology" and "technologies", we only check for "technolog"
+                String supportedDeploymentTechnologies = list.stream()
+                    .filter(tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase()))
+                    .map(TTag::getValue)
+                    .collect(
+                        Collectors.joining(" "));
+
+                if (StringUtils.isBlank(supportedDeploymentTechnologies)
+                    || "*".equals(supportedDeploymentTechnologies) || deploymentTechnologies.stream()
+                    .anyMatch(s -> supportedDeploymentTechnologies.toLowerCase().contains(s.toLowerCase()))) {
                     list.stream()
                         .filter(tag -> "feature".equalsIgnoreCase(tag.getName()))
                         .findFirst()
@@ -1002,5 +1014,31 @@ public abstract class ModelUtilities {
                 .anyMatch(policy -> policy.getPolicyType()
                     .equals(policyType)
                 );
+    }
+
+    public static List<DeploymentTechnologyDescriptor> extractDeploymentTechnologiesFromServiceTemplate(
+        TServiceTemplate serviceTemplate, ObjectMapper objectMapper) {
+        return Optional.ofNullable(serviceTemplate.getTags())
+            .map(tags -> extractDeploymentTechnologiesFromTags(tags, objectMapper))
+            .orElseGet(ArrayList::new);
+    }
+
+    public static List<DeploymentTechnologyDescriptor> extractDeploymentTechnologiesFromTags(
+        List<TTag> tags, ObjectMapper objectMapper) {
+        return Optional.ofNullable(tags)
+            .flatMap(tTags -> tTags.stream()
+                .filter(tTag -> Objects.equals(tTag.getName(), TAG_DEPLOYMENT_TECHNOLOGIES))
+                .findAny())
+            .map(TTag::getValue)
+            .map(s -> {
+                CollectionType collectionType = objectMapper.getTypeFactory()
+                    .constructCollectionType(List.class, DeploymentTechnologyDescriptor.class);
+                try {
+                    return objectMapper.<List<DeploymentTechnologyDescriptor>>readValue(s, collectionType);
+                } catch (JsonProcessingException e) {
+                    throw new IllegalStateException("Deployment technologies tag could not be parsed as JSON", e);
+                }
+            })
+            .orElseGet(ArrayList::new);
     }
 }

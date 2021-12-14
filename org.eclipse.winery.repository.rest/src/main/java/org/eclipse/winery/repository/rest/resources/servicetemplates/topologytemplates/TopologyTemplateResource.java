@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,13 +50,13 @@ import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
 import org.eclipse.winery.model.tosca.HasTags;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -76,6 +77,7 @@ import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -472,18 +474,14 @@ public class TopologyTemplateResource {
     public ArrayList<AvailableFeaturesApiData> getAvailableFeatures() {
         ArrayList<AvailableFeaturesApiData> apiData = new ArrayList<>();
 
-        String deploymentTechnology = null;
+        List<DeploymentTechnologyDescriptor> deploymentTechnologies = Collections.emptyList();
         if (this.parent.getElement() instanceof HasTags && ((HasTags) this.parent.getElement()).getTags() != null) {
-            for (TTag tag : ((HasTags) this.parent.getElement()).getTags()) {
-                // To enable the usage of "technology" and "technologies", we only check for "technolog"
-                if (tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase())) {
-                    deploymentTechnology = tag.getValue();
-                    break;
-                }
-            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            deploymentTechnologies = ModelUtilities.extractDeploymentTechnologiesFromTags(((HasTags) this.parent.getElement()).getTags(),
+                objectMapper);
         }
 
-        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnology)
+        EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnologies)
             .forEach((nodeTemplateId, featuresMap) -> {
                 ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
                 featuresMap.forEach(

@@ -49,16 +49,16 @@ public abstract class InstanceModelRefinementPlugin {
      * Apply the changes for the nodes identified by the matchToBeRefined.
      *
      * @param template the topology template to be refined
-     * @return the refined topology template
+     * @return the ids of the nodes that have been altered by the plugin
      */
-    public abstract TTopologyTemplate apply(TTopologyTemplate template);
+    public abstract Set<String> apply(TTopologyTemplate template);
 
     public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced);
 
     public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph) {
         List<TTopologyTemplate> detectors = getDetectorGraphs();
         this.subGraphs = new ArrayList<>();
-        IToscaMatcher matcher = new ToscaPropertyMatcher();
+        IToscaMatcher matcher = getToscaMatcher();
 
         detectors.forEach(detector -> {
             ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(detector);
@@ -86,6 +86,19 @@ public abstract class InstanceModelRefinementPlugin {
 
     @JsonIgnore
     protected abstract List<TTopologyTemplate> getDetectorGraphs();
+
+    /**
+     * <p>Returns the {@code IToscaMatcher} to use for finding refineable sub graphs.</p>
+     * <p>
+     * There is a default Matcher provided, however every plugin implmentation may choose a different matcher, according
+     * to their needs. An alternative would be to use a matcher that receives the plugin as an argument and calls the
+     * plugin where needed. However the approach of providing a custom matcher allows for more flexibility.
+     * </p>
+     */
+    @JsonIgnore
+    protected IToscaMatcher getToscaMatcher() {
+        return new ToscaPropertyMatcher();
+    }
 
     public String getId() {
         return id;

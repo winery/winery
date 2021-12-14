@@ -21,18 +21,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -71,7 +66,6 @@ public abstract class InstanceModelUtils {
 
     public static Map<String, String> getSSHCredentials(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Map<String, String> properties = new HashMap<>();
-        Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository().getQNameToElementMapping(NodeTypeId.class);
 
         template.getNodeTemplates().stream()
             .filter(node -> nodeIdsToBeReplaced.contains(node.getId()))
@@ -80,8 +74,7 @@ public abstract class InstanceModelUtils {
                 hostedOnSuccessors.add(node);
 
                 for (TNodeTemplate host : hostedOnSuccessors) {
-                    if (ModelUtilities.isOfType(OpenToscaBaseTypes.OperatingSystem, host.getType(), nodeTypes)
-                        && host.getProperties() != null && host.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                    if (host.getProperties() != null && host.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) host.getProperties())
                             .getKVProperties();
                         kvProperties.forEach((key, value) -> {
@@ -137,11 +130,11 @@ public abstract class InstanceModelUtils {
             nodes.forEach(nodeTemplate -> {
                 if (nodeTemplate.getProperties() != null && nodeTemplate.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                     Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) nodeTemplate.getProperties()).getKVProperties();
-                    userInputs.forEach((key, value) -> {
+                    Optional.ofNullable(userInputs).ifPresent(inputs -> inputs.forEach((key, value) -> {
                         if (kvProperties.containsKey(key)) {
                             kvProperties.put(key, value);
                         }
-                    });
+                    }));
                 }
             });
         });
