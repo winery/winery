@@ -81,4 +81,4 @@ A: If you need support, contact us at *opentosca@iaas.uni-stuttgart.de*.
 Q: How can I contribute to Winery?
 **********************************
 
-A: Please see the `contributing guide <https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md>`_.
+A: Please see the `contributing guide <https://github.com/eclipse/winery/blob/main/CONTRIBUTING.md>`_.

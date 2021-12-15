@@ -29,7 +29,7 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
 
         this.name = name;
         this.url = url;
-        this.branch = "master";
+        this.branch = "main";
     }
 
     public RepositoryProperties(String name, String url, String branch) {

@@ -28,7 +28,7 @@ public class RepositoryResolverFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryResolverFactory.class);
 
     public static Optional<IRepositoryResolver> getResolver(String url) {
-        return getResolver(url, Constants.MASTER_BRANCH);
+        return getResolver(url, Constants.MAIN_BRANCH);
     }
 
     public static Optional<IRepositoryResolver> getResolver(String url, String branch) {
