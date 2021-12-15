@@ -82,7 +82,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     artifactTypes: any;
     removeZIndex: any;
     propertyDefinitionType: PropertyDefinitionType;
-    policyIcons: string[];
+    policyIcons: { imageUrl: string, policyType: string }[];
     configEnum = FeatureEnum;
     policiesOfNode: TPolicy[];
     groupDefinitions: TGroupDefinition[];
@@ -307,7 +307,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 }
 
                 if (visual && visual.imageUrl) {
-                    this.policyIcons.push(visual.imageUrl);
+                    const type = value.policyType.replace(/{.*}/, '');
+                    this.policyIcons.push({ imageUrl: visual.imageUrl, policyType: type });
                 }
             }
 

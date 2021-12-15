@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.backend.consistencycheck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,16 +22,16 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public class ElementErrorList {
 
-    private List<String> errors = new ArrayList<>();
-    private List<String> warnings = new ArrayList<>();
-    private String toscaType;
+    private final List<String> errors = new ArrayList<>();
+    private final List<String> warnings = new ArrayList<>();
+    private final String toscaType;
 
     public ElementErrorList(@NonNull String toscaType) {
         this.toscaType = toscaType;
     }
 
     public void addError(@NonNull String message) {
-        this.errors.add(message);
+        this.errors.addAll(Arrays.asList(message.split("\n")));
     }
 
     public void addWarning(@NonNull String message) {
