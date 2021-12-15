@@ -35,11 +35,13 @@ import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.HasInheritance;
+import org.eclipse.winery.model.tosca.TActivityDefinition;
 import org.eclipse.winery.model.tosca.TArtifact;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityType;
@@ -48,6 +50,7 @@ import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEventFilterDefinition;
 import org.eclipse.winery.model.tosca.TGroupDefinition;
 import org.eclipse.winery.model.tosca.TGroupType;
 import org.eclipse.winery.model.tosca.TImplementation;
@@ -73,12 +76,15 @@ import org.eclipse.winery.model.tosca.TSchema;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.TTriggerDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
@@ -107,8 +113,10 @@ import org.eclipse.winery.model.tosca.yaml.YTRequirementDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.support.ValueHelper;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementAssignment;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.yaml.converter.support.AssignmentBuilder;
@@ -125,7 +133,7 @@ import org.slf4j.LoggerFactory;
 public class ToCanonical {
 
     public final static Logger LOGGER = LoggerFactory.getLogger(ToCanonical.class);
-
+    private final IRepository context;
     private YTServiceTemplate root;
     private YTNodeTemplate currentNodeTemplate;
     private String currentNodeTemplateName;
@@ -139,7 +147,6 @@ public class ToCanonical {
     private Map<String, Map.Entry<String, String>> relationshipSTMap;
     private Map<String, TNodeTemplate> nodeTemplateMap;
     private AssignmentBuilder assignmentBuilder;
-    private final IRepository context;
 
     public ToCanonical(IRepository context) {
         this.context = context;
@@ -380,11 +387,16 @@ public class ToCanonical {
         node.getOperations().forEach((key, value) -> ops.put(key, convert(value, key)));
         String typeName = fixNamespaceDuplication(type, node.getMetadata().get("targetNamespace"));
 
-        return new TInterfaceType.Builder(typeName)
+        TInterfaceType.Builder interfaceBuilder = new TInterfaceType.Builder(typeName)
             .setDerivedFrom(node.getDerivedFrom())
             .setDescription(node.getDescription())
-            .setOperations(ops)
-            .build();
+            .setOperations(ops);
+        node.getMetadata();
+
+        if (Objects.nonNull(node.getMetadata().get("targetNamespace"))) {
+            interfaceBuilder.setTargetNamespace(node.getMetadata().get("targetNamespace"));
+        }
+        return interfaceBuilder.build();
     }
 
     /**
@@ -837,8 +849,71 @@ public class ToCanonical {
         TPolicyType.Builder builder = new TPolicyType.Builder(typeName);
         fillEntityTypeProperties(node, builder);
         builder.setAppliesTo(convertTargets(node.getTargets()));
+        builder.setTriggers(
+            node.getTriggers().entrySet()
+                .stream()
+                .map(
+                    entry -> {
+                        if (entry.getValue() != null) {
+                            return convert(entry.getValue(), entry.getKey());
+                        } else {
+                            return null;
+                        }
+                    }
+                )
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+        );
 
         return builder.build();
+    }
+
+    public TTriggerDefinition convert(YTTriggerDefinition node, String id) {
+        TTriggerDefinition.Builder defBuilder = new TTriggerDefinition.Builder(id, node.getEvent());
+        if (Objects.nonNull(node.getDescription())) {
+            defBuilder.description(node.getDescription());
+        }
+        if (Objects.nonNull(node.getTargetFilter())) {
+            TEventFilterDefinition.Builder filterBuilder = new TEventFilterDefinition.Builder(node.getTargetFilter().getNode());
+            if (Objects.nonNull(node.getTargetFilter().getCapability())) {
+                filterBuilder.capability(node.getTargetFilter().getCapability());
+            }
+            if (Objects.nonNull(node.getTargetFilter().getRequirement())) {
+                filterBuilder.requirement(node.getTargetFilter().getRequirement());
+            }
+            defBuilder.targetFilter(filterBuilder.build());
+        }
+        if (Objects.nonNull(node.getAction())) {
+            defBuilder.action(
+                node.getAction().stream()
+                    .map(this::convert)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList())
+            );
+        }
+
+        return defBuilder.build();
+    }
+
+    public TActivityDefinition convert(YTMapActivityDefinition node) {
+        if (Objects.isNull(node) || node.getMap().isEmpty()) {
+            return null;
+        }
+
+        for (YTActivityDefinition value : node.getMap().values()) {
+            if (value instanceof YTCallOperationActivityDefinition) {
+                YTCallOperationActivityDefinition yamlDef = (YTCallOperationActivityDefinition) value;
+                TCallOperationActivityDefinition canonicalDef = new TCallOperationActivityDefinition(yamlDef.getOperation());
+                List<ParameterDefinition> inputs = yamlDef.getInputs().entrySet()
+                    .stream()
+                    .map(entry -> convert(entry.getValue(), entry.getKey()))
+                    .collect(Collectors.toList());
+                canonicalDef.setInputs(inputs);
+
+                return canonicalDef;
+            }
+        }
+        return null;
     }
 
     /**

@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -55,7 +56,8 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public TTopologyTemplate apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
+        Set<String> discoveredNodeIds = new HashSet<>();
         try {
             Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
             String tomcatVersion = InstanceModelUtils.executeCommand(
@@ -77,6 +79,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("Tomcat".toLowerCase()))
                 .findFirst()
                 .ifPresent(tomcat -> {
+                    discoveredNodeIds.add(tomcat.getId());
                     WineryVersion version = VersionUtils.getVersion(Objects.requireNonNull(tomcat.getType()).getLocalPart());
                     String[] split = tomcatVersion.split("\\.");
 
@@ -101,7 +104,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
             logger.error("Error while retrieving Tomcat information...", e);
         }
 
-        return template;
+        return discoveredNodeIds;
     }
 
     @Override

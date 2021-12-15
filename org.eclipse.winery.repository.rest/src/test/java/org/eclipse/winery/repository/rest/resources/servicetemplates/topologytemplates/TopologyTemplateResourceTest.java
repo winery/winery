@@ -19,6 +19,8 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -199,14 +201,14 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void getAvailableFeaturesFilteredByDeploymentTechnologyOpenStack() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_OpenStackHeat-w1-wip1/topologytemplate/availablefeatures",
+        this.assertGet("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_OpenStackHeat-w2-wip1/topologytemplate/availablefeatures",
             "servicetemplates/topologytemplates/availableFeatures-openStack.json");
     }
 
     @Test
     public void getAvailableFeaturesFilteredByDeploymentTechnologyPuppet() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_puppet-w1-wip1/topologytemplate/availablefeatures",
+        this.assertGet("servicetemplates/http%253A%252F%252Fopentosca.org%252Fadd%252Fmanagement%252Fto%252Finstances%252Fservicetemplates/STWithBasicManagementOnly_puppet-w2-wip1/topologytemplate/availablefeatures",
             "servicetemplates/topologytemplates/availableFeatures-puppet.json");
     }
 

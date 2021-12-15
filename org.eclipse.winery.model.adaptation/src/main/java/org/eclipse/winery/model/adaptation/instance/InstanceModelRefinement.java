@@ -15,29 +15,43 @@
 package org.eclipse.winery.model.adaptation.instance;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.winery.model.adaptation.instance.plugins.Ec2AmiRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbmsRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.TomcatRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.dockerimage.DockerImageRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.DiscoveryPluginDescriptor;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InstanceModelRefinement {
 
-    Logger logger = LoggerFactory.getLogger(InstanceModelRefinement.class);
+    public static final String TAG_DISCOVERY_PLUGINS = "jsonDiscoveryPlugins";
+
+    private static final Logger logger = LoggerFactory.getLogger(InstanceModelRefinement.class);
 
     private final InstanceModelPluginChooser pluginChooser;
     private final List<InstanceModelRefinementPlugin> plugins;
@@ -49,14 +63,52 @@ public class InstanceModelRefinement {
             new MySqlDbRefinementPlugin(),
             new MySqlDbmsRefinementPlugin(),
             new PetClinicRefinementPlugin(),
-            new SpringWebAppRefinementPlugin()
+            new SpringWebAppRefinementPlugin(),
+            new Ec2AmiRefinementPlugin(),
+            new DockerImageRefinementPlugin()
         );
+    }
+
+    public static void updateDiscoveryPluginsInServiceTemplate(
+        TServiceTemplate serviceTemplate, ObjectMapper objectMapper, List<DiscoveryPluginDescriptor> discoveryPlugins) {
+        try {
+            TTag updatedTag = new TTag.Builder(TAG_DISCOVERY_PLUGINS, objectMapper.writeValueAsString(discoveryPlugins))
+                .build();
+            if (serviceTemplate.getTags() == null) {
+                serviceTemplate.setTags(new ArrayList<>());
+            }
+            serviceTemplate.getTags().removeIf(tTag -> Objects.equals(tTag.getName(), TAG_DISCOVERY_PLUGINS));
+            serviceTemplate.getTags().add(updatedTag);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Could not write terraform deployment technology to JSON string");
+        }
+    }
+
+    public static List<DiscoveryPluginDescriptor> extractDiscoveryPluginsFromServiceTemplate(
+        TServiceTemplate serviceTemplate, ObjectMapper objectMapper) {
+        return Optional.ofNullable(serviceTemplate.getTags())
+            .flatMap(tTags -> tTags.stream()
+                .filter(tTag -> Objects.equals(tTag.getName(), TAG_DISCOVERY_PLUGINS))
+                .findAny())
+            .map(TTag::getValue)
+            .map(s -> {
+                CollectionType collectionType = objectMapper.getTypeFactory()
+                    .constructCollectionType(List.class, DiscoveryPluginDescriptor.class);
+                try {
+                    return objectMapper.<List<DiscoveryPluginDescriptor>>readValue(s, collectionType);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Deployment technologies tag could not be parsed as JSON", e);
+                }
+            })
+            .orElseGet(ArrayList::new);
     }
 
     public TTopologyTemplate refine(ServiceTemplateId serviceTemplateId) {
         IRepository repository = RepositoryFactory.getRepository();
         TServiceTemplate serviceTemplate = repository.getElement(serviceTemplateId);
         TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+
+        List<DiscoveryPluginDescriptor> discoveryPluginDescriptors = extractDiscoveryPluginsFromServiceTemplate(serviceTemplate, new ObjectMapper());
 
         if (topologyTemplate == null) {
             logger.error("Cannot refine empty instance model!");
@@ -72,7 +124,25 @@ public class InstanceModelRefinement {
             InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
 
             if (selectedPlugin != null) {
-                selectedPlugin.apply(topologyTemplate);
+                DiscoveryPluginDescriptor discoveryPlugin = discoveryPluginDescriptors.stream()
+                    .filter(discoveryPluginDescriptor -> Objects.equals(discoveryPluginDescriptor.getId(),
+                        selectedPlugin.getId()))
+                    .findAny()
+                    .orElseGet(() -> {
+                        DiscoveryPluginDescriptor discoveryPluginDescriptor = new DiscoveryPluginDescriptor();
+                        discoveryPluginDescriptor.setId(selectedPlugin.getId());
+                        discoveryPluginDescriptor.setDiscoveredIds(Collections.emptyList());
+                        discoveryPluginDescriptors.add(discoveryPluginDescriptor);
+                        return discoveryPluginDescriptor;
+                    });
+                Set<String> pluginDiscoveredNodeIds = selectedPlugin.apply(topologyTemplate);
+                List<String> discoveredIds = new ArrayList<>();
+                discoveredIds.addAll(pluginDiscoveredNodeIds);
+                discoveredIds.addAll(discoveryPlugin.getDiscoveredIds());
+                discoveryPlugin.setDiscoveredIds(discoveredIds);
+                updateDiscoveryPluginsInServiceTemplate(serviceTemplate,
+                    new ObjectMapper(),
+                    discoveryPluginDescriptors);
                 try {
                     repository.setElement(serviceTemplateId, serviceTemplate);
                 } catch (IOException e) {

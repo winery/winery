@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,7 +15,9 @@ package org.eclipse.winery.model.tosca.yaml;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
@@ -28,7 +30,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public class YTPolicyType extends YTEntityType {
     private List<QName> targets;
-    private Object triggers;
+    private Map<String, YTTriggerDefinition> triggers;
 
     protected YTPolicyType(Builder builder) {
         super(builder);
@@ -72,11 +74,16 @@ public class YTPolicyType extends YTEntityType {
         this.targets = targets;
     }
 
-    public Object getTriggers() {
+    @NonNull
+    public Map<String, YTTriggerDefinition> getTriggers() {
+        if (this.triggers == null) {
+            this.triggers = new LinkedHashMap<>();
+        }
+
         return triggers;
     }
 
-    public void setTriggers(Object triggers) {
+    public void setTriggers(Map<String, YTTriggerDefinition> triggers) {
         this.triggers = triggers;
     }
 
@@ -93,7 +100,7 @@ public class YTPolicyType extends YTEntityType {
     public static class Builder extends YTEntityType.Builder<Builder> {
 
         private List<QName> targets;
-        private Object triggers;
+        private Map<String, YTTriggerDefinition> triggers;
 
         public Builder() {
         }
@@ -112,7 +119,7 @@ public class YTPolicyType extends YTEntityType {
             return this;
         }
 
-        public Builder setTriggers(Object triggers) {
+        public Builder setTriggers(Map<String, YTTriggerDefinition> triggers) {
             this.triggers = triggers;
             return this;
         }

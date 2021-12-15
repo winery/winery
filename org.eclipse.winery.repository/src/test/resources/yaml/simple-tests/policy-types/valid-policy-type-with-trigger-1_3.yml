@@ -1,0 +1,32 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+policy_types:
+  my.test.namespace.PolicyTypeName:
+    derived_from: tosca.policies.Root
+    metadata:
+      targetNamespace: "my.test.namespace"
+      abstract: "false"
+      final: "false"
+    properties:
+      propertyOne:
+        type: string        
+      propertyTwo:
+        type: string
+        required: false
+      propertyThree:
+        type: integer
+        description: Description
+        required: false
+    targets: [ my.test.namespace.TargetNodeTypeName ]
+    triggers:
+      my.test.namespace.TriggerDefinition:
+        description: Test trigger definition
+        event: eventName
+        target_filter:
+          node: my.test.namespace.TargetNodeTypeName
+        action:
+          - call_operation:
+              operation: interface.operation
+              inputs:
+                inputOne: { get_property: [ SELF, propertyOne ] }
+                inputTwo: { get_property: [ SELF, propertyTwo ] }

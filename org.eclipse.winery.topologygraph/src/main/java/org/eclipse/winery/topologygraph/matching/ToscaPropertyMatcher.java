@@ -15,7 +15,7 @@
 package org.eclipse.winery.topologygraph.matching;
 
 import java.util.Map;
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -23,7 +23,19 @@ import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaEntity;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ToscaPropertyMatcher extends ToscaTypeMatcher {
+
+    private final boolean matchPropertiesByRegex;
+
+    public ToscaPropertyMatcher() {
+        this(false);
+    }
+
+    public ToscaPropertyMatcher(boolean matchPropertiesByRegex) {
+        this.matchPropertiesByRegex = matchPropertiesByRegex;
+    }
 
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
@@ -38,40 +50,44 @@ public class ToscaPropertyMatcher extends ToscaTypeMatcher {
     }
 
     public boolean propertiesCompatible(ToscaEntity left, ToscaEntity right) {
-        boolean propertiesCompatible = true;
-
         // By convention, the left node is always the element to search in right.
         TEntityTemplate detectorElement = left.getTemplate();
         TEntityTemplate candidate = right.getTemplate();
 
+        // TODO the implementation (currently) works for KV properties only
         Map<String, String> detectorProperties = ModelUtilities.getPropertiesKV(detectorElement);
         Map<String, String> candidateProperties = ModelUtilities.getPropertiesKV(candidate);
-        if (Objects.nonNull(detectorElement.getProperties()) && Objects.nonNull(candidate.getProperties())
-            // TODO the implementation (currently) works for KV properties only
-            && Objects.nonNull(detectorProperties)
-            && Objects.nonNull(candidateProperties)) {
 
-            propertiesCompatible = detectorProperties.entrySet().stream()
-                .allMatch(entry -> {
-                    if (entry.getValue() == null) {
-                        return true;
-                    }
-                    String val = entry.getValue();
-                    if (val.isEmpty()) {
-                        return true;
-                    }
-                    // Assumption: properties are simple KV Properties
-                    String refProp = candidateProperties.get(entry.getKey());
-                    if (val.equalsIgnoreCase("*")) {
-                        // if the detector defines a wildcard, the property must be set in the candidate
-                        return !refProp.isEmpty();
-                    } else {
-                        // if the detector defines a specific value, the candidate's property must match
-                        return val.equalsIgnoreCase(refProp);
-                    }
-                });
+        if (detectorProperties == null || detectorProperties.isEmpty()) {
+            return true; // detector and candidate are always compatible if detector specifies no properties
         }
 
-        return propertiesCompatible;
+        if (candidateProperties == null || candidateProperties.isEmpty()) {
+            return false; // detector and candidate cannot be compatible if detector requires properties, but candidate has none
+        }
+
+        return detectorProperties.entrySet().stream()
+            .allMatch(entry -> {
+                String val = entry.getValue();
+                if (StringUtils.isEmpty(val)) {
+                    return true; // always match if detector value is empty
+                }
+                // Assumption: properties are simple KV Properties
+                String refProp = candidateProperties.get(entry.getKey());
+                if (StringUtils.isEmpty(refProp)) {
+                    return false; // cannot match if candidate value is empty but detector value is not
+                }
+                if (val.equalsIgnoreCase("*")) {
+                    // if the detector defines a wildcard, the property must be set in the candidate
+                    return StringUtils.isNotEmpty(refProp);
+                } else {
+                    // if the detector defines a specific value, the candidate's property must match
+                    if (matchPropertiesByRegex) {
+                        return Pattern.matches(val, refProp);
+                    } else {
+                        return val.equalsIgnoreCase(refProp);
+                    }
+                }
+            });
     }
 }

@@ -24,18 +24,22 @@ import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.converter.support.exception.MultiException;
 import org.eclipse.winery.model.ids.EncodingUtil;
-import org.eclipse.winery.model.tosca.yaml.*;
+import org.eclipse.winery.model.tosca.yaml.YTDataType;
+import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTPropertyDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.YamlSpecKeywords;
 import org.eclipse.winery.repository.converter.reader.YamlReader;
 import org.eclipse.winery.repository.converter.validator.support.ExceptionVisitor;
 import org.eclipse.winery.repository.converter.validator.support.Result;
 import org.eclipse.winery.repository.converter.writer.WriterUtils;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.w3c.dom.Document;
 
 public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
@@ -121,7 +125,7 @@ public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
                 }
             }
 
-            visitChildes(node, parameter);
+            visitChildren(node, parameter);
         }
         // Optimized: parameter.datatype is set and defined in this service template 
         else if (type.getNamespaceURI().equals(parameter.getNamespace())
@@ -240,46 +244,46 @@ public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
     }
 
     /**
-     * Visit all childes of ServiceTemplates except from metadata, repositories, imports, data_types
+     * Visit all children of ServiceTemplates except from metadata, repositories, imports, data_types
      */
-    private void visitChildes(YTServiceTemplate node, Parameter parameter) {
+    private void visitChildren(YTServiceTemplate node, Parameter parameter) {
         node.getArtifactTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("artifact_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.ARTIFACT_TYPES, entry.getKey()))
             );
         node.getCapabilityTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("capability_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.CAPABILITY_TYPES, entry.getKey()))
             );
         node.getInterfaceTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("interface_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.INTERFACE_TYPES, entry.getKey()))
             );
         node.getRelationshipTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("relationship_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.RELATIONSHIP_TYPES, entry.getKey()))
             );
         node.getNodeTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("node_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.NODE_TYPES, entry.getKey()))
             );
         node.getGroupTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("group_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.GROUP_TYPES, entry.getKey()))
             );
         node.getPolicyTypes().entrySet().stream()
             .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
             .forEach(entry ->
-                entry.getValue().accept(this, parameter.copy().addContext("policy_types", entry.getKey()))
+                entry.getValue().accept(this, parameter.copy().addContext(YamlSpecKeywords.POLICY_TYPES, entry.getKey()))
             );
         if (Objects.nonNull(node.getTopologyTemplate())) {
-            node.getTopologyTemplate().accept(this, parameter.copy().addContext("topology_template"));
+            node.getTopologyTemplate().accept(this, parameter.copy().addContext(YamlSpecKeywords.TOPOLOGY_TEMPLATE));
         }
     }
 }

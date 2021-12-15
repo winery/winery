@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,9 +72,11 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                 ? null
                 : new InstanceModelRefinementPlugin("noop") {
                 @Override
-                public TTopologyTemplate apply(TTopologyTemplate template) {
+                public Set<String> apply(TTopologyTemplate template) {
                     template.addNodeTemplate(mySpecialNode);
-                    return template;
+                    Set<String> discoveredNodeIds = new HashSet<>();
+                    discoveredNodeIds.add(mySpecialNode.getId());
+                    return discoveredNodeIds;
                 }
 
                 @Override
@@ -182,7 +185,7 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                 if (this.getCommand().startsWith("sudo netstat -tulpen | grep mysqld")) {
                     return expectedMySqlPort;
                 }
-                if (this.getCommand().startsWith("sudo mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA")
+                if (this.getCommand().startsWith("sudo -i mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA")
                     || (this.getCommand().startsWith("sudo cat /opt/tomcat/latest/webapps/")
                     && this.getCommand().endsWith("| sed -r 's/USE (.*);$/\\1/'"))) {
                     return expectedDatabaseName;

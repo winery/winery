@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.instance.plugins;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -40,7 +41,8 @@ import org.slf4j.LoggerFactory;
 public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
     public static final QName mySqlDbQName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DB");
-
+    public static final String COMMAND_RETRIEVE_DB_NAME = "sudo -i mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema'\n" +
+        ", 'sys');\"";
     private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
 
     public MySqlDbRefinementPlugin() {
@@ -48,12 +50,12 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public TTopologyTemplate apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate template) {
+        Set<String> discoveredNodeIds = new HashSet<>();
         Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
         String mySqlDatabases = InstanceModelUtils.executeCommand(
             session,
-            "sudo mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema'\n" +
-                ", 'sys');\""
+            COMMAND_RETRIEVE_DB_NAME
         );
         logger.info("Found MySqlDatabases: {}", mySqlDatabases);
 
@@ -67,6 +69,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
                 .findFirst()
                 .ifPresent(db -> {
+                    discoveredNodeIds.add(db.getId());
                     if (db.getProperties() == null) {
                         db.setProperties(new TEntityTemplate.WineryKVProperties());
                     }
@@ -77,7 +80,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
                 });
         }
 
-        return template;
+        return discoveredNodeIds;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,18 +27,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
 import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
 import org.eclipse.winery.model.tosca.yaml.YTDataType;
 import org.eclipse.winery.model.tosca.yaml.YTEntityType;
+import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTGroupType;
 import org.eclipse.winery.model.tosca.yaml.YTImplementation;
@@ -68,14 +72,17 @@ import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.YTStatusValue;
 import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
 import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
+import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
 import org.eclipse.winery.model.tosca.yaml.YTVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.support.YTListString;
+import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapObject;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapPropertyFilterDefinition;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementAssignment;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementDefinition;
+import org.eclipse.winery.model.tosca.yaml.support.YamlSpecKeywords;
 import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractVisitor;
@@ -138,44 +145,43 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTServiceTemplate node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("tosca_definitions_version", node.getToscaDefinitionsVersion())
+            .printKeyValue(YamlSpecKeywords.TOSCA_DEF_VERSION, node.getToscaDefinitionsVersion())
             .printNewLine()
             .print(node.getMetadata().accept(this, parameter))
-            .print(printList("imports",
+            .print(printList(YamlSpecKeywords.IMPORTS,
                 node.getImports().stream().map(YTMapImportDefinition::values).flatMap(Collection::stream).collect(Collectors.toList()),
                 parameter))
             // .printKeyValue("description", node.getDescription())
-            .print(printMapObject("dsl_definitions", node.getDslDefinitions(), parameter))
-            .print(printMap("repositories", node.getRepositories(), parameter))
-            .print(printMap("artifact_types", node.getArtifactTypes(), parameter))
-            .print(printMap("data_types", node.getDataTypes(), parameter))
-            .print(printMap("capability_types", node.getCapabilityTypes(), parameter))
-            .print(printMap("interface_types", node.getInterfaceTypes(), parameter))
-            .print(printMap("relationship_types", node.getRelationshipTypes(), parameter))
-            .print(printMap("node_types", node.getNodeTypes(), parameter))
-            .print(printMap("group_types", node.getGroupTypes(), parameter))
-            .print(printMap("policy_types", node.getPolicyTypes(), parameter))
-            .print(printVisitorNode(node.getTopologyTemplate(), new Parameter(parameter.getIndent()).addContext("topology_template")));
+            .print(printMapObject(YamlSpecKeywords.DSL_DEFINITIONS, node.getDslDefinitions(), parameter))
+            .print(printMap(YamlSpecKeywords.REPOSITORIES, node.getRepositories(), parameter))
+            .print(printMap(YamlSpecKeywords.ARTIFACT_TYPES, node.getArtifactTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.DATA_TYPES, node.getDataTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.CAPABILITY_TYPES, node.getCapabilityTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.INTERFACE_TYPES, node.getInterfaceTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.RELATIONSHIP_TYPES, node.getRelationshipTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.NODE_TYPES, node.getNodeTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.GROUP_TYPES, node.getGroupTypes(), parameter))
+            .print(printMap(YamlSpecKeywords.POLICY_TYPES, node.getPolicyTypes(), parameter))
+            .print(printVisitorNode(node.getTopologyTemplate(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.TOPOLOGY_TEMPLATE)));
     }
 
     public YamlPrinter visit(YTTopologyTemplateDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
-            .print(printMap("inputs", node.getInputs(), parameter))
-            .print(printMap("node_templates", node.getNodeTemplates(), parameter))
-            .print(printMap("relationship_templates", node.getRelationshipTemplates(), parameter))
-            .print(printMap("groups", node.getGroups(), parameter))
-            .print(printListMap("policies",
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .print(printMap(YamlSpecKeywords.INPUTS, node.getInputs(), parameter))
+            .print(printMap(YamlSpecKeywords.NODE_TEMPLATES, node.getNodeTemplates(), parameter))
+            .print(printMap(YamlSpecKeywords.RELATIONSHIP_TEMPLATES, node.getRelationshipTemplates(), parameter))
+            .print(printMap(YamlSpecKeywords.GROUPS, node.getGroups(), parameter))
+            .print(printListMap(YamlSpecKeywords.POLICIES,
                 node.getPolicies().size() > 0 ? Collections.singletonList(node.getPolicies()) : new ArrayList<>(), parameter))
-            .print(printMap("outputs", node.getOutputs(), parameter))
-            .print(printVisitorNode(node.getSubstitutionMappings(), new Parameter(parameter.getIndent()).addContext("substitution_mappings")));
+            .print(printMap(YamlSpecKeywords.OUTPUTS, node.getOutputs(), parameter))
+            .print(printVisitorNode(node.getSubstitutionMappings(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.SUBSTITUTION_MAPPINGS)));
     }
 
     public YamlPrinter visit(Metadata node, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent());
         if (!node.isEmpty()) {
-            printer.printKey("metadata")
-                .indent(INDENT_SIZE);
+            printer.printKey(YamlSpecKeywords.METADATA).indent(INDENT_SIZE);
             node.forEach((key, value) -> printer.printKeyValue(key, value, true));
             printer.indent(-INDENT_SIZE);
         }
@@ -184,17 +190,17 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTRepositoryDefinition node, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("url", node.getUrl());
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.URL, node.getUrl());
         if (Objects.nonNull(node.getCredential())) {
             Credential credential = node.getCredential();
-            printer.printKey("credential")
+            printer.printKey(YamlSpecKeywords.CREDENTIAL)
                 .indent(INDENT_SIZE)
-                .printKeyValue("protocol", credential.getProtocol())
-                .printKeyValue("token_type", credential.getTokenType())
-                .printKeyValue("token", credential.getToken())
-                .printKeyObject("keys", credential.getKeys())
-                .printKeyValue("user", credential.getUser())
+                .printKeyValue(YamlSpecKeywords.PROTOCOL, credential.getProtocol())
+                .printKeyValue(YamlSpecKeywords.TOKEN_TYPE, credential.getTokenType())
+                .printKeyValue(YamlSpecKeywords.TOKEN, credential.getToken())
+                .printKeyObject(YamlSpecKeywords.KEYS, credential.getKeys())
+                .printKeyValue(YamlSpecKeywords.USER, credential.getUser())
                 .indent(-INDENT_SIZE);
         }
         return printer;
@@ -202,48 +208,48 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTImportDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("file", node.getFile())
-            .printKeyValue("repository", node.getRepository())
-            .printKeyValue("namespace_uri", node.getNamespaceUri())
+            .printKeyValue(YamlSpecKeywords.FILE, node.getFile())
+            .printKeyValue(YamlSpecKeywords.REPOSITORY, node.getRepository())
+            .printKeyValue(YamlSpecKeywords.NAMESPACE_URI, node.getNamespaceUri())
             // .printKeyValue("namespace_uri", node.getNamespaceUri(), !node.getNamespaceUri().equals(Namespaces.DEFAULT_NS))
-            .printKeyValue("namespace_prefix", node.getNamespacePrefix());
+            .printKeyValue(YamlSpecKeywords.NAMESPACE_PREFIX, node.getNamespacePrefix());
     }
 
     public YamlPrinter visit(YTArtifactType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("mime_type", node.getMimeType())
-            .printKeyValue("file_ext", node.getFileExt());
+            .printKeyValue(YamlSpecKeywords.MIME_TYPE, node.getMimeType())
+            .printKeyValue(YamlSpecKeywords.FILE_EXT, node.getFileExt());
     }
 
     public YamlPrinter visit(YTEntityType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("version", node.getVersion())
-            .printKeyValue("derived_from", node.getDerivedFrom())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.VERSION, node.getVersion())
+            .printKeyValue(YamlSpecKeywords.DERIVED_FROM, node.getDerivedFrom())
             .print(node.getMetadata().accept(this, parameter))
-            .print(printMap("attributes", node.getAttributes(), parameter))
-            .print(printMap("properties", node.getProperties(), parameter));
+            .print(printMap(YamlSpecKeywords.ATTRIBUTES, node.getAttributes(), parameter))
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter));
     }
 
     public YamlPrinter visit(YTPropertyDefinition node, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription());
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription());
         // do not print the default value for required to avoid bloating the output
         if (!node.getRequired()) {
-            printer.printKeyValue("required", node.getRequired());
+            printer.printKeyValue(YamlSpecKeywords.REQUIRED, node.getRequired());
         }
-        printer.printYamlValue("default", node.getDefault());
+        printer.printYamlValue(YamlSpecKeywords.DEFAULT, node.getDefault());
         // do not print the default value for status to avoid bloating the output
         if (node.getStatus() != YTStatusValue.supported) {
-            printer.printKeyValue("status", node.getStatus());
+            printer.printKeyValue(YamlSpecKeywords.STATUS, node.getStatus());
         }
-        printer.print(printList("constraints", node.getConstraints(), parameter));
+        printer.print(printList(YamlSpecKeywords.CONSTRAINTS, node.getConstraints(), parameter));
         if (node.getEntrySchema() != null) {
-            printer.printKey("entry_schema").print(visit(node.getEntrySchema(), new Parameter(parameter.getIndent() + INDENT_SIZE)));
+            printer.printKey(YamlSpecKeywords.ENTRY_SCHEMA).print(visit(node.getEntrySchema(), new Parameter(parameter.getIndent() + INDENT_SIZE)));
         }
         if (node.getKeySchema() != null) {
-            printer.printKey("key_schema").print(visit(node.getKeySchema(), new Parameter(parameter.getIndent() + INDENT_SIZE)));
+            printer.printKey(YamlSpecKeywords.KEY_SCHEMA).print(visit(node.getKeySchema(), new Parameter(parameter.getIndent() + INDENT_SIZE)));
         }
 
         return printer;
@@ -251,67 +257,66 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTSchemaDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
-            .print(printList("constraints", node.getConstraints(), parameter));
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .print(printList(YamlSpecKeywords.CONSTRAINTS, node.getConstraints(), parameter));
     }
 
     public YamlPrinter visit(YTAttributeDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("type", node.getType())
-            .printYamlValue("default", node.getDefault())
-            .printKeyValue("status", node.getStatus())
-            .print(printVisitorNode(node.getEntrySchema(), parameter.addContext("entry_schema")));
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printYamlValue(YamlSpecKeywords.DEFAULT, node.getDefault())
+            .printKeyValue(YamlSpecKeywords.STATUS, node.getStatus())
+            .print(printVisitorNode(node.getEntrySchema(), parameter.addContext(YamlSpecKeywords.ENTRY_SCHEMA)));
     }
 
     public YamlPrinter visit(YTDataType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(printList("constraints", node.getConstraints(), parameter));
+            .print(printList(YamlSpecKeywords.CONSTRAINTS, node.getConstraints(), parameter));
     }
 
     public YamlPrinter visit(YTCapabilityType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("valid_source_types", node.getValidSourceTypes());
+            .printKeyValue(YamlSpecKeywords.VALID_SOURCE_TYPES, node.getValidSourceTypes());
     }
 
     public YamlPrinter visit(YTInterfaceType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(printMap("operations", node.getOperations(), parameter))
-            .print(printMap("inputs", node.getInputs(), parameter));
+            .print(printMap(YamlSpecKeywords.OPERATIONS, node.getOperations(), parameter))
+            .print(printMap(YamlSpecKeywords.INPUTS, node.getInputs(), parameter));
     }
 
     public YamlPrinter visit(YTOperationDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
-            .print(printMap("inputs", node.getInputs(), new Parameter(parameter.getIndent())))
-            .print(printMap("outputs", node.getOutputs(), new Parameter(parameter.getIndent())))
-            .print(printVisitorNode(node.getImplementation(), new Parameter(parameter.getIndent()).addContext("implementation")));
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .print(printMap(YamlSpecKeywords.INPUTS, node.getInputs(), new Parameter(parameter.getIndent())))
+            .print(printMap(YamlSpecKeywords.OUTPUTS, node.getOutputs(), new Parameter(parameter.getIndent())))
+            .print(printVisitorNode(node.getImplementation(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.IMPLEMENTATION)));
     }
 
     public YamlPrinter visit(YTImplementation node, Parameter parameter) {
         YamlPrinter printer = new YamlPrinter(parameter.getIndent())
-            .printKeyValue("primary", node.getPrimaryArtifactName())
-            .printKeyValue("dependencies", node.getDependencyArtifactNames())
-            .printKeyValue("operation_host", node.getOperationHost());
+            .printKeyValue(YamlSpecKeywords.PRIMARY, node.getPrimaryArtifactName())
+            .printKeyValue(YamlSpecKeywords.DEPENDENCIES, node.getDependencyArtifactNames())
+            .printKeyValue(YamlSpecKeywords.OPERATION_HOST, node.getOperationHost());
         if (node.getTimeout() != null) {
-            printer.printKeyValue("timeout", node.getTimeout().toString());
+            printer.printKeyValue(YamlSpecKeywords.TIMEOUT, node.getTimeout().toString());
         }
         return printer;
     }
 
     public YamlPrinter visit(YTRelationshipType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("valid_target_types", node.getValidTargetTypes())
-            .print(printMap("interfaces", node.getInterfaces(), parameter));
+            .printKeyValue(YamlSpecKeywords.VALID_TARGET_TYPES, node.getValidTargetTypes())
+            .print(printMap(YamlSpecKeywords.INTERFACES, node.getInterfaces(), parameter));
     }
 
     public YamlPrinter visit(YTInterfaceDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .print(printMap("inputs", node.getInputs(), parameter))
-
-            .print(printMap("operations", node.getOperations(), parameter));
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .print(printMap(YamlSpecKeywords.INPUTS, node.getInputs(), parameter))
+            .print(printMap(YamlSpecKeywords.OPERATIONS, node.getOperations(), parameter));
 
 //            .print(node.getOperations().entrySet().stream()
 //                .filter(entry -> Objects.nonNull(entry) && Objects.nonNull(entry.getValue()))
@@ -324,59 +329,106 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTNodeType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(printListMap("requirements", node.getRequirements().stream().map(YTMapRequirementDefinition::getMap).collect(Collectors.toList()), parameter))
-            .print(printMap("capabilities", node.getCapabilities(), parameter))
-            .print(printMap("interfaces", node.getInterfaces(), parameter))
-            .print(printMap("artifacts", node.getArtifacts(), parameter));
+            .print(printListMap(YamlSpecKeywords.REQUIREMENTS, node.getRequirements().stream().map(YTMapRequirementDefinition::getMap).collect(Collectors.toList()), parameter))
+            .print(printMap(YamlSpecKeywords.CAPABILITIES, node.getCapabilities(), parameter))
+            .print(printMap(YamlSpecKeywords.INTERFACES, node.getInterfaces(), parameter))
+            .print(printMap(YamlSpecKeywords.ARTIFACTS, node.getArtifacts(), parameter));
     }
 
     public YamlPrinter visit(YTRequirementDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("capability", node.getCapability())
-            .printKeyValue("node", node.getNode())
-            .print(printVisitorNode(node.getRelationship(), new Parameter(parameter.getIndent()).addContext("relationship")))
-            .printKeyValue("occurrences", node.getOccurrences())
-            .printKeyValue("description", node.getDescription());
+            .printKeyValue(YamlSpecKeywords.CAPABILITY, node.getCapability())
+            .printKeyValue(YamlSpecKeywords.NODE, node.getNode())
+            .print(printVisitorNode(node.getRelationship(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.RELATIONSHIP)))
+            .printKeyValue(YamlSpecKeywords.OCCURRENCES, node.getOccurrences())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription());
     }
 
     public YamlPrinter visit(YTRelationshipDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
             // Removed to support short notations
             // .printKeyValue("type", node.getType())
-            .print(printMap("interfaces", node.getInterfaces(), parameter));
+            .print(printMap(YamlSpecKeywords.INTERFACES, node.getInterfaces(), parameter));
     }
 
     public YamlPrinter visit(YTCapabilityDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("occurrences", node.getOccurrences())
-            .printKeyValue("valid_source_types", node.getValidSourceTypes())
-            .printKeyValue("type", node.getType())
-            .print(printMap("properties", node.getProperties(), parameter))
-            .print(printMap("attributes", node.getAttributes(), parameter));
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.OCCURRENCES, node.getOccurrences())
+            .printKeyValue(YamlSpecKeywords.VALID_SOURCE_TYPES, node.getValidSourceTypes())
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .print(printMap(YamlSpecKeywords.ATTRIBUTES, node.getAttributes(), parameter));
     }
 
     public YamlPrinter visit(YTArtifactDefinition node, Parameter parameter) {
         YamlPrinter output = new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("repository", node.getRepository())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("deploy_path", node.getDeployPath());
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.REPOSITORY, node.getRepository())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.DEPLOY_PATH, node.getDeployPath());
         if (node.getFile() != null) {
-            output.printKeyValue("file", node.getFile());
+            output.printKeyValue(YamlSpecKeywords.FILE, node.getFile());
         }
         return output;
     }
 
     public YamlPrinter visit(YTGroupType node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("members", node.getMembers());
+            .printKeyValue(YamlSpecKeywords.MEMBERS, node.getMembers());
     }
 
     public YamlPrinter visit(YTPolicyType node, Parameter parameter) {
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent())
+            .printKeyValue(YamlSpecKeywords.TARGETS, node.getTargets());
+
+        Map<String, YTTriggerDefinition> validTriggers = node.getTriggers().entrySet()
+            .stream()
+            .filter(entry -> Objects.nonNull(entry.getValue().getEvent()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return printer.print(printMap(YamlSpecKeywords.TRIGGERS, validTriggers, parameter));
+    }
+
+    public YamlPrinter visit(YTTriggerDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("targets", node.getTargets())
-            .printKeyObject("triggers", node.getTriggers());
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.EVENT, node.getEvent())
+            .print(node.getTargetFilter().accept(this, parameter))
+            .print(printListMap(YamlSpecKeywords.ACTION, node.getAction().stream().map(YTMapActivityDefinition::getMap).collect(Collectors.toList()), parameter));
+    }
+
+    public YamlPrinter visit(YTEventFilterDefinition node, Parameter parameter) {
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent());
+        if (Objects.nonNull(node) && Objects.nonNull(node.getNode())) {
+            printer.printKey(YamlSpecKeywords.TARGET_FILTER).indent(INDENT_SIZE);
+            printer.printKeyValue(YamlSpecKeywords.NODE, node.getNode());
+            if (Objects.nonNull(node.getRequirement())) {
+                printer.printKeyValue(YamlSpecKeywords.REQUIREMENT, node.getRequirement());
+            }
+            if (Objects.nonNull(node.getRequirement())) {
+                printer.printKeyValue(YamlSpecKeywords.CAPABILITY, node.getCapability());
+            }
+            printer.indent(-INDENT_SIZE);
+        }
+        return printer;
+    }
+
+    public YamlPrinter visit(YTCallOperationActivityDefinition node, Parameter parameter) {
+        YamlPrinter printer = new YamlPrinter(parameter.getIndent())
+            .printKeyValue(YamlSpecKeywords.OPERATION, node.getOperation());
+        if (Objects.nonNull(node.getInputs()) && !node.getInputs().isEmpty()) {
+            printer.printKey(YamlSpecKeywords.INPUTS).indent(INDENT_SIZE);
+            SortedSet<String> keys = new TreeSet<>(node.getInputs().keySet());
+            for (String key : keys) {
+                Object value = node.getInputs().get(key).getValue();
+                if (value instanceof String) {
+                    printer.printKeyValue(key, (String) value);
+                }
+            }
+            printer.indent(-INDENT_SIZE);
+        }
+        return printer;
     }
 
     public YamlPrinter visit(YTVersion node, Parameter parameter) {
@@ -386,36 +438,36 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTNodeTemplate node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
             .print(node.getMetadata().accept(this, parameter))
-            .printKeyValue("directives", node.getDirectives())
-            .print(printMap("properties", node.getProperties(), parameter))
-            .print(printMap("attributes", node.getAttributes(), parameter))
-            .print(printListMap("requirements", node.getRequirements().stream().map(YTMapRequirementAssignment::getMap).collect(Collectors.toList()), parameter))
-            .print(printMap("capabilities", node.getCapabilities(), parameter))
-            .print(printMap("interfaces", node.getInterfaces(), parameter))
-            .print(printMap("artifacts", node.getArtifacts(), parameter))
+            .printKeyValue(YamlSpecKeywords.DIRECTIVES, node.getDirectives())
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .print(printMap(YamlSpecKeywords.ATTRIBUTES, node.getAttributes(), parameter))
+            .print(printListMap(YamlSpecKeywords.REQUIREMENTS, node.getRequirements().stream().map(YTMapRequirementAssignment::getMap).collect(Collectors.toList()), parameter))
+            .print(printMap(YamlSpecKeywords.CAPABILITIES, node.getCapabilities(), parameter))
+            .print(printMap(YamlSpecKeywords.INTERFACES, node.getInterfaces(), parameter))
+            .print(printMap(YamlSpecKeywords.ARTIFACTS, node.getArtifacts(), parameter))
             .print(printVisitorNode(node.getNodeFilter(), parameter))
-            .printKeyValue("copy", node.getCopy());
+            .printKeyValue(YamlSpecKeywords.COPY, node.getCopy());
     }
 
     public YamlPrinter visit(YTGroupDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
             .print(node.getMetadata().accept(this, parameter))
-            .print(printMap("properties", node.getProperties(), parameter))
-            .printKeyValue("members", node.getMembers());
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .printKeyValue(YamlSpecKeywords.MEMBERS, node.getMembers());
     }
 
     public YamlPrinter visit(YTPolicyDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
             .print(node.getMetadata().accept(this, parameter))
-            .print(printMap("properties", node.getProperties(), parameter))
-            .printKeyValue("targets", node.getTargets());
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .printKeyValue(YamlSpecKeywords.TARGETS, node.getTargets());
     }
 
     public YamlPrinter visit(YTPropertyAssignment node, Parameter parameter) {
@@ -477,7 +529,7 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTAttributeAssignment node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("description", node.getDescription())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
             .printYamlValue(parameter.getKey(), node.getValue(), true);
     }
 
@@ -487,14 +539,14 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTParameterDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
-            .printKeyValue("required", node.getRequired())
-            .printYamlValue("default", node.getDefault())
-            .printKeyValue("status", node.getStatus())
-            .print(printList("constraints", node.getConstraints(), parameter))
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .printKeyValue(YamlSpecKeywords.REQUIRED, node.getRequired())
+            .printYamlValue(YamlSpecKeywords.DEFAULT, node.getDefault())
+            .printKeyValue(YamlSpecKeywords.STATUS, node.getStatus())
+            .print(printList(YamlSpecKeywords.CONSTRAINTS, node.getConstraints(), parameter))
             .print(printVisitorNode(node.getEntrySchema(), parameter))
-            .printYamlValue("value", node.getValue());
+            .printYamlValue(YamlSpecKeywords.VALUE, node.getValue());
     }
 
     public YamlPrinter visit(YTConstraintClause node, Parameter parameter) {
@@ -510,17 +562,17 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTCapabilityAssignment node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(printMap("properties", node.getProperties(), parameter))
-            .print(printMap("attributes", node.getAttributes(), parameter));
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .print(printMap(YamlSpecKeywords.ATTRIBUTES, node.getAttributes(), parameter));
     }
 
     public YamlPrinter visit(YTNodeFilterDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(printListMap("properties",
+            .print(printListMap(YamlSpecKeywords.PROPERTIES,
                 node.getProperties().stream().map(YTMapPropertyFilterDefinition::getMap).collect(Collectors.toList()),
                 parameter)
             )
-            .print(printListMap("capabilities",
+            .print(printListMap(YamlSpecKeywords.CAPABILITIES,
                 node.getCapabilities().stream().map(YTMapObject::getMap).collect(Collectors.toList()),
                 parameter)
             );
@@ -528,41 +580,41 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
 
     public YamlPrinter visit(YTRelationshipTemplate node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("type", node.getType())
-            .printKeyValue("description", node.getDescription())
+            .printKeyValue(YamlSpecKeywords.TYPE, node.getType())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
             .print(node.getMetadata().accept(this, parameter))
-            .print(printMap("properties", node.getProperties(), parameter))
-            .print(printMap("attributes", node.getAttributes(), parameter))
-            .print(printMap("interfaces", node.getInterfaces(), parameter))
-            .printKeyValue("copy", node.getCopy());
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .print(printMap(YamlSpecKeywords.ATTRIBUTES, node.getAttributes(), parameter))
+            .print(printMap(YamlSpecKeywords.INTERFACES, node.getInterfaces(), parameter))
+            .printKeyValue(YamlSpecKeywords.COPY, node.getCopy());
     }
 
     public YamlPrinter visit(YTSubstitutionMappings node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("node_type", node.getNodeType())
-            .print(printMapInlineStringList("capabilities", node.getCapabilities(), parameter));
+            .printKeyValue(YamlSpecKeywords.NODE_TYPE, node.getNodeType())
+            .print(printMapInlineStringList(YamlSpecKeywords.CAPABILITIES, node.getCapabilities(), parameter));
     }
 
     public YamlPrinter visit(YTRequirementAssignment node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .printKeyValue("node", node.getNode())
-            .print(printVisitorNode(node.getRelationship(), new Parameter(parameter.getIndent()).addContext("relationship")))
-            .printKeyValue("capability", node.getCapability())
-            .print(printVisitorNode(node.getNodeFilter(), new Parameter(parameter.getIndent()).addContext("node_filter")))
-            .printKeyValue("occurrences", node.getOccurrences());
+            .printKeyValue(YamlSpecKeywords.NODE, node.getNode())
+            .print(printVisitorNode(node.getRelationship(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.RELATIONSHIP)))
+            .printKeyValue(YamlSpecKeywords.CAPABILITY, node.getCapability())
+            .print(printVisitorNode(node.getNodeFilter(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.NODE_FILTER)))
+            .printKeyValue(YamlSpecKeywords.OCCURRENCES, node.getOccurrences());
     }
 
     public YamlPrinter visit(YTRelationshipAssignment node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
             // Removed to support short notations
             // .printKeyValue("type", node.getType())
-            .print(printMap("properties", node.getProperties(), parameter))
-            .print(printMap("interfaces", node.getInterfaces(), parameter));
+            .print(printMap(YamlSpecKeywords.PROPERTIES, node.getProperties(), parameter))
+            .print(printMap(YamlSpecKeywords.INTERFACES, node.getInterfaces(), parameter));
     }
 
     public YamlPrinter visit(YTPropertyFilterDefinition node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
-            .print(printList("constraints", node.getConstraints(), parameter));
+            .print(printList(YamlSpecKeywords.CONSTRAINTS, node.getConstraints(), parameter));
     }
 
     public YamlPrinter printVisitorNode(VisitorNode node, Parameter parameter) {

@@ -39,6 +39,7 @@ export interface WineryConfiguration {
         patternDetection: boolean;
     };
     endpoints: {
+        bpmnModeler: string;
         container: string;
         topologymodeler: string;
         workflowmodeler: string;

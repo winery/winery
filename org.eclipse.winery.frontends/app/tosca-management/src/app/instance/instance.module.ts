@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,6 +21,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertyRenameComponent } from './instanceHeader/propertyRename/propertyRename.component';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AlertModule, BsDropdownModule } from 'ngx-bootstrap';
 import { WineryAddVersionModule } from '../wineryVersionModule/wineryVersion.module';
 import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-feature-toggle.module';
@@ -36,6 +37,7 @@ import { ParametersModule } from './sharedComponents/parameters/parameters.modul
         WineryModalModule,
         WineryPipesModule,
         FormsModule,
+        ReactiveFormsModule,
         WineryAddVersionModule,
         AlertModule.forRoot(),
         WineryFeatureToggleModule,

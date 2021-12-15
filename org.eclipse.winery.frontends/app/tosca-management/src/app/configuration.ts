@@ -18,3 +18,11 @@ export const hostURL = location.protocol + '//' + location.hostname + ':' + (loc
 export const editorURL = location.protocol + '//' + location.hostname + ':' + (location.port === '4200' ? '4201' : location.port + '/winery-topologymodeler');
 export const backendBaseURL = hostURL + wineryContext;
 export const webSocketURL = 'ws://' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port) + wineryContext;
+
+const positionOfFirstColon = backendBaseURL.indexOf(':');
+const positionOfSecondColon = backendBaseURL.indexOf(':', positionOfFirstColon + 1);
+  // example: http://localhost:4242
+  // positionOfFirstColon:4, positionOfSecondColon:16
+  // same as the following?
+  // export const modelerURL = location.protocol + '//' + location.hostname + ':' + '4242';
+export const modelerURL = backendBaseURL.substring(0, positionOfSecondColon + 1) + '4242';
