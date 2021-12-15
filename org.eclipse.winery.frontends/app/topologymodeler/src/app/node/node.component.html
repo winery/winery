@@ -31,8 +31,8 @@
     </div>
 
     <div *ngIf="policyIcons" class="policyIconsAnnotation">
-        <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon" class="policyAnnotation"
-             alt="Policy icon">
+        <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon.imageUrl" class="policyAnnotation"
+             alt="Policy icon" tooltip="{{ policyIcon.policyType }}">
     </div>
 
     <div *ngIf="newerVersions?.length !== 0">
