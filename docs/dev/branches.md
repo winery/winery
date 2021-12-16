@@ -15,7 +15,7 @@
 
 # Branches
 
-The `master` branch is always compiling and all tests should go through.
+The `main` branch is always compiling and all tests should go through.
 It contains the most recent improvements.
 All other branches are real development branches and might event not compile.
 

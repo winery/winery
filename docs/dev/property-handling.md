@@ -25,7 +25,7 @@ The frontend is build using the web framework angular2. An Angular2 application 
 
 The following will explain the use of the propertiesDefinition component by example of its usage in the policy type instance.
 
-To make the frontend part of the winery application as modular, component based and generic as possible, the following architecture was chosen ([see here](https://github.com/eclipse/winery/blob/master/docs/dev/RepositoryUI.md)).
+To make the frontend part of the winery application as modular, component based and generic as possible, the following architecture was chosen ([see here](https://github.com/eclipse/winery/blob/main/docs/dev/RepositoryUI.md)).
 The instance component is responsible for rendering most of the types/templates. As a result of that, the components required for a type/template are being injected into the instance components router outlet. This is true for the policy type as well.
 
 Here is one example on how to use the propertiesDefinition component by example of the policy type (instance component).

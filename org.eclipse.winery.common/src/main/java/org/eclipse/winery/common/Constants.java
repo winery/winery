@@ -28,7 +28,7 @@ public class Constants {
     // $HOME/DEFAULT_REPO_NAME is used
     public static final Path GLOBAL_REPO_PATH_WINDOWS = Paths.get("C:/" + Constants.DEFAULT_REPO_NAME);
 
-    public static final String MASTER_BRANCH = "master";
+    public static final String MAIN_BRANCH = "main";
 
     /**
      * file-system in general

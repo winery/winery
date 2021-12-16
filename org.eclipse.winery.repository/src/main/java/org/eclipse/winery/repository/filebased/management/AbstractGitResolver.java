@@ -35,7 +35,7 @@ public abstract class AbstractGitResolver implements IRepositoryResolver {
 
     public AbstractGitResolver(String url) {
         this.repositoryUrl = url;
-        this.repositoryBranch = "master";
+        this.repositoryBranch = "main";
         this.repositoryMaintainer = getRepositoryMaintainer();
         this.repositoryName = getRepositoryName();
     }
