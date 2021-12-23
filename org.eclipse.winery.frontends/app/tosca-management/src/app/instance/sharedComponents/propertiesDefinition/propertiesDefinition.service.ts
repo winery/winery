@@ -16,7 +16,9 @@ import { Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
-import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
+import {
+    IInheritedPropertiesDefinitionsApiData, PropertiesDefinition, PropertiesDefinitionsResourceApiData
+} from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
@@ -75,6 +77,15 @@ export class PropertiesDefinitionService {
     }
 
     /**
+     * Gets the inherited properties definitions data.
+     *
+     * @returns {Observable<IInheritedPropertiesDefinitionsApiData>}
+     */
+    getInheritedPropertiesDefinitions(): Observable<IInheritedPropertiesDefinitionsApiData> {
+        return this.sendJsonRequest<IInheritedPropertiesDefinitionsApiData>( '/inherited');
+    }
+
+    /**
      * Private method for DRY principle. It is used to get all kinds of data
      * for the specified sub path.
      *
@@ -84,4 +95,8 @@ export class PropertiesDefinitionService {
     private sendJsonRequest<T>(requestPath: string): Observable<T> {
         return this.http.get<T>(backendBaseURL + this.route.url + requestPath);
     }
+
+
 }
+
+

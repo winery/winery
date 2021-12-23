@@ -15,7 +15,7 @@
     <winery-loader></winery-loader>
 </div>
 
-<div *ngIf="!loading">
+<div *ngIf="!loading && !loadingInheritedPropertiesDefinitions">
     <div class="radioWrapper" *wineryRepositoryHideOnFeature="configEnum.Yaml">
         <div class="left">
             <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()"
@@ -45,6 +45,11 @@
         </div>
     </div>
     <div>
+        
+        <div>
+            <pre>{{ this.inheritedPropertiesDefinitions | json }}</pre>
+        </div>
+        
         <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
             || resourceApiData.selectedValue === propertiesEnum.Type)">
             <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)"

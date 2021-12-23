@@ -15,6 +15,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
+    IInheritedPropertiesDefinitionsApiData,
     PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition
 } from './propertiesDefinitionsResourceApiData';
@@ -80,6 +81,9 @@ export class PropertiesDefinitionComponent implements OnInit {
     modalTitle = 'Add a Property Definition';
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
+    
+    loadingInheritedPropertiesDefinitions = true;
+    inheritedPropertiesDefinitions: IInheritedPropertiesDefinitionsApiData;
 
     selectItems: SelectData[];
     activeElement = new SelectData();
@@ -513,6 +517,11 @@ export class PropertiesDefinitionComponent implements OnInit {
                 data => this.handlePropertiesDefinitionData(data),
                 error => this.handleError(error)
             );
+        this.service.getInheritedPropertiesDefinitions()
+            .subscribe(
+                data => this.handleInheritedPropertiesDefinitionsData(data),
+                error => this.handleError(error)
+            );
     }
 
     private handleSelectData(data: SelectData[], isType: boolean) {
@@ -593,6 +602,12 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.handleSuccess(data);
     }
 
+    private handleInheritedPropertiesDefinitionsData(data: any) {
+        console.log(data);
+        this.inheritedPropertiesDefinitions = data;
+        this.loadingInheritedPropertiesDefinitions = false;
+    }
+
     private handleSave(data: HttpResponse<string>) {
         this.handleSuccess(data, 'change');
         this.getPropertiesDefinitionsResourceApiData();
@@ -628,7 +643,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.notify.error(error.message, 'Error');
     }
 
-    // endregion
+
 }
 
 function joinList(list: any[]): string {

@@ -49,3 +49,8 @@ export interface PropertiesDefinitionsResourceApiData {
     winerysPropertiesDefinition: WinerysPropertiesDefinition;
     selectedValue: PropertiesDefinitionEnum;
 }
+
+export interface IInheritedPropertiesDefinitionsApiData {
+    parent: string;
+    properties: PropertiesDefinitionsResourceApiData;
+}

@@ -27,7 +27,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -36,6 +38,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
+import org.eclipse.winery.repository.rest.resources.apiData.InheritedPropertiesDefinitionsResourceApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
@@ -73,6 +76,29 @@ public class PropertiesDefinitionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getJson() {
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
+    }
+
+    @GET
+    @Path("inherited")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<?> getInheritedPropertiesDefinitionResource() {
+        ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
+
+        TEntityType child = this.parentRes.getEntityType();
+        while (child.getDerivedFrom() != null) {
+            QName parentType = child.getDerivedFrom().getType();
+            TEntityType parent = RepositoryFactory.getRepository().getElement(new NodeTypeId(parentType));
+            
+            WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
+            if (winerysPropertiesDefinition != null) {
+                PropertiesDefinitionResourceApiData propertiesDefinitionResourceApiData = new PropertiesDefinitionResourceApiData(parent.getProperties(), winerysPropertiesDefinition);
+                list.add(new InheritedPropertiesDefinitionsResourceApiData(parentType, propertiesDefinitionResourceApiData));
+            }
+            
+            child = parent;
+        }
+        
+        return list;
     }
 
     @GET
