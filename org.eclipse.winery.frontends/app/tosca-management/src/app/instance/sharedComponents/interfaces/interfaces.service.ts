@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesApiData } from './interfacesApiData';
+import { InheritedInterface, InterfacesApiData } from './interfacesApiData';
 import { InstanceService } from '../../instance.service';
 import { backendBaseURL } from '../../../configuration';
 import { Utils } from '../../../wineryUtils/utils';
@@ -56,6 +56,10 @@ export class InterfacesService {
         }
     }
 
+    getInheritedInterfaces(): Observable<InheritedInterface[]> {
+        return this.get<InheritedInterface[]>(this.path + 'inherited_interfaces');
+    }
+    
     save(interfacesData: InterfacesApiData[]): Observable<HttpResponse<string>> {
         if (this.path.includes('plans')) {
             const path = this.setConfigurationForPlans(this.path) + '/interfaces/';

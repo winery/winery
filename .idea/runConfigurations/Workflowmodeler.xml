@@ -5,7 +5,7 @@
     <scripts>
       <script value="start-workflowmodeler" />
     </scripts>
-    <node-interpreter value="project" />
+    <node-interpreter value="$PROJECT_DIR$/org.eclipse.winery.frontends/node/node" />
     <envs />
     <method v="2" />
   </configuration>

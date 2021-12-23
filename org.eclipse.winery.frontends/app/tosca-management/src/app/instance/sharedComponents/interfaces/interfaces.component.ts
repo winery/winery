@@ -84,6 +84,10 @@ export class InterfacesComponent implements OnInit {
                 data => this.handleInterfacesApiData(data),
                 error => this.handleError(error)
             );
+        this.service.getInheritedInterfaces()
+            .subscribe(
+                data => console.log(data)
+            )
         this.toscaType = this.sharedData.toscaComponent.toscaType;
         this.isServiceTemplate = this.toscaType === ToscaTypes.ServiceTemplate;
     }
