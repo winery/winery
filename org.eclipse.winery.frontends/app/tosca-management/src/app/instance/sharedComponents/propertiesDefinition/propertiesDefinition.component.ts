@@ -38,6 +38,7 @@ import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/s
 import { DataTypesService } from '../../dataTypes/dataTypes.service';
 import { YamlPropertyDefinition } from '../../../model/yaml';
 import { Router } from '@angular/router';
+import { QName } from '../../../../../../shared/src/app/model/qName';
 
 const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
     'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
@@ -454,11 +455,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     redirectToParent(qname: string) {
-        // NOTE: logic stolen from inheritance.component.ts; there should be a better solution for this ...
-        const parts = qname.split('}');
-        const namespace = parts[0].slice(1);
-        const name = parts[1];
-        this.router.navigate([this.sharedData.toscaComponent.toscaType + '/' + encodeURIComponent(namespace) + '/' + name])
+        const {nameSpace, localName} = new QName(qname);
+        const _ignored = this.router.navigate([this.sharedData.toscaComponent.toscaType + '/' + encodeURIComponent(nameSpace) + '/' + localName]);
     }
 
     // region ########## Private Methods ##########
