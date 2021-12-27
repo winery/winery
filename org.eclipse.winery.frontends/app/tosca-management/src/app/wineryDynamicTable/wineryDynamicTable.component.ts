@@ -76,6 +76,7 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
     @Input() data: any[];
     @Input() avoidDuplicateProperties: string[] = [];
     @Input() disableFiltering = true;
+    @Input() disableButtons = false;
 
     @Output() entryEdited = new EventEmitter<any>();
     @Output() entryRemoved = new EventEmitter<any>();

@@ -50,7 +50,8 @@ export interface PropertiesDefinitionsResourceApiData {
     selectedValue: PropertiesDefinitionEnum;
 }
 
-export interface IInheritedPropertiesDefinitionsApiData {
+export type InheritedPropertiesDefinitionsApiData = {
     parent: string;
     properties: PropertiesDefinitionsResourceApiData;
-}
+}[];
+

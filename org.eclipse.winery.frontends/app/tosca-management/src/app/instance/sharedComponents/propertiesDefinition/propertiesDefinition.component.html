@@ -45,11 +45,7 @@
         </div>
     </div>
     <div>
-        
-        <div>
-            <pre>{{ this.inheritedPropertiesDefinitions | json }}</pre>
-        </div>
-        
+
         <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
             || resourceApiData.selectedValue === propertiesEnum.Type)">
             <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)"
@@ -67,6 +63,27 @@
                                           (entryAdded)="onChangeProperty()"
                                           (entryEdited)="onChangeProperty()"
                                           (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
+
+                    <ng-container *ngFor="let parent of this.inheritedPropertiesDefinitions">
+                        <br/>
+                        
+                        <winery-dynamic-table
+                            [tableTitle]="'Properties derived from ' + parent.parent"
+                            [dynamicMetadata]="dynamicTableData"
+                            [modalTitle]="modalTitle"
+                            [data]="parent.properties.winerysPropertiesDefinition.propertyDefinitionKVList"
+                            [avoidDuplicateProperties]="['key']"
+                            [disableButtons]="true"
+                        >
+                        </winery-dynamic-table>
+                        <a (click)="redirectToParent(parent.parent)">Open {{parent.parent}}</a>
+
+                        <br/>
+                        <br/>
+                        
+                    </ng-container>
+
+
                 </tab>
                 <tab heading="Wrapper">
                     <div class="wrapperTab">

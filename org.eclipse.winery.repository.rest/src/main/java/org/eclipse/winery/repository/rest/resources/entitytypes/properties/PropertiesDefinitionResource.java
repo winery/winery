@@ -81,7 +81,7 @@ public class PropertiesDefinitionResource {
     @GET
     @Path("inherited")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<?> getInheritedPropertiesDefinitionResource() {
+    public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResource() {
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
 
         TEntityType child = this.parentRes.getEntityType();

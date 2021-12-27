@@ -15,7 +15,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
-    IInheritedPropertiesDefinitionsApiData,
+    InheritedPropertiesDefinitionsApiData,
     PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition
 } from './propertiesDefinitionsResourceApiData';
@@ -37,6 +37,7 @@ import { Constraint, yaml_well_known } from '../../../model/constraint';
 import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/src/app/models/ttopology-template';
 import { DataTypesService } from '../../dataTypes/dataTypes.service';
 import { YamlPropertyDefinition } from '../../../model/yaml';
+import { Router } from '@angular/router';
 
 const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
     'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
@@ -81,9 +82,9 @@ export class PropertiesDefinitionComponent implements OnInit {
     modalTitle = 'Add a Property Definition';
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
-    
+
     loadingInheritedPropertiesDefinitions = true;
-    inheritedPropertiesDefinitions: IInheritedPropertiesDefinitionsApiData;
+    inheritedPropertiesDefinitions: InheritedPropertiesDefinitionsApiData;
 
     selectItems: SelectData[];
     activeElement = new SelectData();
@@ -116,7 +117,8 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private modalService: BsModalService, private dataTypes: DataTypesService,
-                private notify: WineryNotificationService, private configurationService: WineryRepositoryConfigurationService) {
+                private notify: WineryNotificationService, private configurationService: WineryRepositoryConfigurationService,
+                private router: Router) {
         this.isYaml = configurationService.isYaml();
     }
 
@@ -451,6 +453,14 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     // endregion
 
+    redirectToParent(qname: string) {
+        // NOTE: logic stolen from inheritance.component.ts; there should be a better solution for this ...
+        const parts = qname.split('}');
+        const namespace = parts[0].slice(1);
+        const name = parts[1];
+        this.router.navigate([this.sharedData.toscaComponent.toscaType + '/' + encodeURIComponent(namespace) + '/' + name])
+    }
+
     // region ########## Private Methods ##########
     private clearEditedProperty() {
         this.editedProperty = this.isYaml ? new YamlPropertyDefinition() : new PropertiesDefinitionKVElement();
@@ -602,8 +612,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.handleSuccess(data);
     }
 
-    private handleInheritedPropertiesDefinitionsData(data: any) {
-        console.log(data);
+    private handleInheritedPropertiesDefinitionsData(data: InheritedPropertiesDefinitionsApiData) {
         this.inheritedPropertiesDefinitions = data;
         this.loadingInheritedPropertiesDefinitions = false;
     }
@@ -642,7 +651,6 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.loading = false;
         this.notify.error(error.message, 'Error');
     }
-
 
 }
 

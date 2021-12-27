@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import {
-    IInheritedPropertiesDefinitionsApiData, PropertiesDefinition, PropertiesDefinitionsResourceApiData
+    InheritedPropertiesDefinitionsApiData, PropertiesDefinition, PropertiesDefinitionsResourceApiData
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -79,10 +79,10 @@ export class PropertiesDefinitionService {
     /**
      * Gets the inherited properties definitions data.
      *
-     * @returns {Observable<IInheritedPropertiesDefinitionsApiData>}
+     * @returns {Observable<InheritedPropertiesDefinitionsApiData>}
      */
-    getInheritedPropertiesDefinitions(): Observable<IInheritedPropertiesDefinitionsApiData> {
-        return this.sendJsonRequest<IInheritedPropertiesDefinitionsApiData>( '/inherited');
+    getInheritedPropertiesDefinitions(): Observable<InheritedPropertiesDefinitionsApiData> {
+        return this.sendJsonRequest<InheritedPropertiesDefinitionsApiData>( '/inherited');
     }
 
     /**

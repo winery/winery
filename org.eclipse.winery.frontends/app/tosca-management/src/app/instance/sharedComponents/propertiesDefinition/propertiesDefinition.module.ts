@@ -25,6 +25,7 @@ import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module
 import { PropertiesDefinitionComponent } from './propertiesDefinition.component';
 import { WineryFeatureToggleModule } from '../../../wineryFeatureToggleModule/winery-feature-toggle.module';
 import { WineryDynamicTableModule } from '../../../wineryDynamicTable/wineryDynamicTable.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import { WineryDynamicTableModule } from '../../../wineryDynamicTable/wineryDyna
         WineryDuplicateValidatorModule,
         WineryFeatureToggleModule,
         WineryDynamicTableModule,
+        RouterModule,
     ],
     exports: [
     ],
