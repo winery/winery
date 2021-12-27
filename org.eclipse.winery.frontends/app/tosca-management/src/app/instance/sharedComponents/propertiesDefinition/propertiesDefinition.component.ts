@@ -456,7 +456,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     redirectToParent(qname: string) {
         const {nameSpace, localName} = new QName(qname);
-        const _ignored = this.router.navigate([this.sharedData.toscaComponent.toscaType + '/' + encodeURIComponent(nameSpace) + '/' + localName]);
+        this.router.navigate([this.sharedData.toscaComponent.toscaType + '/' + encodeURIComponent(nameSpace) + '/' + localName]).then();
     }
 
     // region ########## Private Methods ##########
