@@ -25,7 +25,6 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
