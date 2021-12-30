@@ -17,6 +17,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Properties } from './properties.types';
 
 @Component({
     selector: 'winery-properties',
@@ -30,10 +31,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class PropertiesComponent implements OnInit {
 
-    /**
-     * Why `any`? => see {@link PropertiesService.getProperties()}
-     */
-    properties: any = null;
+    properties: Properties = null;
     propertyKeys: string[] = [];
     isXMLData: boolean;
     loading = true;

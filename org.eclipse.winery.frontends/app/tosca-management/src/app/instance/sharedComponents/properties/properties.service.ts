@@ -14,9 +14,10 @@
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Properties, PropertiesData } from './properties.types';
+
 
 @Injectable()
 export class PropertiesService {
@@ -28,11 +29,7 @@ export class PropertiesService {
         this.path = this.sharedData.path + '/properties/';
     }
 
-    /**
-     * We use `any` as return value because the backend delivers the json object containing the property as a key
-     * and the value the value. Example: { "property": "this is my property" }.
-     */
-    public getProperties(): Observable<any> {
+    public getProperties(): Observable<PropertiesData> {
         return this.http.get(this.path, { observe: 'response', responseType: 'text' })
             .pipe(map(res => {
                 if (res.headers.get('Content-Type') === 'application/json') {
@@ -45,7 +42,7 @@ export class PropertiesService {
             }));
     }
 
-    public saveProperties(properties: any, isXML: boolean): Observable<HttpResponse<string>> {
+    public saveProperties(properties: Properties, isXML: boolean): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders();
         headers.set('Content-Type', isXML ? 'application/xml' : 'application/json');
         return this.http
