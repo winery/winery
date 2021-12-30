@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import {
-    InheritedPropertiesDefinitionsApiData, PropertiesDefinition, PropertiesDefinitionsResourceApiData
+    InheritedPropertiesDefinitionsApiData, PropertiesDefinitionsResourceApiData
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';

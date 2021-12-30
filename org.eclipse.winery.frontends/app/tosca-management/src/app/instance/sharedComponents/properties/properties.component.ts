@@ -17,7 +17,19 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Properties } from './properties.types';
+import { Properties, PropertiesData } from './properties.types';
+import { PropertiesDefinitionService } from '../propertiesDefinition/propertiesDefinition.service';
+import {
+    PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData
+} from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
+
+interface LoadingMap {
+    [key: string]: boolean;
+}
+
+function isLoading(map: LoadingMap): boolean {
+    return Object.keys(map).some(k => map[k]);
+}
 
 @Component({
     selector: 'winery-properties',
@@ -26,43 +38,74 @@ import { Properties } from './properties.types';
         'properties.component.css'
     ],
     providers: [
-        PropertiesService
+        PropertiesService,
+        PropertiesDefinitionService
     ]
 })
 export class PropertiesComponent implements OnInit {
 
+    definitions: PropertiesDefinitionKVElement[];
     properties: Properties = null;
     propertyKeys: string[] = [];
     isXMLData: boolean;
-    loading = true;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
-    constructor(private service: PropertiesService, private notify: WineryNotificationService,
-                public sharedData: InstanceService) {
+    private _loading = {
+        getProperties: false,
+        saveProperties: false,
+        getDefinitions: false
+    };
+
+    constructor(
+        private propertiesService: PropertiesService,
+        private propertiesDefinitionService: PropertiesDefinitionService,
+        private notify: WineryNotificationService,
+        public sharedData: InstanceService) {
     }
+
+    isLoading = () => isLoading(this._loading);
 
     ngOnInit() {
         this.getProperties();
+        this.getPropertiesDefinition();
     }
 
     save() {
-        this.loading = true;
+        this._loading.getProperties = true;
         if (this.isXMLData) {
             this.properties = this.propertiesEditor.getData();
         }
-        this.service.saveProperties(this.properties, this.isXMLData)
+        this.propertiesService.saveProperties(this.properties, this.isXMLData)
             .subscribe(
                 () => this.handleSave(),
-                error => this.handleError(error)
+                error => this.handleError(error, 'saveProperties')
             );
     }
 
     private getProperties() {
-        this.service.getProperties()
+        this._loading.getProperties = true;
+        this.propertiesService.getProperties()
             .subscribe(
                 data => this.handleProperties(data),
-                error => this.handleError(error)
+                error => this.handleError(error, 'getProperties')
             );
+    }
+
+    // TODO: handle inheritance
+    private getPropertiesDefinition() {
+        this._loading.getDefinitions = true;
+        // TODO: this does not send a request to the correct endpoint this endpoint url is constructed from browser url kekw
+        this.propertiesDefinitionService.getPropertiesDefinitionsData()
+            .subscribe(
+                data => this.handleDefinitions(data),
+                error => this.handleError(error, 'getDefinitions')
+            );
+    }
+
+    private handleDefinitions(data: PropertiesDefinitionsResourceApiData) {
+        console.log('data', data);
+        // this.definitions = data.winerysPropertiesDefinition.propertyDefinitionKVList;
+        this._loading.getDefinitions = false;
     }
 
     private handleSave() {
@@ -70,8 +113,7 @@ export class PropertiesComponent implements OnInit {
         this.getProperties();
     }
 
-    private handleProperties(data: any) {
-        this.loading = false;
+    private handleProperties(data: PropertiesData) {
         if (data.isXML) {
             this.isXMLData = true;
             this.properties = data.properties;
@@ -84,10 +126,11 @@ export class PropertiesComponent implements OnInit {
                 this.properties = data.properties;
             }
         }
+        this._loading.getProperties = false;
     }
 
-    private handleError(error: HttpErrorResponse) {
-        this.loading = false;
+    private handleError(error: HttpErrorResponse, loadingKey: string) {
         this.notify.error(error.message);
+        this._loading[loadingKey] = false;
     }
 }

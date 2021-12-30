@@ -11,7 +11,8 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="!loading; else loadingIcon">
+<div *ngIf="!isLoading(); else loadingIcon">
+
     <div class="right">
         <button [disabled]="!sharedData?.currentVersion?.editable || properties === null"
                 class="btn btn-primary"
@@ -19,6 +20,7 @@
             Save
         </button>
     </div>
+
     <div *ngIf="propertyKeys?.length > 0; else elseBlock">
         <table>
             <tr *ngFor="let prop of propertyKeys">
@@ -31,13 +33,16 @@
             </tr>
         </table>
     </div>
+    
     <ng-template #elseBlock>
         <div *ngIf="properties === null">
             The type does not have a “Properties Definition”.
         </div>
         <winery-editor #propertiesEditor *ngIf="isXMLData" [ngModel]="properties"></winery-editor>
     </ng-template>
+    
 </div>
+
 <ng-template #loadingIcon>
     <div>
         <winery-loader></winery-loader>
