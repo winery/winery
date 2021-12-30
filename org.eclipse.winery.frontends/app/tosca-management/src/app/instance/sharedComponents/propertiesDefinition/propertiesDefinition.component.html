@@ -76,7 +76,7 @@
                             [disableButtons]="true"
                         >
                         </winery-dynamic-table>
-                        <a (click)="redirectToParent(parent.parent)">Open {{parent.parent}}</a>
+                        <a [routerLink]="getParentRouterLink(parent.parent)">Open {{parent.parent}}</a>
 
                         <br/>
                         <br/>

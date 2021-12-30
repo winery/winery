@@ -22,13 +22,17 @@ import {
 import { SelectData } from '../../../model/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { FeatureEnum } from '../../../wineryFeatureToggleModule/wineryRepository.feature.direct';
 import { WineryDynamicTableMetadata } from '../../../wineryDynamicTable/wineryDynamicTableMetadata';
 import { DynamicTextData } from '../../../wineryDynamicTable/formComponents/dynamicText.component';
 import { Validators } from '@angular/forms';
 import { DynamicDropdownData } from '../../../wineryDynamicTable/formComponents/dynamicDropdown.component';
-import { DynamicConstraintsData } from '../../../wineryDynamicTable/formComponents/dynamicConstraints/dynamicConstraints.component';
+import {
+    DynamicConstraintsData
+} from '../../../wineryDynamicTable/formComponents/dynamicConstraints/dynamicConstraints.component';
 import { XmlTypes } from '../../../model/parameters';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
@@ -454,9 +458,9 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     // endregion
 
-    redirectToParent(qname: string) {
-        const {nameSpace, localName} = new QName(qname);
-        this.router.navigate([this.sharedData.toscaComponent.toscaType + '/' + encodeURIComponent(nameSpace) + '/' + localName]).then();
+    getParentRouterLink(qname: string) {
+        const { nameSpace, localName } = new QName(qname);
+        return ['/' + this.sharedData.toscaComponent.toscaType, encodeURIComponent(nameSpace), localName];
     }
 
     // region ########## Private Methods ##########
