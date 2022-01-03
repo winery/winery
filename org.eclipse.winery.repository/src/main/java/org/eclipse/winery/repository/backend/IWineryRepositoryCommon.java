@@ -15,6 +15,9 @@
 package org.eclipse.winery.repository.backend;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -243,4 +246,54 @@ public interface IWineryRepositoryCommon {
     default TRequirementType getType(TRequirement template) {
         return getElement(new RequirementTypeId(template.getTypeAsQName()));
     }
+
+    default DefinitionsChildId getDefinitionsChildId(TEntityType entityType, QName qName) {
+        if (entityType instanceof TArtifactType) {
+            return new ArtifactTypeId(qName);
+        }
+
+        if (entityType instanceof TCapabilityType) {
+            return new CapabilityTypeId(qName);
+        }
+
+        if (entityType instanceof TNodeType) {
+            return new NodeTypeId(qName);
+        }
+
+        if (entityType instanceof TPolicyType) {
+            return new PolicyTypeId(qName);
+        }
+
+        if (entityType instanceof TRelationshipType) {
+            return new RelationshipTypeId(qName);
+        }
+
+        if (entityType instanceof TRequirementType) {
+            return new RequirementTypeId(qName);
+        }
+        
+        return null;
+    }
+    
+    default TEntityType getParent(TEntityType entityType) {
+        if (entityType.getDerivedFrom() == null) return null;
+        
+        DefinitionsChildId id = getDefinitionsChildId(entityType, entityType.getDerivedFrom().getType());
+        if (id == null) return null;
+        
+        return getElement(id);
+    }
+    
+    default ArrayList<TEntityType> getParents(TEntityType entityType) {
+        ArrayList<TEntityType> parents = new ArrayList<>();
+        TEntityType child = entityType;
+        while (child.getDerivedFrom() != null) {
+            TEntityType parent = getParent(entityType);
+            if (parent == null) throw new IllegalStateException("Could not get parent element");
+            parents.add(parent);
+            child = parent;
+        }
+        return parents;
+    }
+    
 }

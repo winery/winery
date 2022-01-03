@@ -29,8 +29,20 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TPolicyType;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -81,24 +93,18 @@ public class PropertiesDefinitionResource {
     @GET
     @Path("inherited")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResource() {
-        ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
+    public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResourceMiles() {
+        ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
         
-        TEntityType child = this.parentRes.getEntityType();
-        while (child.getDerivedFrom() != null) {
-            QName parentType = child.getDerivedFrom().getType();
-            // TODO: the use of NodeTypeId is not generic
-            TEntityType parent = RepositoryFactory.getRepository().getElement(new NodeTypeId(parentType));
-            
+        ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
+        for (TEntityType parent : parents) {
             WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
             if (winerysPropertiesDefinition != null) {
                 PropertiesDefinitionResourceApiData propertiesDefinitionResourceApiData = new PropertiesDefinitionResourceApiData(parent.getProperties(), winerysPropertiesDefinition);
-                list.add(new InheritedPropertiesDefinitionsResourceApiData(parentType, propertiesDefinitionResourceApiData));
+                list.add(new InheritedPropertiesDefinitionsResourceApiData(parent.getQName(), propertiesDefinitionResourceApiData));
             }
-            
-            child = parent;
         }
-        
+
         return list;
     }
 
