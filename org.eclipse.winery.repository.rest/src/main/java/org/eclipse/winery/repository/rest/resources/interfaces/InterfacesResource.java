@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.interfaces;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
 
 import javax.swing.text.Element;
 import javax.ws.rs.Consumes;
@@ -121,7 +123,7 @@ public class InterfacesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<InheritedInterfaces> getInheritedInterfaces() {
         TExtensibleElements element = this.res.getElement();
-        
+
         ArrayList<InheritedInterfaces> inheritedInterfaces = new ArrayList<>();
         if (element instanceof TNodeType) {
             TNodeType nodeType = (TNodeType) element;

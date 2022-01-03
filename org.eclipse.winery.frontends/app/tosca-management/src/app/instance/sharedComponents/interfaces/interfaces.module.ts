@@ -21,11 +21,13 @@ import {WineryDuplicateValidatorModule} from '../../../wineryValidators/wineryDu
 import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
 import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
 import {InterfacesComponent} from './interfaces.component';
+
 import {SelectableListModule} from './selectableList/selectableList.module';
 import {ExistService} from '../../../wineryUtils/existService';
 import {WineryIoParameterModule} from '../../../wineryIoParameter/wineryIoParameters.module';
 import {WineryTargetInterfaceModule} from './targetInterface/wineryTargetInterface.module';
 import {WineryComponentExistsModule} from '../../../wineryComponentExists/wineryComponentExists.module';
+import { SelectModule } from 'ng2-select';
 
 @NgModule({
     imports: [
@@ -40,7 +42,8 @@ import {WineryComponentExistsModule} from '../../../wineryComponentExists/winery
         WineryTargetInterfaceModule,
         WineryDuplicateValidatorModule,
         WineryNamespaceSelectorModule,
-        WineryIoParameterModule
+        WineryIoParameterModule,
+        SelectModule
     ],
     exports: [InterfacesComponent],
     declarations: [

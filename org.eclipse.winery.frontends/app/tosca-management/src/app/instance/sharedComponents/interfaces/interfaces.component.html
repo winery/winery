@@ -15,12 +15,26 @@
     <winery-loader></winery-loader>
 </div>
 
+<label class="control-label">{{inheritedInterfacesData[0].parentType}}</label>
+<ul>
+    <li *ngFor="let inh of inheritedInterfacesData[0].interfaces">
+        {{inh.name}}
+        <ul *ngFor ="let op of inh.operations">
+         {{op.name}}   
+        </ul>
+    </li>
+</ul>
+<br>
 <div *ngIf="!loading">
     <div class="right">
         <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">Save</button>
     </div>
+    
+    
     <div style="display: inline-flex;">
-        <winery-selectable-list #itemList
+        
+        
+            <winery-selectable-list #itemList
                                 [title]="'Interfaces'"
                                 [rows]="interfacesData"
                                 (addButtonClicked)="addInterface()"

@@ -19,7 +19,7 @@ import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicate
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
-import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
+import { InheritedInterface, InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InterfaceParameter } from '../../../model/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
@@ -31,6 +31,8 @@ import { WineryVersion } from '../../../model/wineryVersion';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Interfaces } from './interfaces';
+import { InheritanceApiData } from '../inheritance/inheritanceApiData';
+import { SelectData } from '../../../model/selectData';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -48,6 +50,8 @@ export class InterfacesComponent implements OnInit {
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
+    inheritedInterfacesData: InheritedInterface[];
+   
 
     operations: InterfaceOperationApiData[] = null;
     inputParameters: InterfaceParameter[] = null;
@@ -86,8 +90,8 @@ export class InterfacesComponent implements OnInit {
             );
         this.service.getInheritedInterfaces()
             .subscribe(
-                data => console.log(data)
-            )
+                data => this.handleInheritedInterfaceData(data)
+            );
         this.toscaType = this.sharedData.toscaComponent.toscaType;
         this.isServiceTemplate = this.toscaType === ToscaTypes.ServiceTemplate;
     }
@@ -351,6 +355,10 @@ export class InterfacesComponent implements OnInit {
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
         this.interfacesData = data ? data : [];
+        this.loading = false;
+    }
+    private handleInheritedInterfaceData(data: InheritedInterface[]) {
+        this.inheritedInterfacesData = data ? data : [];
         this.loading = false;
     }
 
