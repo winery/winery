@@ -95,6 +95,7 @@ public class PropertiesDefinitionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResourceMiles() {
         ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
+        if (parents == null) throw new IllegalStateException("Could not get parent element");
         
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
         for (TEntityType parent : parents) {

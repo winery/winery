@@ -289,7 +289,7 @@ public interface IWineryRepositoryCommon {
         TEntityType child = entityType;
         while (child.getDerivedFrom() != null) {
             TEntityType parent = getParent(entityType);
-            if (parent == null) throw new IllegalStateException("Could not get parent element");
+            if (parent == null) return null;
             parents.add(parent);
             child = parent;
         }
