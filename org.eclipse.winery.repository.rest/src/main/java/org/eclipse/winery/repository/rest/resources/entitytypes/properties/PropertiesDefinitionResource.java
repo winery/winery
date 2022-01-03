@@ -83,10 +83,11 @@ public class PropertiesDefinitionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResource() {
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
-
+        
         TEntityType child = this.parentRes.getEntityType();
         while (child.getDerivedFrom() != null) {
             QName parentType = child.getDerivedFrom().getType();
+            // TODO: the use of NodeTypeId is not generic
             TEntityType parent = RepositoryFactory.getRepository().getElement(new NodeTypeId(parentType));
             
             WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();

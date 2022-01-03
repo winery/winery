@@ -78,11 +78,9 @@ public class PropertiesResource {
     /**
      * Gets the defined properties.
      *
-     * If no properties are defined, an empty JSON object is returned. If k/v properties are defined, then a JSON is
-     * returned. Otherwise, an empty JSON is returned.
-     *
-     * @return Key/Value map in the case of Winery WPD mode - else instance of XML Element in case of non-key/value
-     * properties
+     * If no properties are defined, an empty JSON object is returned.
+     * If k/v properties are defined, then a JSON is returned.
+     * Otherwise, an empty JSON is returned.
      */
     @GET
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
@@ -118,6 +116,17 @@ public class PropertiesResource {
             return Response.ok().entity(newKVProperties).type(MediaType.APPLICATION_JSON).build();
         }
 
+        // CASE "YAML": Return YAML properties as JSON if existed.
+        if (properties instanceof TEntityTemplate.YamlProperties) {
+            // TODO: inheritance
+            // TODO: consistent to type
+            // hurrah for yaml properties
+            return Response.ok()
+                .entity(((TEntityTemplate.YamlProperties) properties).getProperties())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+        }
+
         // CASE "XML": Return XML properties as XML if existed.
         if (properties instanceof TEntityTemplate.XmlProperties) {
             @Nullable final Object any = ((TEntityTemplate.XmlProperties) properties).getAny();
@@ -137,15 +146,6 @@ public class PropertiesResource {
             } catch (Exception e) {
                 throw new WebApplicationException(e);
             }
-        }
-
-        // CASE "YAML": Return YAML properties as JSON if existed.
-        if (properties instanceof TEntityTemplate.YamlProperties) {
-            // hurrah for yaml properties
-            return Response.ok()
-                .entity(((TEntityTemplate.YamlProperties) properties).getProperties())
-                .type(MediaType.APPLICATION_JSON)
-                .build();
         }
 
         // CASE "NULL": Return empty JSON if no properties existed.
