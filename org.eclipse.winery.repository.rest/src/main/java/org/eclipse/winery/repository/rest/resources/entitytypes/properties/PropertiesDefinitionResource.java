@@ -89,13 +89,13 @@ public class PropertiesDefinitionResource {
     public PropertiesDefinitionResourceApiData getJson() {
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
     }
-
+    
     @GET
     @Path("inherited")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResourceMiles() {
+    public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResource() {
         ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
-        if (parents == null) throw new IllegalStateException("Could not get parent element");
+        if (parents == null) throw new IllegalStateException("Could not get parents");
         
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
         for (TEntityType parent : parents) {
