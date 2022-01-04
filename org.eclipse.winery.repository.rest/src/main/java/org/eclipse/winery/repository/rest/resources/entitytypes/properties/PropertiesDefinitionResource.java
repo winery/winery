@@ -27,22 +27,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -95,7 +81,9 @@ public class PropertiesDefinitionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResource() {
         ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
-        if (parents == null) throw new IllegalStateException("Could not get parents");
+        if (parents == null) {
+            throw new IllegalStateException("Could not get parents");
+        }
         
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
         for (TEntityType parent : parents) {

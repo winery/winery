@@ -65,6 +65,10 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 
+import org.eclipse.jgit.annotations.Nullable;
+
+import static org.eclipse.winery.repository.backend.IRepository.LOGGER;
+
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.model.ids}
  * <p>
@@ -275,21 +279,29 @@ public interface IWineryRepositoryCommon {
         return null;
     }
     
-    default TEntityType getParent(TEntityType entityType) {
-        if (entityType.getDerivedFrom() == null) return null;
+    @Nullable
+    default <T extends TEntityType> T getParent(T entityType) {
+        if (entityType.getDerivedFrom() == null) {
+            return null;
+        }
         
         DefinitionsChildId id = getDefinitionsChildId(entityType, entityType.getDerivedFrom().getType());
-        if (id == null) return null;
+        if (id == null) {
+            return null;
+        }
         
         return getElement(id);
     }
     
-    default ArrayList<TEntityType> getParents(TEntityType entityType) {
-        ArrayList<TEntityType> parents = new ArrayList<>();
-        TEntityType child = entityType;
+    default <T extends TEntityType> ArrayList<T> getParents(T entityType) {
+        ArrayList<T> parents = new ArrayList<>();
+        T child = entityType;
         while (child.getDerivedFrom() != null) {
-            TEntityType parent = getParent(entityType);
-            if (parent == null) return null;
+            T parent = getParent(entityType);
+            if (parent == null) {
+                LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
+                return null;
+            }
             parents.add(parent);
             child = parent;
         }
