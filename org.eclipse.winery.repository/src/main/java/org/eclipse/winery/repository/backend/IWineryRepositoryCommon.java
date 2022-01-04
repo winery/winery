@@ -65,7 +65,7 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 
-import org.eclipse.jgit.annotations.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import static org.eclipse.winery.repository.backend.IRepository.LOGGER;
 
@@ -251,7 +251,7 @@ public interface IWineryRepositoryCommon {
         return getElement(new RequirementTypeId(template.getTypeAsQName()));
     }
 
-    default DefinitionsChildId getDefinitionsChildId(TEntityType entityType, QName qName) {
+    default @Nullable DefinitionsChildId getDefinitionsChildId(TEntityType entityType, QName qName) {
         if (entityType instanceof TArtifactType) {
             return new ArtifactTypeId(qName);
         }
@@ -279,8 +279,7 @@ public interface IWineryRepositoryCommon {
         return null;
     }
     
-    @Nullable
-    default <T extends TEntityType> T getParent(T entityType) {
+    default <T extends TEntityType> @Nullable T getParent(T entityType) {
         if (entityType.getDerivedFrom() == null) {
             return null;
         }
@@ -293,7 +292,7 @@ public interface IWineryRepositoryCommon {
         return getElement(id);
     }
     
-    default <T extends TEntityType> ArrayList<T> getParents(T entityType) {
+    default <T extends TEntityType> @Nullable ArrayList<T> getParents(T entityType) {
         ArrayList<T> parents = new ArrayList<>();
         T child = entityType;
         while (child.getDerivedFrom() != null) {
