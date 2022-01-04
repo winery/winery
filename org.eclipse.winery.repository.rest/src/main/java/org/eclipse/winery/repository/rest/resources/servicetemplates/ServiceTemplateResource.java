@@ -437,7 +437,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 repo.setElement(placeholderId, placeholderNodeType);
 
                 // create placeholder node template
-                TNodeTemplate placeholderNodeTemplate = splitting.createPlaceholderNodeTemplate(topologyTemplate, nodeTemplateWithOpenReq.getName(), placeholderQName);
+                TNodeTemplate placeholderNodeTemplate = splitting.createPlaceholderNodeTemplate(topologyTemplate, nodeTemplateWithOpenReq, placeholderQName);
 
                 // create capability of placeholder node template
                 TCapability capa = splitting.createPlaceholderCapability(topologyTemplate, capabilityType);
@@ -452,6 +452,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 for (Map.Entry<QName, String> targetLocation : nodeTemplateWithOpenReq.getOtherAttributes().entrySet()) {
                     placeholderNodeTemplate.getOtherAttributes().put(targetLocation.getKey(), targetLocation.getValue());
                 }
+                
+                //Set new coordinates
+                int y = Integer.parseInt(placeholderNodeTemplate.getY()) + 200;
+                placeholderNodeTemplate.setY(Integer.toString(y));
+                placeholderNodeTemplate.setX(placeholderNodeTemplate.getX());
                 // add placeholder to node template and connect with source node template with open requirements
                 topologyTemplate.addNodeTemplate(placeholderNodeTemplate);
                 ModelUtilities.createRelationshipTemplateAndAddToTopology(nodeTemplateWithOpenReq, placeholderNodeTemplate, ToscaBaseTypes.hostedOnRelationshipType, topologyTemplate);

@@ -235,7 +235,7 @@ public class Splitting {
         return placeholderNodeType;
     }
 
-    public TNodeTemplate createPlaceholderNodeTemplate(TTopologyTemplate topologyTemplate, String nameOfNodeTemplateGettingPlaceholder, QName placeholderQName) {
+    public TNodeTemplate createPlaceholderNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate NodeTemplateGettingPlaceholder, QName placeholderQName) {
         TNodeTemplate placeholderNodeTemplate = new TNodeTemplate();
         StringBuilder id;
         List<String> ids = new ArrayList<>();
@@ -243,7 +243,7 @@ public class Splitting {
             ids.add(nt.getId());
         }
         boolean uniqueID = false;
-        id = new StringBuilder(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
+        id = new StringBuilder(NodeTemplateGettingPlaceholder.getName() + "_placeholder");
         while (!uniqueID) {
             if (!ids.contains(id.toString() + IdCounter)) {
                 id.append(IdCounter);
@@ -256,7 +256,7 @@ public class Splitting {
         placeholderNodeTemplate.setId(id.toString());
         placeholderNodeTemplate.setName(id.toString());
         placeholderNodeTemplate.setType(placeholderQName);
-
+        
         return placeholderNodeTemplate;
     }
 
