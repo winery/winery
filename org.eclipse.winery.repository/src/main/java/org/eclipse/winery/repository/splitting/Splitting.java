@@ -753,7 +753,7 @@ public class Splitting {
         // iterate over node templates and check if their target location == current participant
         for (TNodeTemplate tNodeTemplate : nodeTemplateList) {
             Optional<String> nodeOwner = ModelUtilities.getParticipant(tNodeTemplate);
-            if (nodeOwner.isPresent() && nodeOwner.get().contains(participantName)) {
+            if (nodeOwner.isPresent() && nodeOwner.get().equalsIgnoreCase(participantName)) {
                 choreoValue += tNodeTemplate.getId() + ",";
             }
         }
