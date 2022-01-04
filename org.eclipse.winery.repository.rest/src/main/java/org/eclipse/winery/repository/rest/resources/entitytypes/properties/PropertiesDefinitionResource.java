@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.properties;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -75,7 +77,42 @@ public class PropertiesDefinitionResource {
     public PropertiesDefinitionResourceApiData getJson() {
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
     }
-    
+
+    // TODO: implement getMerged endpoint
+    // TODO: do we require deep copies?
+    // TODO: this merges only wineryPropertiesDefinitions?
+    // TODO: do we need to merge entityType#getProperties or something else?
+    // TODO: does not know at the end from which entityType the property definition has been derived from
+    @GET
+    @Path("merged")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PropertiesDefinitionResourceApiData getMerged() {
+        ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
+        
+        // NOTE: this is not a deep copy but a reference!
+        List<PropertyDefinitionKV> propertyDefinitions = this.getEntityType().getWinerysPropertiesDefinition().getPropertyDefinitions();
+
+        for (TEntityType parent : parents) {
+            for (PropertyDefinitionKV parentPropertyDefinition : parent.getWinerysPropertiesDefinition().getPropertyDefinitions()) {
+                // Find property definition of parent in child
+                boolean exists = false;
+                for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
+                    if (Objects.equals(propertyDefinition.getKey(), parentPropertyDefinition.getKey())) {
+                        exists = true;
+                        break;
+                    }
+                }
+                
+                // Add property definition of parent if not found
+                if (!exists) {
+                    propertyDefinitions.add(parentPropertyDefinition);
+                }
+            }
+        }
+        
+        return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.getEntityType().getWinerysPropertiesDefinition());
+    }
+
     @GET
     @Path("inherited")
     @Produces(MediaType.APPLICATION_JSON)
