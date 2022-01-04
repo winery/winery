@@ -292,14 +292,14 @@ public interface IWineryRepositoryCommon {
         return getElement(id);
     }
     
-    default <T extends TEntityType> @Nullable ArrayList<T> getParents(T entityType) {
+    default <T extends TEntityType> ArrayList<T> getParents(T entityType) {
         ArrayList<T> parents = new ArrayList<>();
         T child = entityType;
         while (child.getDerivedFrom() != null) {
             T parent = getParent(child);
             if (parent == null) {
                 LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
-                return null;
+                break;
             }
             parents.add(parent);
             child = parent;
