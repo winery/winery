@@ -90,7 +90,9 @@ export class InterfacesComponent implements OnInit {
             );
         this.service.getInheritedInterfaces()
             .subscribe(
-                data => this.handleInheritedInterfaceData(data)
+                
+                data => this.handleInheritedInterfaceData(data),
+                error => this.handleError(error)
             );
         this.toscaType = this.sharedData.toscaComponent.toscaType;
         this.isServiceTemplate = this.toscaType === ToscaTypes.ServiceTemplate;
@@ -350,6 +352,12 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
+    is_show = false;
+    toggleDiv() {
+        this.is_show = !this.is_show;
+    }
+    
+
     // endregion
 
     // region ########## Private Methods ##########
@@ -358,6 +366,7 @@ export class InterfacesComponent implements OnInit {
         this.loading = false;
     }
     private handleInheritedInterfaceData(data: InheritedInterface[]) {
+        console.log(data);
         this.inheritedInterfacesData = data ? data : [];
         this.loading = false;
     }

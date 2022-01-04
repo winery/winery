@@ -14,3 +14,14 @@
 .generateButtons {
     margin-top: 15px;
 }
+.btn-parent {
+    border:3px; 
+    border-style:solid; 
+    border-color:#0000c0; 
+    padding: 1em;
+    
+}
+h5:after {
+    content:"\a";
+    white-space: pre;
+}

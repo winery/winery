@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources.interfaces;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -127,7 +128,7 @@ public class InterfacesResource {
         ArrayList<InheritedInterfaces> inheritedInterfaces = new ArrayList<>();
         if (element instanceof TNodeType) {
             TNodeType nodeType = (TNodeType) element;
-            if (nodeType.getDerivedFrom() != null) {
+            while(nodeType.getDerivedFrom() != null) {
                 QName parentType = nodeType.getDerivedFrom().getType();
                 TNodeType parent = RepositoryFactory.getRepository().getElement(
                     new NodeTypeId(parentType)
@@ -138,7 +139,15 @@ public class InterfacesResource {
                         new InheritedInterfaces(parentType, parent.getInterfaces())
                     );
                 }
+                else {
+                    inheritedInterfaces.add(
+                        new InheritedInterfaces(parentType, Collections.emptyList())
+                    );
+                }
+
+                nodeType = parent;
             }
+            
         }
 
         return inheritedInterfaces;

@@ -11,20 +11,30 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="loading">
+<div *ngIf="!loading">
     <winery-loader></winery-loader>
 </div>
 
-<label class="control-label">{{inheritedInterfacesData[0].parentType}}</label>
-<ul>
-    <li *ngFor="let inh of inheritedInterfacesData[0].interfaces">
-        {{inh.name}}
-        <ul *ngFor ="let op of inh.operations">
-         {{op.name}}   
+<button class="btn-parent" *ngFor="let par of inheritedInterfacesData.reverse()" (click)="toggleDiv()" >
+    <h5>{{par.parentType}}
+    <div *ngIf="is_show" >
+        <ul>
+            <li *ngFor="let inh of par.interfaces">
+                {{inh.name}}
+                <ul *ngFor ="let op of inh.operations">
+                    {{op.name}}
+                </ul>
+            </li>
         </ul>
-    </li>
-</ul>
+    </div>
+    </h5>
+</button>
 <br>
+
+
+
+
+
 <div *ngIf="!loading">
     <div class="right">
         <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">Save</button>
