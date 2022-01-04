@@ -17,20 +17,28 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Properties, PropertiesData } from './properties.types';
+import { PropertiesDefinitionsResourceApiData } from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { backendBaseURL } from '../../../configuration';
+import { Utils } from '../../../wineryUtils/utils';
 
 
 @Injectable()
 export class PropertiesService {
 
-    path: string;
+    propertiesUrl: string;
+    propertiesDefinitionUrl: string;
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.path = this.sharedData.path + '/properties/';
+        this.propertiesUrl = this.sharedData.path + '/properties/';
+
+        // TODO: remove hardcoded endpoint
+        const typeUrl = '/policytypes/http%253A%252F%252Fwww.example.org%252Ftosca%252Fpolicytypes/test_w1-wip1';
+        this.propertiesDefinitionUrl = backendBaseURL + typeUrl + '/propertiesdefinition/merged';
     }
 
     public getProperties(): Observable<PropertiesData> {
-        return this.http.get(this.path, { observe: 'response', responseType: 'text' })
+        return this.http.get(this.propertiesUrl, { observe: 'response', responseType: 'text' })
             .pipe(map(res => {
                 if (res.headers.get('Content-Type') === 'application/json') {
                     return {
@@ -42,12 +50,16 @@ export class PropertiesService {
             }));
     }
 
+    getPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
+        return this.http.get<PropertiesDefinitionsResourceApiData>(this.propertiesDefinitionUrl);
+    }
+
     public saveProperties(properties: Properties, isXML: boolean): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders();
         headers.set('Content-Type', isXML ? 'application/xml' : 'application/json');
         return this.http
             .put(
-                this.path,
+                this.propertiesUrl,
                 properties,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
