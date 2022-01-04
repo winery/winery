@@ -297,7 +297,7 @@ public interface IWineryRepositoryCommon {
         ArrayList<T> parents = new ArrayList<>();
         T child = entityType;
         while (child.getDerivedFrom() != null) {
-            T parent = getParent(entityType);
+            T parent = getParent(child);
             if (parent == null) {
                 LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
                 return null;
