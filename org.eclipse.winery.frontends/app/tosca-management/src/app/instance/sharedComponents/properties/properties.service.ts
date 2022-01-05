@@ -20,21 +20,17 @@ import { Properties, PropertiesData } from './properties.types';
 import { PropertiesDefinitionsResourceApiData } from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { backendBaseURL } from '../../../configuration';
 import { Utils } from '../../../wineryUtils/utils';
+import { QName } from '../../../../../../shared/src/app/model/qName';
 
 
 @Injectable()
 export class PropertiesService {
 
     propertiesUrl: string;
-    propertiesDefinitionUrl: string;
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
         this.propertiesUrl = this.sharedData.path + '/properties/';
-
-        // TODO: remove hardcoded endpoint
-        const typeUrl = '/policytypes/http%253A%252F%252Fwww.example.org%252Ftosca%252Fpolicytypes/test_w1-wip1';
-        this.propertiesDefinitionUrl = backendBaseURL + typeUrl + '/propertiesdefinition/merged';
     }
 
     public getProperties(): Observable<PropertiesData> {
@@ -50,8 +46,12 @@ export class PropertiesService {
             }));
     }
 
-    getPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.http.get<PropertiesDefinitionsResourceApiData>(this.propertiesDefinitionUrl);
+    getPropertiesDefinitions(instance: InstanceService): Observable<PropertiesDefinitionsResourceApiData> {
+        const entityType =  new QName(instance.instance.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].type);
+        const namespace = Utils.doubleEncodeNamespace(entityType.nameSpace);
+        const entityTypeToscaType = instance.toscaComponent.toscaType.replace('template', 'type');
+        const url  = backendBaseURL + ['', entityTypeToscaType, namespace, entityType.localName, 'propertiesdefinition', 'merged'].join('/');
+        return this.http.get<PropertiesDefinitionsResourceApiData>(url);
     }
 
     public saveProperties(properties: Properties, isXML: boolean): Observable<HttpResponse<string>> {

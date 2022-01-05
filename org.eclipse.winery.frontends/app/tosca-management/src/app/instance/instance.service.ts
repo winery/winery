@@ -30,6 +30,7 @@ export interface ToscaLightCompatibilityData {
 @Injectable()
 export class InstanceService {
 
+    instance: WineryInstance;
     toscaComponent: ToscaComponent;
     topologyTemplate: WineryTopologyTemplate = null;
     versions: WineryVersion[];
@@ -193,6 +194,10 @@ export class InstanceService {
                     () => this.topologyTemplate = null
                 );
         }
+    }
+
+    public setInstance(instance: WineryInstance) {
+        this.instance = instance;
     }
 
     public deleteComponent(): Observable<HttpResponse<string>> {

@@ -25,6 +25,10 @@ export class Utils {
         return Object.keys(map).some(k => map[k]);
     }
 
+    public static doubleEncodeNamespace(namespace: string): string {
+        return encodeURIComponent(encodeURIComponent(namespace));
+    }
+
     /**
      * Generates a random alphanumeric string of the given length.
      *

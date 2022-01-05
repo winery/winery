@@ -50,7 +50,8 @@ export class PropertiesComponent implements OnInit {
     constructor(
         private propertiesService: PropertiesService,
         private notify: WineryNotificationService,
-        public sharedData: InstanceService) {
+        public instanceService: InstanceService) {
+        console.log(instanceService);
     }
 
     isLoading = () => Utils.isLoading(this._loading);
@@ -83,7 +84,7 @@ export class PropertiesComponent implements OnInit {
 
     private getPropertiesDefinitions() {
         this._loading.getDefinitions = true;
-        this.propertiesService.getPropertiesDefinitions()
+        this.propertiesService.getPropertiesDefinitions(this.instanceService)
             .subscribe(
                 data => this.definitions = data.winerysPropertiesDefinition.propertyDefinitionKVList,
                 error => this.handleError(error)

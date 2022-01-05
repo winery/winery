@@ -20,7 +20,7 @@
     <ng-container *ngIf="definitions.length">
 
         <div class="right">
-            <button [disabled]="!sharedData?.currentVersion?.editable || properties === null"
+            <button [disabled]="!instanceService?.currentVersion?.editable || properties === null"
                     class="btn btn-primary"
                     (click)="save()">
                 Save

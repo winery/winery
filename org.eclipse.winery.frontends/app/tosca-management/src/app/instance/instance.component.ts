@@ -117,6 +117,8 @@ export class InstanceComponent implements OnDestroy {
     }
 
     private handleComponentData(data: WineryInstance) {
+        this.service.setInstance(data);
+
         this.typeUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaComponent.toscaType);
 
         if (this.typeUrl) {
