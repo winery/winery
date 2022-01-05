@@ -43,6 +43,7 @@ import { DataTypesService } from '../../dataTypes/dataTypes.service';
 import { YamlPropertyDefinition } from '../../../model/yaml';
 import { Router } from '@angular/router';
 import { QName } from '../../../../../../shared/src/app/model/qName';
+import { Utils } from '../../../wineryUtils/utils';
 
 const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',
     'valid_values', 'length', 'min_length', 'max_length', 'pattern', 'schema'];
@@ -83,12 +84,10 @@ export class PropertiesDefinitionComponent implements OnInit {
     loading = true;
 
     dynamicTableData: Array<WineryDynamicTableMetadata> = [];
-    tableTitle = 'Properties';
     modalTitle = 'Add a Property Definition';
 
-    resourceApiData: PropertiesDefinitionsResourceApiData;
-
-    loadingInheritedPropertiesDefinitions = true;
+    propertiesDefinitions: PropertiesDefinitionsResourceApiData;
+    mergedPropertiesDefinitions: PropertiesDefinitionsResourceApiData;
     inheritedPropertiesDefinitions: InheritedPropertiesDefinitionsApiData;
 
     selectItems: SelectData[];
@@ -117,6 +116,16 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
+    show = {
+        inherited: false
+    };
+
+    _loading = {
+        getPropertiesDefinitions: false,
+        getInheritedPropertiesDefinitions: false,
+        getMergedPropertiesDefinitions: false,
+    };
+
     private yamlTypes: string[] = [];
     private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName', 'xsd:integer'];
 
@@ -127,9 +136,13 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.isYaml = configurationService.isYaml();
     }
 
+    isLoading = () => Utils.isLoading(this._loading) || this.loading;
+
     // region ########## Angular Callbacks ##########
     ngOnInit() {
-        this.getPropertiesDefinitionsResourceApiData();
+        this.getPropertiesDefinitions();
+        this.getMergedPropertiesDefinitions();
+        this.getInheritedPropertiesDefinitions();
 
         // fill the available types with the types we know
         setTimeout(() => {
@@ -187,15 +200,15 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.tableData = [];
         if (this.isYaml) {
             this.columns = yaml_columns;
-            this.tableData = this.resourceApiData.propertiesDefinition.properties
+            this.tableData = this.propertiesDefinitions.propertiesDefinition.properties
                 .map(prop => {
                     fillDefaults(prop);
                     return prop;
                 });
             this.availableTypes = this.yamlTypes;
-        } else if (this.resourceApiData.winerysPropertiesDefinition) {
+        } else if (this.propertiesDefinitions.winerysPropertiesDefinition) {
             this.columns = winery_properties_columns;
-            this.tableData = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+            this.tableData = this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList;
             this.availableTypes = this.xmlTypes;
         }
     }
@@ -205,7 +218,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     // region ########## Template Callbacks ##########
     // region ########## Radio Buttons ##########
     onNoneSelected(): void {
-        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
+        this.propertiesDefinitions.selectedValue = PropertiesDefinitionEnum.None;
     }
 
     /**
@@ -213,14 +226,14 @@ export class PropertiesDefinitionComponent implements OnInit {
      * to the backend to get the data for the select dropdown.
      */
     onXmlElementSelected(): void {
-        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Element;
+        this.propertiesDefinitions.selectedValue = PropertiesDefinitionEnum.Element;
 
-        if (!this.resourceApiData.propertiesDefinition) {
-            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        if (!this.propertiesDefinitions.propertiesDefinition) {
+            this.propertiesDefinitions.propertiesDefinition = new PropertiesDefinition();
         }
 
-        this.resourceApiData.propertiesDefinition.type = null;
-        this.resourceApiData.winerysPropertiesDefinition = null;
+        this.propertiesDefinitions.propertiesDefinition.type = null;
+        this.propertiesDefinitions.winerysPropertiesDefinition = null;
 
         this.service.getXsdElementDefinitions()
             .subscribe(
@@ -234,14 +247,14 @@ export class PropertiesDefinitionComponent implements OnInit {
      * to the backend to get the data for the select dropdown.
      */
     onXmlTypeSelected(): void {
-        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Type;
+        this.propertiesDefinitions.selectedValue = PropertiesDefinitionEnum.Type;
 
-        if (!this.resourceApiData.propertiesDefinition) {
-            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        if (!this.propertiesDefinitions.propertiesDefinition) {
+            this.propertiesDefinitions.propertiesDefinition = new PropertiesDefinition();
         }
 
-        this.resourceApiData.propertiesDefinition.element = null;
-        this.resourceApiData.winerysPropertiesDefinition = null;
+        this.propertiesDefinitions.propertiesDefinition.element = null;
+        this.propertiesDefinitions.winerysPropertiesDefinition = null;
 
         this.service.getXsdTypeDefinitions()
             .subscribe(
@@ -255,41 +268,41 @@ export class PropertiesDefinitionComponent implements OnInit {
      * a table to enter those pairs.
      */
     onCustomKeyValuePairSelected(): void {
-        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
+        this.propertiesDefinitions.selectedValue = PropertiesDefinitionEnum.Custom;
 
-        if (!this.resourceApiData.propertiesDefinition) {
-            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        if (!this.propertiesDefinitions.propertiesDefinition) {
+            this.propertiesDefinitions.propertiesDefinition = new PropertiesDefinition();
         }
-        this.resourceApiData.propertiesDefinition.element = null;
-        this.resourceApiData.propertiesDefinition.type = null;
+        this.propertiesDefinitions.propertiesDefinition.element = null;
+        this.propertiesDefinitions.propertiesDefinition.type = null;
 
-        if (!this.resourceApiData.winerysPropertiesDefinition) {
-            this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        if (!this.propertiesDefinitions.winerysPropertiesDefinition) {
+            this.propertiesDefinitions.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }
         // The key/value pair list may be null
-        if (!this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList) {
-            this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
+        if (!this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList) {
+            this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList = [];
         }
 
-        if (!this.resourceApiData.winerysPropertiesDefinition.namespace) {
-            this.resourceApiData.winerysPropertiesDefinition.namespace = this.sharedData.toscaComponent.namespace + '/propertiesdefinition/winery';
+        if (!this.propertiesDefinitions.winerysPropertiesDefinition.namespace) {
+            this.propertiesDefinitions.winerysPropertiesDefinition.namespace = this.sharedData.toscaComponent.namespace + '/propertiesdefinition/winery';
         }
-        if (!this.resourceApiData.winerysPropertiesDefinition.elementName) {
-            this.resourceApiData.winerysPropertiesDefinition.elementName = 'properties';
+        if (!this.propertiesDefinitions.winerysPropertiesDefinition.elementName) {
+            this.propertiesDefinitions.winerysPropertiesDefinition.elementName = 'properties';
         }
 
         this.activeElement = new SelectData();
-        this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
+        this.activeElement.text = this.propertiesDefinitions.winerysPropertiesDefinition.namespace;
     }
 
     onYamlProperties(): void {
-        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Yaml;
+        this.propertiesDefinitions.selectedValue = PropertiesDefinitionEnum.Yaml;
 
         // null away all the data access points that are not yaml
-        this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
-        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = null;
-        this.resourceApiData.propertiesDefinition.element = null;
-        this.resourceApiData.propertiesDefinition.type = null;
+        this.propertiesDefinitions.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList = null;
+        this.propertiesDefinitions.propertiesDefinition.element = null;
+        this.propertiesDefinitions.propertiesDefinition.type = null;
     }
 
     // endregion
@@ -297,14 +310,14 @@ export class PropertiesDefinitionComponent implements OnInit {
     // region ########## Save Callbacks ##########
     save(): void {
         this.loading = true;
-        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.None) {
+        if (this.propertiesDefinitions.selectedValue === PropertiesDefinitionEnum.None) {
             this.service.deletePropertiesDefinitions()
                 .subscribe(
                     data => this.handleDelete(data),
                     error => this.handleError(error)
                 );
         } else {
-            this.service.postPropertiesDefinitions(this.resourceApiData)
+            this.service.postPropertiesDefinitions(this.propertiesDefinitions)
                 .subscribe(
                     data => this.handleSave(data),
                     error => this.handleError(error)
@@ -331,11 +344,11 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.clearEditedProperty();
         if (this.isYaml) {
             this.validatorObject = new WineryValidatorObject(
-                this.resourceApiData.propertiesDefinition.properties,
+                this.propertiesDefinitions.propertiesDefinition.properties,
                 'name');
         } else {
             this.validatorObject = new WineryValidatorObject(
-                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList,
+                this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList,
                 'key'
             );
         }
@@ -366,10 +379,10 @@ export class PropertiesDefinitionComponent implements OnInit {
      * by ngModel in the template because the same select is used for element and type definitions.
      */
     xmlValueSelected(event: SelectData): void {
-        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Element) {
-            this.resourceApiData.propertiesDefinition.element = event.id;
-        } else if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Type) {
-            this.resourceApiData.propertiesDefinition.type = event.id;
+        if (this.propertiesDefinitions.selectedValue === PropertiesDefinitionEnum.Element) {
+            this.propertiesDefinitions.propertiesDefinition.element = event.id;
+        } else if (this.propertiesDefinitions.selectedValue === PropertiesDefinitionEnum.Type) {
+            this.propertiesDefinitions.propertiesDefinition.type = event.id;
         }
     }
 
@@ -390,17 +403,17 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.editedProperty.constraints = this.editedConstraints;
         if (this.propertyOperation === 'Add') {
             if (this.isYaml) {
-                this.resourceApiData.propertiesDefinition.properties.push(this.editedProperty);
+                this.propertiesDefinitions.propertiesDefinition.properties.push(this.editedProperty);
             } else {
-                this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push(this.editedProperty);
+                this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList.push(this.editedProperty);
             }
         }
         if (this.propertyOperation === 'Edit') {
             let arr: any[];
             if (this.isYaml) {
-                arr = this.resourceApiData.propertiesDefinition.properties;
+                arr = this.propertiesDefinitions.propertiesDefinition.properties;
             } else {
-                arr = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+                arr = this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList;
             }
             const index = arr.findIndex((el) => el.name === this.editedProperty.name);
             arr[index] = this.editedProperty;
@@ -522,18 +535,31 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.editedProperty = newProp;
     }
 
-    private getPropertiesDefinitionsResourceApiData(): void {
-        this.loading = true;
-        this.service.getPropertiesDefinitionsData()
+    private getPropertiesDefinitions(): void {
+        this._loading.getPropertiesDefinitions = true;
+        this.service.getPropertiesDefinitions()
             .subscribe(
-                data => this.handlePropertiesDefinitionData(data),
+                data => this.handlePropertiesDefinitions(data),
                 error => this.handleError(error)
-            );
+            ).add(() => this._loading.getPropertiesDefinitions = false);
+    }
+
+    private getInheritedPropertiesDefinitions() {
+        this._loading.getInheritedPropertiesDefinitions = true;
         this.service.getInheritedPropertiesDefinitions()
             .subscribe(
-                data => this.handleInheritedPropertiesDefinitionsData(data),
+                data => this.inheritedPropertiesDefinitions = data,
                 error => this.handleError(error)
-            );
+            ).add(() => this._loading.getInheritedPropertiesDefinitions = false);
+    }
+
+    private getMergedPropertiesDefinitions() {
+        this._loading.getMergedPropertiesDefinitions = true;
+        this.service.getMergedPropertiesDefinitions()
+            .subscribe(
+                data => this.mergedPropertiesDefinitions = data,
+                error => this.handleError(error)
+            ).add(() => this._loading.getMergedPropertiesDefinitions = false);
     }
 
     private handleSelectData(data: SelectData[], isType: boolean) {
@@ -542,9 +568,9 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.selectItems.some(nsList => {
             this.activeElement = nsList.children.find(item => {
                 if (isType) {
-                    return item.id === this.resourceApiData.propertiesDefinition.type;
+                    return item.id === this.propertiesDefinitions.propertiesDefinition.type;
                 }
-                return item.id === this.resourceApiData.propertiesDefinition.element;
+                return item.id === this.propertiesDefinitions.propertiesDefinition.element;
             });
             return !!this.activeElement;
         });
@@ -582,13 +608,14 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     private handleDelete(data: any): void {
         this.handleSuccess(data, 'delete');
-        this.getPropertiesDefinitionsResourceApiData();
+        this.getPropertiesDefinitions();
+        this.getMergedPropertiesDefinitions();
     }
 
-    private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
-        this.resourceApiData = data;
+    private handlePropertiesDefinitions(data: PropertiesDefinitionsResourceApiData): void {
+        this.propertiesDefinitions = data;
         // because the selectedValue doesn't get set correctly do it here
-        switch (!this.resourceApiData.selectedValue ? '' : this.resourceApiData.selectedValue.toString()) {
+        switch (!this.propertiesDefinitions.selectedValue ? '' : this.propertiesDefinitions.selectedValue.toString()) {
             case PropertiesDefinitionEnum.Element:
                 this.onXmlElementSelected();
                 break;
@@ -603,25 +630,21 @@ export class PropertiesDefinitionComponent implements OnInit {
                 break;
             default:
                 // Yaml mode frontend does not support the PropertiesDefinitionEnum type None
-                this.resourceApiData.selectedValue = this.isYaml ? PropertiesDefinitionEnum.Yaml : PropertiesDefinitionEnum.None;
+                this.propertiesDefinitions.selectedValue = this.isYaml ? PropertiesDefinitionEnum.Yaml : PropertiesDefinitionEnum.None;
                 // if necessary, fill with default values to simplify access
-                if (this.isYaml && !this.resourceApiData.propertiesDefinition) {
-                    this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
-                    this.resourceApiData.propertiesDefinition.properties = [];
+                if (this.isYaml && !this.propertiesDefinitions.propertiesDefinition) {
+                    this.propertiesDefinitions.propertiesDefinition = new PropertiesDefinition();
+                    this.propertiesDefinitions.propertiesDefinition.properties = [];
                 }
         }
 
         this.handleSuccess(data);
     }
 
-    private handleInheritedPropertiesDefinitionsData(data: InheritedPropertiesDefinitionsApiData) {
-        this.inheritedPropertiesDefinitions = data;
-        this.loadingInheritedPropertiesDefinitions = false;
-    }
-
     private handleSave(data: HttpResponse<string>) {
         this.handleSuccess(data, 'change');
-        this.getPropertiesDefinitionsResourceApiData();
+        this.getPropertiesDefinitions();
+        this.getMergedPropertiesDefinitions();
     }
 
     /**
@@ -629,14 +652,14 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param itemToDelete
      */
     private deleteItem(itemToDelete: any): void {
-        const list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList || [];
+        const list = this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList || [];
         for (let i = 0; i < list.length; i++) {
             if (list[i].key === itemToDelete.key) {
                 list.splice(i, 1);
             }
         }
 
-        const yamlList = this.resourceApiData.propertiesDefinition.properties || [];
+        const yamlList = this.propertiesDefinitions.propertiesDefinition.properties || [];
         for (let i = 0; i < yamlList.length; i++) {
             if (yamlList[i].name === itemToDelete.name) {
                 yamlList.splice(i, 1);

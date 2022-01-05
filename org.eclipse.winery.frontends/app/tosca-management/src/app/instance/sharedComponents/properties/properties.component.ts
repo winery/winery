@@ -19,17 +19,9 @@ import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Properties, PropertiesData } from './properties.types';
 import { PropertiesDefinitionService } from '../propertiesDefinition/propertiesDefinition.service';
-import {
-    PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData
-} from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionKVElement } from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { Utils } from '../../../wineryUtils/utils';
 
-interface LoadingMap {
-    [key: string]: boolean;
-}
-
-function isLoading(map: LoadingMap): boolean {
-    return Object.keys(map).some(k => map[k]);
-}
 
 @Component({
     selector: 'winery-properties',
@@ -49,7 +41,7 @@ export class PropertiesComponent implements OnInit {
     isXML: boolean;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
-    private _loading = {
+    _loading = {
         getProperties: false,
         saveProperties: false,
         getDefinitions: false
@@ -61,7 +53,7 @@ export class PropertiesComponent implements OnInit {
         public sharedData: InstanceService) {
     }
 
-    isLoading = () => isLoading(this._loading);
+    isLoading = () => Utils.isLoading(this._loading);
 
     ngOnInit() {
         this.getProperties();
@@ -69,15 +61,15 @@ export class PropertiesComponent implements OnInit {
     }
 
     save() {
-        this._loading.getProperties = true;
+        this._loading.saveProperties = true;
         if (this.isXML) {
             this.properties = this.propertiesEditor.getData();
         }
         this.propertiesService.saveProperties(this.properties, this.isXML)
             .subscribe(
                 () => this.handleSave(),
-                error => this.handleError(error, 'saveProperties')
-            );
+                error => this.handleError(error)
+            ).add(() => this._loading.saveProperties = false);
     }
 
     private getProperties() {
@@ -85,22 +77,17 @@ export class PropertiesComponent implements OnInit {
         this.propertiesService.getProperties()
             .subscribe(
                 data => this.handleProperties(data),
-                error => this.handleError(error, 'getProperties')
-            );
+                error => this.handleError(error)
+            ).add(() => this._loading.getProperties = false);
     }
 
     private getPropertiesDefinitions() {
         this._loading.getDefinitions = true;
         this.propertiesService.getPropertiesDefinitions()
             .subscribe(
-                data => this.handlePropertiesDefinitions(data),
-                error => this.handleError(error, 'getDefinitions')
-            );
-    }
-
-    private handlePropertiesDefinitions(data: PropertiesDefinitionsResourceApiData) {
-        this.definitions = data.winerysPropertiesDefinition.propertyDefinitionKVList;
-        this._loading.getDefinitions = false;
+                data => this.definitions = data.winerysPropertiesDefinition.propertyDefinitionKVList,
+                error => this.handleError(error)
+            ).add(() => this._loading.getDefinitions = false);
     }
 
     private handleSave() {
@@ -111,12 +98,10 @@ export class PropertiesComponent implements OnInit {
     private handleProperties(data: PropertiesData) {
         this.properties = data.properties;
         this.isXML = data.isXML;
-        this._loading.getProperties = false;
     }
 
-    private handleError(error: HttpErrorResponse, loadingKey: string) {
+    private handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
-        this._loading[loadingKey] = false;
     }
 
 }

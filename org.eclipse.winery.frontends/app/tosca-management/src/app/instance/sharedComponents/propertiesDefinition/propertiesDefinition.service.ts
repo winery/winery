@@ -47,7 +47,7 @@ export class PropertiesDefinitionService {
      *
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
-    getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
+    getPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
         return this.sendJsonRequest<PropertiesDefinitionsResourceApiData>('/');
     }
 
@@ -82,7 +82,11 @@ export class PropertiesDefinitionService {
      * @returns {Observable<InheritedPropertiesDefinitionsApiData>}
      */
     getInheritedPropertiesDefinitions(): Observable<InheritedPropertiesDefinitionsApiData> {
-        return this.sendJsonRequest<InheritedPropertiesDefinitionsApiData>( '/inherited');
+        return this.sendJsonRequest( '/inherited');
+    }
+
+    getMergedPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
+        return this.sendJsonRequest('/merged');
     }
 
     /**

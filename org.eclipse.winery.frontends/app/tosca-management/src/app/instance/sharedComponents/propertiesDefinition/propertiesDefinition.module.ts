@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { TabsModule } from 'ngx-bootstrap';
+import { AlertModule, TabsModule } from 'ngx-bootstrap';
 import { SelectModule } from 'ng2-select';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { WineryNamespaceSelectorModule } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
@@ -42,6 +42,7 @@ import { RouterModule } from '@angular/router';
         WineryFeatureToggleModule,
         WineryDynamicTableModule,
         RouterModule,
+        AlertModule,
     ],
     exports: [
     ],

@@ -21,6 +21,10 @@ export class Utils {
         return Object.keys(object).length === 0;
     }
 
+    public static isLoading(map: {[key: string]: boolean}): boolean {
+        return Object.keys(map).some(k => map[k]);
+    }
+
     /**
      * Generates a random alphanumeric string of the given length.
      *
