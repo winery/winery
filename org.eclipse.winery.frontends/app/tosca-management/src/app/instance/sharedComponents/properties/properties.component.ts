@@ -21,6 +21,7 @@ import { Properties, PropertiesData } from './properties.types';
 import { PropertiesDefinitionService } from '../propertiesDefinition/propertiesDefinition.service';
 import { PropertiesDefinitionKVElement } from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { Utils } from '../../../wineryUtils/utils';
+import { NgForm } from '@angular/forms';
 
 
 @Component({
@@ -36,10 +37,21 @@ import { Utils } from '../../../wineryUtils/utils';
 })
 export class PropertiesComponent implements OnInit {
 
+    form: NgForm;
     definitions: PropertiesDefinitionKVElement[];
     properties: Properties;
     isXML: boolean;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
+
+    patterns = {
+        'xsd:float': /^\s*([+-]?((0|[1-9][0-9]*)(\.[0-9]*)?|\.[0-9]+)([Ee][+-]?[0-9]+)?)\s*$/g,
+        'xsd:integer': /^\s*[+-]?(0|[1-9][0-9]*)([Ee][+]?[0-9]+)?\s*$/g,
+        'xsd:decimal': /^\d*\.?\d*$/g,
+        'xsd:anyURI': /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(\.[^\/\\:*?"<>|]+)$/g,
+        'xsd:qName': /^\{(.*?)\}(.*)$/g
+    };
+
+    show = {};
 
     _loading = {
         getProperties: false,
@@ -51,7 +63,6 @@ export class PropertiesComponent implements OnInit {
         private propertiesService: PropertiesService,
         private notify: WineryNotificationService,
         public instanceService: InstanceService) {
-        console.log(instanceService);
     }
 
     isLoading = () => Utils.isLoading(this._loading);
@@ -59,6 +70,10 @@ export class PropertiesComponent implements OnInit {
     ngOnInit() {
         this.getProperties();
         this.getPropertiesDefinitions();
+    }
+
+    onSubmit(form: NgForm) {
+        console.log('submit', form, this.properties);
     }
 
     save() {

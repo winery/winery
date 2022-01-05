@@ -32,24 +32,63 @@
         </ng-container>
 
         <ng-container *ngIf="!isXML">
-            <ng-form>
-                <ng-container *ngFor="let definition of definitions">
+            <form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+
+                <button type="submit" [disabled]="!form.valid">Submit</button>
+                <br/>
+                <br/>
+
+                <ng-container *ngFor="let definition of definitions; index as index">
+
+
+                    <hr *ngIf="index !== 0"/>
+
                     <label [for]="definition.key">Property "{{ definition.key }}"</label>
 
                     <br/>
 
-                    <input [required]="definition.required" [id]="definition.key" [value]="properties[definition.key]"/>
-                    <p>Type is "{{ definition.type }}"</p>
-                    
+                    <input
+                        [required]="definition.required"
+                        [id]="definition.key"
+                        [name]="definition.key"
+                        [pattern]="patterns[definition.type]"
+                        [(ngModel)]="properties[definition.key]"
+                    />
+
+                    <ng-container *ngIf="form.dirty">
+                        <div *ngIf="form.controls[definition.key].errors?.required">
+                            <p>Property is required!</p>
+                        </div>
+
+                        <div *ngIf="form.controls[definition.key].errors?.pattern">
+                            <p>Not a valid {{ definition.key }}!</p>
+                        </div>
+                    </ng-container>
+
+
+                    <p *ngIf="definition.type">Type is "{{ definition.type }}".</p>
+                    <p *ngIf="!definition.type">No type defined.</p>
+
                     <p *ngIf="definition.defaultValue">Default is "{{ definition.defaultValue }}".</p>
                     <p *ngIf="!definition.defaultValue">No default value.</p>
 
                     <p *ngIf="definition.description">{{ definition.description }}</p>
 
-                    <pre *ngIf="definition.constraints?.length">{{ definition.constraints | json }}</pre>
-                    <hr/>
+                    <ng-container *ngIf="!definition.constraints?.length">
+                        <button type="button" (click)="show[definition.key] = !show[definition.key]">
+                            {{ show[definition.key] ? "Hide constraints" : "Show constraints" }}
+                        </button>
+
+                        <span [hidden]="!show[definition.key]">
+                            <br/>
+                            <br/>
+                            <pre>{{ definition.constraints | json }}</pre>
+                        </span>
+
+                    </ng-container>
+
                 </ng-container>
-            </ng-form>
+            </form>
         </ng-container>
 
     </ng-container>

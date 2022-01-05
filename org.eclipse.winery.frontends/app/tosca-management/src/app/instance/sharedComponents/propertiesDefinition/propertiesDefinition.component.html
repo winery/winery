@@ -80,12 +80,17 @@
                     <div [hidden]="!show.inherited">
                         
                         <br/>
-                        
-                        <alert type="info">
-                            The first table is the first parent.
+
+                        <alert type="info" *ngIf="!this.inheritedPropertiesDefinitions.length">
+                            There is no inheritance.
                         </alert>
                         
-                        <ng-container *ngFor="let parent of this.inheritedPropertiesDefinitions; index as index">
+                        <alert type="info" *ngIf="this.inheritedPropertiesDefinitions.length > 1">
+                            The order of the tables are the same as in the inheritance order.
+                            The highest table corresponds to the highest parent in the inheritance order.
+                        </alert>
+                        
+                        <ng-container *ngFor="let parent of this.inheritedPropertiesDefinitions.reverse(); index as index">
                             
                             <hr *ngIf="index !== 0"/>
 
