@@ -15,19 +15,28 @@
     <winery-loader></winery-loader>
 </div>
 
-<button class="btn-parent" *ngFor="let par of inheritedInterfacesData.reverse()" (click)="toggleDiv()" >
-    <h5>{{par.parentType}}
-    <div *ngIf="is_show" >
-        <ul>
-            <li *ngFor="let inh of par.interfaces">
-                {{inh.name}}
-                <ul *ngFor ="let op of inh.operations">
-                    {{op.name}}
-                </ul>
-            </li>
-        </ul>
-    </div>
-    </h5>
+<button class="btn-parent" *ngFor="let par of inheritedInterfacesData" (click)="toggleDiv()" >
+    <h5>{{par.parentType}} </h5>
+<!--        <ng-template [ngIf]="par.interfaces" [ngIfElse]="nointerfaces">-->
+        <div *ngIf="is_show">
+         <div *ngIf="par.interfaces && par.interfaces.length !=0 ; else nointerfaces">
+            <ul>
+                <li *ngFor="let inh of par.interfaces">
+                    {{inh.name}}
+                    <ul *ngFor ="let op of inh.operations">
+                        {{op.name}}
+                    </ul>
+                </li>
+            </ul>
+         </div>
+            <ng-template #nointerfaces>
+                <div> No interfaces available.</div>
+            </ng-template>
+        </div>
+<!--        </ng-template>-->
+        
+        
+   
 </button>
 <br>
 

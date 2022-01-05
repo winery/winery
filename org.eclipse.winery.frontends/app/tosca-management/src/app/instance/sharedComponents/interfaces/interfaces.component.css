@@ -23,5 +23,6 @@
 }
 h5:after {
     content:"\a";
+    content:"\a";
     white-space: pre;
 }

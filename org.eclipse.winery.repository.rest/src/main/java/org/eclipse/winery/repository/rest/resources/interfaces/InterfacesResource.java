@@ -150,6 +150,7 @@ public class InterfacesResource {
             
         }
 
+        Collections.reverse(inheritedInterfaces);
         return inheritedInterfaces;
     }
 }
