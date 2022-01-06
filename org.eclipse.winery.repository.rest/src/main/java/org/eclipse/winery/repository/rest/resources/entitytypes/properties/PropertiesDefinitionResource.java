@@ -83,6 +83,7 @@ public class PropertiesDefinitionResource {
     // TODO: this merges only wineryPropertiesDefinitions?
     // TODO: do we need to merge entityType#getProperties or something else?
     // TODO: does not know at the end from which entityType the property definition has been derived from
+    // Compare to org.eclipse.winery.frontends/app/topologymodeler/src/app/models/InheritanceUtils#getDefaultPropertiesFromEntityTypes
     @GET
     @Path("merged")
     @Produces(MediaType.APPLICATION_JSON)

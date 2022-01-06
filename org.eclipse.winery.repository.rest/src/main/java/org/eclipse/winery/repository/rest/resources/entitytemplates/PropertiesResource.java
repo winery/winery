@@ -13,11 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +29,8 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -73,14 +79,74 @@ public class PropertiesResource {
         return RestUtils.persist(this.res);
     }
 
+    // TODO: implement getEffectiveProperties
+    @GET
+    @Path("effective")
+    @Produces(MediaType.APPLICATION_JSON)
+    public LinkedHashMap<String, String> getEffectiveProperties() {
+        // Get entityType
+        TEntityType entityType = RepositoryFactory.getRepository().getTypeForTemplate(this.template);
+
+        // Get all parents of entityType
+        ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(entityType);
+
+        // NOTE: this is not a deep copy but a reference!
+        List<PropertyDefinitionKV> propertiesDefinitions = entityType.getWinerysPropertiesDefinition().getPropertyDefinitions();
+
+        // Get all properties definitions
+        // TODO: this is copy and pasta from PropertiesDefinitionResource#getMerged
+        for (TEntityType parent : parents) {
+            WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
+            // Abort if winerysPropertyDefinitions is not present
+            if (winerysPropertiesDefinition == null) {
+                break;
+            }
+
+            for (PropertyDefinitionKV parentPropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
+                // Find property definition of parent in child
+                boolean exists = false;
+                for (PropertyDefinitionKV propertyDefinition : propertiesDefinitions) {
+                    if (Objects.equals(propertyDefinition.getKey(), parentPropertyDefinition.getKey())) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                // Add property definition of parent if not found
+                if (!exists) {
+                    propertiesDefinitions.add(parentPropertyDefinition);
+                }
+            }
+        }
+
+        // Get effective properties
+        LinkedHashMap<String, String> assignedProperties = ModelUtilities.getPropertiesKV(template);
+        LinkedHashMap<String, String> effectiveProperties = new LinkedHashMap<>();
+
+        // Fill new map only with defined properties or defaults
+        propertiesDefinitions.forEach(propDef -> {
+            String effectiveValue;
+            if (assignedProperties != null) {
+                 effectiveValue = assignedProperties.getOrDefault(propDef.getKey(), propDef.getDefaultValue());
+            } else {
+                effectiveValue = propDef.getDefaultValue();
+            }
+            
+            if (effectiveValue != null) {
+                effectiveProperties.put(propDef.getKey(), effectiveValue);
+            }
+        });
+
+        return effectiveProperties;
+    }
+
     // TODO: update description
 
     /**
      * Gets the defined properties.
      *
-     * If no properties are defined, an empty JSON object is returned.
-     * If k/v properties are defined, then a JSON is returned.
-     * Otherwise, an empty JSON is returned.
+     * If no properties are defined, an empty JSON object is returned. If k/v properties are defined, then a JSON is
+     * returned. Otherwise, an empty JSON is returned.
      */
     @GET
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
@@ -90,36 +156,16 @@ public class PropertiesResource {
             .getTypeForTemplate(this.template)
             .getWinerysPropertiesDefinition();
 
-        // TODO: apply merge logic to all props types
-
-        // CASE "WKV": Return XML properties as XML if existed.
+        // CASE "WKV": Return WineryKV properties as JSON if existed.
         if (properties instanceof TEntityTemplate.WineryKVProperties || (properties == null && propertiesDefinition != null)) {
-            // TODO: handle inherited properties?
-            LinkedHashMap<String, String> currentKVProperties = ModelUtilities.getPropertiesKV(template);
-            LinkedHashMap<String, String> newKVProperties = new LinkedHashMap<>();
-
-            // Fill new map only with defined properties
-            propertiesDefinition.getPropertyDefinitions().forEach(propDef -> {
-                if (currentKVProperties != null) {
-                    newKVProperties.put(propDef.getKey(), currentKVProperties.getOrDefault(propDef.getKey(), ""));
-                } else {
-                    newKVProperties.put(propDef.getKey(), "");
-                }
-            });
-
-            // TODO: save only if new map is not equal to old map
-            TEntityTemplate.WineryKVProperties update = new TEntityTemplate.WineryKVProperties();
-            update.setKVProperties(newKVProperties);
-            this.template.setProperties(update);
-            RestUtils.persist(this.res);
-
-            return Response.ok().entity(newKVProperties).type(MediaType.APPLICATION_JSON).build();
+            return Response.ok()
+                .entity(ModelUtilities.getPropertiesKV(template))
+                .type(MediaType.APPLICATION_JSON)
+                .build();
         }
 
         // CASE "YAML": Return YAML properties as JSON if existed.
         if (properties instanceof TEntityTemplate.YamlProperties) {
-            // TODO: inheritance
-            // TODO: consistent to type
             // hurrah for yaml properties
             return Response.ok()
                 .entity(((TEntityTemplate.YamlProperties) properties).getProperties())
