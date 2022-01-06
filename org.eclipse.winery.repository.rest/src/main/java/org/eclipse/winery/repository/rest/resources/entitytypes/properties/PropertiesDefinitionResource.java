@@ -87,13 +87,24 @@ public class PropertiesDefinitionResource {
     @Path("merged")
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getMerged() {
+        // Abort if winerysPropertyDefinitions is not present
+        if (this.wpd == null) {
+            return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
+        }
+        
         ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
         
         // NOTE: this is not a deep copy but a reference!
         List<PropertyDefinitionKV> propertyDefinitions = this.getEntityType().getWinerysPropertiesDefinition().getPropertyDefinitions();
 
         for (TEntityType parent : parents) {
-            for (PropertyDefinitionKV parentPropertyDefinition : parent.getWinerysPropertiesDefinition().getPropertyDefinitions()) {
+            WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
+            // Abort if winerysPropertyDefinitions is not present
+            if (winerysPropertiesDefinition == null) {
+                break;
+            }
+            
+            for (PropertyDefinitionKV parentPropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
                 // Find property definition of parent in child
                 boolean exists = false;
                 for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
