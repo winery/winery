@@ -14,80 +14,93 @@
 <div *ngIf="!isLoading(); else loadingIcon">
 
     <ng-container *ngIf="!definitions.length">
-        <p>The type does not have a "Properties Definitions".</p>
+        <p>The type does not have any "Properties Definitions".</p>
     </ng-container>
+
 
     <ng-container *ngIf="definitions.length">
 
-        <div class="right">
-            <button [disabled]="!instanceService?.currentVersion?.editable || properties === null"
-                    class="btn btn-primary"
-                    (click)="save()">
-                Save
-            </button>
-        </div>
-
         <ng-container *ngIf="isXML">
+
+            <div class="right">
+                <button [disabled]="!instanceService?.currentVersion?.editable || properties === null"
+                        class="btn btn-primary"
+                        (click)="save()">
+                    Save
+                </button>
+            </div>
+
             <winery-editor #propertiesEditor [ngModel]="properties"></winery-editor>
         </ng-container>
 
         <ng-container *ngIf="!isXML">
-            <form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+            <form #form="ngForm" (ngSubmit)="save()" novalidate>
 
-                <button type="submit" [disabled]="!form.valid">Submit</button>
+                <div class="right">
+                    <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Save</button>
+                </div>
+
                 <br/>
                 <br/>
 
-                <ng-container *ngFor="let definition of definitions; index as index">
+                <div class="form-group">
+
+                    <ng-container *ngFor="let definition of definitions; index as index">
 
 
-                    <hr *ngIf="index !== 0"/>
-
-                    <label [for]="definition.key">Property "{{ definition.key }}"</label>
-
-                    <br/>
-
-                    <input
-                        [required]="definition.required"
-                        [id]="definition.key"
-                        [name]="definition.key"
-                        [pattern]="patterns[definition.type]"
-                        [(ngModel)]="properties[definition.key]"
-                    />
-
-                    <ng-container *ngIf="form.dirty">
-                        <div *ngIf="form.controls[definition.key].errors?.required">
-                            <p>Property is required!</p>
-                        </div>
-
-                        <div *ngIf="form.controls[definition.key].errors?.pattern">
-                            <p>Not a valid {{ definition.key }}!</p>
-                        </div>
-                    </ng-container>
+                        <hr *ngIf="index !== 0"/>
 
 
-                    <p *ngIf="definition.type">Type is "{{ definition.type }}".</p>
-                    <p *ngIf="!definition.type">No type defined.</p>
+                        <label [for]="definition.key">Property "{{ definition.key }}"</label>
 
-                    <p *ngIf="definition.defaultValue">Default is "{{ definition.defaultValue }}".</p>
-                    <p *ngIf="!definition.defaultValue">No default value.</p>
+                        <br/>
 
-                    <p *ngIf="definition.description">{{ definition.description }}</p>
+                        <input
+                            [required]="definition.required"
+                            [id]="definition.key"
+                            [name]="definition.key"
+                            [pattern]="patterns[definition.type]"
+                            [(ngModel)]="properties[definition.key]"
+                            [class]="form.controls[definition.key]?.errors && form.touched? 'form-control text-red border-red' : 'form-control'"
+                        />
+                        <br/>
 
-                    <ng-container *ngIf="!definition.constraints?.length">
-                        <button type="button" (click)="show[definition.key] = !show[definition.key]">
-                            {{ show[definition.key] ? "Hide constraints" : "Show constraints" }}
-                        </button>
 
-                        <span [hidden]="!show[definition.key]">
+                        <ng-container *ngIf="form.touched">
+                            <div *ngIf="form.controls[definition.key]?.errors?.required" class="text-red">
+                                Property is required!
+                            </div>
+
+                            <div *ngIf="form.controls[definition.key]?.errors?.pattern" class="text-red">
+                                <p>Not a valid "{{ definition.type }}"!</p>
+                            </div>
+                        </ng-container>
+
+                        <p *ngIf="definition.type" class="text-muted">Type is "{{ definition.type }}".</p>
+                        <p *ngIf="!definition.type" class="text-muted">No type defined.</p>
+
+                        <p *ngIf="definition.defaultValue" class="text-muted">Default is "{{ definition.defaultValue }}
+                            ".</p>
+                        <p *ngIf="!definition.defaultValue" class="text-muted">No default defined.</p>
+
+                        <p *ngIf="definition.description" class="text-muted">{{ definition.description }}</p>
+
+                        <ng-container *ngIf="definition.constraints?.length">
+                            <button type="button" (click)="show[definition.key] = !show[definition.key]">
+                                {{ show[definition.key] ? "Hide constraints" : "Show constraints" }}
+                            </button>
+
+                            <span [hidden]="!show[definition.key]">
                             <br/>
                             <br/>
                             <pre>{{ definition.constraints | json }}</pre>
                         </span>
 
-                    </ng-container>
+                        </ng-container>
 
-                </ng-container>
+                    </ng-container>
+                </div>
+
             </form>
         </ng-container>
 

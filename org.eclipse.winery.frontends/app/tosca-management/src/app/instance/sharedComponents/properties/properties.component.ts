@@ -72,10 +72,6 @@ export class PropertiesComponent implements OnInit {
         this.getPropertiesDefinitions();
     }
 
-    onSubmit(form: NgForm) {
-        console.log('submit', form, this.properties);
-    }
-
     save() {
         this._loading.saveProperties = true;
         if (this.isXML) {
@@ -119,5 +115,6 @@ export class PropertiesComponent implements OnInit {
     private handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
     }
+
 
 }
