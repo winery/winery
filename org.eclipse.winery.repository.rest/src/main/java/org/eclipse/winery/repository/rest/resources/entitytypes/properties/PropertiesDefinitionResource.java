@@ -89,9 +89,7 @@ public class PropertiesDefinitionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getMerged() {
         // Get complete inheritance hierarchy
-        List<TEntityType> hierarchy = new ArrayList<>();
-        hierarchy.add(this.getEntityType());
-        hierarchy.addAll(RepositoryFactory.getRepository().getParents(this.getEntityType()));
+        List<TEntityType> hierarchy = RepositoryFactory.getRepository().getParentsAndChild(this.getEntityType());
 
         // Merge properties definitions
         List<PropertyDefinitionKV> propertyDefinitions = RestUtils.mergePropertiesDefinitions(hierarchy);

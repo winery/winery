@@ -94,9 +94,7 @@ public class PropertiesResource {
         TEntityType entityType = RepositoryFactory.getRepository().getTypeForTemplate(this.template);
 
         // Get complete inheritance hierarchy
-        List<TEntityType> hierarchy = new ArrayList<>();
-        hierarchy.add(entityType);
-        hierarchy.addAll(RepositoryFactory.getRepository().getParents(entityType));
+        List<TEntityType> hierarchy = RepositoryFactory.getRepository().getParentsAndChild(entityType);
 
         // Merge properties definitions
         List<PropertyDefinitionKV> propertiesDefinitions = RestUtils.mergePropertiesDefinitions(hierarchy);

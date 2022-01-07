@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.backend;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -286,6 +287,7 @@ public interface IWineryRepositoryCommon {
         
         DefinitionsChildId id = getDefinitionsChildId(entityType, entityType.getDerivedFrom().getType());
         if (id == null) {
+            LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
             return null;
         }
         
@@ -298,7 +300,6 @@ public interface IWineryRepositoryCommon {
         while (child.getDerivedFrom() != null) {
             T parent = getParent(child);
             if (parent == null) {
-                LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
                 break;
             }
             parents.add(parent);
@@ -306,5 +307,10 @@ public interface IWineryRepositoryCommon {
         }
         return parents;
     }
-    
+
+    default <T extends TEntityType> ArrayList<T> getParentsAndChild(T entityType) {
+        ArrayList<T> hierarchy = getParents(entityType);
+        hierarchy.add(0, entityType);
+        return hierarchy;
+    }
 }
