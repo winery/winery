@@ -92,7 +92,7 @@ public class PropertiesDefinitionResource {
         List<TEntityType> hierarchy = RepositoryFactory.getRepository().getParentsAndChild(this.getEntityType());
 
         // Merge properties definitions
-        List<PropertyDefinitionKV> propertyDefinitions = RestUtils.mergePropertiesDefinitions(hierarchy);
+        List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
         
         // TODO: this does not work if wpd is undefined ... but how to create a new wpd?
         this.getEntityType().getWinerysPropertiesDefinition().setPropertyDefinitions(propertyDefinitions);

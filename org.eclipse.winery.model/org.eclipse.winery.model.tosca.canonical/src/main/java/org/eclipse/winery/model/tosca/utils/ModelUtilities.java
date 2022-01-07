@@ -1041,4 +1041,40 @@ public abstract class ModelUtilities {
             })
             .orElseGet(ArrayList::new);
     }
+
+    /**
+     * Merge properties definitions.
+     * Only winery properties definitions are considered.
+     * The first element in the list is the lowest in the inheritance hierarchy.
+     */
+    public static <T extends TEntityType> List<PropertyDefinitionKV> mergePropertiesDefinitions(List<T> entityTypes) {
+        List<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
+
+        for (TEntityType entityType : entityTypes) {
+
+            WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+
+            // Continue if current entity type does not have any properties definitions
+            if (winerysPropertiesDefinition == null) {
+                continue;
+            }
+
+            // Add property definition to list if not already added by a previous entity type
+            for (PropertyDefinitionKV entityTypePropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
+                boolean exists = false;
+                for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
+                    if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    propertyDefinitions.add(entityTypePropertyDefinition);
+                }
+            }
+        }
+
+        return  propertyDefinitions;
+    }
 }

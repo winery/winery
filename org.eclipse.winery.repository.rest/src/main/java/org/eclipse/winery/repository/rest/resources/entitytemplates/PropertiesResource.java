@@ -13,10 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -84,7 +82,7 @@ public class PropertiesResource {
      * 
      * An effective property is either a defined property or a default.
      * Inheritance is considered.
-     * Only winery proper
+     * Only winery properties definitions are considered.
      */
     @GET
     @Path("effective")
@@ -97,7 +95,7 @@ public class PropertiesResource {
         List<TEntityType> hierarchy = RepositoryFactory.getRepository().getParentsAndChild(entityType);
 
         // Merge properties definitions
-        List<PropertyDefinitionKV> propertiesDefinitions = RestUtils.mergePropertiesDefinitions(hierarchy);
+        List<PropertyDefinitionKV> propertiesDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
 
         // Construct effective properties by assigning only defined properties or defaults
         LinkedHashMap<String, String> assignedProperties = ModelUtilities.getPropertiesKV(this.template);
