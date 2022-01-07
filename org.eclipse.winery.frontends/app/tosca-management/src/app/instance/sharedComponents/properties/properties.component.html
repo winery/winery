@@ -12,11 +12,10 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div *ngIf="!isLoading(); else loadingIcon">
-
+    
     <ng-container *ngIf="!definitions.length">
-        <p>The type does not have any "Properties Definitions".</p>
+        <alert type="info">The type does not have any "Properties Definitions".</alert>
     </ng-container>
-
 
     <ng-container *ngIf="definitions.length">
 

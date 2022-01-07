@@ -75,6 +75,7 @@ import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -83,6 +84,8 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -1086,4 +1089,41 @@ public class RestUtils {
 
         return null;
     }
+
+    /**
+     * Merge properties definitions.
+     * Only winery properties definitions are considered.
+     * The first element in the list is the lowest in the inheritance hierarchy.
+     */
+    public static <T extends TEntityType> List<PropertyDefinitionKV> mergePropertiesDefinitions(List<T> entityTypes) {
+        List<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
+
+        for (TEntityType entityType : entityTypes) {
+
+            WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+            
+            // Continue if current entity type does not have any properties definitions
+            if (winerysPropertiesDefinition == null) {
+                continue;
+            }
+
+            // Add property definition to list if not already added by a previous entity type
+            for (PropertyDefinitionKV entityTypePropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
+                boolean exists = false;
+                for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
+                    if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    propertyDefinitions.add(entityTypePropertyDefinition);
+                }
+            }
+        }
+
+        return  propertyDefinitions;
+    }
+
 }

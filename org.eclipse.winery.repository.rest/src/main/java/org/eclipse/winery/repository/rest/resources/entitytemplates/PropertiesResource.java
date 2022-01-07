@@ -79,51 +79,31 @@ public class PropertiesResource {
         return RestUtils.persist(this.res);
     }
 
-    // TODO: implement getEffectiveProperties
+    /**
+     * Get effective properties.
+     * 
+     * An effective property is either a defined property or a default.
+     * Inheritance is considered.
+     * Only winery proper
+     */
     @GET
     @Path("effective")
     @Produces(MediaType.APPLICATION_JSON)
     public LinkedHashMap<String, String> getEffectiveProperties() {
-        // Get entityType
+        // Get entity type of current template
         TEntityType entityType = RepositoryFactory.getRepository().getTypeForTemplate(this.template);
 
-        // Get all parents of entityType
-        ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(entityType);
+        // Get complete inheritance hierarchy
+        List<TEntityType> hierarchy = new ArrayList<>();
+        hierarchy.add(entityType);
+        hierarchy.addAll(RepositoryFactory.getRepository().getParents(entityType));
 
-        // NOTE: this is not a deep copy but a reference!
-        List<PropertyDefinitionKV> propertiesDefinitions = entityType.getWinerysPropertiesDefinition().getPropertyDefinitions();
+        // Merge properties definitions
+        List<PropertyDefinitionKV> propertiesDefinitions = RestUtils.mergePropertiesDefinitions(hierarchy);
 
-        // Get all properties definitions
-        // TODO: this is copy and pasta from PropertiesDefinitionResource#getMerged
-        for (TEntityType parent : parents) {
-            WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
-            // Abort if winerysPropertyDefinitions is not present
-            if (winerysPropertiesDefinition == null) {
-                break;
-            }
-
-            for (PropertyDefinitionKV parentPropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
-                // Find property definition of parent in child
-                boolean exists = false;
-                for (PropertyDefinitionKV propertyDefinition : propertiesDefinitions) {
-                    if (Objects.equals(propertyDefinition.getKey(), parentPropertyDefinition.getKey())) {
-                        exists = true;
-                        break;
-                    }
-                }
-
-                // Add property definition of parent if not found
-                if (!exists) {
-                    propertiesDefinitions.add(parentPropertyDefinition);
-                }
-            }
-        }
-
-        // Get effective properties
-        LinkedHashMap<String, String> assignedProperties = ModelUtilities.getPropertiesKV(template);
+        // Construct effective properties by assigning only defined properties or defaults
+        LinkedHashMap<String, String> assignedProperties = ModelUtilities.getPropertiesKV(this.template);
         LinkedHashMap<String, String> effectiveProperties = new LinkedHashMap<>();
-
-        // Fill new map only with defined properties or defaults
         propertiesDefinitions.forEach(propDef -> {
             String effectiveValue;
             if (assignedProperties != null) {
@@ -140,13 +120,14 @@ public class PropertiesResource {
         return effectiveProperties;
     }
 
-    // TODO: update description
-
     /**
      * Gets the defined properties.
+     * Inheritance is not considered, see {@link #getEffectiveProperties()} instead.
      *
-     * If no properties are defined, an empty JSON object is returned. If k/v properties are defined, then a JSON is
-     * returned. Otherwise, an empty JSON is returned.
+     * If no properties are defined, an empty JSON object is returned.
+     * If k/v properties are defined, then a JSON object is returned.
+     * If xml properties are defined, then an XML object is returned.
+     * Otherwise, an empty JSON is returned.
      */
     @GET
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})

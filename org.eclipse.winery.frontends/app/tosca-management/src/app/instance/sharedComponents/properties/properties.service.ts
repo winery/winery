@@ -49,7 +49,7 @@ export class PropertiesService {
     getPropertiesDefinitions(instance: InstanceService): Observable<PropertiesDefinitionsResourceApiData> {
         const entityType =  new QName(instance.instance.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].type);
         const namespace = Utils.doubleEncodeNamespace(entityType.nameSpace);
-        const entityTypeToscaType = instance.toscaComponent.toscaType.replace('template', 'type');
+        const entityTypeToscaType = Utils.getTypeOfTemplateOrImplementation(instance.toscaComponent.toscaType);
         const url  = backendBaseURL + ['', entityTypeToscaType, namespace, entityType.localName, 'propertiesdefinition', 'merged'].join('/');
         return this.http.get<PropertiesDefinitionsResourceApiData>(url);
     }

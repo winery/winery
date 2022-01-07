@@ -15,7 +15,6 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.properties;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -72,59 +71,43 @@ public class PropertiesDefinitionResource {
         this.wpd = res.getEntityType().getWinerysPropertiesDefinition();
     }
 
+    /**
+     * Returns the properties definition defined by this entity type. 
+     * Inheritance is not considered.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getJson() {
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
     }
-
-    // TODO: implement getMerged endpoint
-    // TODO: do we require deep copies?
-    // TODO: this merges only wineryPropertiesDefinitions?
-    // TODO: do we need to merge entityType#getProperties or something else?
-    // TODO: does not know at the end from which entityType the property definition has been derived from
-    // Compare to org.eclipse.winery.frontends/app/topologymodeler/src/app/models/InheritanceUtils#getDefaultPropertiesFromEntityTypes
+    
+    /**
+     * Merge properties definitions with inherited definitions.
+     */
     @GET
     @Path("merged")
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getMerged() {
-        // Abort if winerysPropertyDefinitions is not present
-        if (this.wpd == null) {
-            return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
-        }
-        
-        ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
-        
-        // NOTE: this is not a deep copy but a reference!
-        List<PropertyDefinitionKV> propertyDefinitions = this.getEntityType().getWinerysPropertiesDefinition().getPropertyDefinitions();
+        // Get complete inheritance hierarchy
+        List<TEntityType> hierarchy = new ArrayList<>();
+        hierarchy.add(this.getEntityType());
+        hierarchy.addAll(RepositoryFactory.getRepository().getParents(this.getEntityType()));
 
-        for (TEntityType parent : parents) {
-            WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
-            // Abort if winerysPropertyDefinitions is not present
-            if (winerysPropertiesDefinition == null) {
-                break;
-            }
-            
-            for (PropertyDefinitionKV parentPropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
-                // Find property definition of parent in child
-                boolean exists = false;
-                for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
-                    if (Objects.equals(propertyDefinition.getKey(), parentPropertyDefinition.getKey())) {
-                        exists = true;
-                        break;
-                    }
-                }
-                
-                // Add property definition of parent if not found
-                if (!exists) {
-                    propertyDefinitions.add(parentPropertyDefinition);
-                }
-            }
-        }
+        // Merge properties definitions
+        List<PropertyDefinitionKV> propertyDefinitions = RestUtils.mergePropertiesDefinitions(hierarchy);
+        
+        // TODO: this does not work if wpd is undefined ... but how to create a new wpd?
+        this.getEntityType().getWinerysPropertiesDefinition().setPropertyDefinitions(propertyDefinitions);
         
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.getEntityType().getWinerysPropertiesDefinition());
     }
 
+    /**
+     * Returns a list of inherited properties definitions.
+     * 
+     * Inheritance regarding the list elements themselves is not considered.
+     * There is no merge process considered.
+     */
     @GET
     @Path("inherited")
     @Produces(MediaType.APPLICATION_JSON)

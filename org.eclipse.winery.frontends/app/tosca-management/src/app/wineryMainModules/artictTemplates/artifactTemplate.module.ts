@@ -11,22 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {NgModule} from '@angular/core';
-import {ArtifactTemplateRouterModule} from './artifactTemplateRouter.module';
-import {FilesComponent} from '../../instance/sharedComponents/filesTag/files.component';
-import {PropertiesComponent} from '../../instance/sharedComponents/properties/properties.component';
-import {WineryModalModule} from '../../wineryModalModule/winery.modal.module';
-import {WineryTableModule} from '../../wineryTableModule/wineryTable.module';
-import {WineryUploaderModule} from '../../wineryUploader/wineryUploader.module';
-import {CommonModule} from '@angular/common';
-import {WineryLoaderModule} from '../../wineryLoader/wineryLoader.module';
-import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
-import {TabsModule} from 'ngx-bootstrap';
-import {WineryEditorModule} from '../../wineryEditorModule/wineryEditor.module';
-import {WineryReadmeModule} from '../../wineryReadmeModule/wineryReadme.module';
-import {WineryLicenseModule} from '../../wineryLicenseModule/wineryLicense.module';
-import {WinerySourceModule} from '../../instance/sharedComponents/artifactSource/source.module';
+import { NgModule } from '@angular/core';
+import { ArtifactTemplateRouterModule } from './artifactTemplateRouter.module';
+import { FilesComponent } from '../../instance/sharedComponents/filesTag/files.component';
+import { PropertiesComponent } from '../../instance/sharedComponents/properties/properties.component';
+import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
+import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { WineryUploaderModule } from '../../wineryUploader/wineryUploader.module';
+import { CommonModule } from '@angular/common';
+import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { AlertModule, TabsModule } from 'ngx-bootstrap';
+import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
+import { WinerySourceModule } from '../../instance/sharedComponents/artifactSource/source.module';
 
 @NgModule({
     imports: [
@@ -42,7 +42,8 @@ import {WinerySourceModule} from '../../instance/sharedComponents/artifactSource
         WineryEditorModule,
         ArtifactTemplateRouterModule,
         WineryReadmeModule,
-        WineryLicenseModule
+        WineryLicenseModule,
+        AlertModule
     ],
     declarations: [
         FilesComponent,
