@@ -96,13 +96,13 @@
 
                             <winery-dynamic-table
                                 [tableTitle]="'Properties derived from ' + parent.parent"
+                                [titleRouterLink]="getParentRouterLink(parent.parent)"
                                 [dynamicMetadata]="dynamicTableData"
                                 [data]="parent.properties.winerysPropertiesDefinition.propertyDefinitionKVList"
                                 [avoidDuplicateProperties]="['key']"
                                 [disableButtons]="true"
                             >
                             </winery-dynamic-table>
-                            <a [routerLink]="getParentRouterLink(parent.parent)">Open {{parent.parent}}</a>
 
                         </ng-container>
                     </div>

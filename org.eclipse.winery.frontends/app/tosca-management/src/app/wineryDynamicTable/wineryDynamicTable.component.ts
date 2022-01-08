@@ -71,6 +71,7 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
 
     @Input() dynamicMetadata: WineryDynamicTableMetadata[] = [];
     @Input() tableTitle = 'Table';
+    @Input() titleRouterLink?: any[] | string;
     @Input() modalTitle = 'Add/Edit Entry';
     @Input() deleteModalTitle = 'Delete';
     @Input() data: any[];
