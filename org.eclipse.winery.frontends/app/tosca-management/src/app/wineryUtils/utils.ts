@@ -41,7 +41,7 @@ export class Utils {
     public static join(path: string[]): string {
         return path
             .map(value => value.startsWith('/') ? value.substr(1) : value)
-            .map(value => value.endsWith('/') ? value.substr(value.length - 1) : value)
+            .map(value => value.endsWith('/') ? value.substr(0, value.length - 1) : value)
             .join('/');
     }
 
