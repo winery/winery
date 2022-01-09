@@ -37,5 +37,6 @@ export class InterfacesApiData {
 
 export class InheritedInterface {
     parentType: string;
+    is_shown:boolean = false;
     interfaces: InterfacesApiData[] = [];
 }

@@ -15,14 +15,26 @@
     margin-top: 15px;
 }
 .btn-parent {
-    border:3px; 
-    border-style:solid; 
+    border:3px;
+    border-style:solid;
     border-color:#0000c0; 
     padding: 1em;
-    
+    width:100%;
+    display:block;
+   
+}
+h5{
+    text-align: left;
+}
+.nointerface{
+    text-align: left;
+}
+.interfaces{
+    text-align: left;
 }
 h5:after {
     content:"\a";
     content:"\a";
     white-space: pre;
+    
 }

@@ -352,10 +352,11 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
-    is_show = false;
-    toggleDiv() {
-        this.is_show = !this.is_show;
+    
+    toggleDiv(par:InheritedInterface) {
+        par.is_shown = !par.is_shown;
     }
+    
     
 
     // endregion

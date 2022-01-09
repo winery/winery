@@ -15,12 +15,13 @@
     <winery-loader></winery-loader>
 </div>
 
-<button class="btn-parent" *ngFor="let par of inheritedInterfacesData" (click)="toggleDiv()" >
-    <h5>{{par.parentType}} </h5>
-<!--        <ng-template [ngIf]="par.interfaces" [ngIfElse]="nointerfaces">-->
-        <div *ngIf="is_show">
+<div *ngFor="let par of inheritedInterfacesData"  >
+    
+    <button (click)="toggleDiv(par)">
+        <h5>{{par.parentType}} </h5>
+        <div *ngIf="par.is_shown">
          <div *ngIf="par.interfaces && par.interfaces.length !=0 ; else nointerfaces">
-            <ul>
+            <ul class="interfaces">
                 <li *ngFor="let inh of par.interfaces">
                     {{inh.name}}
                     <ul *ngFor ="let op of inh.operations">
@@ -30,14 +31,11 @@
             </ul>
          </div>
             <ng-template #nointerfaces>
-                <div> No interfaces available.</div>
+                <div class="nointerface"> No interfaces available.</div>
             </ng-template>
         </div>
-<!--        </ng-template>-->
-        
-        
-   
-</button>
+    </button>
+</div>
 <br>
 
 
