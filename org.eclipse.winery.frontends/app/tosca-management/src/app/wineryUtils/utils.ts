@@ -14,6 +14,7 @@
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';
 import { QName } from '../../../../shared/src/app/model/qName';
+import { backendBaseURL } from '../configuration';
 
 export class Utils {
 
@@ -27,6 +28,21 @@ export class Utils {
 
     public static doubleEncodeNamespace(namespace: string): string {
         return encodeURIComponent(encodeURIComponent(namespace));
+    }
+
+    public static getFrontendPath(toscaType: string, namespace: string, localname: string) {
+        return '/' + this.join([toscaType, encodeURIComponent(namespace), localname]);
+    }
+
+    public static getBackendUrl(backendUrl: string, toscaType: string, namespace: string, localname: string) {
+        return this.join([backendUrl, toscaType, this.doubleEncodeNamespace(namespace), localname]);
+    }
+
+    public static join(path: string[]): string {
+        return path
+            .map(value => value.startsWith('/') ? value.substr(1) : value)
+            .map(value => value.endsWith('/') ? value.substr(value.length - 1) : value)
+            .join('/');
     }
 
     /**

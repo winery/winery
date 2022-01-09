@@ -30,7 +30,7 @@ export class PropertiesService {
 
     constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
-        this.propertiesUrl = this.sharedData.path + '/properties/';
+        this.propertiesUrl = Utils.join([this.sharedData.path, 'properties']);
     }
 
     public getProperties(): Observable<PropertiesData> {
@@ -46,12 +46,8 @@ export class PropertiesService {
             }));
     }
 
-    getPropertiesDefinitions(instance: InstanceService): Observable<PropertiesDefinitionsResourceApiData> {
-        const entityType =  new QName(instance.instance.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].type);
-        const namespace = Utils.doubleEncodeNamespace(entityType.nameSpace);
-        const entityTypeToscaType = Utils.getTypeOfTemplateOrImplementation(instance.toscaComponent.toscaType);
-        const url  = backendBaseURL + ['', entityTypeToscaType, namespace, entityType.localName, 'propertiesdefinition', 'merged'].join('/');
-        return this.http.get<PropertiesDefinitionsResourceApiData>(url);
+    getPropertiesDefinitions(url: string): Observable<PropertiesDefinitionsResourceApiData> {
+        return this.http.get<PropertiesDefinitionsResourceApiData>(Utils.join([url, 'propertiesdefinition', 'merged']));
     }
 
     public saveProperties(properties: Properties, isXML: boolean): Observable<HttpResponse<string>> {

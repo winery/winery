@@ -95,7 +95,7 @@ export class PropertiesComponent implements OnInit {
 
     private getPropertiesDefinitions() {
         this._loading.getDefinitions = true;
-        this.propertiesService.getPropertiesDefinitions(this.instanceService)
+        this.propertiesService.getPropertiesDefinitions(this.instanceService.type.backendUrl)
             .subscribe(
                 data => this.definitions = data.winerysPropertiesDefinition.propertyDefinitionKVList,
                 error => this.handleError(error)
