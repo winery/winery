@@ -49,7 +49,8 @@ export class MultiParticipantsComponent implements OnInit {
                     const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
                         + '&uiURL=' + encodeURIComponent(backendBaseURL)
                         + '&ns=' + newVersion.namespace
-                        + '&id=' + newVersion.localname;
+                        + '&id=' + newVersion.localname
+                        + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
                     this.editorConfiguration = editorConfig;
                     this.multiParticipantsService.postPlaceholders(newVersion.localname).subscribe(
                         placeholderResponse => {
@@ -71,7 +72,8 @@ export class MultiParticipantsComponent implements OnInit {
                     const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
                         + '&uiURL=' + encodeURIComponent(backendBaseURL)
                         + '&ns=' + placeholderSubstitution.namespace
-                        + '&id=' + placeholderSubstitution.localname;
+                        + '&id=' + placeholderSubstitution.localname
+                        + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
                     this.alert.success('Successfully substituted placeholder for topology');
                     window.open(this.wineryConfigurationService.configuration.endpoints.topologymodeler + editorConfig);
                 },
@@ -88,7 +90,8 @@ export class MultiParticipantsComponent implements OnInit {
                         const editorConfiguration = '?repositoryURL=' + this.backendService.configuration.repositoryURL
                             + '&uiURL=' + encodeURIComponent(backendBaseURL)
                             + '&ns=' + participantVersion.entity.namespace
-                            + '&id=' + participantVersion.entity.localname;
+                            + '&id=' + participantVersion.entity.localname
+                            + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
                         window.open(this.wineryConfigurationService.configuration.endpoints.topologymodeler + editorConfiguration);
                     }
                 },
