@@ -64,17 +64,6 @@
                                           (entryEdited)="onChangeProperty()"
                                           (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
 
-                    <hr/>
-
-                    <winery-dynamic-table
-                        tableTitle="Properties (including Inheritance)"
-                        [dynamicMetadata]="dynamicTableData"
-                        [data]="mergedPropertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList"
-                        [avoidDuplicateProperties]="['key']"
-                        [disableButtons]="true"
-                    >
-                    </winery-dynamic-table>
-
                     <button (click)="show.inherited = !show.inherited"> {{ show.inherited ? "Hide Inheritance Details" : "Show Inheritance Details" }}</button>
                     
                     <div [hidden]="!show.inherited">

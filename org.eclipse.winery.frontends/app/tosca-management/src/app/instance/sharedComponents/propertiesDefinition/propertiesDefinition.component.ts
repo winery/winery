@@ -87,7 +87,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     modalTitle = 'Add a Property Definition';
 
     propertiesDefinitions: PropertiesDefinitionsResourceApiData;
-    mergedPropertiesDefinitions: PropertiesDefinitionsResourceApiData;
     inheritedPropertiesDefinitions: InheritedPropertiesDefinitionsApiData;
 
     selectItems: SelectData[];
@@ -123,16 +122,17 @@ export class PropertiesDefinitionComponent implements OnInit {
     _loading = {
         getPropertiesDefinitions: false,
         getInheritedPropertiesDefinitions: false,
-        getMergedPropertiesDefinitions: false,
     };
 
     private yamlTypes: string[] = [];
     private xmlTypes: string[] = ['xsd:string', 'xsd:float', 'xsd:decimal', 'xsd:anyURI', 'xsd:QName', 'xsd:integer'];
 
-    constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
-                private modalService: BsModalService, private dataTypes: DataTypesService,
-                private notify: WineryNotificationService, private configurationService: WineryRepositoryConfigurationService,
-                private router: Router) {
+    constructor(public sharedData: InstanceService,
+                private service: PropertiesDefinitionService,
+                private modalService: BsModalService,
+                private dataTypes: DataTypesService,
+                private notify: WineryNotificationService,
+                private configurationService: WineryRepositoryConfigurationService) {
         this.isYaml = configurationService.isYaml();
     }
 
@@ -141,7 +141,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     // region ########## Angular Callbacks ##########
     ngOnInit() {
         this.getPropertiesDefinitions();
-        this.getMergedPropertiesDefinitions();
         this.getInheritedPropertiesDefinitions();
 
         // fill the available types with the types we know
@@ -537,7 +536,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     private getPropertiesDefinitions(): void {
         this._loading.getPropertiesDefinitions = true;
-        this.service.getPropertiesDefinitions()
+        this.service.getMergedPropertiesDefinitions()
             .subscribe(
                 data => this.handlePropertiesDefinitions(data),
                 error => this.handleError(error)
@@ -551,15 +550,6 @@ export class PropertiesDefinitionComponent implements OnInit {
                 data => this.inheritedPropertiesDefinitions = data,
                 error => this.handleError(error)
             ).add(() => this._loading.getInheritedPropertiesDefinitions = false);
-    }
-
-    private getMergedPropertiesDefinitions() {
-        this._loading.getMergedPropertiesDefinitions = true;
-        this.service.getMergedPropertiesDefinitions()
-            .subscribe(
-                data => this.mergedPropertiesDefinitions = data,
-                error => this.handleError(error)
-            ).add(() => this._loading.getMergedPropertiesDefinitions = false);
     }
 
     private handleSelectData(data: SelectData[], isType: boolean) {
@@ -609,7 +599,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleDelete(data: any): void {
         this.handleSuccess(data, 'delete');
         this.getPropertiesDefinitions();
-        this.getMergedPropertiesDefinitions();
     }
 
     private handlePropertiesDefinitions(data: PropertiesDefinitionsResourceApiData): void {
@@ -644,7 +633,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleSave(data: HttpResponse<string>) {
         this.handleSuccess(data, 'change');
         this.getPropertiesDefinitions();
-        this.getMergedPropertiesDefinitions();
     }
 
     /**

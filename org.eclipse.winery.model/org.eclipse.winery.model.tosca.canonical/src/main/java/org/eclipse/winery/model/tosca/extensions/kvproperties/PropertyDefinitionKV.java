@@ -14,6 +14,7 @@
 package org.eclipse.winery.model.tosca.extensions.kvproperties;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -123,6 +124,25 @@ public class PropertyDefinitionKV implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         PropertyDefinitionKV that = (PropertyDefinitionKV) o;
         return Objects.equals(key, that.key);
+    }
+
+    // TODO: add additional equals to equals function above or does that break other logic?
+    public boolean equalsAllProperties(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PropertyDefinitionKV that = (PropertyDefinitionKV) o;
+
+        // Handle the problem "null vs empty list"
+        List<ConstraintClauseKV> effectiveConstraintList = that.constraintList;
+        if (effectiveConstraintList == null) effectiveConstraintList = new ArrayList<>();
+        
+        return Objects.equals(key, that.key) 
+            && Objects.equals(type, that.type)
+            && Objects.equals(required, that.required)
+            && Objects.equals(defaultValue, that.defaultValue)
+            && Objects.equals(description, that.description)
+            && constraintList.containsAll(effectiveConstraintList)
+            && constraintList.size() == effectiveConstraintList.size();
     }
 
     @Override

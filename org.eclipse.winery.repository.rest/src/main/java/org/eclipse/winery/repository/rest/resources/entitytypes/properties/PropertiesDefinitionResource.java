@@ -160,6 +160,8 @@ public class PropertiesDefinitionResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response onJsonPost(PropertiesDefinitionResourceApiData data) {
+        
+        // CASE: XML
         if (data.selectedValue == PropertiesDefinitionEnum.Element || data.selectedValue == PropertiesDefinitionEnum.Type) {
             // first of all, remove Winery's Properties definition (if it exists)
             ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
@@ -177,19 +179,58 @@ public class PropertiesDefinitionResource {
                 PropertiesDefinitionResource.LOGGER.debug(error);
             }
             return RestUtils.persist(this.parentRes);
-        } else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
-            TEntityType et = this.parentRes.getEntityType();
-            et.setProperties(data.winerysPropertiesDefinition);
+        } 
+        
+        // CASE: winerys properties definition
+        // Only definitions are stored which are not defined by any parent
+        // Note: this does NOT allow to specify the same properties definition in order to make sure that it does NOT change even when the parent properties definition changes
+        if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
+            ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
+
+            // Get all definitions defined by any parent
+            List<PropertyDefinitionKV> parentsPropertiesDefinitions = new ArrayList<>();
+            for (TEntityType parent : parents) {
+                WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
+                if (winerysPropertiesDefinition != null) {
+                    parentsPropertiesDefinitions.addAll(winerysPropertiesDefinition.getPropertyDefinitions());
+                }
+            }
+
+            // Get only definitions that are not defined by any parent
+            List<PropertyDefinitionKV> definitions = new ArrayList<>();
+            for (PropertyDefinitionKV definition : data.winerysPropertiesDefinition.getPropertyDefinitions()) {
+                if (!containsPropertiesDefinition(parentsPropertiesDefinitions, definition)) {
+                    definitions.add(definition);
+                }
+            }
+
+            // Update and store definitions
+            data.winerysPropertiesDefinition.setPropertyDefinitions(definitions);
+            this.getEntityType().setProperties(data.winerysPropertiesDefinition);
             return RestUtils.persist(this.parentRes);
-        } else if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
-            TEntityType et = this.parentRes.getEntityType();
+        } 
+        
+        // CASE: YAML
+        if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
+            TEntityType entityType = this.parentRes.getEntityType();
             if (!(data.propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition)) {
                 return Response.status(Status.BAD_REQUEST).entity("Expected YamlPropertiesDefinition element").build();
             }
-            et.setProperties(data.propertiesDefinition);
+            entityType.setProperties(data.propertiesDefinition);
             return RestUtils.persist(this.parentRes);
         }
 
+        // OTHERWISE: throw error
         return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
     }
+    
+    private boolean containsPropertiesDefinition(List<PropertyDefinitionKV> definitions, PropertyDefinitionKV definition) {
+        for (PropertyDefinitionKV currentDefinition : definitions) {
+            if (definition.equalsAllProperties(currentDefinition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

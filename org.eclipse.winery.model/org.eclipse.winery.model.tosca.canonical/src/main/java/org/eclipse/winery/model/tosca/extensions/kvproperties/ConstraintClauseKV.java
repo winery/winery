@@ -65,6 +65,7 @@ public class ConstraintClauseKV implements Serializable {
         ConstraintClauseKV that = (ConstraintClauseKV) o;
         return Objects.equals(key, that.key) &&
             Objects.equals(value, that.value) &&
+            // TODO: order matters
             Objects.equals(list, that.list);
     }
 
