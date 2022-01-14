@@ -23,7 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SelectData } from '../../../model/selectData';
 import {
     PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData
-} from '../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+} from '../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { InstanceService } from '../../instance.service';
 import { AttributeMapping, AttributeMappingType } from './attributeMapping';
 

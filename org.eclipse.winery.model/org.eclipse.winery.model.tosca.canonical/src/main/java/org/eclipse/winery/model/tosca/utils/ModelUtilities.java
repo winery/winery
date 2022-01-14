@@ -1059,8 +1059,14 @@ public abstract class ModelUtilities {
                 continue;
             }
 
+            // Continue if current entity type does not have any properties definitions
+            List<PropertyDefinitionKV> winerysPropertiesDefinitions = winerysPropertiesDefinition.getPropertyDefinitions();
+            if (winerysPropertiesDefinitions == null) {
+                continue;
+            }
+
             // Add property definition to list if not already added by a previous entity type
-            for (PropertyDefinitionKV entityTypePropertyDefinition : winerysPropertiesDefinition.getPropertyDefinitions()) {
+            for (PropertyDefinitionKV entityTypePropertyDefinition : winerysPropertiesDefinitions) {
                 boolean exists = false;
                 for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
                     if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
@@ -1076,5 +1082,17 @@ public abstract class ModelUtilities {
         }
 
         return  propertyDefinitions;
+    }
+
+    /**
+     * Check if two lists are the same.
+     * Order does not matter. 
+     * Null is handled as empty list.
+     */
+    public static <T> boolean compareUnorderedNullableLists(List<T> first, List<T> second) {
+        if (first == null) first = new ArrayList<T>();
+        if (second == null) second = new ArrayList<T>();
+
+        return first.containsAll(second) && first.size() == second.size();
     }
 }

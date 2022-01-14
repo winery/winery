@@ -20,7 +20,7 @@ import { InstanceService } from '../instance.service';
 import { NodeTemplate, RelationshipTemplate } from '../../model/wineryComponent';
 import { SelectData } from '../../model/selectData';
 import { Utils } from '../../wineryUtils/utils';
-import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionsResourceApiData } from '../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { ToscaTypes } from '../../model/enums';
 import { StayMapping } from './stayMappings/stayMapping';
 import { AttributeMapping } from './attributeMappings/attributeMapping';

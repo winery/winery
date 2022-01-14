@@ -15,7 +15,7 @@ import { DifferenceStates, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
 import { TPolicy } from './policiesModalData';
 import { Interface } from '../../../../tosca-management/src/app/model/interfaces';
-import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { Constraint } from '../../../../tosca-management/src/app/model/constraint';
 
 export class AbstractTEntity {

@@ -21,7 +21,6 @@ import { WineryUploaderModule } from '../../wineryUploader/wineryUploader.module
 import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { AlertModule, TabsModule } from 'ngx-bootstrap';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
@@ -30,7 +29,6 @@ import { WinerySourceModule } from '../../instance/sharedComponents/artifactSour
 
 @NgModule({
     imports: [
-        HttpModule,
         CommonModule,
         FormsModule,
         WineryLoaderModule,

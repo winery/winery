@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Properties, PropertiesData } from './properties.types';
-import { PropertiesDefinitionsResourceApiData } from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionsResourceApiData } from '../propertiesDefinition/propertiesDefinition.types';
 import { backendBaseURL } from '../../../configuration';
 import { Utils } from '../../../wineryUtils/utils';
 import { QName } from '../../../../../../shared/src/app/model/qName';

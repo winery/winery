@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../../configuration';
 import { ModalDirective } from 'ngx-bootstrap';
-import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 export class PropertyMapping {

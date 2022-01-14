@@ -18,7 +18,7 @@ import {
     InheritedPropertiesDefinitionsApiData,
     PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition
-} from './propertiesDefinitionsResourceApiData';
+} from './propertiesDefinition.types';
 import { SelectData } from '../../../model/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
@@ -175,7 +175,7 @@ export class PropertiesDefinitionComponent implements OnInit {
                 valid_constraint_keys,
                 list_constraint_keys,
                 range_constraint_keys,
-                4,
+                4
             )
         ];
         if (!this.configurationService.configuration.features.yaml) {

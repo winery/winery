@@ -22,7 +22,7 @@ import { WineryTemplate, WineryTopologyTemplate } from '../../../../model/winery
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../../../../model/enums';
 import { Utils } from '../../../../wineryUtils/utils';
 import { SelectItem } from 'ng2-select';
-import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { SelectData } from '../../../../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
 

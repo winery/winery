@@ -159,7 +159,7 @@ public class PropertiesDefinitionResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response onJsonPost(PropertiesDefinitionResourceApiData data) {
+    public Response onJsonPost(PropertiesDefinitionResourceApiData data) {  
         
         // CASE: XML
         if (data.selectedValue == PropertiesDefinitionEnum.Element || data.selectedValue == PropertiesDefinitionEnum.Type) {
@@ -183,7 +183,6 @@ public class PropertiesDefinitionResource {
         
         // CASE: winerys properties definition
         // Only definitions are stored which are not defined by any parent
-        // Note: this does NOT allow to specify the same properties definition in order to make sure that it does NOT change even when the parent properties definition changes
         if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
             ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
 
@@ -199,7 +198,15 @@ public class PropertiesDefinitionResource {
             // Get only definitions that are not defined by any parent
             List<PropertyDefinitionKV> definitions = new ArrayList<>();
             for (PropertyDefinitionKV definition : data.winerysPropertiesDefinition.getPropertyDefinitions()) {
-                if (!containsPropertiesDefinition(parentsPropertiesDefinitions, definition)) {
+                boolean exists = false;
+                for (PropertyDefinitionKV currentDefinition: parentsPropertiesDefinitions) {
+                    if (definition.equals(currentDefinition)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                
+                if (!exists) {
                     definitions.add(definition);
                 }
             }
@@ -211,6 +218,8 @@ public class PropertiesDefinitionResource {
         } 
         
         // CASE: YAML
+        // Only definitions are stored which are not defined by any parent
+        // TODO: only definitions are stored which are not defined by any parent
         if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
             TEntityType entityType = this.parentRes.getEntityType();
             if (!(data.propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition)) {
@@ -222,15 +231,6 @@ public class PropertiesDefinitionResource {
 
         // OTHERWISE: throw error
         return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
-    }
-    
-    private boolean containsPropertiesDefinition(List<PropertyDefinitionKV> definitions, PropertyDefinitionKV definition) {
-        for (PropertyDefinitionKV currentDefinition : definitions) {
-            if (definition.equalsAllProperties(currentDefinition)) {
-                return true;
-            }
-        }
-        return false;
     }
     
 }

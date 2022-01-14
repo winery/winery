@@ -19,7 +19,7 @@ import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Properties, PropertiesData } from './properties.types';
 import { PropertiesDefinitionService } from '../propertiesDefinition/propertiesDefinition.service';
-import { PropertiesDefinitionKVElement } from '../propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionKVElement } from '../propertiesDefinition/propertiesDefinition.types';
 import { Utils } from '../../../wineryUtils/utils';
 import { NgForm } from '@angular/forms';
 

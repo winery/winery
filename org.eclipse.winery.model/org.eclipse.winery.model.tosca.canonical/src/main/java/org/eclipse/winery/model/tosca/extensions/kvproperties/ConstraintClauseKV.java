@@ -20,6 +20,8 @@ import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @XmlRootElement(name = "ConstraintDefinition")
@@ -63,12 +65,14 @@ public class ConstraintClauseKV implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConstraintClauseKV that = (ConstraintClauseKV) o;
+        
+        if (list == null && that.list != null || list != null && that.list == null) return false;
+        
         return Objects.equals(key, that.key) &&
             Objects.equals(value, that.value) &&
-            // TODO: order matters
-            Objects.equals(list, that.list);
+            ModelUtilities.compareUnorderedNullableLists(list, that.list);
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(key, value, list);
