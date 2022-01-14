@@ -27,10 +27,12 @@ import { QName } from '../../../../../../shared/src/app/model/qName';
 export class PropertiesService {
 
     propertiesUrl: string;
+    propertiesDefinitionsUrl: string;
 
     constructor(private http: HttpClient,
-                private sharedData: InstanceService) {
-        this.propertiesUrl = Utils.join([this.sharedData.path, 'properties']);
+                private instance: InstanceService) {
+        this.propertiesUrl = Utils.join([this.instance.path, 'properties']);
+        this.propertiesDefinitionsUrl = Utils.join([this.instance.type.backendUrl, 'propertiesdefinition', 'merged']);
     }
 
     public getProperties(): Observable<PropertiesData> {
@@ -46,10 +48,6 @@ export class PropertiesService {
             }));
     }
 
-    getPropertiesDefinitions(url: string): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.http.get<PropertiesDefinitionsResourceApiData>(Utils.join([url, 'propertiesdefinition', 'merged']));
-    }
-
     public saveProperties(properties: Properties, isXML: boolean): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders();
         headers.set('Content-Type', isXML ? 'application/xml' : 'application/json');
@@ -59,5 +57,9 @@ export class PropertiesService {
                 properties,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
+    }
+
+    public getPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
+        return this.http.get<PropertiesDefinitionsResourceApiData>(this.propertiesDefinitionsUrl);
     }
 }

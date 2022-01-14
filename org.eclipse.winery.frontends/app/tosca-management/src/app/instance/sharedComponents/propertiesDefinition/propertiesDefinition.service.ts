@@ -21,6 +21,8 @@ import {
 } from './propertiesDefinition.types';
 import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { InstanceService } from '../../instance.service';
+import { Utils } from '../../../wineryUtils/utils';
 
 @Injectable()
 export class PropertiesDefinitionService {
