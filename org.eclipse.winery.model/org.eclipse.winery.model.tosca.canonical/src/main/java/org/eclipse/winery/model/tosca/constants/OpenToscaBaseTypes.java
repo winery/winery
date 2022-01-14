@@ -36,9 +36,11 @@ public class OpenToscaBaseTypes {
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
     // endregion
     
-    //region ********** communication proxy elements **********
+    //region ********** messaging elements **********
+    //TODO: Check if these Types are correct for final version
     public static final QName publisherProxy = QName.valueOf("{http://opentosca.org/nodetypes}PublisherProxy");
     public static final QName subscriberProxy = QName.valueOf("{http://opentosca.org/nodetypes}SubscriberProxy");
+    public static final QName topic = QName.valueOf("{http://opentosca.org/nodetypes}Topic");
     //endregion
 
     // region ********** freeze and defrost **********

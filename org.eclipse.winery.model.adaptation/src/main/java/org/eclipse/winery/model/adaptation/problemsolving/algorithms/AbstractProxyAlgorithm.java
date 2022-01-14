@@ -14,16 +14,23 @@
 
 package org.eclipse.winery.model.adaptation.problemsolving.algorithms;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
 import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public abstract class AbstractProxyAlgorithm implements SolutionStrategy {
     
@@ -37,15 +44,18 @@ public abstract class AbstractProxyAlgorithm implements SolutionStrategy {
         TNodeTemplate firstComponent = topology.getNodeTemplate(firstComponentId);
         String secondComponentId = inputData.getFindings().get(1).getComponentId();
         TNodeTemplate secondComponent = topology.getNodeTemplate(secondComponentId);
+        
+        IRepository repository = RepositoryFactory.getRepository();
+        Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
 
         Optional<TRelationshipTemplate> connectsToRelation = ModelUtilities.getOutgoingRelationshipTemplates(topology, firstComponent).stream()
-            .filter(relationship -> relationship.getType().equals(ToscaBaseTypes.connectsToRelationshipType))
+            .filter(relationship -> ModelUtilities.isOfType(ToscaBaseTypes.connectsToRelationshipType, relationship.getType(), relationshipTypes))
             .filter(relationship -> relationship.getTargetElement().getRef().getId().equals(secondComponentId))
             .findFirst();
 
         if (!connectsToRelation.isPresent()) {
             connectsToRelation = ModelUtilities.getOutgoingRelationshipTemplates(topology, secondComponent).stream()
-                .filter(relationship -> relationship.getType().equals(ToscaBaseTypes.connectsToRelationshipType))
+                .filter(relationship -> ModelUtilities.isOfType(ToscaBaseTypes.connectsToRelationshipType, relationship.getType(), relationshipTypes))
                 .filter(relationship -> relationship.getTargetElement().getRef().getId().equals(firstComponentId))
                 .findFirst();
 

@@ -31,22 +31,42 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
         sourceNodeProxy.setType(OpenToscaBaseTypes.publisherProxy);
         sourceNodeProxy.setName(OpenToscaBaseTypes.publisherProxy.getLocalPart());
         sourceNodeProxy.setId(sourceNode.getId() + "_proxy");
+        setNewCoordinates(sourceNode, sourceNodeProxy, 150, 0);
         topology.addNodeTemplate(sourceNodeProxy);
-        
+
+        TNodeTemplate topicNode = new TNodeTemplate();
+        topicNode.setType(OpenToscaBaseTypes.topic);
+        topicNode.setName(OpenToscaBaseTypes.topic.getLocalPart());
+        topicNode.setId(topicNode.getName() + "_new");
+        setNewCoordinates(sourceNodeProxy, topicNode, 300, 0);
+        topology.addNodeTemplate(topicNode);
         
         TNodeTemplate targetNodeProxy = new TNodeTemplate();
-        sourceNodeProxy.setType(OpenToscaBaseTypes.subscriberProxy);
-        sourceNodeProxy.setName(OpenToscaBaseTypes.subscriberProxy.getLocalPart());
-        sourceNodeProxy.setId(sourceNode.getId() + "_proxy");
+        targetNodeProxy.setType(OpenToscaBaseTypes.subscriberProxy);
+        targetNodeProxy.setName(OpenToscaBaseTypes.subscriberProxy.getLocalPart());
+        targetNodeProxy.setId(targetNode.getId() + "_proxy");
+        setNewCoordinates(topicNode, targetNodeProxy, 300, 0);
         topology.addNodeTemplate(targetNodeProxy);
 
+        setNewCoordinates(targetNodeProxy, targetNode, 300, 0);
+        
         ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNode, sourceNodeProxy,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxy, targetNodeProxy,
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxy, topicNode,
+            ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, topicNode,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
         ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, targetNode,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
         return true;
+    }
+    
+    protected void setNewCoordinates(TNodeTemplate referenceNode, TNodeTemplate newNode, int newX, int newY) {
+        int x = Integer.parseInt(referenceNode.getX()) + newX;
+        newNode.setX(Integer.toString(x));
+
+        int y = Integer.parseInt(referenceNode.getY()) + newY;
+        newNode.setY(Integer.toString(y));
     }
     
 }
