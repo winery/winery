@@ -472,7 +472,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     getParentRouterLink(qname: string) {
         const { nameSpace, localName } = new QName(qname);
-        return ['/' + this.sharedData.toscaComponent.toscaType, encodeURIComponent(nameSpace), localName];
+        return Utils.getFrontendPath(this.sharedData.toscaComponent.toscaType, nameSpace, localName);
     }
 
     // region ########## Private Methods ##########

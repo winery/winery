@@ -31,7 +31,7 @@ export class Utils {
     }
 
     public static getFrontendPath(toscaType: string, namespace: string, localname: string) {
-        return '/' + this.join([toscaType, encodeURIComponent(namespace), localname]);
+        return '/' + this.join([toscaType, this.doubleEncodeNamespace(namespace), localname]);
     }
 
     public static getBackendUrl(backendUrl: string, toscaType: string, namespace: string, localname: string) {
