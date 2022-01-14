@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
@@ -32,6 +33,9 @@ public class PropertyDefinitionKV implements Serializable {
     private Boolean required;
     private String defaultValue;
     private String description;
+    
+    private QName derivedFromType;
+    private String derivedFromStatus;
 
     @JsonProperty("constraint")
     private List<ConstraintClauseKV> constraintList;
@@ -117,6 +121,22 @@ public class PropertyDefinitionKV implements Serializable {
 
     public void setConstraints(List<ConstraintClauseKV> constraintList) {
         this.constraintList = constraintList;
+    }
+    
+    public void setDerivedFromType(QName derivedFromType) {
+        this.derivedFromType = derivedFromType;
+    }
+    
+    public QName getDerivedFromType() {
+        return this.derivedFromType;
+    }
+    
+    public void setDerivedFromStatus(String derivedFromStatus) {
+        this.derivedFromStatus = derivedFromStatus;
+    }
+    
+    public String getDerivedFromStatus() {
+        return this.derivedFromStatus;
     }
     
     @Override

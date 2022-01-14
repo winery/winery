@@ -176,7 +176,12 @@ export class PropertiesDefinitionComponent implements OnInit {
                 list_constraint_keys,
                 range_constraint_keys,
                 4
-            )
+            ),
+            new DynamicTextData(
+                'derivedFromStatus',
+                'Status',
+                5
+            ),
         ];
         if (!this.configurationService.configuration.features.yaml) {
             const options = [

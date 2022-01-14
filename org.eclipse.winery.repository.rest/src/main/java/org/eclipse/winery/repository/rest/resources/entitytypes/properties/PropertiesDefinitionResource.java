@@ -114,8 +114,21 @@ public class PropertiesDefinitionResource {
         
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
         for (TEntityType parent : parents) {
+        
+            // Add winerys properties definition of parent if defined to list
             WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
             if (winerysPropertiesDefinition != null) {
+                
+                // Add derived from information
+                List<PropertyDefinitionKV> propertyDefinitions = winerysPropertiesDefinition.getPropertyDefinitions();
+                if (propertyDefinitions != null) {
+                    for (PropertyDefinitionKV propertyDefinition : propertyDefinitions ) {
+                        propertyDefinition.setDerivedFromType(parent.getQName());
+                        propertyDefinition.setDerivedFromStatus("SELF");
+                    }
+                }
+                
+                // Add winerys properties definition to list
                 PropertiesDefinitionResourceApiData propertiesDefinitionResourceApiData = new PropertiesDefinitionResourceApiData(parent.getProperties(), winerysPropertiesDefinition);
                 list.add(new InheritedPropertiesDefinitionsResourceApiData(parent.getQName(), propertiesDefinitionResourceApiData));
             }

@@ -1070,12 +1070,21 @@ public abstract class ModelUtilities {
                 boolean exists = false;
                 for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
                     if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
+                        propertyDefinition.setDerivedFromStatus("OVERRIDE");
                         exists = true;
                         break;
                     }
                 }
 
                 if (!exists) {
+                    entityTypePropertyDefinition.setDerivedFromType(entityType.getQName());
+                    
+                    if (entityType.getQName().toString().equals(entityTypes.get(0).getQName().toString())) {
+                        entityTypePropertyDefinition.setDerivedFromStatus("SELF");
+                    } else {
+                        entityTypePropertyDefinition.setDerivedFromStatus("INHERITED");
+                    }
+                    
                     propertyDefinitions.add(entityTypePropertyDefinition);
                 }
             }
