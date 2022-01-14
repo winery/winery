@@ -107,7 +107,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
         if (this instanceof CapabilityDefinitionsResource) {
             def = (ReqDefOrCapDef) new TCapabilityDefinition.Builder(
                 postData.name,
-                QName.valueOf(postData.type)
+                postData.type != null ? QName.valueOf(postData.type) : null
             )
                 .setUpperBound(ubound)
                 .setLowerBound(lbound)
@@ -116,7 +116,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
             assert (this instanceof RequirementDefinitionsResource);
             def = (ReqDefOrCapDef) new TRequirementDefinition.Builder(
                 postData.name,
-                QName.valueOf(postData.type)
+                postData.type != null ? QName.valueOf(postData.type) : null
             )
                 .setUpperBound(ubound)
                 .setLowerBound(lbound)
