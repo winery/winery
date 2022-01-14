@@ -55,24 +55,27 @@
                         <br/>
 
                         <input
-                            [required]="definition.required"
+                            [wineryPropertyDefinition]="definition"
                             [id]="definition.key"
                             [name]="definition.key"
-                            [pattern]="patterns[definition.type]"
                             [(ngModel)]="properties[definition.key]"
                             [class]="form.controls[definition.key]?.errors && form.touched? 'form-control text-red border-red' : 'form-control'"
                         />
                         <br/>
-
-
+                        
                         <ng-container *ngIf="form.touched">
                             <div *ngIf="form.controls[definition.key]?.errors?.required" class="text-red">
                                 Property is required!
                             </div>
 
-                            <div *ngIf="form.controls[definition.key]?.errors?.pattern" class="text-red">
-                                <p>Not a valid "{{ definition.type }}"!</p>
+                            <div *ngIf="form.controls[definition.key]?.errors?.type" class="text-red">
+                                <p>Invalid type!</p>
                             </div>
+                            
+                            <div *ngIf="form.controls[definition.key]?.errors?.constraint" class="text-red">
+                                <p>The constraint "{{ form.controls[definition.key]?.errors?.constraint }}" is not satisfied!</p>
+                            </div>
+                            
                         </ng-container>
 
                         <p *ngIf="definition.type" class="text-muted">Type is "{{ definition.type }}".</p>

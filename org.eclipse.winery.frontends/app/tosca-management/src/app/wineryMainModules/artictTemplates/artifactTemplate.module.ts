@@ -26,6 +26,9 @@ import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 import { WinerySourceModule } from '../../instance/sharedComponents/artifactSource/source.module';
+import {
+    WineryPropertyDefinitionValidatorModule
+} from '../../wineryValidators/wineryPropertyDefinitionValidator.module';
 
 @NgModule({
     imports: [
@@ -41,7 +44,8 @@ import { WinerySourceModule } from '../../instance/sharedComponents/artifactSour
         ArtifactTemplateRouterModule,
         WineryReadmeModule,
         WineryLicenseModule,
-        AlertModule
+        AlertModule,
+        WineryPropertyDefinitionValidatorModule
     ],
     declarations: [
         FilesComponent,

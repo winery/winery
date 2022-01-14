@@ -43,14 +43,6 @@ export class PropertiesComponent implements OnInit {
     isXML: boolean;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
-    patterns = {
-        'xsd:float': /^\s*([+-]?((0|[1-9][0-9]*)(\.[0-9]*)?|\.[0-9]+)([Ee][+-]?[0-9]+)?)\s*$/g,
-        'xsd:integer': /^\s*[+-]?(0|[1-9][0-9]*)([Ee][+]?[0-9]+)?\s*$/g,
-        'xsd:decimal': /^\d*\.?\d*$/g,
-        'xsd:anyURI': /^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(\.[^\/\\:*?"<>|]+)$/g,
-        'xsd:qName': /^\{(.*?)\}(.*)$/g
-    };
-
     show = {};
 
     _loading = {
