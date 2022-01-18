@@ -35,6 +35,8 @@ export interface WineryConfiguration {
         placement: boolean;
         edmmModeling: boolean;
         updateTemplates: boolean;
+        liveModeling: boolean;
+        propertyCheck: boolean;
         yaml: boolean;
         patternDetection: boolean;
     };

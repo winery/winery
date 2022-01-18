@@ -21,7 +21,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { EntityType, OTParticipant, TGroupDefinition, TNodeTemplate } from '../models/ttopology-template';
-import { PropertyDefinitionType, urlElement } from '../models/enums';
+import { LiveModelingStates, NodeTemplateInstanceStates, PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 import { EntityTypesModel } from '../models/entityTypesModel';
@@ -32,9 +32,14 @@ import { Visuals } from '../models/visuals';
 import { VersionElement } from '../models/versionElement';
 import { VersionsComponent } from './versions/versions.component';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
-import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
-import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    FeatureEnum
+} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { PropertiesComponent } from '../properties/properties.component';
 import { Subscription } from 'rxjs';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
@@ -72,7 +77,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     connectorEndpointVisible = false;
     startTime;
     endTime;
-    longpress = false;
+    longPress = false;
     makeSelectionVisible = false;
     setFlash = false;
     setMaxFlash = false;
@@ -90,6 +95,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
+    @Input() nodeEntityType: EntityType;
     @Input() dragSource: string;
     @Input() navbarButtonsState: TopologyRendererState;
     @Input() nodeTemplate: TNodeTemplate;
@@ -110,6 +116,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() showYamlPolicyManagementModal: EventEmitter<void>;
 
     @ViewChild('versionModal') versionModal: VersionsComponent;
+    @ViewChild('nodeProperties') nodePropertiesComponent: PropertiesComponent;
     previousPosition: any;
     currentPosition: any;
     nodeRef: ComponentRef<Component>;
@@ -124,8 +131,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     newerVersions: WineryVersion[];
     newerVersionExist: boolean;
     newVersionElement: VersionElement;
-    private policyChangeSubscription: Subscription;
-    private artifactsChangedSubscription: Subscription;
+
+    liveModelingEnabled = false;
+    subscriptions: Subscription[] = [];
+    NodeTemplateInstanceStates = NodeTemplateInstanceStates;
+
+    private readonly policyChangeSubscription: Subscription;
+    private readonly artifactsChangedSubscription: Subscription;
 
     constructor(private zone: NgZone,
                 private $ngRedux: NgRedux<IWineryState>,
@@ -271,6 +283,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         }
 
         this.addNewVersions(new QName(this.nodeTemplate.type));
+
+        this.subscriptions.push(this.$ngRedux.select((wineryState) => {
+            return wineryState.liveModelingState.state;
+        })
+            .subscribe((liveModelingState) => {
+                this.liveModelingEnabled = liveModelingState !== LiveModelingStates.DISABLED;
+            }));
     }
 
     /**
@@ -449,7 +468,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     closeConnectorEndpoints($event): void {
         $event.stopPropagation();
-        if (!this.longpress && !$event.ctrlKey) {
+        if (!this.longPress && !$event.ctrlKey) {
             this.closedEndpoint.emit(this.nodeTemplate.id);
             this.repaint(new Event('repaint'));
         }
@@ -472,20 +491,24 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     openSidebar($event): void {
         $event.stopPropagation();
         // close sidebar when longpressing a node template
-        if (this.longpress) {
+        if (this.longPress) {
             this.sendPaletteStatus.emit('close Sidebar');
             this.$ngRedux.dispatch(this.actions.triggerSidebar(
-                { sidebarContents: new DetailsSidebarState(false, true) }));
+                new DetailsSidebarState(false, true, this.nodeEntityType)));
         } else {
             this.$ngRedux.dispatch(this.actions.triggerSidebar({
-                sidebarContents: {
                     visible: true,
                     nodeClicked: true,
+                    nodeData: {
+                        entityTypes: this.entityTypes,
+                        nodeTemplate: this.nodeTemplate,
+                        propertyDefinitionType: this.propertyDefinitionType,
+                        entityType: this.nodeEntityType
+                    },
                     template: this.nodeTemplate,
                     // special handling for instance restrictions due to infinity
                     minInstances: this.nodeTemplate.minInstances,
                     maxInstances: this.nodeTemplate.maxInstances,
-                }
             }));
         }
     }
@@ -525,6 +548,11 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         if (this.artifactsChangedSubscription) {
             this.artifactsChangedSubscription.unsubscribe();
         }
+
+        this.subscriptions.forEach((subscription: Subscription) => {
+            subscription.unsubscribe();
+        });
+        this.subscriptions = [];
     }
 
     public openVersionModal() {
@@ -535,15 +563,39 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         this.showYamlPolicyManagementModal.emit();
     }
 
+    getInstanceStateColor() {
+        switch (this.nodeTemplate.instanceState) {
+            case NodeTemplateInstanceStates.STARTED:
+            case NodeTemplateInstanceStates.CREATED:
+                return '#0EFF09';
+            case NodeTemplateInstanceStates.STOPPED:
+            case NodeTemplateInstanceStates.DELETED:
+                return '#B8B8B6';
+            case NodeTemplateInstanceStates.CONFIGURING:
+            case NodeTemplateInstanceStates.CREATING:
+            case NodeTemplateInstanceStates.DELETING:
+            case NodeTemplateInstanceStates.STARTING:
+            case NodeTemplateInstanceStates.STOPPING:
+                return '#F9CF00';
+            case NodeTemplateInstanceStates.CONFIGURED:
+            case NodeTemplateInstanceStates.MIGRATED:
+                return '#007bff';
+            case NodeTemplateInstanceStates.ERROR:
+                return '#ff090d';
+            default:
+                return 'black';
+        }
+    }
+
     /**
      * Checks if it was a click or a drag operation on the node.
      *  $event
      */
     private testTimeDifference(): void {
         if ((this.endTime - this.startTime) < 200) {
-            this.longpress = false;
+            this.longPress = false;
         } else if (this.endTime - this.startTime >= 200) {
-            this.longpress = true;
+            this.longPress = true;
         }
     }
 

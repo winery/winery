@@ -13,24 +13,23 @@
  ********************************************************************************/
 
 #palette_root {
-    border-radius: 1px;
+    min-height: 35px;
     box-shadow: initial;
     /*background-color: #424242;*/
     background-color: #dfdfdf;
     border: 1px solid #c0c0c0;
     color: black;
     min-width: 300px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
     font-size: small;
+    border-radius: 0 1px 1px 0;
 }
 
 #paletteBody {
-    z-index: 3;
+    z-index: 5;
 }
 
 .paletteBodyOpenZindex {
-    z-index: 55 !important;
+    z-index: 6;
 }
 
 #palette_root:hover {
@@ -38,9 +37,9 @@
 }
 
 .palette-items-wrapper {
-    height: 100vh;
     background: #eee;
-    overflow: scroll;
+    overflow: auto;
+    flex-grow: 1;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -51,6 +50,10 @@
     padding-bottom: 100px;
 }
 
+.palette-items-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
 .accordion-root {
 }
 
@@ -58,6 +61,7 @@ accordion-group {
     font-size: x-small;
     max-width: 300px;
     text-overflow: ellipsis;
+    overflow: auto;
     white-space: nowrap !important;
     text-align: start !important;
 }
@@ -106,8 +110,11 @@ li div {
 
 .bootstrap-vertical-nav {
     position: fixed;
-    float: left;
+    width: 300px;
     height: 100vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .btn-light {

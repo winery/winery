@@ -19,7 +19,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
     selector: 'winery-xml-properties',
     templateUrl: './xml-properties.component.html',
+    styleUrls: ['./xml-properties.component.css']
 })
+
 export class XmlPropertiesComponent implements OnInit, OnDestroy {
     @Input() readonly: boolean;
     @Input() propertiesValue: any;
@@ -28,6 +30,9 @@ export class XmlPropertiesComponent implements OnInit, OnDestroy {
     properties: Subject<string> = new Subject<string>();
 
     subscriptions: Array<Subscription> = [];
+
+    constructor() {
+    }
 
     ngOnInit(): void {
         this.subscriptions.push(this.properties.pipe(debounceTime(300), distinctUntilChanged())

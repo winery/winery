@@ -1,0 +1,200 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="live-modeling-sidebar-root"
+     mwlResizable
+     [validateResize]="validateResize"
+     [enableGhostResize]="true"
+     [resizeEdges]="getResizeEdges()"
+     (resizeEnd)="onResizeEnd($event)"
+     [style.width.px]="sidebarButtonState === 'top' ? this.sidebarWidth : toggleButton.offsetHeight"
+     [style.paddingTop.px]="this.top">
+    <button [@sidebarButtonState]="sidebarButtonState" id="toggleButton" class="btn btn-primary" type="button"
+            (click)="toggleSidebarState()"
+            #toggleButton>
+        <span>Live-Modeling </span>
+        <span [hidden]="liveModelingState === LiveModelingStates.DISABLED" class="fa-stack fa-1x">
+          <i class="fa fa-circle fa-stack-1x" style="color: red; opacity: 0.5; font-size: 1.6em"></i>
+          <i class="fa fa-circle fa-stack-1x" style="color: red"></i>
+        </span>
+    </button>
+    <div [@sidebarContentState]="sidebarContentState" class="live-modeling-sidebar-content">
+        <div *ngIf="liveModelingState === LiveModelingStates.DISABLED" class="live-modeling-sidebar-page start-page">
+            <p style="max-width: 250px">
+                Live modeling is currently disabled.
+            </p>
+            <button class="btn btn-warning font-weight-bold"
+                    [disabled]="unsavedChanges"
+                    (click)="handleEnable()">Enable
+            </button>
+            <p *ngIf="unsavedChanges" style="max-width: 250px; font-size: x-small; font-style: italic">
+                (Unsaved changes detected)
+            </p>
+        </div>
+        <div *ngIf="liveModelingState !== LiveModelingStates.DISABLED" class="live-modeling-sidebar-page live-page"
+             style="width: 100%; height: 100%">
+            <div *ngIf="(deploymentChanges || unsavedChanges)"
+                 class="d-flex flex-column warning-changes">
+                <span>
+                    <i class="fa fa-warning mr-2"></i>
+                    <b>Warning</b>
+                </span>
+                <div>
+                    Your model is out-of-sync with the deployed instance.
+                    Save your changes and reconfigurate to update the instance.
+                </div>
+            </div>
+            <div class="live-modeling-sidebar-info-panel" style="max-width: 33%; min-width: 33%; min-height: 100%;">
+                <div class="d-flex justify-content-between">
+                    <label>General</label>
+                    <div>
+                        <i class="fa fa-gear ml-2" style="cursor: pointer;"
+                           (click)="handleSettings()"></i>
+                        <i class="fa fa-times ml-2" style="cursor: pointer;"
+                           (click)="handleDisable()"></i>
+                    </div>
+                </div>
+                <winery-live-modeling-sidebar-csar-info></winery-live-modeling-sidebar-csar-info>
+                <div class="mt-2 state-information"
+                     [style.background-color]="this.getBackgroundForState(serviceTemplateInstanceState)">
+                    <div *ngIf="serviceTemplateInstanceId; then content else placeholder"></div>
+                    <ng-template #content>
+                        <span>{{serviceTemplateInstanceState}} ({{serviceTemplateInstanceId}})</span>
+                    </ng-template>
+                    <ng-template #placeholder>
+                        <span>{{serviceTemplateInstanceState || 'NOT AVAILABLE'}}</span>
+                    </ng-template>
+                </div>
+                <winery-live-modeling-sidebar-progressbar></winery-live-modeling-sidebar-progressbar>
+                <div class="d-flex mt-2">
+                    <ng-template
+                        *ngIf="this.deploymentChanges || !this.currentCsarId; then redeployButton else deployButton"></ng-template>
+                    <ng-template #deployButton>
+                        <button class="btn-live-modeling btn-live-modeling-deploy"
+                                [disabled]="!isDeployEnabled()"
+                                (click)="handleDeploy()">
+                            <i class="fa fa-plus"></i>
+                            DEPLOY
+                        </button>
+                    </ng-template>
+                    <ng-template #redeployButton>
+                        <button class="btn-live-modeling btn-live-modeling-deploy"
+                                [disabled]="!isRedeployEnabled()"
+                                (click)="handleRedeploy()">
+                            <i class="fa fa-plus"></i>
+                            REDEPLOY
+                        </button>
+                    </ng-template>
+                    <div style="width: 5px"></div>
+                    <button class="btn-live-modeling btn-live-modeling-terminate"
+                            [disabled]="!isTerminateEnabled()"
+                            (click)="handleTerminate()">
+                        <i class="fa fa-times"></i>
+                        TERMINATE
+                    </button>
+                </div>
+                <div class="d-flex mt-2">
+                    <button class="btn-live-modeling"
+                            [disabled]="!isRefreshEnabled()"
+                            (click)="handleRefresh()">
+                        <i class="fa fa-refresh"></i>
+                        REFRESH
+                    </button>
+                    <div style="width: 5px"></div>
+                    <button class="btn-live-modeling"
+                            [disabled]="!isReconfigurationEnabled()"
+                            (click)="handleReconfiguration()">
+                        <i class="fa fa-cogs"></i>
+                        RECONFIGURATE
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-column justify-content-between"
+                 style="height: 100%; min-width: 33%; min-height: 100%; max-width: 33%">
+                <div class="d-flex flex-column" style="height: 100%">
+                    <accordion>
+                        <accordion-group #nodeTemplateTab
+                                         isOpen="false"
+                                         panelClass="customClass">
+                            <span accordion-heading>
+                                <i *ngIf="!nodeTemplateTab.isOpen" class="fas fa-caret-right"></i>
+                                <i *ngIf="nodeTemplateTab.isOpen" class="fas fa-caret-down"></i>
+                                Node Template Instance
+                            </span>
+                            <winery-live-modeling-sidebar-node-template></winery-live-modeling-sidebar-node-template>
+                        </accordion-group>
+                        <accordion-group #parametersTab
+                                         isOpen="false"
+                                         panelClass="customClass">
+                            <span accordion-heading>
+                                <i *ngIf="!parametersTab.isOpen" class="fas fa-caret-right"></i>
+                                <i *ngIf="parametersTab.isOpen" class="fas fa-caret-down"></i>
+                                Input Parameters
+                            </span>
+                            <winery-live-modeling-sidebar-buildplan-parameters></winery-live-modeling-sidebar-buildplan-parameters>
+                        </accordion-group>
+                        <accordion-group #outputsTab
+                                         isOpen="false"
+                                         panelClass="customClass">
+                            <span accordion-heading>
+                                <i *ngIf="!outputsTab.isOpen" class="fas fa-caret-right"></i>
+                                <i *ngIf="outputsTab.isOpen" class="fas fa-caret-down"></i>
+                                Outputs
+                            </span>
+                            <winery-live-modeling-sidebar-buildplan-outputs></winery-live-modeling-sidebar-buildplan-outputs>
+                        </accordion-group>
+                    </accordion>
+                </div>
+            </div>
+            <div class="d-flex flex-column" style="height: 100%; max-width: 33%; min-width: 33%; min-height: 100%;">
+                <winery-live-modeling-sidebar-logs class="flex-grow-1"
+                                                   style="height: 100%; min-height: 100%; min-width: 33%;"></winery-live-modeling-sidebar-logs>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<ng-template #switchInstanceModal>-->
+<!--    <div class="modal-header">-->
+<!--        <h4 class="modal-title pull-left">Switch Service Template Instance</h4>-->
+<!--        <button type="button" class="close pull-right" aria-label="Close" (click)="dismissModal()">-->
+<!--            <span aria-hidden="true">&times;</span>-->
+<!--        </button>-->
+<!--    </div>-->
+<!--    <div class="modal-body">-->
+<!--        <div class="d-flex">-->
+<!--            <div class="btn-group mr-2 dropdown flex-grow-1" dropdown-->
+<!--                 [isDisabled]="!(serviceTemplateInstanceIds && serviceTemplateInstanceIds?.length > 0)">-->
+<!--                <button id="button-basic" dropdownToggle type="button" class="btn btn-light dropdown-toggle"-->
+<!--                        aria-controls="dropdown-basic">-->
+<!--                    Service Template Instance ID: <b>{{selectedServiceTemplateInstanceId}}</b>-->
+<!--                </button>-->
+<!--                <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"-->
+<!--                    role="menu" aria-labelledby="button-basic">-->
+<!--                    <li *ngFor="let id of serviceTemplateInstanceIds" role="menuitem">-->
+<!--                        <span class="dropdown-item" (click)="selectServiceTemplateId(id)">{{id}}</span>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="modal-footer">-->
+<!--        <button type="button" class="btn btn-light" (click)="dismissModal()">Close</button>-->
+<!--        <button type="button" class="btn btn-primary"-->
+<!--                [disabled]="selectedServiceTemplateInstanceId === serviceTemplateInstanceId"-->
+<!--                (click)="switchServiceTemplateInstance()">-->
+<!--            Switch-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</ng-template>-->

@@ -1,0 +1,31 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Live-Modeling Settings</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="dismissModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div *ngFor="let key of objectKeys(settings)" class="pb-2">
+        <label class="font-weight-normal" [for]="key">{{this.getLabel(key)}}:</label>
+        <input class="form-control" type="text" [id]="key"
+               [(ngModel)]="settings[key]">
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="dismissModal()">Close</button>
+    <button type="button" class="btn btn-primary" (click)="setSettings()">Save</button>
+</div>

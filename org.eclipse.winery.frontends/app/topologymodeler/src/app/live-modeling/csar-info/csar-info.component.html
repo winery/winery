@@ -1,0 +1,57 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="d-flex">
+    <div class="icon-container">
+        <div *ngIf="currentCsar?.icon_url; then icon else iconPlaceholder"></div>
+        <ng-template #icon>
+            <img class="w-100" [src]="currentCsar.icon_url" alt="csar logo">
+        </ng-template>
+        <ng-template #iconPlaceholder>
+            <div class="icon-placeholder"></div>
+        </ng-template>
+    </div>
+    <div *ngIf="currentCsar; then csarLoaded else csarMissing"></div>
+    <ng-template #csarLoaded>
+        <div class="d-flex flex-column ml-2 text-container">
+            <div *ngIf="currentCsar.name; then csarName else csarNamePlaceholder"></div>
+            <ng-template #csarName>
+                <span class="csar-title">{{currentCsar.name}}</span>
+            </ng-template>
+            <ng-template #csarNamePlaceholder>
+                <span class="text-placeholder">No title found</span>
+            </ng-template>
+            <div
+                *ngIf="currentCsar.description; then csarDescription else csarDescriptionPlaceholder"></div>
+            <ng-template #csarDescription>
+                <span class="csar-description">{{currentCsar.description}}</span>
+            </ng-template>
+            <ng-template #csarDescriptionPlaceholder>
+                <span class="text-placeholder">No description found</span>
+            </ng-template>
+            <div *ngIf="currentCsar.version; then csarVersion else csarVersionPlaceholder"></div>
+            <ng-template #csarVersion>
+                <span class="csar-version">Version: {{currentCsar.version}}</span>
+            </ng-template>
+            <ng-template #csarVersionPlaceholder>
+                <span class="text-placeholder">No version found</span>
+            </ng-template>
+        </div>
+    </ng-template>
+    <ng-template #csarMissing>
+        <div class="d-flex flex-grow-1 justify-content-center align-items-center font-italic">
+            <span>No csar loaded</span>
+        </div>
+    </ng-template>
+</div>
