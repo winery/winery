@@ -73,15 +73,11 @@ Please ensure that the email address you use at Eclipse is the same as the "Publ
 
 ### Making the Commit
 
-When making the commit for the pull request it is vital that you "sign-off" on the commit using `git commit -s` option.
-Without this sign-off, your patch cannot be applied to the Winery repository because it will be rejected.
+In the case of multiple authors, please add each additional author to commit message.
+```
+Co-authored-by: Some Bodyelse <somebodyelse@nowhere.com>
+```
 
-You can check out [the guide at GitHub](https://help.github.com/articles/signing-tags-using-gpg) for more information.
-
-One way to think of this is that when you sign the CLA you are indicating that you are free to contribute to eclipse, but that does not mean everything you ever do can be contributed.
-Using the commit signing mechanism indicates that your commit is under the auspices of your agreement.
-
-In the case of multiple authors, plese add `Also-by: Some Bodyelse <somebodyelse@nowhere.com>` for each additional author.
 For more information, see <https://www.eclipse.org/projects/handbook/#resources-commit>.
 
 ### Contributing via GitHub PullRequests
