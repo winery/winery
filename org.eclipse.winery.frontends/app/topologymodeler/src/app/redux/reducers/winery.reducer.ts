@@ -571,6 +571,7 @@ export const WineryReducer =
                             group.members = group.members.filter((member) => member !== deletedNodeId);
                             return group;
                         }),
+                        participants: lastState.currentJsonTopology.participants
                     }
                 };
             case WineryActions.DELETE_RELATIONSHIP_TEMPLATE:
