@@ -70,15 +70,10 @@ export class LiveModelingSidebarComponent implements OnInit, OnDestroy {
     serviceTemplateInstanceId: string;
     serviceTemplateInstanceState: ServiceTemplateInstanceStates;
     currentCsarId: string;
-    private currentTopologyTemplate: TTopologyTemplate;
-    
     subscriptions: Array<Subscription> = [];
-
     modalRef: BsModalRef;
-
     unsavedChanges: boolean;
     deploymentChanges: boolean;
-
     showLogs = false;
     private settings: LiveModelingSettings;
 
@@ -157,7 +152,7 @@ export class LiveModelingSidebarComponent implements OnInit, OnDestroy {
                 if (typeof topologyTemplate !== 'undefined') {
                     this.backendService.saveTopologyTemplate(topologyTemplate).subscribe();
                 }
-            })
+            });
         this.openModal(EnableModalComponent);
     }
 
