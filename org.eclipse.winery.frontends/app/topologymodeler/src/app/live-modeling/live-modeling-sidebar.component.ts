@@ -30,6 +30,10 @@ import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.comp
 import { ReconfigureModalComponent } from './modals/reconfigure-modal/reconfigure-modal.component';
 import { BackendService } from '../services/backend.service';
 import { LiveModelingSettings } from '../models/liveModelingSettings';
+import { TTopologyTemplate } from '../models/ttopology-template';
+import { OverlayService } from '../services/overlay.service';
+import { TopologyService } from '../services/topology.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'winery-live-modeling-sidebar',
@@ -66,7 +70,8 @@ export class LiveModelingSidebarComponent implements OnInit, OnDestroy {
     serviceTemplateInstanceId: string;
     serviceTemplateInstanceState: ServiceTemplateInstanceStates;
     currentCsarId: string;
-
+    private currentTopologyTemplate: TTopologyTemplate;
+    
     subscriptions: Array<Subscription> = [];
 
     modalRef: BsModalRef;
@@ -147,6 +152,12 @@ export class LiveModelingSidebarComponent implements OnInit, OnDestroy {
     }
 
     handleEnable() {
+        this.ngRedux.select((currentState) => currentState.wineryState.currentJsonTopology)
+            .subscribe((topologyTemplate) => {
+                if (typeof topologyTemplate !== 'undefined') {
+                    this.backendService.saveTopologyTemplate(topologyTemplate).subscribe();
+                }
+            })
         this.openModal(EnableModalComponent);
     }
 
