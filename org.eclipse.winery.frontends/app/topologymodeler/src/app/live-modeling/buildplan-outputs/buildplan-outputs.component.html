@@ -12,7 +12,7 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<div *ngIf="currentBuildPlanInstance?.outputs.length > 0; then content else placeholder"></div>
+<div *ngIf="currentBuildPlanInstance?.outputs !== undefined && currentBuildPlanInstance?.outputs.length > 0; then content else placeholder"></div>
 <ng-template #content>
     <div class="table-scrollable">
         <table class="parameters-table">

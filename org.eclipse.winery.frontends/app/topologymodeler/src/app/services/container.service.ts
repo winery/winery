@@ -214,7 +214,7 @@ export class ContainerService {
     }
 
     public getBuildPlanLogs(csarId: string, correlationId: string): Observable<Array<PlanLogEntry>> {
-        return this.getBuildPlanInstance(csarId, correlationId).pipe(retry(10),
+        return this.getBuildPlanInstance(csarId, correlationId).pipe(retry(100),
             map((resp) => {
                 return resp.logs;
             })
@@ -473,7 +473,7 @@ export class ContainerService {
     }
 
     private getBuildPlanInstance(csarId: string, correlationId: string): Observable<PlanInstance> {
-        return this.getBuildPlan(csarId).pipe(
+        return this.getBuildPlan(csarId).pipe(retry(10),
             concatMap((resp) => {
                 return this.http.get<PlanInstanceResources>(resp._links['instances'].href, this.headerAcceptJSON);
             }),
