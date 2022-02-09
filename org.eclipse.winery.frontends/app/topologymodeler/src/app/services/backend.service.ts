@@ -31,12 +31,15 @@ import { Threat, ThreatAssessmentApiData } from '../models/threatModelingModalDa
 import { Visuals } from '../models/visuals';
 import { VersionElement } from '../models/versionElement';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
-import { takeLast } from 'rxjs/operators';
 import { TPolicy } from '../models/policiesModalData';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { ToscaUtils } from '../models/toscaUtils';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
+import { takeLast, tap } from 'rxjs/operators';
+import { NgRedux } from '@angular-redux/store';
+import { IWineryState } from '../redux/store/winery.store';
+import { WineryActions } from '../redux/actions/winery.actions';
 import { DeploymentTechnology } from '../models/deployment-technology';
 
 /**
@@ -68,7 +71,9 @@ export class BackendService {
     constructor(private http: HttpClient,
                 private alert: ToastrService,
                 private errorHandler: ErrorHandlerService,
-                private configurationService: WineryRepositoryConfigurationService) {
+                private configurationService: WineryRepositoryConfigurationService,
+                private ngRedux: NgRedux<IWineryState>,
+                private wineryActions: WineryActions) {
     }
 
     /**
@@ -210,6 +215,25 @@ export class BackendService {
             return this.http.put(url,
                 TopologyTemplateUtil.prepareSave(topologyTemplate),
                 { headers: headers, responseType: 'text', observe: 'response' }
+            ).pipe(
+                tap(resp => {
+                    if (resp.ok) {
+                        this.ngRedux.dispatch(this.wineryActions.setLastSavedJsonTopology(topologyTemplate));
+                    }
+                })
+            );
+        }
+    }
+
+    /**
+     * Creates new service template version for live-modeling.
+     */
+    createLiveModelingServiceTemplate(): Observable<any> {
+        if (this.configuration) {
+            const headers = new HttpHeaders().set('Content-Type', 'application/json');
+            return this.http.post(this.configuration.parentElementUrl + 'createlivemodelingversion',
+                null,
+                { headers: headers }
             );
         }
     }
@@ -379,6 +403,23 @@ export class BackendService {
         if (this.configuration) {
             return this.http.get(this.configuration.repositoryURL + '/relationshiptypes?full', { headers: this.headers });
         }
+    }
+
+    /**
+     * This method retrieves a Topology Template from the backend.
+     */
+    requestTopologyTemplate(serviceTemplateId?: string): Observable<TTopologyTemplate> {
+        if (this.configuration) {
+            if (serviceTemplateId) {
+                const url = this.configuration.parentUrl
+                    + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/'
+                    + serviceTemplateId + '/topologytemplate';
+                return this.http.get<TTopologyTemplate>(url);
+            } else {
+                return this.http.get<TTopologyTemplate>(this.configuration.elementUrl);
+            }
+        }
+        return null;
     }
 
     get model(): Observable<EntityTypesModel> {
@@ -748,12 +789,6 @@ export class BackendService {
     private requestDataTypes(): Observable<EntityType[]> {
         if (this.configuration) {
             return this.http.get<EntityType[]>(this.configuration.repositoryURL + '/datatypes?full', { headers: this.headers });
-        }
-    }
-
-    private requestTopologyTemplate(): Observable<TTopologyTemplate> {
-        if (this.configuration) {
-            return this.http.get<TTopologyTemplate>(this.configuration.elementUrl);
         }
     }
 

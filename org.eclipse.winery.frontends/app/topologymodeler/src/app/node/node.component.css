@@ -13,11 +13,12 @@
  ********************************************************************************/
 
 div.node {
+    padding: 3px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    z-index: 6;
+    z-index: 60;
     font-size: small;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     background: #ffffff;
@@ -104,6 +105,10 @@ div.selected {
 
 div.unselected {
     margin: 0;
+}
+
+div.working {
+    pointer-events: none;
 }
 
 .node-template-header {
@@ -211,4 +216,45 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     top: -12px;
     color: red;
     font-size: 20px;
+}
+
+.live-modeling-column {
+    align-self: start;
+    padding: 3px;
+}
+
+.live-modeling-column .node-instance-status {
+    cursor: pointer;
+    margin: 0 auto;
+    background-color: black;
+    border: 1px solid black;
+    height: 10px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    width: 10px;
+}
+
+.has-error {
+    border: 1px solid red;
+    border-radius: 0.25rem;
+}
+
+div.overlay {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 1em;
+    pointer-events: none;
+}
+
+div.overlay .overlay-icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(50%, -50%);
 }

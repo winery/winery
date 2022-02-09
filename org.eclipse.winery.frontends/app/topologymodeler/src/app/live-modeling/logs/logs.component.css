@@ -1,0 +1,54 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+
+.scroll-container {
+    flex: 1 0 0;
+    position: fixed;
+    overflow-y: auto;
+    max-height: 70%;
+    min-height: 60%;
+}
+
+.log-item {
+    width: 100%;
+    font-size: x-small;
+    text-align: left;
+    vertical-align: top;
+    display: flex;
+}
+
+.log-item > span {
+    vertical-align: top;
+    padding: 2px;
+    cursor: text;
+}
+
+.log-timestamp {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.badge-xsmall {
+    font-size: xx-small;
+    color: white;
+    border-radius: 5px;
+    padding: 1px 2px;
+}
+
+.badge-small {
+    font-size: small;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 4px;
+}

@@ -1,0 +1,64 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Enable Live-Modeling</h4>
+    <i class="fa fa-gear ml-2" style="cursor: pointer; font-size: x-large; line-height: 40px"
+       (click)="handleSettings()"></i>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="dismissModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div *ngIf="this.isTopologyInvalid()" class="warning-container d-flex align-items-center">
+        <i class="fa fa-warning px-1" style="font-size: xx-large"></i>
+        <div style="width: 10px"></div>
+        <div class="d-flex flex-column">
+            <span style="font-weight: bold">Warning!</span>
+            <span>There are misconfigurations in the current topology</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="containerUrlInput">Enter OpenTOSCA Container Url:</label>
+        <div class="input-wrapper"
+             [class.input-wrapper-check]="!isContainerUrlInvalid && isContainerUrlInvalid !== undefined"
+             [class.input-wrapper-times]="isContainerUrlInvalid">
+            <input [(ngModel)]="containerUrl" class="form-control"
+                   [class.is-valid]="!isContainerUrlInvalid && isContainerUrlInvalid !== undefined"
+                   [class.has-error]="isContainerUrlInvalid" type="text" id="containerUrlInput"
+                   placeholder="containerUrl">
+        </div>
+        <span class="error-text" *ngIf="isContainerUrlInvalid">Invalid container URL</span>
+    </div>
+    <div>
+        <label style="font-weight: normal; font-style: oblique; cursor: pointer">
+            <input
+                style="cursor: pointer"
+                type="checkbox"
+                name="startInstance"
+                [(ngModel)]="startInstance"/>
+            Start instance after model upload
+        </label>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="dismissModal()">Close</button>
+    <button type="button"
+            class="btn btn-primary" (click)="enableLiveModeling()" [disabled]="testingContainerUrl">
+        <ng-container *ngIf="!testingContainerUrl">
+            <span>Enable</span>
+        </ng-container>
+        <i *ngIf="testingContainerUrl" class="fas fa-spinner fa-pulse"></i>
+    </button>
+</div>

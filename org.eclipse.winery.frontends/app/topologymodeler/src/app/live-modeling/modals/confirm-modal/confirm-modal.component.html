@@ -1,0 +1,51 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div *ngIf="this.isTopologyInvalid() && this.showWarning" class="warning-container d-flex align-items-center">
+        <i class="fa fa-warning px-1" style="font-size: xx-large"></i>
+        <div style="width: 10px"></div>
+        <div class="d-flex flex-column">
+            <span style="font-weight: bold">Warning!</span>
+            <span>There are misconfigurations in the current topology</span>
+        </div>
+    </div>
+    <span>{{content}}</span>
+    <div *ngIf="this.showStartOption" class="mt-2">
+        <label style="font-weight: normal; font-style: oblique; cursor: pointer">
+            <input
+                style="cursor: pointer"
+                type="checkbox"
+                name="startInstance"
+                [(ngModel)]="startInstance"/>
+            Start instance after model upload
+        </label>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default"
+            (click)="cancel()">
+        No
+    </button>
+    <button type="button" class="btn btn-primary"
+            (click)="confirm()">
+        Yes
+    </button>
+</div>

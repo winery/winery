@@ -19,6 +19,7 @@ export class TopologyModelerConfiguration {
     public readonly definitionsElement: QName;
     public readonly idPrefix;
     public readonly relationshipPrefix;
+    public readonly parentUrl: string;
     public readonly parentElementUrl: string;
     public readonly elementUrl: string;
 
@@ -45,7 +46,8 @@ export class TopologyModelerConfiguration {
         }
 
         this.relationshipPrefix = this.idPrefix + 'con';
-        this.parentElementUrl = this.repositoryURL + '/' + this.parentPath + '/'
+        this.parentUrl = this.repositoryURL + '/' + this.parentPath + '/';
+        this.parentElementUrl = this.parentUrl
             + encodeURIComponent(encodeURIComponent(this.ns)) + '/' + this.id + '/';
         this.elementUrl = this.parentElementUrl + this.elementPath;
     }

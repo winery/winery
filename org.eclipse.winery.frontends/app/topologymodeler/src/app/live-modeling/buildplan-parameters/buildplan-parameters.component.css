@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+
+.table-scrollable {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: x-small;
+}
+
+.table-scrollable th {
+    padding: 0.25em;
+}
+
+.table-scrollable td {
+    padding: 0.25em;
+}
+
+.parameters-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.parameters-table,
+.parameters-table th,
+.parameters-table td {
+    border: 1px solid #3d3d3d;
+}
+
+.parameters-table th,
+.parameters-table td {
+    width: 50%;
+    word-break: break-all;
+}
+
+.parameters-table th {
+    background: #333;
+}
+
+.parameters-table tr:nth-child(odd) {
+    background: #242424;
+}
+
+.parameters-table tr:nth-child(even) {
+    background: #292929;
+}

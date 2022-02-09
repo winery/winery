@@ -12,10 +12,14 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
 
-<div class="bootstrap-vertical-nav" id="paletteBody" [ngClass]="{'paletteBodyOpenZindex':paletteRootState === 'extended'}">
+<div class="bootstrap-vertical-nav" id="paletteBody"
+     [ngClass]="{'paletteBodyOpenZindex':paletteRootState === 'extended'}"
+     [style.width.px]="paletteButtonRootState === 'top' ? toggleButton.offsetWidth : toggleButton.offsetHeight"
+     [style.paddingTop.px]="this.top">
 
     <button [@paletteButtonState]="paletteButtonRootState" id="palette_root" class="btn btn-primary" type="button"
-            (click)="toggleRootState()" style="transform: rotate(-90deg) translateY(-135px) translateX(-135px)">
+            (click)="toggleRootState()"
+            #toggleButton>
         <div *ngIf="paletteRootState === 'shrunk'">Open Palette</div>
         <div *ngIf="paletteRootState === 'extended'">Hide Palette</div>
     </button>

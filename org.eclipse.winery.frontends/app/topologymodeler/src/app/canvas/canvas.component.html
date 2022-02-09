@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-<div id="container" style="height: 100%; width: 100%"
+<div id="container" style="height: 100%"
      (mousedown)="showSelectionRange($event)"
      (click)="this.revalidateContainer()">
     <div id="grid"
          (mousedown)="trackTimeOfMouseDown()"
          (mouseup)="trackTimeOfMouseUp()"
          [class.crosshair]="this.gridTemplate.crosshair"
-         [style.width.vw]="this.gridTemplate.gridDimension"
-         [style.height.vh]="this.gridTemplate.gridDimension"
-         [style.marginLeft.px]="this.gridTemplate.marginLeft">
+         [style.width]="this.gridTemplate.gridDimension"
+         [style.height]="this.gridTemplate.gridDimension">
+<!--         [style.marginLeft.px]="this.gridTemplate.marginLeft">-->
         <div class="selection" id="selection"
              [class.selection-active]="this.gridTemplate.selectionActive"
              [style.left.px]="this.gridTemplate.pageX"
@@ -36,6 +36,7 @@
                      [readonly]="readonly"
                      [nodeTemplate]="nodeTemplate"
                      [entityTypes]="this.entityTypes"
+                     [nodeEntityType]="getNodeEntityType(nodeTemplate.name)"
                      (sendId)="activateNewNode($event)"
                      [navbarButtonsState]="topologyRendererState"
                      (askForRepaint)="revalidateContainer()"

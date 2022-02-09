@@ -17,12 +17,18 @@
 
 body {
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     /*background-color: #303030;*/
+    background-size: 5px 5px;
+    background-image:
+        linear-gradient(to right, rgba(238, 238, 238, 0.5) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(238, 238, 238, 0.5) 1px, transparent 1px);
 }
 
-::-webkit-scrollbar {
-    display: none;
+#pre-bootstrap-container {
+    height: 100vh;
+    width: 100vw;
+    background-color: white;
 }
 
 .modal {
