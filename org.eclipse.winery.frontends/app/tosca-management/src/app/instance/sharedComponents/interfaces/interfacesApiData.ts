@@ -33,3 +33,9 @@ export class InterfacesApiData {
         this.name = name;
     }
 }
+
+export class InheritedInterface {
+    parentType: string;
+    is_shown = false;
+    interfaces: InterfacesApiData[] = [];
+}

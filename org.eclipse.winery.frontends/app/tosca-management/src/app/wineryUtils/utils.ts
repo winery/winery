@@ -38,6 +38,10 @@ export class Utils {
         return state;
     }
 
+    public static isLoading(map: { [key: string]: boolean }): boolean {
+        return Object.keys(map).some(k => map[k]);
+    }
+
     public static getToscaTypeFromString(value: string): ToscaTypes {
         switch (value.toLowerCase()) {
             case ToscaTypes.ServiceTemplate:

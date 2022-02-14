@@ -11,18 +11,105 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="loading">
+
+<div class="localLoader" [class.hidden]="!isLoading()">
     <winery-loader></winery-loader>
 </div>
+<div *ngFor="let par of inheritedInterfacesData">
+    <button class="btn-parent" (click)="toggleDiv(par)">
 
+        <div class="arefclass">
+
+            <button class="btn-parent expand">
+                <i [ngClass]="par.is_shown? 'glyphicon-minus': 'glyphicon-plus'"></i>
+
+            </button>
+            <br>
+            <a href="{{process_url(par.parentType)[0]}}" title="{{par.parentType}}"
+               style="color:#000000;text-decoration:underline;font-size: larger">
+                {{process_url(par.parentType)[1]}}
+            </a>
+
+
+        </div>
+        <div *ngIf="par.is_shown">
+            <div *ngIf="par.interfaces && par.interfaces.length !=0 ; else nointerfaces">
+                <ul class="interfaces">
+                    <li *ngFor="let inh of par.interfaces">
+                        <label class="interfaces-labelclass">{{inh.name}}</label>
+                        <button *ngIf="interface_exist(inh)" class="btn-override" (click)="override_interface(inh)">
+                            Override Interface
+                        </button>
+
+                        <ul *ngFor="let op of inh.operations" class="ul-class">
+                            <label class="labelclass">{{op.name}}</label>
+                            <button *ngIf="operation_exists(inh,op)" class="btn-override"
+                                    (click)="override_operation(inh,op)">Override Operation
+                            </button>
+                            <br/>
+                            <div class="table-class">
+                                <table>
+                                    <label>Input Parameters</label>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                    </tr>
+                                    <tr *ngFor="let inp of op.inputParameters">
+                                        <td>{{inp.name}}</td>
+                                        <td>{{inp.type}}</td>
+                                        <td>{{inp.required}}</td>
+                                    </tr>
+
+                                </table>
+                                <br/>
+                                <table>
+                                    <label>Output Parameters</label>
+
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                    </tr>
+                                    <tr *ngFor="let out of op.outputParameters">
+                                        <td>{{out.name}}</td>
+                                        <td>{{out.type}}</td>
+                                        <td>{{out.required}}</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <br/>
+
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <ng-template #nointerfaces>
+                <div class="nointerface"> No interfaces available.</div>
+            </ng-template>
+        </div>
+    </button>
+</div>
+
+
+<br>
 <div *ngIf="!loading">
     <div class="right">
-        <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">Save</button>
+        <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">
+            Save
+        </button>
     </div>
+
+
     <div style="display: inline-flex;">
+
+
         <winery-selectable-list #itemList
                                 [title]="'Interfaces'"
                                 [rows]="interfacesData"
+
                                 (addButtonClicked)="addInterface()"
                                 (selectionChanged)="onInterfaceSelect($event)"
                                 (removeButtonClicked)="removeInterface()">

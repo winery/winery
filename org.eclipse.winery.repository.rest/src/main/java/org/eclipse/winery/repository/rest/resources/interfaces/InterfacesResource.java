@@ -14,21 +14,28 @@
 package org.eclipse.winery.repository.rest.resources.interfaces;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.apiData.InheritedInterfaces;
 import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -90,7 +97,7 @@ public class InterfacesResource {
     }
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<?> onGet(@QueryParam("selectData") String selectData) {
         if (selectData == null) {
             return this.interfaces;
@@ -106,5 +113,38 @@ public class InterfacesResource {
         }
 
         return list;
+    }
+
+    @GET
+    @Path("inherited_interfaces")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<InheritedInterfaces> getInheritedInterfaces() {
+        TExtensibleElements element = this.res.getElement();
+
+        ArrayList<InheritedInterfaces> inheritedInterfaces = new ArrayList<>();
+        if (element instanceof TNodeType) {
+            TNodeType nodeType = (TNodeType) element;
+            while (nodeType.getDerivedFrom() != null) {
+                QName parentType = nodeType.getDerivedFrom().getType();
+                TNodeType parent = RepositoryFactory.getRepository().getElement(
+                    new NodeTypeId(parentType)
+                );
+
+                if (parent.getInterfaces() != null) {
+                    inheritedInterfaces.add(
+                        new InheritedInterfaces(parentType, parent.getInterfaces())
+                    );
+                } else {
+                    inheritedInterfaces.add(
+                        new InheritedInterfaces(parentType, Collections.emptyList())
+                    );
+                }
+
+                nodeType = parent;
+            }
+        }
+
+        Collections.reverse(inheritedInterfaces);
+        return inheritedInterfaces;
     }
 }

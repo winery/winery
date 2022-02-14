@@ -19,7 +19,7 @@ import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicate
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
-import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
+import { InheritedInterface, InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InterfaceParameter } from '../../../model/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
@@ -44,10 +44,17 @@ import { Interfaces } from './interfaces';
 })
 export class InterfacesComponent implements OnInit {
 
+    _loading = {
+        getPropertiesDefinitions: false,
+        getInheritedPropertiesDefinitions: false,
+        getMergedPropertiesDefinitions: false,
+    };
+
     loading = false;
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
+    inheritedInterfacesData: InheritedInterface[];
 
     operations: InterfaceOperationApiData[] = null;
     inputParameters: InterfaceParameter[] = null;
@@ -82,6 +89,11 @@ export class InterfacesComponent implements OnInit {
         this.service.getInterfaces()
             .subscribe(
                 data => this.handleInterfacesApiData(data),
+                error => this.handleError(error)
+            );
+        this.service.getInheritedInterfaces()
+            .subscribe(
+                data => this.handleInheritedInterfaceData(data),
                 error => this.handleError(error)
             );
         this.toscaType = this.sharedData.toscaComponent.toscaType;
@@ -342,11 +354,68 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
+    isLoading = () => Utils.isLoading(this._loading) || this.loading;
+
+    toggleDiv(par: InheritedInterface) {
+        par.is_shown = !par.is_shown;
+    }
+
+    process_url(parentType: string) {
+        const prc = parentType.replace('{', '').split('}');
+        prc[0] = Utils.nodeTypeURL(parentType);
+        return prc;
+
+    }
+
+    override_interface(inh: InterfacesApiData) {
+        this.interfacesData.push(inh);
+    }
+
+    interface_exist(inh: InterfacesApiData) {
+        const filtered_interface: InterfacesApiData[] = this.interfacesData.filter((value) => value.name === inh.name);
+        return filtered_interface.length === 0;
+    }
+
+    override_operation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
+        const filtered_interface: InterfacesApiData[] = this.interfacesData.filter((value) => value.name === inh.name);
+        // console.log("filter",filtered_interface);
+        if (filtered_interface.length === 0) {
+            const clone = JSON.parse(JSON.stringify(inh));
+            clone.operations = [] as InterfaceOperationApiData[];
+            clone.operations.push(op);
+            this.interfacesData.push(clone);
+        } else {
+            const clone = JSON.parse(JSON.stringify(inh));
+            clone.operations = [] as InterfaceOperationApiData[];
+            clone.operations.push(op);
+            filtered_interface[0].operations.push(op);
+            // this.interfacesData.push(clone);
+
+        }
+    }
+
+    operation_exists(inh: InterfacesApiData, op: InterfaceOperationApiData) {
+        const interface_result = this.interface_exist(inh);
+        if (interface_result) {
+            return true;
+        } else {
+            const filtered_interface: InterfacesApiData[] = this.interfacesData.filter((value) => value.name === inh.name);
+            const filtered_operation: InterfaceOperationApiData[] = filtered_interface[0].operations.filter((oper) => op.name === oper.name);
+            return filtered_operation.length === 0;
+        }
+    }
+
     // endregion
 
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
         this.interfacesData = data ? data : [];
+        this.loading = false;
+    }
+
+    private handleInheritedInterfaceData(data: InheritedInterface[]) {
+        console.log(data);
+        this.inheritedInterfacesData = data ? data : [];
         this.loading = false;
     }
 
@@ -429,4 +498,5 @@ export class InterfacesComponent implements OnInit {
     }
 
     // endregion
+
 }

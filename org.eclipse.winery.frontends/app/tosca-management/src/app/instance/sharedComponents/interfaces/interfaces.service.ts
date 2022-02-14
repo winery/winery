@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesApiData } from './interfacesApiData';
+import { InheritedInterface, InterfacesApiData } from './interfacesApiData';
 import { InstanceService } from '../../instance.service';
 import { backendBaseURL } from '../../../configuration';
 import { Utils } from '../../../wineryUtils/utils';
@@ -56,6 +56,10 @@ export class InterfacesService {
         }
     }
 
+    getInheritedInterfaces(): Observable<InheritedInterface[]> {
+        return this.get<InheritedInterface[]>(this.path + 'inherited_interfaces');
+    }
+
     save(interfacesData: InterfacesApiData[]): Observable<HttpResponse<string>> {
         if (this.path.includes('plans')) {
             const path = this.setConfigurationForPlans(this.path) + '/interfaces/';
@@ -63,17 +67,18 @@ export class InterfacesService {
             return this.http
                 .post(
                     backendBaseURL + path,
-                    JSON.stringify(interfacesData).replace(new RegExp('operations', 'g'), 'operation'),
+                    interfacesData,
                     { headers: this.header, observe: 'response', responseType: 'text' }
                 );
         }
         return this.http
             .post(
                 this.path,
-                JSON.stringify(interfacesData).replace(new RegExp('operations', 'g'), 'operation'),
+                interfacesData,
                 { headers: this.header, observe: 'response', responseType: 'text' }
             );
     }
+
     clear(path: string): Observable<HttpResponse<string>> {
         const path2 = this.setConfigurationForPlans(path) + '/interfaces/';
         return this.http
@@ -89,11 +94,11 @@ export class InterfacesService {
         return this.http
             .post(
                 backendBaseURL + '/' + this.implementationsUrl,
-                JSON.stringify({
+                {
                     localname: implementationName,
                     namespace: implementationNamespace,
                     type: '{' + this.sharedData.toscaComponent.namespace + '}' + this.sharedData.toscaComponent.localName
-                }),
+                },
                 { headers: this.header, observe: 'response', responseType: 'text' }
             );
     }

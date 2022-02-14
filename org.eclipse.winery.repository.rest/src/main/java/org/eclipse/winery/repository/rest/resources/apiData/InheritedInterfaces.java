@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 201-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,18 +14,19 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-public class InstanceStateApiData {
+import java.util.List;
 
-    public String state;
+import javax.xml.namespace.QName;
 
-    public InstanceStateApiData() {
-    }
+import org.eclipse.winery.model.tosca.TInterface;
 
-    public InstanceStateApiData(String state) {
-        this.state = state;
-    }
+public class InheritedInterfaces {
 
-    public String toString() {
-        return "state: " + this.state;
+    public QName parentType;
+    public List<TInterface> interfaces;
+
+    public InheritedInterfaces(QName type, List<TInterface> interfaces) {
+        this.interfaces = interfaces;
+        this.parentType = type;
     }
 }
