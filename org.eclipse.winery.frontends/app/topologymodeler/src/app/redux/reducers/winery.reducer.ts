@@ -231,18 +231,15 @@ export const WineryReducer =
                     }
                 };
             case WineryActions.SET_REQUIREMENT:
-                const newRequirement: any = (<SetRequirementAction>action).nodeRequirement;
-
+                const newRequirements = (<SetRequirementAction>action).nodeRequirements;
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
                         ...lastState.currentJsonTopology,
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map(nodeTemplate => nodeTemplate.id === newRequirement.nodeId ?
+                            .map(nodeTemplate => nodeTemplate.id === newRequirements.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('requirements',
-                                    {
-                                        requirement: newRequirement.requirement
-                                    }) : nodeTemplate
+                                    newRequirements.requirements) : nodeTemplate
                             )
                     }
                 };
@@ -277,16 +274,16 @@ export const WineryReducer =
                     return lastState;
                 }
             case WineryActions.SET_CAPABILITY:
-                const newCapability: any = (<SetCapabilityAction>action).nodeCapability;
+                const newCapabilities = (<SetCapabilityAction>action).nodeCapabilities;
 
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
                         ...lastState.currentJsonTopology,
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map(nodeTemplate => nodeTemplate.id === newCapability.nodeId ?
+                            .map(nodeTemplate => nodeTemplate.id === newCapabilities.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('capabilities',
-                                    newCapability.capability) : nodeTemplate
+                                    newCapabilities.capabilities) : nodeTemplate
                             )
                     }
                 };

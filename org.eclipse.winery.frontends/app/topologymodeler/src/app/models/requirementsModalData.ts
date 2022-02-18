@@ -12,6 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
+import { RequirementModel } from './requirementModel';
+
 /**
  * Encompasses the requirements data defined by the user when using the modal
  */
@@ -24,7 +26,7 @@ export class RequirementsModalData {
                 public reqQNameLocalName?: string,
                 public reqType?: string,
                 public reqDefinitionName?: string,
-                public requirements?: any,
+                public requirements?: RequirementModel[],
                 public reqDefinitionNames?: Array<string>,
                 public nodeId?: string,
                 public propertyType?: string,

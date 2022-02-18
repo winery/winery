@@ -12,8 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
+import { CapabilityModel } from './capabilityModel';
+
 /**
- * Encompasses the capabilities data defined by the user when using the modal
+ * Encompasses the capabilities' data defined by the user when using the modal
  */
 export class CapabilitiesModalData {
 
@@ -24,7 +26,7 @@ export class CapabilitiesModalData {
                 public capType?: string,
                 public capQNameLocalName?: string,
                 public capDefinitionName?: string,
-                public capabilities?: any,
+                public capabilities?: CapabilityModel[],
                 public capDefinitionNames?: Array<string>,
                 public nodeId?: string,
                 public propertyType?: string,

@@ -38,7 +38,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() readonly: boolean;
     @Input() currentNodeData: any;
 
-    capabilities: any[] = [];
+    capabilities: CapabilityModel[] = [];
     capabilitiesExist: boolean;
     entityTypes: EntityTypesModel;
     nodeTemplate: TNodeTemplate;

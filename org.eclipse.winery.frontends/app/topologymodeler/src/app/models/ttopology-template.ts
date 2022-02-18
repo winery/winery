@@ -18,6 +18,8 @@ import { Interface } from '../../../../tosca-management/src/app/model/interfaces
 import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 import { Constraint } from '../../../../tosca-management/src/app/model/constraint';
 import { NodeTemplateInstanceStates } from './enums';
+import { CapabilityModel } from './capabilityModel';
+import { RequirementModel } from './requirementModel';
 
 export class AbstractTEntity {
     constructor(public documentation?: any,
@@ -85,8 +87,8 @@ export class TNodeTemplate extends AbstractTEntity {
                 otherAttributes?: any,
                 public x?: number,
                 public y?: number,
-                public capabilities?: any[],
-                public requirements?: any[],
+                public capabilities?: CapabilityModel[],
+                public requirements?: RequirementModel[],
                 public deploymentArtifacts?: any[],
                 public policies?: Array<TPolicy>,
                 public artifacts?: Array<TArtifact>,

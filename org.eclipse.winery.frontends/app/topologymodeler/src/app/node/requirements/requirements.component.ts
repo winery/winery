@@ -37,7 +37,7 @@ export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
     @Output() relationshipTemplateIdClicked: EventEmitter<string>;
     @Input() readonly: boolean;
     @Input() currentNodeData: any;
-    requirements: any[] = [];
+    requirements: RequirementModel[] = [];
     requirementsExist: boolean;
     entityTypes: EntityTypesModel;
     nodeTemplate: TNodeTemplate;
