@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr';
 import { NgRedux } from '@angular-redux/store';
@@ -24,9 +24,16 @@ import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { StatefulAnnotationsService } from '../services/statefulAnnotations.service';
-import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
-import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    FeatureEnum
+} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
+import { OverlayService } from '../services/overlay.service';
+import { BsModalRef } from 'ngx-bootstrap';
+import { TopologyService } from '../services/topology.service';
 import { VersionSliderService } from '../version-slider/version-slider.service';
 import { CheService } from '../services/che.service';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
@@ -67,23 +74,44 @@ export class NavbarComponent implements OnDestroy {
     placingOngoing: boolean;
     showVersionSliderButton: boolean;
     configEnum = FeatureEnum;
+    unsavedChanges: boolean;
+    modalRef: BsModalRef;
+
     @ViewChild('exportCsarButton')
     private exportCsarButtonRef: ElementRef;
+    @ViewChild('confirmModal')
+    private confirmModalRef: TemplateRef<any>;
 
     constructor(private alert: ToastrService,
                 private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
                 private wineryActions: WineryActions,
-                private backendService: BackendService,
+                public backendService: BackendService,
                 private statefulService: StatefulAnnotationsService,
                 private hotkeysService: HotkeysService,
-                private versionSliderService: VersionSliderService,
+                private overlayService: OverlayService,
+                private topologyService: TopologyService,
                 public configurationService: WineryRepositoryConfigurationService,
+                private versionSliderService: VersionSliderService,
                 private che: CheService) {
-        this.subscriptions.push(ngRedux.select(state => state.topologyRendererState)
-            .subscribe(newButtonsState => this.setButtonsState(newButtonsState)));
-        this.subscriptions.push(ngRedux.select(currentState => currentState.wineryState.currentJsonTopology)
-            .subscribe(topologyTemplate => this.currentTopologyTemplate = topologyTemplate));
+        this.subscriptions.push(ngRedux.select((state) => {
+            return state.topologyRendererState;
+        })
+            .subscribe((newButtonsState) => {
+                this.setButtonsState(newButtonsState);
+            }));
+        this.subscriptions.push(ngRedux.select((currentState) => {
+            return currentState.wineryState.currentJsonTopology;
+        })
+            .subscribe((topologyTemplate) => {
+                this.currentTopologyTemplate = topologyTemplate;
+            }));
+        this.subscriptions.push(ngRedux.select((currentState) => {
+            return currentState.wineryState.unsavedChanges;
+        })
+            .subscribe((unsavedChanges) => {
+                this.unsavedChanges = unsavedChanges;
+            }));
         this.hotkeysService.add(new Hotkey('mod+s', (event: KeyboardEvent): boolean => {
             event.stopPropagation();
             this.saveTopologyTemplateToRepository();
@@ -169,6 +197,7 @@ export class NavbarComponent implements OnDestroy {
             }
             case 'properties': {
                 this.ngRedux.dispatch(this.actions.toggleProperties());
+                this.toggleCheckNodePropertiesIfNecessary();
                 break;
             }
             case 'types': {
@@ -303,25 +332,52 @@ export class NavbarComponent implements OnDestroy {
         this.ngRedux.dispatch(this.actions.showOnlyMappingsOfSelectedType(event.target.value));
     }
 
+    toggleCheckNodeProperties() {
+        if (this.navbarButtonsState.buttonsState.propertiesButton) {
+            this.ngRedux.dispatch(this.actions.toggleCheckNodeProperties());
+        } else if (!this.navbarButtonsState.buttonsState.propertiesButton && !this.navbarButtonsState.buttonsState.checkNodePropertiesButton) {
+            this.ngRedux.dispatch(this.actions.toggleProperties());
+            this.ngRedux.dispatch(this.actions.toggleCheckNodeProperties());
+        }
+    }
+
+    toggleCheckNodePropertiesIfNecessary() {
+        if (!this.navbarButtonsState.buttonsState.propertiesButton && this.navbarButtonsState.buttonsState.checkNodePropertiesButton) {
+            this.ngRedux.dispatch(this.actions.toggleCheckNodeProperties());
+        }
+    }
+
     /**
      * Calls the BackendService's saveTopologyTemplate method and displays a success message if successful.
      */
     saveTopologyTemplateToRepository() {
-        // The topology gets saved here.
+        this.overlayService.showOverlay('Saving topology template. This may take a while.');
         this.backendService.saveTopologyTemplate(this.currentTopologyTemplate)
-            .subscribe(res => {
-                res.ok === true ? this.alert.success('<p>Saved the topology!<br>' + 'Response Status: '
-                    + res.statusText + ' ' + res.status + '</p>')
-                    : this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
-                    + res.statusText + ' ' + res.status + '</p>');
-            }, err => this.alert.error(err.error));
+            .subscribe((res) => {
+                if (res.ok) {
+                    this.alert.success('<p>Saved the topology!<br>' + 'Response Status: '
+                        + res.statusText + ' ' + res.status + '</p>');
+                } else {
+                    this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
+                        + res.statusText + ' ' + res.status + '</p>');
+                }
+            }, (err) => {
+                this.alert.error(err.error);
+            })
+            .add(() => {
+                this.topologyService.checkForSaveChanges();
+                this.topologyService.checkForDeployChanges();
+                this.overlayService.hideOverlay();
+            });
     }
 
     /**
      * Angular lifecycle event.
      */
     ngOnDestroy() {
-        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+        this.subscriptions.forEach((subscription) => {
+            subscription.unsubscribe();
+        });
     }
 
     openManagementUi() {

@@ -25,6 +25,8 @@ import { RequirementModel } from './requirementModel';
 import { InheritanceUtils } from './InheritanceUtils';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { TPolicy } from './policiesModalData';
+import * as _ from 'lodash';
+import { TNode } from '@angular/core/src/render3/interfaces/node';
 
 export abstract class TopologyTemplateUtil {
 
@@ -172,6 +174,9 @@ export abstract class TopologyTemplateUtil {
             node.deploymentArtifacts ? node.deploymentArtifacts : [],
             node.policies ? node.policies : [],
             node.artifacts ? node.artifacts : [],
+            node.instanceState,
+            node.valid,
+            node.working,
             state
         );
     }
@@ -183,7 +188,7 @@ export abstract class TopologyTemplateUtil {
             relationship.name,
             relationship.id,
             relationship.type,
-            relationship.properties,
+            relationship.properties ? relationship.properties : {},
             relationship.documentation,
             relationship.any,
             relationship.otherAttributes,
@@ -304,5 +309,110 @@ export abstract class TopologyTemplateUtil {
             .forEach(
                 relationship => ngRedux.dispatch(wineryActions.saveRelationship(relationship))
             );
+    }
+
+    static cloneTopologyTemplate(topologyTemplate: TTopologyTemplate): TTopologyTemplate {
+        return _.cloneDeep(topologyTemplate);
+    }
+
+    static objectsEquals(o1: Object, o2: Object): boolean {
+        if (o1 === null && o2 === null) {
+            return true;
+        }
+
+        return typeof o1 === 'object' && Object.keys(o1).length > 0
+            ? Object.keys(o1).length === Object.keys(o2).length
+            && Object.keys(o1).every((p) => {
+                return this.objectsEquals(o1[p], o2[p]);
+            })
+            : JSON.stringify(o1) === JSON.stringify(o2);
+    }
+
+    static hasTopologyTemplateChanged(currentTopology: TTopologyTemplate, lastSavedTopology: TTopologyTemplate): boolean {
+
+        if (lastSavedTopology == null) {
+            return true;
+        }
+
+        if (currentTopology.nodeTemplates.length !== lastSavedTopology.nodeTemplates.length ||
+            currentTopology.relationshipTemplates.length !== lastSavedTopology.relationshipTemplates.length) {
+            return true;
+        }
+        for (const currentNodeTemplate of currentTopology.nodeTemplates) {
+            const lastSavedNodeTemplate = this.findLastSaveNodeTemplate(lastSavedTopology, currentNodeTemplate);
+            if (!lastSavedNodeTemplate) {
+                return true;
+            }
+
+            if (this.nodeTemplatesDifferent(currentNodeTemplate, lastSavedNodeTemplate)) {
+                return true;
+            }
+        }
+        for (const currentRelationshipTemplate of currentTopology.relationshipTemplates) {
+            const lastSavedRelationshipTemplate = this.findLastSavedRelationshipTemplate(lastSavedTopology, currentRelationshipTemplate);
+            if (!lastSavedRelationshipTemplate) {
+                return true;
+            }
+            if (this.relationshipTemplatesDifferent(currentRelationshipTemplate, lastSavedRelationshipTemplate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static findLastSaveNodeTemplate(lastSavedTopology: TTopologyTemplate, currentNodeTemplate: TNodeTemplate): TNodeTemplate {
+        return lastSavedTopology.nodeTemplates.find((nodeTemplate) => {
+            return nodeTemplate.id === currentNodeTemplate.id;
+        });
+    }
+
+    static findLastSavedRelationshipTemplate(lastSavedTopology: TTopologyTemplate, currentRelationshipTemplate: TRelationshipTemplate): TRelationshipTemplate {
+        return lastSavedTopology.relationshipTemplates.find((relationshipTemplate) => {
+            return relationshipTemplate.sourceElement.ref === currentRelationshipTemplate.sourceElement.ref &&
+            relationshipTemplate.targetElement.ref === currentRelationshipTemplate.targetElement.ref &&
+            relationshipTemplate.type === currentRelationshipTemplate.type;
+        }
+        );
+    }
+
+    static relationshipTemplatesDifferent(currentRelationshipTemplate: TRelationshipTemplate, lastSavedRelationshipTemplate: TRelationshipTemplate): boolean {
+        if (currentRelationshipTemplate.name !== lastSavedRelationshipTemplate.name) {
+            return true;
+        }
+        if (!this.objectsEquals(currentRelationshipTemplate.properties, lastSavedRelationshipTemplate.properties)) {
+            return true;
+        }
+        if (!this.objectsEquals(currentRelationshipTemplate.policies, lastSavedRelationshipTemplate.policies)) {
+            return true;
+        }
+        return false;
+    }
+
+    static nodeTemplatesDifferent(currentNodeTemplate: TNodeTemplate, lastSavedNodeTemplate: TNodeTemplate): boolean {
+        if (!this.objectsEquals(currentNodeTemplate.properties, lastSavedNodeTemplate.properties)) {
+            return true;
+        }
+        if (currentNodeTemplate.name !== lastSavedNodeTemplate.name) {
+            return true;
+        }
+        if (currentNodeTemplate.minInstances !== lastSavedNodeTemplate.minInstances) {
+            return true;
+        }
+        if (currentNodeTemplate.maxInstances !== lastSavedNodeTemplate.maxInstances) {
+            return true;
+        }
+        if (!this.objectsEquals(currentNodeTemplate.capabilities, lastSavedNodeTemplate.capabilities)) {
+            return true;
+        }
+        if (!this.objectsEquals(currentNodeTemplate.requirements, lastSavedNodeTemplate.requirements)) {
+            return true;
+        }
+        if (!this.objectsEquals(currentNodeTemplate.deploymentArtifacts, lastSavedNodeTemplate.deploymentArtifacts)) {
+            return true;
+        }
+        if (!this.objectsEquals(currentNodeTemplate.policies, lastSavedNodeTemplate.policies)) {
+            return true;
+        }
+        return false;
     }
 }

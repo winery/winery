@@ -16,22 +16,24 @@
     <i class="fa fa-3x fa-refresh fa-spin" style="max-width: 50%;"></i>
 </div>
 <winery-kv-properties *ngIf="propertyDefinitionType == 'KV'"
-    [readonly]="readonly"
-    [nodeProperties]="templateProperties"
-    (propertyEdited)="kvPropertyEdit($event)">
+                      [readonly]="readonly"
+                      [nodeProperties]="templateProperties"
+                      [nodeId]="this.nodeId"
+                      [entityType]="this.entityType"
+                      (propertyEdited)="kvPropertyEdit($event)">
 </winery-kv-properties>
 
 <winery-yaml-properties *ngIf="propertyDefinitionType == 'YAML'"
-    [readonly]="readonly"
-    [properties]="templateProperties"
-    [templateType]="templateType"
-    (propertyEdited)="yamlPropertyEdit($event)">
+                        [readonly]="readonly"
+                        [properties]="templateProperties"
+                        [templateType]="templateType"
+                        (propertyEdited)="yamlPropertyEdit($event)">
 </winery-yaml-properties>
 
 <winery-xml-properties *ngIf="propertyDefinitionType == 'XML'"
-    [readonly]="readonly"
-    [propertiesValue]="templateProperties"
-    (propertyEdited)="xmlPropertyEdit($event)">
+                       [readonly]="readonly"
+                       [propertiesValue]="templateProperties"
+                       (propertyEdited)="xmlPropertyEdit($event)">
 </winery-xml-properties>
 
 <div *ngIf="propertyDefinitionType == 'NONE'" style="color: dimgray; text-align: center">

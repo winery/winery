@@ -22,3 +22,21 @@
     left: 40px;
     width: 450px;
 }
+
+winery-navbar {
+    position: fixed;
+    top: 0;
+    z-index: 700;
+    width: 100vw;
+}
+
+winery-topology-renderer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.sidebar {
+    z-index: 400;
+    width: 300px;
+}
