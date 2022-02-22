@@ -451,6 +451,7 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
     }
 
     private Git cloneRepository(String repoUrl, String branch) throws GitAPIException {
+        LOGGER.info("Cloning repository \"{}\" using branch \"{}\"", repoUrl, branch);
         return Git.cloneRepository()
             .setURI(repoUrl)
             .setDirectory(this.repository.getRepositoryRoot().toFile())

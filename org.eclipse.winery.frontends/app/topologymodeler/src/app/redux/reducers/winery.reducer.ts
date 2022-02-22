@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,11 +21,14 @@ import {
     SetCapabilityAction, SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction,
     SetRequirementAction, SetTargetLocation, SetYamlArtifactAction, SidebarChangeNodeName, SidebarMaxInstanceChanges,
     SidebarMinInstanceChanges, SidebarStateAction, UpdateGroupDefinitionAction, UpdateNodeCoordinatesAction,
-    UpdateParticipantsAction, UpdateRelationshipNameAction, WineryActions
+    UpdateParticipantsAction, UpdateRelationshipNameAction, WineryActions, SendLiveModelingSidebarOpenedAction,
+    SetLastSavedJsonTopologyAction, SetNodeInstanceStateAction, SetNodePropertyValidityAction, SetNodeWorkingAction,
+    SetUnsavedChangesAction
 } from '../actions/winery.actions';
 import { TArtifact, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { Visuals } from '../../models/visuals';
+import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { DetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 
@@ -37,6 +40,9 @@ export interface WineryState {
     currentNodeData: any;
     nodeVisuals: Visuals[];
     entityTypes?: EntityTypesModel;
+    liveModelingSidebarOpenedState: boolean;
+    lastSavedJsonTopology: TTopologyTemplate;
+    unsavedChanges: boolean;
 }
 
 export const INITIAL_WINERY_STATE: WineryState = {
@@ -62,7 +68,10 @@ export const INITIAL_WINERY_STATE: WineryState = {
         id: '',
         focus: false
     },
-    nodeVisuals: null
+    nodeVisuals: null,
+    liveModelingSidebarOpenedState: false,
+    lastSavedJsonTopology: null,
+    unsavedChanges: false,
 };
 
 /**
@@ -76,6 +85,7 @@ export const WineryReducer =
                     ...lastState,
                     entityTypes: (<AddEntityTypesAction>action).types,
                 };
+            case WineryActions.SEND_PALETTE_OPENED:
             case WineryActions.SEND_PALETTE_OPENED:
                 const paletteOpened: boolean = (<SendPaletteOpenedAction>action).paletteOpened;
 
@@ -91,7 +101,7 @@ export const WineryReducer =
                     hideNavBarAndPaletteState: hideNavBarAndPalette
                 };
             case WineryActions.TRIGGER_SIDEBAR:
-                const newSidebarData: DetailsSidebarState = (<SidebarStateAction>action).sidebarContents;
+                const newSidebarData: any = (<SidebarStateAction>action).sidebarContents;
 
                 return <WineryState>{
                     ...lastState,
@@ -221,18 +231,15 @@ export const WineryReducer =
                     }
                 };
             case WineryActions.SET_REQUIREMENT:
-                const newRequirement: any = (<SetRequirementAction>action).nodeRequirement;
-
+                const newRequirements = (<SetRequirementAction>action).nodeRequirements;
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
                         ...lastState.currentJsonTopology,
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map(nodeTemplate => nodeTemplate.id === newRequirement.nodeId ?
+                            .map(nodeTemplate => nodeTemplate.id === newRequirements.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('requirements',
-                                    {
-                                        requirement: newRequirement.requirement
-                                    }) : nodeTemplate
+                                    newRequirements.requirements) : nodeTemplate
                             )
                     }
                 };
@@ -267,16 +274,16 @@ export const WineryReducer =
                     return lastState;
                 }
             case WineryActions.SET_CAPABILITY:
-                const newCapability: any = (<SetCapabilityAction>action).nodeCapability;
+                const newCapabilities = (<SetCapabilityAction>action).nodeCapabilities;
 
                 return <WineryState>{
                     ...lastState,
                     currentJsonTopology: {
                         ...lastState.currentJsonTopology,
                         nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map(nodeTemplate => nodeTemplate.id === newCapability.nodeId ?
+                            .map(nodeTemplate => nodeTemplate.id === newCapabilities.nodeId ?
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('capabilities',
-                                    newCapability.capability) : nodeTemplate
+                                    newCapabilities.capabilities) : nodeTemplate
                             )
                     }
                 };
@@ -612,7 +619,69 @@ export const WineryReducer =
                     ...lastState,
                     nodeVisuals: visuals
                 };
+            case WineryActions.SEND_LIVE_MODELING_SIDEBAR_OPENED:
+                const sidebarOpened: boolean = (<SendLiveModelingSidebarOpenedAction>action).sidebarOpened;
 
+                return <WineryState>{
+                    ...lastState,
+                    liveModelingSidebarOpenedState: sidebarOpened
+                };
+            case WineryActions.SET_LAST_SAVED_JSON_TOPOLOGY:
+                const lastSavedJsonTopology: TTopologyTemplate = (<SetLastSavedJsonTopologyAction>action).lastSavedJsonTopology;
+
+                return {
+                    ...lastState,
+                    lastSavedJsonTopology: TopologyTemplateUtil.cloneTopologyTemplate(lastSavedJsonTopology)
+                };
+            case WineryActions.SET_UNSAVED_CHANGES:
+                const unsavedChanges: boolean = (<SetUnsavedChangesAction>action).unsavedChanges;
+
+                return {
+                    ...lastState,
+                    unsavedChanges: unsavedChanges
+                };
+            case WineryActions.SET_NODE_VALIDITY:
+                const nodeValidity = (<SetNodePropertyValidityAction>action).nodeValidity;
+
+                return {
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                            .map(nodeTemplate => nodeTemplate.id === nodeValidity.nodeId ?
+                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('valid', nodeValidity.valid)
+                                : nodeTemplate
+                            )
+                    }
+                };
+            case WineryActions.SET_NODE_INSTANCE_STATE:
+                const nodeInstanceState = (<SetNodeInstanceStateAction>action).nodeInstanceState;
+
+                return {
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                            .map(nodeTemplate => nodeTemplate.id === nodeInstanceState.nodeId ?
+                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('instanceState', nodeInstanceState.state)
+                                : nodeTemplate
+                            )
+                    }
+                };
+            case WineryActions.SET_NODE_WORKING:
+                const nodeWorking = (<SetNodeWorkingAction>action).nodeWorking;
+
+                return {
+                    ...lastState,
+                    currentJsonTopology: {
+                        ...lastState.currentJsonTopology,
+                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                            .map(nodeTemplate => nodeTemplate.id === nodeWorking.nodeId ?
+                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('working', nodeWorking.working)
+                                : nodeTemplate
+                            )
+                    }
+                };
             default:
                 return <WineryState>lastState;
         }

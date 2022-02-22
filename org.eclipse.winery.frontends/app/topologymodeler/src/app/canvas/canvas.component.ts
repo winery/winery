@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,7 +18,7 @@ import {
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
 import { LayoutDirective } from '../layout/layout.directive';
-import { WineryActions } from '../redux/actions/winery.actions';
+import { SetCapability, SetRequirement, WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
@@ -38,7 +38,7 @@ import { RequirementModel } from '../models/requirementModel';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { ExistsService } from '../services/exists.service';
 import { ModalVariant, ModalVariantAndState } from './entities-modal/modal-model';
-import { align, PropertyDefinitionType, toggleModalType } from '../models/enums';
+import { align, LiveModelingStates, PropertyDefinitionType, toggleModalType } from '../models/enums';
 import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { SplitMatchTopologyService } from '../services/split-match-topology.service';
@@ -53,7 +53,9 @@ import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { ReqCapRelationshipService } from '../services/req-cap-relationship.service';
 import { TPolicy } from '../models/policiesModalData';
 import { ManageTopologyService } from '../services/manage-topology.service';
-import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { RequirementDefinitionModel } from '../models/requirementDefinitonModel';
 import { CapabilityDefinitionModel } from '../models/capabilityDefinitionModel';
 import { WineryRowData } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.component';
@@ -62,11 +64,15 @@ import { PolicyService } from '../services/policy.service';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
-import { AttributeMappingType } from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
+import {
+    AttributeMappingType
+} from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
 // tslint:disable-next-line:max-line-length
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
 import { KvProperty } from '../../../../tosca-management/src/app/model/keyValueItem';
-import { WineryNamespaceSelectorService } from '../../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
+import {
+    WineryNamespaceSelectorService
+} from '../../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
 
 @Component({
     selector: 'winery-canvas',
@@ -191,6 +197,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         targets?: string[]
     }[];
 
+    isMiddleMouseButtonDown = false;
+
+    private liveModelingState: LiveModelingStates;
+
     private longPressing: boolean;
 
     constructor(private jsPlumbService: JsPlumbService,
@@ -232,6 +242,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             .subscribe((hideDependsOnRelations) => this.handleHideDependsOnRelations(hideDependsOnRelations)));
 
         this.gridTemplate = new GridTemplate(100, false, false, 30);
+        this.subscriptions.push(this.ngRedux.select(state => state.wineryState.currentPaletteOpenedState)
+            .subscribe(currentPaletteOpened => this.setPaletteState(currentPaletteOpened)));
+        this.subscriptions.push(this.ngRedux.select(state => state.liveModelingState.state)
+            .subscribe(state => this.liveModelingState = state));
         this.hotkeysService.add(new Hotkey('mod+a', (event: KeyboardEvent): boolean => {
             event.stopPropagation();
             this.allNodeTemplates.forEach((node) => this.enhanceDragSelection(node.id));
@@ -280,7 +294,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Upon detecting a long mouse down the navbar and the palette fade out for maximum dragging space.
      * Resets the values.
      */
-    @HostListener('mouseup')
+    @HostListener('mouseup', ['$event'])
     onMouseUp() {
         this.longPressing = false;
     }
@@ -291,12 +305,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Sets the values upon detecting a long mouse down press.
      */
     @HostListener('mousedown', ['$event'])
-    onMouseDown(event: MouseEvent) {
+    onMouseDown() {
         // don't do right/middle clicks
-        if (event.button === 0) {
-            this.longPressing = false;
-            setTimeout(() => this.longPressing = true, 250);
-        }
+        this.longPressing = false;
+        setTimeout(() => this.longPressing = true, 250);
     }
 
     /**
@@ -379,7 +391,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.modalData.modalVariant = ModalVariant.Other;
                 this.modalData.modalVisible = false;
                 this.resetRequirements();
-                this.requirements.requirements = currentNodeData.requirements;
+                this.requirements.requirements = currentNodeData.requirements ? currentNodeData.requirements : [];
                 this.requirements.nodeId = currentNodeData.id;
                 // if a requirement in the table is clicked show the data in the modal
                 if (currentNodeData.currentRequirement) {
@@ -411,7 +423,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                     this.setDefaultReqKVProperties();
                                     return true;
                                 }
-                                // if propertiesDefinition is defined it's a XML property
+                                // if propertiesDefinition is defined it's an XML property
                             } else if (reqType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                                 if (reqType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
                                     this.requirements.propertyType = 'XML';
@@ -452,7 +464,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             this.requirements.reqDefinitionNames.push(qNameOfType.localName);
                         }
                     } catch (e) {
-                        this.requirements.requirements = '';
+                        this.requirements.requirements = [];
                     }
                 }
                 this.requirementsModal.show();
@@ -493,7 +505,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                     this.setDefaultCapKVProperties();
                                     return true;
                                 }
-                                // if propertiesDefinition is defined it's a XML property
+                                // if propertiesDefinition is defined it's an XML property
                             } else if (capType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                                 if (capType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
                                     this.capabilities.propertyType = 'XML';
@@ -534,7 +546,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                         }
 
                     } catch (e) {
-                        this.capabilities.capabilities = '';
+                        this.capabilities.capabilities = [];
                     }
                 }
                 this.capabilitiesModal.show();
@@ -566,7 +578,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * This function sets the capability default KV properties
      */
     setDefaultCapKVProperties(): void {
-        this.capabilities.capabilities.capability.forEach((cap) => {
+        this.capabilities.capabilities.forEach((cap) => {
             if (cap.id === this.currentModalData.currentCapability.id) {
                 cap.properties = {
                     kvproperties: this.capabilities.properties
@@ -579,7 +591,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * This function sets the requirement default KV properties
      */
     setDefaultReqKVProperties(): void {
-        this.requirements.requirements.requirement.forEach((req) => {
+        this.requirements.requirements.forEach((req) => {
             if (req.id === this.currentModalData.currentRequirement.id) {
                 req.properties = {
                     kvproperties: this.requirements.properties
@@ -592,7 +604,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * This function sets the capability default XML properties
      */
     setDefaultCapXMLProperties(): void {
-        this.capabilities.capabilities.capability.forEach((cap) => {
+        this.capabilities.capabilities.forEach((cap) => {
             if (cap.id === this.currentModalData.currentCapability.id) {
                 cap.properties = {
                     any: this.capabilities.properties
@@ -605,7 +617,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * This function sets the requirement default XML properties
      */
     setDefaultReqXMLProperties(): void {
-        this.requirements.requirements.requirement.forEach((req) => {
+        this.requirements.requirements.forEach((req) => {
             if (req.id === this.currentModalData.currentCapability.id) {
                 req.properties = {
                     any: this.requirements.properties
@@ -621,7 +633,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         let currentIndex;
         // search for the kv property index within the requirement object of the requirements array of the current
         // requirement
-        this.capabilities.capabilities.capability.some((cap, index) => {
+        this.capabilities.capabilities.some((cap, index) => {
             if (cap.id === this.capabilities.oldCapId) {
                 currentIndex = index;
                 return true;
@@ -630,19 +642,15 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (this.capabilities.propertyType === 'KV') {
             this.KVTextareas.forEach((txtArea) => {
                 const keyOfChangedTextArea = txtArea.nativeElement.parentElement.innerText.replace(/\s/g, '');
-                this.capabilities.capabilities.capability[currentIndex].properties.kvproperties[keyOfChangedTextArea] = txtArea.nativeElement.value;
+                this.capabilities.capabilities[currentIndex].properties.kvproperties[keyOfChangedTextArea] = txtArea.nativeElement.value;
             });
         } else if (this.capabilities.propertyType === 'XML') {
             this.xmlTextareas.forEach((xmlTextArea) => {
-                this.capabilities.capabilities.capability[currentIndex].properties.any = xmlTextArea.nativeElement.value;
+                this.capabilities.capabilities[currentIndex].properties.any = xmlTextArea.nativeElement.value;
             });
         }
-        this.capabilities.capabilities.capability[currentIndex].id = this.capabilities.capId;
-        const newCapabilityData = this.capabilities.capabilities;
-        newCapabilityData.nodeId = this.capabilities.nodeId;
-        this.ngRedux.dispatch(this.actions.setCapability(newCapabilityData));
-        this.resetCapabilities();
-        this.capabilitiesModal.hide();
+        this.capabilities.capabilities[currentIndex].id = this.capabilities.capId;
+        this.saveCapabilitiesToStore();
     }
 
     /**
@@ -652,7 +660,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         let currentIndex;
         // search for the kv property index within the requirement object of the requirements array of the current
         // requirement
-        this.requirements.requirements.requirement.some((req, index) => {
+        this.requirements.requirements.some((req, index) => {
             if (req.id === this.requirements.oldReqId) {
                 currentIndex = index;
                 return true;
@@ -661,19 +669,15 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (this.requirements.propertyType === 'KV') {
             this.KVTextareas.forEach((txtArea) => {
                 const keyOfChangedTextArea = txtArea.nativeElement.parentElement.innerText.replace(/\s/g, '');
-                this.requirements.requirements.requirement[currentIndex].properties.kvproperties[keyOfChangedTextArea] = txtArea.nativeElement.value;
+                this.requirements.requirements[currentIndex].properties.kvproperties[keyOfChangedTextArea] = txtArea.nativeElement.value;
             });
         } else if (this.requirements.propertyType === 'XML') {
             this.xmlTextareas.forEach((xmlTextArea) => {
-                this.requirements.requirements.requirement[currentIndex].properties.any = xmlTextArea.nativeElement.value;
+                this.requirements.requirements[currentIndex].properties.any = xmlTextArea.nativeElement.value;
             });
         }
-        this.requirements.requirements.requirement[currentIndex].id = this.requirements.reqId;
-        const newRequirementData = this.requirements.requirements;
-        newRequirementData.nodeId = this.requirements.nodeId;
-        this.ngRedux.dispatch(this.actions.setRequirement(newRequirementData));
-        this.resetRequirements();
-        this.requirementsModal.hide();
+        this.requirements.requirements[currentIndex].id = this.requirements.reqId;
+        this.saveRequirementsToStore();
     }
 
     /**
@@ -709,18 +713,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             };
         }
         // case when there are no capabilities on the node template
-        if (!this.capabilities.capabilities || !this.capabilities.capabilities.capability) {
-            const capabilityArray: Array<CapabilityModel> = [];
-            this.capabilities.capabilities = {
-                capability: capabilityArray
-            };
+        if (!this.capabilities.capabilities) {
+            this.capabilities.capabilities = new Array<CapabilityModel>();
         }
-        this.capabilities.capabilities.capability.push(newCapability);
-        const newCapabilityData = this.capabilities.capabilities;
-        newCapabilityData.nodeId = this.capabilities.nodeId;
-        this.ngRedux.dispatch(this.actions.setCapability(newCapabilityData));
-        this.resetCapabilities();
-        this.capabilitiesModal.hide();
+        this.capabilities.capabilities.push(newCapability);
+        this.saveCapabilitiesToStore();
     }
 
     /**
@@ -740,7 +737,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     this.capabilities.propertyType = 'KV';
                     this.showDefaultProperties = true;
                     this.capabilities.properties = InheritanceUtils.getKVProperties(cap);
-                    // if propertiesDefinition is defined it's a XML property
+                    // if propertiesDefinition is defined it's an XML property
                 } else if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                     if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
                         this.capabilities.propertyType = 'XML';
@@ -815,18 +812,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             };
         }
         // case when there are no requirements on the node template
-        if (!this.requirements.requirements || !this.requirements.requirements.requirement) {
-            const requirementsArray: Array<RequirementModel> = [];
-            this.requirements.requirements = {
-                requirement: requirementsArray
-            };
+        if (!this.requirements.requirements) {
+            this.requirements.requirements = new Array<RequirementModel>();
         }
-        this.requirements.requirements.requirement.push(newRequirement);
-        const newRequirementData = this.requirements.requirements;
-        newRequirementData.nodeId = this.requirements.nodeId;
-        this.ngRedux.dispatch(this.actions.setRequirement(newRequirementData));
-        this.resetRequirements();
-        this.requirementsModal.hide();
+        this.requirements.requirements.push(newRequirement);
+        this.saveRequirementsToStore();
     }
 
     /**
@@ -847,7 +837,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                     this.showDefaultProperties = true;
                     this.requirements.properties = InheritanceUtils.getKVProperties(req);
                     return true;
-                    // if propertiesDefinition is defined it's a XML property
+                    // if propertiesDefinition is defined it's an XML property
                 } else if (req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                     if (req.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
                         this.requirements.propertyType = 'XML';
@@ -1328,8 +1318,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 if (!this.allNodesIds.includes(relationSource)) {
                     // check if source reference is a requirement of a node template
                     const findNode = this.allNodeTemplates
-                        .find((node) => node.requirements
-                            && node.requirements.find((req) => req.id === relationSource)
+                        .find((node) =>
+                            !!(node.requirements && node.requirements.find((req) => req.id === relationSource))
                         );
                     if (findNode) {
                         relationSource = findNode.id;
@@ -1341,7 +1331,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (!this.allNodesIds.includes(relationTarget)) {
                 // check if target reference is a capability of a node template
                 const findNode = this.allNodeTemplates
-                    .find((node) => node.capabilities && node.capabilities.find((cap) => cap.id === relationTarget));
+                    .find((node) =>
+                        !!(node.capabilities && node.capabilities.find((cap) => cap.id === relationTarget))
+                    );
                 if (findNode) {
                     relationTarget = findNode.id;
                 }
@@ -1621,8 +1613,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * Hides the Sidebar on the right.
      */
     hideSidebar() {
-        this.ngRedux.dispatch(this.actions.triggerSidebar(
-            { sidebarContents: new DetailsSidebarState(false) }));
+        this.ngRedux.dispatch(this.actions.triggerSidebar(new DetailsSidebarState(false)));
     }
 
     /**
@@ -1890,25 +1881,32 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.newJsPlumbInstance.select().removeType('marked');
         const currentRel = this.allRelationshipTemplates.find((con) => con.id === conn.id);
         if (currentRel) {
+            if (this.liveModelingState === LiveModelingStates.DISABLED) {
+                const sourceNode = this.allNodeTemplates.find(node => node.id === currentRel.sourceElement.ref);
+                const targetNode = this.allNodeTemplates.find(node => node.id === currentRel.targetElement.ref);
+                if (sourceNode && targetNode && sourceNode.working && targetNode.working) {
+                    return;
+                }
+            }
             let name = currentRel.name;
             if (currentRel.name.startsWith(this.backendService.configuration.relationshipPrefix)) {
                 // Workaround to support old topology templates with the real name
                 name = currentRel.type.substring(currentRel.type.indexOf('}') + 1);
             }
+            const entityType = this.entityTypes.relationshipTypes.find(type => type.qName === currentRel.type);
             this.ngRedux.dispatch(this.actions.triggerSidebar({
-                sidebarContents: {
-                    visible: true,
-                    nodeClicked: false,
-                    template: {
-                        id: currentRel.id,
-                        name: name,
-                        type: currentRel.type,
-                        properties: currentRel.properties,
-                    },
-                    relationshipTemplate: currentRel,
-                    source: currentRel.sourceElement.ref,
-                    target: currentRel.targetElement.ref
-                }
+                visible: true,
+                nodeClicked: false,
+                template: {
+                    id: currentRel.id,
+                    name: name,
+                    type: currentRel.type,
+                    properties: currentRel.properties,
+                },
+                entityType: entityType,
+                relationshipTemplate: currentRel,
+                source: currentRel.sourceElement.ref,
+                target: currentRel.targetElement.ref
             }));
             conn.addType('marked');
         }
@@ -2256,6 +2254,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         }
     }
 
+    getNodeEntityType(name: string): EntityType {
+        return this.entityTypes.unGroupedNodeTypes.find(type => type.name === name);
+    }
+
     /**
      * Gets all ID's of the topology template and saves them in an array
      */
@@ -2375,7 +2377,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 // update exposed keys
                 for (const key of ['name', 'minInstances', 'maxInstances', 'properties',
                     'capabilities', 'requirements', 'deploymentArtifacts',
-                    'policies', 'otherAttributes']) {
+                    'policies', 'otherAttributes', 'instanceState', 'valid', 'working']) {
                     nodeTemplate[key] = storeData[key];
                 }
                 const nodeComponent = this.nodeComponentChildren.find((c) => c.nodeTemplate.id === nodeTemplate.id);
@@ -2671,4 +2673,29 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 .filter((policy) => this.patternNamespaces.has(new QName(policy.policyType).nameSpace));
         }
     }
+
+    private saveRequirementsToStore() {
+        const newRequirementData = <SetRequirement>{
+            nodeRequirements: {
+                nodeId: this.requirements.nodeId,
+                requirements: this.requirements.requirements
+            }
+        };
+        this.ngRedux.dispatch(this.actions.setRequirement(newRequirementData));
+        this.resetRequirements();
+        this.requirementsModal.hide();
+    }
+
+    private saveCapabilitiesToStore() {
+        const newCapabilityData = <SetCapability>{
+            nodeCapabilities: {
+                nodeId: this.capabilities.nodeId,
+                capabilities: this.capabilities.capabilities
+            }
+        };
+        this.ngRedux.dispatch(this.actions.setCapability(newCapabilityData));
+        this.resetCapabilities();
+        this.capabilitiesModal.hide();
+    }
+
 }

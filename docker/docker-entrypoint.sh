@@ -13,7 +13,7 @@ if [ -d "${WINERY_REPOSITORY_PATH}" ] && [ "$(ls -A ${WINERY_REPOSITORY_PATH})" 
   echo "Repository at ${WINERY_REPOSITORY_PATH} is already initialized!";
 else
   if [ ! "x${WINERY_REPOSITORY_URL}" = "x" ]; then
-    git clone ${WINERY_REPOSITORY_URL} ${WINERY_REPOSITORY_PATH};
+    git clone --depth 1 ${WINERY_REPOSITORY_URL} ${WINERY_REPOSITORY_PATH};
   else
     git init ${WINERY_REPOSITORY_PATH};
   fi

@@ -11,12 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { TRelationshipTemplate } from '../../models/ttopology-template';
+import { EntityType, TRelationshipTemplate } from '../../models/ttopology-template';
 
 export class DetailsSidebarState {
     constructor(
         public visible: boolean,
         public nodeClicked?: boolean,
+        public entityType?: EntityType,
         public template?: SidebarEntityTemplate,
         public relationshipTemplate?: TRelationshipTemplate,
         public minInstances?: number,

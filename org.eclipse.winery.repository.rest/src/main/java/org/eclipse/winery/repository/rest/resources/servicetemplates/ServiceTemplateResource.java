@@ -77,6 +77,7 @@ import org.eclipse.winery.model.tosca.extensions.OTParticipant;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -795,6 +796,38 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
         ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
             id.getNameWithoutVersion() + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
+            false);
+        ResourceResult response = RestUtils.duplicate(id, newId);
+
+        if (response.getStatus() == Status.CREATED) {
+            response.setUri(null);
+            response.setMessage(new QNameApiData(newId));
+        }
+
+        LOGGER.debug("Created Service Template {}", newId.getQName());
+
+        return response.getResponse();
+    }
+
+    @POST()
+    @Path("createlivemodelingversion")
+    @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createLiveModelingVersion() {
+        LOGGER.debug("Creating live modeling version of Service Template {}...", this.getId().getQName());
+        ServiceTemplateId id = (ServiceTemplateId) this.getId();
+        WineryVersion version = VersionUtils.getVersion(id.getQName().toString());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        WineryVersion newVersion = new WineryVersion(
+            version.toString() + "-live-" + dateFormat.format(new Date()),
+            1,
+            0
+        );
+
+        String newComponentVersionId = VersionSupport.getNewComponentVersionId(id, "live-" + dateFormat.format(new Date()));
+
+        ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
+            newComponentVersionId,
             false);
         ResourceResult response = RestUtils.duplicate(id, newId);
 

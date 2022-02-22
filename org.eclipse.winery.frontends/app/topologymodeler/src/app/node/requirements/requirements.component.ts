@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,7 +37,7 @@ export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
     @Output() relationshipTemplateIdClicked: EventEmitter<string>;
     @Input() readonly: boolean;
     @Input() currentNodeData: any;
-    requirements: any[] = [];
+    requirements: RequirementModel[] = [];
     requirementsExist: boolean;
     entityTypes: EntityTypesModel;
     nodeTemplate: TNodeTemplate;

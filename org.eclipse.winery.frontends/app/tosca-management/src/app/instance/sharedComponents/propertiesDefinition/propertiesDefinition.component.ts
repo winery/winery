@@ -169,18 +169,23 @@ export class PropertiesDefinitionComponent implements OnInit {
                 'Description',
                 3
             ),
+            new DynamicTextData(
+                'pattern',
+                'Pattern',
+                4
+            ),
             new DynamicConstraintsData(
                 'constraints',
                 'Constraints',
                 valid_constraint_keys,
                 list_constraint_keys,
                 range_constraint_keys,
-                4
+                5
             ),
             new DynamicTextData(
                 'derivedFromStatus',
                 'Status',
-                5
+                6
             ),
         ];
         if (!this.configurationService.configuration.features.yaml) {

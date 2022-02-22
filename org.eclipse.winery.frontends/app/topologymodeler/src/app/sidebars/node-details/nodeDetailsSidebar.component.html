@@ -13,56 +13,55 @@
    -->
 <div id="NTPropertiesView"
      class="sidebar-root"
-     style="display: block;">
-    <div id="nodeTemplateInformationSection" style="margin: 8px"  *ngIf="sidebarState.template">
-        <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()" closeSidebar>
+     style="display: block;"
+     [@sidebarAnimationStatus]="sidebarAnimationStatus"
+     [style.top.px]="this.top"
+     *ngIf="sidebarState.visible">
+    <div id="nodeTemplateInformationSection" style="margin: 8px" *ngIf="sidebarState.template">
+        <button type="button" class="close" style="color: #000000" aria-label="Close" (click)="closeSidebar()"
+                closeSidebar>
             <span aria-hidden="true">&times;</span>
         </button>
         <fieldset>
             <div class="form-group">
-                <label for="nodetemplateid">Id</label>
-                <input id="nodetemplateid" disabled="disabled" class="form-control" value="{{sidebarState.template.id}}">
+                <label for="nodeTemplateId">Id</label>
+                <input id="nodeTemplateId" disabled="disabled" class="form-control"
+                       value="{{sidebarState.template.id}}">
             </div>
             <div class="form-group">
-                <label for="nodetemplatename" class="control-label">Name</label>
-                <input id="nodetemplatename" name="name" class="form-control"
+                <label for="nodeTemplateName" class="control-label">Name</label>
+                <input id="nodeTemplateName" name="name" class="form-control"
                        value="{{sidebarState.template.name}}"
                        [disabled]="readonly"
-                       (keyup)="nodeNameKeyUp.next($event.target.value)"
+                       (keyup)="nodeNameKeyUp.next($event.target['value'])"
                        (focus)="onFocus($event)"
                        (blur)="onBlur($event)">
             </div>
             <div class="form-group">
                 <label for="nodetemplateType">Type</label>
-                <a id="nodetemplateType"
-                   target="_blank"
-                   [routerLink]=""
-                   (click)="linkType($event)"
-                   class="form-control">
-                    {{sidebarState.template.type}}
-                </a>
+                <input id="nodetemplateType" class="form-control" disabled
+                       (click)="linkType($event)"
+                       [value]="sidebarState.template.type">
             </div>
             <div class="form-group">
                 <label>Properties</label>
                 <winery-properties
                     [templateId]="sidebarState.template.id"
                     [readonly]="readonly"
-                    [isNode]="sidebarState.nodeClicked">
+                    [isNode]="sidebarState.nodeClicked"
+                    [nodeId]="sidebarState.template.id"
+                    [entityType]="sidebarState.entityType">
                 </winery-properties>
             </div>
             <div *ngIf="sidebarState.nodeClicked == false">
                 <label for="connectionSource"> Source </label>
-                <a id="connectionSource"
-                   target="_blank"
-                   class="form-control">
-                    {{sidebarState.source}}
-                </a>
+                <input id="connectionSource" disabled class="form-control"
+                       [value]="sidebarState.source">
+
                 <label for="connectionTarget"> Target </label>
-                <a id="connectionTarget"
-                   target="_blank"
-                   class="form-control">
-                    {{sidebarState.target}}
-                </a>
+                <input id="connectionTarget" disabled class="form-control"
+                       [value]="sidebarState.target">
+
                 <div class="form-group" *wineryRepositoryHideOnFeature="'yaml'">
                     <label>Policies</label>
                     <winery-policies
@@ -86,7 +85,7 @@
                               style="display: none;">6
                         </span>
                                     <input id="maxInstances"
-                                           (keyup)="nodeMaxInstancesKeyUp.next($event.target.value)"
+                                           (keyup)="nodeMaxInstancesKeyUp.next($event.target['value'])"
                                            value="{{sidebarState.maxInstances}}"
                                            min="0"
                                            max="9999999"
@@ -133,7 +132,7 @@
                                           style="display: none;">
                                     </span>
                                     <input id="minInstances"
-                                           (keyup)="nodeMinInstancesKeyUp.next($event.target.value)"
+                                           (keyup)="nodeMinInstancesKeyUp.next($event.target['value'])"
                                            [disabled]="readonly"
                                            value="{{sidebarState.minInstances}}"
                                            min="0"
@@ -162,7 +161,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="row">
