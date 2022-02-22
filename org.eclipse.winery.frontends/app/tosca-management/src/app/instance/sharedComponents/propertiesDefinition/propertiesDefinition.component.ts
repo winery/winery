@@ -81,7 +81,6 @@ const yaml_columns: Array<WineryTableColumn> = [
 export class PropertiesDefinitionComponent implements OnInit {
 
     propertiesEnum = PropertiesDefinitionEnum;
-    loading = true;
 
     dynamicTableData: Array<WineryDynamicTableMetadata> = [];
     modalTitle = 'Add a Property Definition';
@@ -122,6 +121,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     _loading = {
         getPropertiesDefinitions: false,
         getInheritedPropertiesDefinitions: false,
+        postPropertiesDefinitions: false,
+        deletePropertiesDefinitions: false,
     };
 
     private yamlTypes: string[] = [];
@@ -136,7 +137,8 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.isYaml = configurationService.isYaml();
     }
 
-    isLoading = () => Utils.isLoading(this._loading) || this.loading;
+    isLoading = () => Utils.isLoading(this._loading);
+    isInitialized = () => !this.isLoading() && !!this.propertiesDefinitions;
 
     // region ########## Angular Callbacks ##########
     ngOnInit() {
@@ -318,19 +320,21 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     // region ########## Save Callbacks ##########
     save(): void {
-        this.loading = true;
         if (this.propertiesDefinitions.selectedValue === PropertiesDefinitionEnum.None) {
+            this._loading.deletePropertiesDefinitions = true;
             this.service.deletePropertiesDefinitions()
                 .subscribe(
                     data => this.handleDelete(data),
                     error => this.handleError(error)
-                );
+                ).add(() => this._loading.deletePropertiesDefinitions = false);
+
         } else {
+            this._loading.postPropertiesDefinitions = true;
             this.service.postPropertiesDefinitions(this.propertiesDefinitions)
                 .subscribe(
-                    data => this.handleSave(data),
+                    () => this.handleSave(),
                     error => this.handleError(error)
-                );
+                ).add(() => this._loading.postPropertiesDefinitions = false);
         }
     }
 
@@ -581,33 +585,12 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     /**
-     * Set loading to false and show success notification.
-     *
-     * @param data
-     * @param actionType
-     */
-    private handleSuccess(data: any, actionType?: string): void {
-        this.loading = false;
-        this.copyToTable();
-        switch (actionType) {
-            case 'delete':
-                this.notify.success('Deleted PropertiesDefinition', 'Success');
-                break;
-            case 'change':
-                this.notify.success('Saved changes on server', 'Success');
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
      * Reloads the new data from the backend (only called on success).
      *
      * @param data
      */
     private handleDelete(data: any): void {
-        this.handleSuccess(data, 'delete');
+        this.notify.success('Deleted PropertiesDefinition', 'Success');
         this.getPropertiesDefinitions();
     }
 
@@ -636,12 +619,11 @@ export class PropertiesDefinitionComponent implements OnInit {
                     this.propertiesDefinitions.propertiesDefinition.properties = [];
                 }
         }
-
-        this.handleSuccess(data);
+        this.copyToTable();
     }
 
-    private handleSave(data: HttpResponse<string>) {
-        this.handleSuccess(data, 'change');
+    private handleSave() {
+        this.notify.success('Saved changes on server', 'Success');
         this.getPropertiesDefinitions();
     }
 
@@ -666,12 +648,11 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     /**
-     * Sets loading to false and shows error notification.
+     * Handle error by notification.
      *
      * @param error
      */
     private handleError(error: HttpErrorResponse): void {
-        this.loading = false;
         this.notify.error(error.message, 'Error');
     }
 
