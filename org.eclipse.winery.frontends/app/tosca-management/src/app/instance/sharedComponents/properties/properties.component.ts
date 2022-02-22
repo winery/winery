@@ -36,6 +36,10 @@ import { NgForm } from '@angular/forms';
     ]
 })
 export class PropertiesComponent implements OnInit {
+    /**
+     * TODO: validate properties the same way as in topology modeler (e.g. also considering custom data types ...)
+     * see org.eclipse.winery.frontends/app/topologymodeler/src/app/properties/yaml-properties/yaml-properties.component.ts
+     */
 
     form: NgForm;
     definitions: PropertiesDefinitionKVElement[];
