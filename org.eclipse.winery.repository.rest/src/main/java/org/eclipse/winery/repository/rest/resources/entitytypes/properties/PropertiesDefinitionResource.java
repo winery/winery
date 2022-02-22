@@ -94,10 +94,13 @@ public class PropertiesDefinitionResource {
         // Merge properties definitions
         List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
         
-        // TODO: this does not work if wpd is undefined ... but how to create a new wpd?
-        this.getEntityType().getWinerysPropertiesDefinition().setPropertyDefinitions(propertyDefinitions);
+        // Create new WPD
+        WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        winerysPropertiesDefinition.setElementName(this.getEntityType().getName());
+        winerysPropertiesDefinition.setNamespace(this.getEntityType().getTargetNamespace());
+        winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
         
-        return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.getEntityType().getWinerysPropertiesDefinition());
+        return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), winerysPropertiesDefinition);
     }
 
     /**
