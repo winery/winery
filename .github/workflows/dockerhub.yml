@@ -20,7 +20,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
-          platforms: arm64,arm
+          platforms: amd64,arm64,arm
       - name: Set variables
         id: vars
         run: |
