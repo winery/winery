@@ -1050,8 +1050,8 @@ public abstract class ModelUtilities {
     public static <T extends TEntityType> List<PropertyDefinitionKV> mergePropertiesDefinitions(List<T> entityTypes) {
         List<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
 
-        for (TEntityType entityType : entityTypes) {
-
+        for (int i = 0; i < entityTypes.size(); i++) {
+            TEntityType entityType = entityTypes.get(i);
             WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
 
             // Continue if current entity type does not have any properties definitions
@@ -1070,7 +1070,9 @@ public abstract class ModelUtilities {
                 boolean exists = false;
                 for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
                     if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
-                        propertyDefinition.setDerivedFromStatus("OVERRIDE");
+                        if (i == 1) {
+                            propertyDefinition.setDerivedFromStatus("OVERRIDE");
+                        }
                         exists = true;
                         break;
                     }
@@ -1079,7 +1081,7 @@ public abstract class ModelUtilities {
                 if (!exists) {
                     entityTypePropertyDefinition.setDerivedFromType(entityType.getQName());
                     
-                    if (entityType.getQName().toString().equals(entityTypes.get(0).getQName().toString())) {
+                    if (i == 0) {
                         entityTypePropertyDefinition.setDerivedFromStatus("SELF");
                     } else {
                         entityTypePropertyDefinition.setDerivedFromStatus("INHERITED");
