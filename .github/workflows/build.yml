@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - docker-m1
     tags:
       - "v*.*.*"
   pull_request:
@@ -41,7 +40,11 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         run: mvn -Pjava -B package
-      - uses: actions/upload-artifact@v2
+      - name: Upload binary to artifacts
+        uses: actions/upload-artifact@v2
+        if: |
+          github.repository_owner == 'OpenTOSCA' &&
+          github.head_ref == 'main'
         with:
           name: artifacts
           path: ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
@@ -66,7 +69,11 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         run: mvn -Pfrontend -B package
-      - uses: actions/upload-artifact@v2
+      - name: Upload binary to artifacts
+        uses: actions/upload-artifact@v2
+        if: |
+          github.repository_owner == 'OpenTOSCA' &&
+          github.head_ref == 'main'
         with:
           name: artifacts
           path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
@@ -74,7 +81,9 @@ jobs:
   dockerBuild:
     needs: [ java11, frontend ]
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'OpenTOSCA' }}
+    if: | 
+      github.repository_owner == 'OpenTOSCA' &&
+      github.head_ref == 'main'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
