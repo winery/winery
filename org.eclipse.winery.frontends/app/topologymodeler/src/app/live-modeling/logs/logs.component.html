@@ -1,0 +1,31 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="d-flex flex-column" style="height: 100%; min-height: 100%">
+    <i class="fa fa-trash m-1" style="align-self: flex-end; cursor: pointer;" tooltip="Clear logs"
+       placement="left"
+       (click)="clearLogs()"></i>
+    <div #scrollContainer (scroll)="scrolled()" class="scroll-container">
+        <div #logItems *ngFor="let log of logs; let last = last" class="log-item">
+            <span class="log-timestamp">{{log.timestamp}}</span>
+            <span class="log-message">
+                    <span class="badge-xsmall mr-1"
+                          [style.background]="getBadgeBackgroundForLog(log.type)">
+                        {{log.type | uppercase }}
+                    </span>
+                {{log.message}}
+            </span>
+        </div>
+    </div>
+</div>

@@ -41,27 +41,19 @@ import { InheritanceUtils } from '../models/InheritanceUtils';
             state('shrunk', style({
                 display: 'none',
                 opacity: '0',
-                height: '*',
             })),
             state('extended', style({
                 display: 'block',
                 opacity: '1',
-                height: '*',
             })),
             transition('shrunk => extended', animate('500ms ease-out')),
-            transition('extended => shrunk', animate('500ms ease-out'))
+            transition('extended => shrunk', animate('50ms ease-out'))
         ]),
         trigger('paletteButtonState', [
             state('left', style({
-                display: 'block',
-                opacity: '1',
-                height: '*',
                 transform: 'rotate(-90deg) translateY(-135px) translateX(-135px)'
             })),
             state('top', style({
-                display: 'block',
-                opacity: '1',
-                height: '*',
                 transform: 'rotate(0deg) translateY(0px) translateX(0px)'
             })),
             transition('left => top', animate('50ms ease-in')),
@@ -76,6 +68,7 @@ import { InheritanceUtils } from '../models/InheritanceUtils';
 export class PaletteComponent implements OnInit, OnDestroy {
 
     @Input() entityTypes: EntityTypesModel;
+    @Input() top: number;
 
     paletteRootState = 'extended';
     paletteButtonRootState = 'left';
@@ -120,7 +113,6 @@ export class PaletteComponent implements OnInit, OnDestroy {
     public toggleRootState(): void {
         if (this.paletteRootState === 'shrunk') {
             this.ngRedux.dispatch(this.actions.sendPaletteOpened(true));
-
         } else {
             this.ngRedux.dispatch(this.actions.sendPaletteOpened(false));
         }

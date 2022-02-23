@@ -33,6 +33,7 @@ public class PropertyDefinitionKV implements Serializable {
 
     @JsonProperty("constraint")
     private List<ConstraintClauseKV> constraintList;
+    private String pattern;
 
     @Deprecated // used for XML deserialization of API request content
     public PropertyDefinitionKV() {
@@ -83,6 +84,14 @@ public class PropertyDefinitionKV implements Serializable {
         this.type = type;
     }
 
+    public String getPattern() {
+        return this.pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+    
     public Boolean isRequired() {
         return required;
     }

@@ -29,6 +29,7 @@ export class PropertiesDefinitionKVElement {
     defaultValue: string;
     description: string;
     constraints: Constraint[] = [];
+    pattern: string = null;
 }
 
 export class PropertiesDefinition {

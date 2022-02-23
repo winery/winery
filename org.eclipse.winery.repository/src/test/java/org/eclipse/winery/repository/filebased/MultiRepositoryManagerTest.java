@@ -46,7 +46,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     public void testInitializeRepositoryList() throws IOException {
         ArrayList<RepositoryProperties> repositoryList = new ArrayList<>();
         repositoryList.add(new RepositoryProperties("mainTestRepository",
-            "https://github.com/winery/mulit-repo-test"));
+            "https://github.com/winery/mulit-repo-test", "master"));
         MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
         multiRepositoryManager.initializeRepositoryListForMultiRepositoryAndReconfigureFactory(repositoryList);
         assertTrue(Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(),
@@ -69,7 +69,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     public void testMultiRepositoryCreation() {
         ArrayList<RepositoryProperties> repositoryList = new ArrayList<>();
         repositoryList.add(new RepositoryProperties("mainTestRepository",
-            "https://github.com/winery/mulit-repo-test"));
+            "https://github.com/winery/mulit-repo-test", "master"));
         MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
         multiRepositoryManager.initializeRepositoryListForMultiRepositoryAndReconfigureFactory(repositoryList);
         assertTrue(RepositoryFactory.getRepository() instanceof MultiRepository);
@@ -83,7 +83,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     public void testRepositoryListImport() throws UnsupportedEncodingException {
         ArrayList<RepositoryProperties> repositoryList = new ArrayList<>();
         repositoryList.add(new RepositoryProperties("mainTestRepository",
-            "https://github.com/winery/mulit-repo-test"));
+            "https://github.com/winery/mulit-repo-test", "master"));
         repositoryList.add(new RepositoryProperties("standardTestRepository", "https://github.com/winery/test-repository", "plain"));
         MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
         multiRepositoryManager.addRepositoryToFile(repositoryList);

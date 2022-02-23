@@ -21,4 +21,4 @@ components:
           discoverable: "false"
           public: "true"
     mountSources: true
-    reference: https://raw.githubusercontent.com/eclipse/winery/master/deploy/che/winery.yaml
+    reference: https://raw.githubusercontent.com/eclipse/winery/main/deploy/che/winery.yaml

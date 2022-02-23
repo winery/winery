@@ -21,7 +21,7 @@ export enum FeatureEnum {
     ProblemDetection = 'problemDetection', Radon = 'radon', Splitting = 'splitting', MultiParticipant = 'multiParticipant',
     TestRefinement = 'testRefinement', TopologyFragmentRefinementModel = 'topologyFragmentRefinementModel',
     Placement = 'placement', updateTemplates = 'updateTemplates', Yaml = 'yaml',
-    PatternDetection = 'patternDetection'
+    PatternDetection = 'patternDetection', LiveModeling = 'liveModeling', PropertyCheck = 'propertyCheck'
 }
 
 @Directive({

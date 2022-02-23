@@ -5,7 +5,7 @@ name: Push docker images to Dockerhub
 on:
   push:
     branches:
-      - master
+      - main
       - docker-m1
     tags:
       - "v*.*.*"

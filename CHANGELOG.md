@@ -10,7 +10,7 @@ Here, the categories "Changed" for added and changed functionality,
 We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `#NUM`.
 
 The ordering of v1.x and v2.x versions is sequential by time.
-This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/blob/master/CHANGELOG.md), where v4.x and v5.x is mixed.
+This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/blob/main/CHANGELOG.md), where v4.x and v5.x is mixed.
 
 ## [unreleased]
 
@@ -75,6 +75,6 @@ Intermediate milestone build for the OpenTOSCA eco system.
 This was the initial code contribution when handing over project governance to the Eclipse Software Foundation.
 See also [CQ 7916](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=7916).
 
-[unreleased]: https://github.com/eclipse/winery/compare/v2.0.0-M1...master
+[unreleased]: https://github.com/eclipse/winery/compare/v2.0.0-M1...main
 [v2.0.0-M1]: https://github.com/eclipse/winery/compare/initial-code-contribution...v2.0.0-M1
 [v1.0.0]: https://github.com/eclipse/winery/compare/initial-code-contribution...v1.0.0

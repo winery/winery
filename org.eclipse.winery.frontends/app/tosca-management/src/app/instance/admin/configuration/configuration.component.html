@@ -87,6 +87,14 @@
            [checked]="config.features.instanceModelRefinement">
     <label for="instanceModelRefinement">Instance Modeling</label>
     <br>
+    <input type="checkbox" [(ngModel)]="config.features.liveModeling" id="liveModeling" name="liveModeling"
+           [checked]="config.features.liveModeling">
+    <label for="liveModeling">Live Modeling</label>
+    <br>
+    <input type="checkbox" [(ngModel)]="config.features.propertyCheck" id="propertyCheck" name="propertyCheck"
+           [checked]="config.features.propertyCheck">
+    <label for="propertyCheck">Property Check</label>
+    <br>
     <input type="checkbox" [(ngModel)]="config.features.updateTemplates" id="updateTemplates" name="updateTemplates"
            [checked]="config.features.updateTemplates">
     <label for="updateTemplates">Show update Notifications</label>

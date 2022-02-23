@@ -36,9 +36,9 @@ For the general setup, please go to [Eclipse Winery Toolchain](toolchain.md).
 Main idea: Separate  branch for each topic (fix a bug, add functionality) and accordingly named.
 See <https://guides.github.com/introduction/flow/index.html> for more information.
 
-  1. Sync with latest changes on upstream (especially master branch): `git fetch upstream --prune`.
-  3. Create branch based on `upstream/master` and make it known publicly:
-     - `git checkout upstream/master`
+  1. Sync with latest changes on upstream (especially main branch): `git fetch upstream --prune`.
+  3. Create branch based on `upstream/main` and make it known publicly:
+     - `git checkout upstream/main`
      - `git checkout -b [name]`  
         Branch naming patterns:
           - Bugfix: `fix/SHORT-TITLE`, e.g., `fix/deletion-of-namespaces`
@@ -67,9 +67,9 @@ After each working day, do the following:
     
   1. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui).
   2. `git push`
-  3. Keep your branch updated with `upstream/master`:
+  3. Keep your branch updated with `upstream/main`:
      - `git fetch upstream`
-     - `git merge upstream/master`
+     - `git merge upstream/main`
      - Resolve conflicts - if there are some. See <https://www.jetbrains.com/help/idea/resolving-conflicts.html> for a documentation when using IntellIJ.
      - `git push`
 
@@ -89,16 +89,16 @@ This is required by the Eclipse process for checking for intellectual property (
 ### Git Steps: Ensure that a single commit is created
 
   1. `git fetch upstream` - fetches all updates from https://github.com/eclipse/winery ("upstream") to the local git storage
-  2. `git merge upstream/master` - merges all updates from upstream to the local branch
+  2. `git merge upstream/main` - merges all updates from upstream to the local branch
   3. (Resolve merge conflicts) - required if there are conflicting changes
   4. Commit & Push with signed commit message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui) - this ensures that you have the changes backuped in case something goes wrong at the next steps 
-  5. `git reset upstream/master` - this prepares that all commits can be squashed together:
-     The local checkout ("working tree") is left untouched, but the "pointer" of the current branch is reset to `upstream/master`.
-     Now, Git Gui shows the difference between `upstream/master` and your changes.
+  5. `git reset upstream/main` - this prepares that all commits can be squashed together:
+     The local checkout ("working tree") is left untouched, but the "pointer" of the current branch is reset to `upstream/main`.
+     Now, Git Gui shows the difference between `upstream/main` and your changes.
   6. Check changes in Git Gui:
      - Each change you wanted: Is it recognized?
      - At each file: Is the copyright information in the [header](source-code-headers.md) OK?
-     - Check if you are listed in the [NOTICE](https://github.com/eclipse/winery/blob/master/NOTICE) file as a contributor with the correct year
+     - Check if you are listed in the [NOTICE](https://github.com/eclipse/winery/blob/main/NOTICE) file as a contributor with the correct year
      - Are there too much changed lines? 🡒 Do not stage spurious lines to the commit (e.g., tab to spaces, ...)
      - Are there too much changed files? 🡒 Do not stage files you did not intend to change (e.g., `build.gradle` if you did not touch `build.gradle` at all)
      - Check again the style (!)
