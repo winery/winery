@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: |
           github.repository_owner == 'OpenTOSCA' &&
-          github.head_ref == 'main'
+          (github.ref == 'refs/heads/main' || contains('refs/tags'))
         with:
           name: artifacts
           path: ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
@@ -73,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: |
           github.repository_owner == 'OpenTOSCA' &&
-          github.head_ref == 'main'
+          (github.ref == 'refs/heads/main' || contains('refs/tags'))
         with:
           name: artifacts
           path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     if: | 
       github.repository_owner == 'OpenTOSCA' &&
-      github.head_ref == 'main'
+      (github.ref == 'refs/heads/main' || contains('refs/tags'))
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
