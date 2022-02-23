@@ -56,28 +56,19 @@
         <div *ngIf="propertiesDefinitions.selectedValue === propertiesEnum.Custom">
             <tabset *wineryRepositoryHideOnFeature="configEnum.Yaml">
                 <tab heading="Property Definitions">
-                    
                     <br/>
-
                     <button (click)="show.inherited = !show.inherited"> {{ show.inherited ? "Hide Inheritance Details" : "Show Inheritance Details" }}</button>
-
                     <div [hidden]="!show.inherited">
-
                         <br/>
-
                         <alert type="info" *ngIf="!this.inheritedPropertiesDefinitions.length">
                             There is no inheritance.
                         </alert>
-
                         <alert type="info" *ngIf="this.inheritedPropertiesDefinitions.length > 1">
                             The order of the tables are the same as in the inheritance hierarchy.
                             The highest table corresponds to the highest parent in the inheritance hierarchy.
                         </alert>
-
                         <ng-container *ngFor="let parent of this.inheritedPropertiesDefinitions.reverse(); index as index">
-
                             <hr *ngIf="index !== 0"/>
-
                             <winery-dynamic-table
                                 [tableTitle]="'Property Definitions from ' + parent.parent"
                                 [titleRouterLink]="getParentRouterLink(parent.parent)"
@@ -87,13 +78,9 @@
                                 [disableButtons]="true"
                             >
                             </winery-dynamic-table>
-                            
                         </ng-container>
-
                         <hr *ngIf="this.inheritedPropertiesDefinitions"/>
-
                     </div>
-                    
                     <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
                                           tableTitle="Effective Property Definitions (including Inheritance)"
                                           [modalTitle]="modalTitle"
@@ -102,7 +89,6 @@
                                           (entryAdded)="onChangeProperty()"
                                           (entryEdited)="onChangeProperty()"
                                           (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
-                    
 
                 </tab>
                 <tab heading="Wrapper">
