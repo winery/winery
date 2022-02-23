@@ -1,9 +1,3 @@
-FROM maven:3-openjdk-11 as builder
-RUN apt-get update -qq && apt-get install -qqy python build-essential
-COPY . /tmp/winery
-WORKDIR /tmp/winery
-RUN mvn package -DskipTests=true -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -B
-
 FROM tomcat:9-jdk11-openjdk-buster
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
@@ -66,10 +60,10 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && git lfs install \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-COPY --from=builder /tmp/winery/org.eclipse.winery.repository.rest/target/winery.war ${CATALINA_HOME}/webapps/winery.war
-COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/tosca-management.war ${CATALINA_HOME}/webapps/ROOT.war
-COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/topologymodeler.war ${CATALINA_HOME}/webapps/winery-topologymodeler.war
-COPY --from=builder /tmp/winery/org.eclipse.winery.frontends/target/workflowmodeler.war ${CATALINA_HOME}/webapps/winery-workflowmodeler.war
+COPY winery.war ${CATALINA_HOME}/webapps/winery.war
+COPY tosca-management.war ${CATALINA_HOME}/webapps/ROOT.war
+COPY topologymodeler.war ${CATALINA_HOME}/webapps/winery-topologymodeler.war
+COPY workflowmodeler.war ${CATALINA_HOME}/webapps/winery-workflowmodeler.war
 
 # create Winery user and home dir
 RUN mkdir ${WINERY_USER_HOME} \
