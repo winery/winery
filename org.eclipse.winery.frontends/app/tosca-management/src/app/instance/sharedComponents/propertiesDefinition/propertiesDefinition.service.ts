@@ -101,8 +101,6 @@ export class PropertiesDefinitionService {
     private sendJsonRequest<T>(requestPath: string): Observable<T> {
         return this.http.get<T>(backendBaseURL + this.route.url + requestPath);
     }
-
-
 }
 
 

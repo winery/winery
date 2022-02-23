@@ -55,7 +55,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
     public PropertiesDefinitionResource getPropertiesDefinitionResource() {
         return new PropertiesDefinitionResource(this);
     }
-    
+
     @Path("attributes")
     public AttributeDefinitionsResource getAttributeDefinitionResource() {
         return new AttributeDefinitionsResource(this);

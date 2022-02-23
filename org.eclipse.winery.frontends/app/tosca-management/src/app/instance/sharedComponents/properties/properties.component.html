@@ -20,7 +20,6 @@
     <ng-container *ngIf="definitions.length">
 
         <ng-container *ngIf="isXML">
-
             <div class="right">
                 <button [disabled]="!instanceService?.currentVersion?.editable || properties === null"
                         class="btn btn-primary"
@@ -28,7 +27,6 @@
                     Save
                 </button>
             </div>
-
             <winery-editor #propertiesEditor [ngModel]="properties"></winery-editor>
         </ng-container>
 
@@ -43,17 +41,11 @@
                 <br/>
 
                 <div class="form-group">
-
                     <ng-container *ngFor="let definition of definitions; index as index">
 
-
                         <hr *ngIf="index !== 0"/>
-
-
                         <label [for]="definition.key">Property "{{ definition.key }}"</label>
-
                         <br/>
-
                         <input
                             [wineryPropertyDefinition]="definition"
                             [id]="definition.key"
@@ -62,7 +54,7 @@
                             [class]="form.controls[definition.key]?.errors && form.touched? 'form-control text-red border-red' : 'form-control'"
                         />
                         <br/>
-                        
+
                         <ng-container *ngIf="form.touched">
                             <div *ngIf="form.controls[definition.key]?.errors?.required" class="text-red">
                                 Property is required!
@@ -75,14 +67,12 @@
                             <div *ngIf="form.controls[definition.key]?.errors?.constraint" class="text-red">
                                 <p>The constraint "{{ form.controls[definition.key]?.errors?.constraint }}" is not satisfied!</p>
                             </div>
-                            
                         </ng-container>
 
                         <p *ngIf="definition.type" class="text-muted">Type is "{{ definition.type }}".</p>
                         <p *ngIf="!definition.type" class="text-muted">No type defined.</p>
 
-                        <p *ngIf="definition.defaultValue" class="text-muted">Default is "{{ definition.defaultValue }}
-                            ".</p>
+                        <p *ngIf="definition.defaultValue" class="text-muted">Default is "{{ definition.defaultValue }}".</p>
                         <p *ngIf="!definition.defaultValue" class="text-muted">No default defined.</p>
 
                         <p *ngIf="definition.description" class="text-muted">{{ definition.description }}</p>
@@ -93,21 +83,17 @@
                             </button>
 
                             <span [hidden]="!show[definition.key]">
-                            <br/>
-                            <br/>
-                            <pre>{{ definition.constraints | json }}</pre>
-                        </span>
+                                <br/>
+                                <br/>
+                                <pre>{{ definition.constraints | json }}</pre>
+                            </span>
 
                         </ng-container>
-
                     </ng-container>
                 </div>
-
             </form>
         </ng-container>
-
     </ng-container>
-
 </div>
 
 <ng-template #loadingIcon>
