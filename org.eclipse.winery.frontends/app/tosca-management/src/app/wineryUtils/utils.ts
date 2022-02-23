@@ -30,7 +30,6 @@ export class Utils {
     }
 
     public static getFrontendPath(toscaType: string, namespace: string, localname: string) {
-        // TODO: this should be double encode?!
         return '/' + this.join([toscaType, encodeURIComponent(namespace), localname]);
     }
 

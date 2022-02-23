@@ -234,8 +234,6 @@ public class PropertiesDefinitionResource {
         } 
         
         // CASE: YAML
-        // Only definitions are stored which are not defined by any parent
-        // TODO: only definitions are stored which are not defined by any parent
         if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
             TEntityType entityType = this.parentRes.getEntityType();
             if (!(data.propertiesDefinition instanceof TEntityType.YamlPropertiesDefinition)) {
