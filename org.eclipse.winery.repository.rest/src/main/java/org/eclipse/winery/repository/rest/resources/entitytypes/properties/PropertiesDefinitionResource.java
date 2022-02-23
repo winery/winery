@@ -104,10 +104,10 @@ public class PropertiesDefinitionResource {
     }
 
     /**
-     * Returns a list of inherited properties definitions.
+     * Returns a list of properties definition of each parent.
      * 
-     * Inheritance regarding the list elements themselves is not considered.
-     * There is no merge process considered.
+     * Only self-defined properties definition are considered.
+     * Properties definition of a parent's parent are not merged into the properties definition of the parent.
      */
     @GET
     @Path("inherited")
