@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,10 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-.text-red {
-    color: red
-}
+package org.eclipse.winery.repository.rest.resources.apiData;
 
-.border-red {
-    border: 1px solid red;
+import javax.xml.namespace.QName;
+
+public class InheritedPropertiesDefinitionsResourceApiData {
+    
+    public QName parent;
+    public PropertiesDefinitionResourceApiData properties;
+
+    public InheritedPropertiesDefinitionsResourceApiData(QName type, PropertiesDefinitionResourceApiData propertiesDefinitionResourceApiData) {
+        this.parent = type;
+        this.properties = propertiesDefinitionResourceApiData;
+    }
 }

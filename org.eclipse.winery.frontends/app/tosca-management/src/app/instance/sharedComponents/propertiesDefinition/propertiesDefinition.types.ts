@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -50,3 +50,9 @@ export interface PropertiesDefinitionsResourceApiData {
     winerysPropertiesDefinition: WinerysPropertiesDefinition;
     selectedValue: PropertiesDefinitionEnum;
 }
+
+export type InheritedPropertiesDefinitionsApiData = {
+    parent: string;
+    properties: PropertiesDefinitionsResourceApiData;
+}[];
+

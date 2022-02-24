@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,9 @@
 package org.eclipse.winery.repository.backend;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -61,6 +64,10 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+
+import org.eclipse.jdt.annotation.Nullable;
+
+import static org.eclipse.winery.repository.backend.IRepository.LOGGER;
 
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.model.ids}
@@ -242,5 +249,67 @@ public interface IWineryRepositoryCommon {
 
     default TRequirementType getType(TRequirement template) {
         return getElement(new RequirementTypeId(template.getTypeAsQName()));
+    }
+
+    default @Nullable DefinitionsChildId getDefinitionsChildId(TEntityType entityType, QName qName) {
+        if (entityType instanceof TArtifactType) {
+            return new ArtifactTypeId(qName);
+        }
+
+        if (entityType instanceof TCapabilityType) {
+            return new CapabilityTypeId(qName);
+        }
+
+        if (entityType instanceof TNodeType) {
+            return new NodeTypeId(qName);
+        }
+
+        if (entityType instanceof TPolicyType) {
+            return new PolicyTypeId(qName);
+        }
+
+        if (entityType instanceof TRelationshipType) {
+            return new RelationshipTypeId(qName);
+        }
+
+        if (entityType instanceof TRequirementType) {
+            return new RequirementTypeId(qName);
+        }
+        
+        return null;
+    }
+    
+    default <T extends TEntityType> @Nullable T getParent(T entityType) {
+        if (entityType.getDerivedFrom() == null) {
+            return null;
+        }
+        
+        DefinitionsChildId id = getDefinitionsChildId(entityType, entityType.getDerivedFrom().getType());
+        if (id == null) {
+            LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
+            return null;
+        }
+        
+        return getElement(id);
+    }
+    
+    default <T extends TEntityType> ArrayList<T> getParents(T entityType) {
+        ArrayList<T> parents = new ArrayList<>();
+        T child = entityType;
+        while (child.getDerivedFrom() != null) {
+            T parent = getParent(child);
+            if (parent == null) {
+                break;
+            }
+            parents.add(parent);
+            child = parent;
+        }
+        return parents;
+    }
+
+    default <T extends TEntityType> ArrayList<T> getParentsAndChild(T entityType) {
+        ArrayList<T> hierarchy = getParents(entityType);
+        hierarchy.add(0, entityType);
+        return hierarchy;
     }
 }

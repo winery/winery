@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,6 +29,12 @@ export interface ToscaLightCompatibilityData {
 
 @Injectable()
 export class InstanceService {
+
+    instance: WineryInstance;
+    type?: {
+        frontendPath: string,
+        backendUrl: string
+    };
 
     toscaComponent: ToscaComponent;
     topologyTemplate: WineryTopologyTemplate = null;
@@ -221,5 +227,16 @@ export class InstanceService {
     public exportToFilesystem(): Observable<HttpResponse<string>> {
         return this.http.post(this.path + '/exportToFilesystem', {},
             { observe: 'response', responseType: 'text' });
+    }
+
+    public setInstance(instance: WineryInstance) {
+        this.instance = instance;
+    }
+
+    setType(frontendPath: string, backendUrl: string) {
+        this.type = {
+            frontendPath,
+            backendUrl
+        };
     }
 }

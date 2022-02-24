@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,29 @@ export class Utils {
 
     public static isEmpty(object: object) {
         return Object.keys(object).length === 0;
+    }
+
+    public static isLoading(map: {[key: string]: boolean}): boolean {
+        return Object.keys(map).some(k => map[k]);
+    }
+
+    public static doubleEncodeNamespace(namespace: string): string {
+        return encodeURIComponent(encodeURIComponent(namespace));
+    }
+
+    public static getFrontendPath(toscaType: string, namespace: string, localname: string) {
+        return '/' + this.join([toscaType, encodeURIComponent(namespace), localname]);
+    }
+
+    public static getBackendUrl(backendUrl: string, toscaType: string, namespace: string, localname: string) {
+        return this.join([backendUrl, toscaType, this.doubleEncodeNamespace(namespace), localname]);
+    }
+
+    public static join(path: string[]): string {
+        return path
+            .map(value => value.startsWith('/') ? value.substr(1) : value)
+            .map(value => value.endsWith('/') ? value.substr(0, value.length - 1) : value)
+            .join('/');
     }
 
     /**

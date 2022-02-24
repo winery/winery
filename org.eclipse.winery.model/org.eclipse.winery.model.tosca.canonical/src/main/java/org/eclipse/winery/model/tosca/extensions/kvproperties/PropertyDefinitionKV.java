@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,6 +33,9 @@ public class PropertyDefinitionKV implements Serializable {
     private Boolean required;
     private String defaultValue;
     private String description;
+    
+    private QName derivedFromType;
+    private String derivedFromStatus;
 
     @JsonProperty("constraint")
     private List<ConstraintClauseKV> constraintList;
@@ -126,12 +132,34 @@ public class PropertyDefinitionKV implements Serializable {
         this.constraintList = constraintList;
     }
     
+    public void setDerivedFromType(QName derivedFromType) {
+        this.derivedFromType = derivedFromType;
+    }
+    
+    public QName getDerivedFromType() {
+        return this.derivedFromType;
+    }
+    
+    public void setDerivedFromStatus(String derivedFromStatus) {
+        this.derivedFromStatus = derivedFromStatus;
+    }
+    
+    public String getDerivedFromStatus() {
+        return this.derivedFromStatus;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PropertyDefinitionKV that = (PropertyDefinitionKV) o;
-        return Objects.equals(key, that.key);
+        
+        return Objects.equals(key, that.key)
+            && Objects.equals(type, that.type)
+            && Objects.equals(required, that.required)
+            && Objects.equals(defaultValue, that.defaultValue)
+            && Objects.equals(description, that.description)
+            && ModelUtilities.compareUnorderedNullableLists(constraintList, that.constraintList);
     }
 
     @Override

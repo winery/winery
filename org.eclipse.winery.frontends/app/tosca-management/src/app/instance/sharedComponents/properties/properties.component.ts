@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,12 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Properties, PropertiesData } from './properties.types';
+import { PropertiesDefinitionService } from '../propertiesDefinition/propertiesDefinition.service';
+import { PropertiesDefinitionKVElement } from '../propertiesDefinition/propertiesDefinition.types';
+import { Utils } from '../../../wineryUtils/utils';
+import { NgForm } from '@angular/forms';
+
 
 @Component({
     selector: 'winery-properties',
@@ -25,46 +31,71 @@ import { HttpErrorResponse } from '@angular/common/http';
         'properties.component.css'
     ],
     providers: [
-        PropertiesService
+        PropertiesService,
+        PropertiesDefinitionService
     ]
 })
 export class PropertiesComponent implements OnInit {
-
     /**
-     * Why `any`? => see {@link PropertiesService.getProperties()}
+     * TODO: validate properties the same way as in topology modeler (e.g. also considering custom data types ...)
+     * see org.eclipse.winery.frontends/app/topologymodeler/src/app/properties/yaml-properties/yaml-properties.component.ts
      */
-    properties: any = null;
-    propertyKeys: string[] = [];
-    isXMLData: boolean;
-    loading = true;
+
+    form: NgForm;
+    definitions: PropertiesDefinitionKVElement[];
+    properties: Properties;
+    isXML: boolean;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
-    constructor(private service: PropertiesService, private notify: WineryNotificationService,
-                public sharedData: InstanceService) {
+    show = {};
+
+    _loading = {
+        getProperties: false,
+        saveProperties: false,
+        getDefinitions: false
+    };
+
+    constructor(
+        private propertiesService: PropertiesService,
+        private notify: WineryNotificationService,
+        public instanceService: InstanceService) {
     }
+
+    isLoading = () => Utils.isLoading(this._loading);
 
     ngOnInit() {
         this.getProperties();
+        this.getPropertiesDefinitions();
     }
 
     save() {
-        this.loading = true;
-        if (this.isXMLData) {
+        this._loading.saveProperties = true;
+        if (this.isXML) {
             this.properties = this.propertiesEditor.getData();
         }
-        this.service.saveProperties(this.properties, this.isXMLData)
+        this.propertiesService.saveProperties(this.properties, this.isXML)
             .subscribe(
                 () => this.handleSave(),
                 error => this.handleError(error)
-            );
+            ).add(() => this._loading.saveProperties = false);
     }
 
     private getProperties() {
-        this.service.getProperties()
+        this._loading.getProperties = true;
+        this.propertiesService.getProperties()
             .subscribe(
                 data => this.handleProperties(data),
                 error => this.handleError(error)
-            );
+            ).add(() => this._loading.getProperties = false);
+    }
+
+    private getPropertiesDefinitions() {
+        this._loading.getDefinitions = true;
+        this.propertiesService.getPropertiesDefinitions()
+            .subscribe(
+                data => this.definitions = data.winerysPropertiesDefinition.propertyDefinitionKVList,
+                error => this.handleError(error)
+            ).add(() => this._loading.getDefinitions = false);
     }
 
     private handleSave() {
@@ -72,24 +103,14 @@ export class PropertiesComponent implements OnInit {
         this.getProperties();
     }
 
-    private handleProperties(data: any) {
-        this.loading = false;
-        if (data.isXML) {
-            this.isXMLData = true;
-            this.properties = data.properties;
-        } else {
-            this.isXMLData = false;
-            if (data.properties) {
-                this.propertyKeys = Object.keys(data.properties);
-            }
-            if (this.propertyKeys.length > 0) {
-                this.properties = data.properties;
-            }
-        }
+    private handleProperties(data: PropertiesData) {
+        this.properties = data.properties;
+        this.isXML = data.isXML;
     }
 
     private handleError(error: HttpErrorResponse) {
-        this.loading = false;
         this.notify.error(error.message);
     }
+
+
 }
