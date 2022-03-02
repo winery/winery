@@ -80,9 +80,9 @@ public class PlanFileResource {
         if (oldRef != null && !ref.equals(oldRef)) {
             // new filename sent
             RestUtils.delete(oldRef);
-            PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
-            RestUtils.persist(this.res);
         }
+        PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
+        RestUtils.persist(this.res);
 
         return RestUtils.putContentToFile(ref, uploadedInputStream, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
     }
