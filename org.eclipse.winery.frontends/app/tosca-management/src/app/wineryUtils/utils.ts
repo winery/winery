@@ -34,7 +34,6 @@ export class Utils {
         for (let iterator = 0; iterator < length; iterator++) {
             state += elements.charAt(Math.floor(Math.random() * elements.length));
         }
-
         return state;
     }
 
