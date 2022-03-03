@@ -16,11 +16,10 @@ import { WineryVersion } from '../model/wineryVersion';
 import { QName } from '../../../../shared/src/app/model/qName';
 
 export class Utils {
-
     public static isEmpty(object: object) {
         return Object.keys(object).length === 0;
     }
-    
+
     public static doubleEncodeNamespace(namespace: string): string {
         return encodeURIComponent(encodeURIComponent(namespace));
     }
