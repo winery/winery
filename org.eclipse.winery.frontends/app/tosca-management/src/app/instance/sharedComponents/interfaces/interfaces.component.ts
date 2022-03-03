@@ -50,8 +50,7 @@ export class InterfacesComponent implements OnInit {
         getInheritedPropertiesDefinitions: false,
         getMergedPropertiesDefinitions: false,
     };
-
-    //loading = false;
+    
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
