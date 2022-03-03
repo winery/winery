@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,10 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-.text-red {
-    color: red
+export interface Properties {
+    [key: string]: string;
 }
 
-.border-red {
-    border: 1px solid red;
+export interface PropertiesData {
+    isXML: boolean;
+    properties: Properties;
 }

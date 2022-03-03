@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +23,8 @@ import { Visuals } from '../../models/visuals';
 import { DetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { NodeTemplateInstanceStates } from '../../models/enums';
+import { RequirementModel } from '../../models/requirementModel';
+import { CapabilityModel } from '../../models/capabilityModel';
 
 export interface SendPaletteOpenedAction extends Action {
     paletteOpened: boolean;
@@ -125,27 +127,23 @@ export interface SetPropertyAction extends Action {
     };
 }
 
-export interface SetCapabilityAction extends Action {
-    nodeCapability: {
+export interface SetCapability {
+    nodeCapabilities: {
         nodeId: string,
-        color: string,
-        id: string,
-        name: string,
-        namespace: string,
-        qName: string
+        capabilities: CapabilityModel[];
     };
 }
 
-export interface SetRequirementAction extends Action {
-    nodeRequirement: {
+export type SetCapabilityAction = SetCapability & Action;
+
+export interface SetRequirement {
+    nodeRequirements: {
         nodeId: string,
-        color: string,
-        id: string,
-        name: string,
-        namespace: string,
-        qName: string
+        requirements: RequirementModel[];
     };
 }
+
+export type SetRequirementAction = SetRequirement & Action;
 
 export interface SetDeploymentArtifactAction extends Action {
     nodeDeploymentArtifact: {
@@ -398,14 +396,14 @@ export class WineryActions {
             propertyData: data,
         }));
     setCapability: ActionCreator<SetCapabilityAction> =
-        ((newCapability) => ({
+        ((capabilities) => ({
             type: WineryActions.SET_CAPABILITY,
-            nodeCapability: newCapability
+            nodeCapabilities: capabilities
         }));
     setRequirement: ActionCreator<SetRequirementAction> =
-        ((newRequirement) => ({
+        ((requirements) => ({
             type: WineryActions.SET_REQUIREMENT,
-            nodeRequirement: newRequirement
+            nodeRequirements: requirements
         }));
     setDeploymentArtifact: ActionCreator<SetDeploymentArtifactAction> =
         ((newDepArt) => ({

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,9 +16,13 @@ import { Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
-import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
+import {
+    InheritedPropertiesDefinitionsApiData, PropertiesDefinitionsResourceApiData
+} from './propertiesDefinition.types';
 import { SelectData } from '../../../model/selectData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { InstanceService } from '../../instance.service';
+import { Utils } from '../../../wineryUtils/utils';
 
 @Injectable()
 export class PropertiesDefinitionService {
@@ -45,7 +49,7 @@ export class PropertiesDefinitionService {
      *
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
-    getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
+    getPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
         return this.sendJsonRequest<PropertiesDefinitionsResourceApiData>('/');
     }
 
@@ -75,6 +79,19 @@ export class PropertiesDefinitionService {
     }
 
     /**
+     * Gets the inherited properties definitions data.
+     *
+     * @returns {Observable<InheritedPropertiesDefinitionsApiData>}
+     */
+    getInheritedPropertiesDefinitions(): Observable<InheritedPropertiesDefinitionsApiData> {
+        return this.sendJsonRequest( '/inherited');
+    }
+
+    getMergedPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
+        return this.sendJsonRequest('/merged');
+    }
+
+    /**
      * Private method for DRY principle. It is used to get all kinds of data
      * for the specified sub path.
      *
@@ -85,3 +102,5 @@ export class PropertiesDefinitionService {
         return this.http.get<T>(backendBaseURL + this.route.url + requestPath);
     }
 }
+
+

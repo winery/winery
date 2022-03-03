@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,33 +11,78 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="!loading; else loadingIcon">
-    <div class="right">
-        <button [disabled]="!sharedData?.currentVersion?.editable || properties === null"
-                class="btn btn-primary"
-                (click)="save()">
-            Save
-        </button>
-    </div>
-    <div *ngIf="propertyKeys?.length > 0; else elseBlock">
-        <table>
-            <tr *ngFor="let prop of propertyKeys">
-                <td>
-                    <label class="propertyLabel" for="{{ prop }}">{{ prop }}</label>
-                </td>
-                <td>
-                    <input class="propertyInput" id="{{ prop }}" [(ngModel)]="properties[prop]">
-                </td>
-            </tr>
-        </table>
-    </div>
-    <ng-template #elseBlock>
-        <div *ngIf="properties === null">
-            The type does not have a “Properties Definition”.
-        </div>
-        <winery-editor #propertiesEditor *ngIf="isXMLData" [ngModel]="properties"></winery-editor>
-    </ng-template>
+<div *ngIf="!isLoading(); else loadingIcon">
+    
+    <ng-container *ngIf="!definitions.length">
+        <alert type="info">The type does not have any "Properties Definitions".</alert>
+    </ng-container>
+
+    <ng-container *ngIf="definitions.length">
+        <ng-container *ngIf="isXML">
+            <div class="right">
+                <button [disabled]="!instanceService?.currentVersion?.editable || properties === null"
+                        class="btn btn-primary"
+                        (click)="save()">
+                    Save
+                </button>
+            </div>
+            <winery-editor #propertiesEditor [ngModel]="properties"></winery-editor>
+        </ng-container>
+        <ng-container *ngIf="!isXML">
+            <form #form="ngForm" (ngSubmit)="save()" novalidate>
+                <div class="right">
+                    <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Save</button>
+                </div>
+                <br/>
+                <br/>
+                <div class="form-group">
+                    <ng-container *ngFor="let definition of definitions; index as index">
+                        <hr *ngIf="index !== 0"/>
+                        <label [for]="definition.key">Property "{{ definition.key }}"</label>
+                        <br/>
+                        <input
+                            [wineryPropertyDefinition]="definition"
+                            [id]="definition.key"
+                            [name]="definition.key"
+                            [(ngModel)]="properties[definition.key]"
+                            [class]="form.controls[definition.key]?.errors && form.touched? 'form-control text-red border-red' : 'form-control'"
+                        />
+                        <br/>
+                        <ng-container *ngIf="form.touched">
+                            <div *ngIf="form.controls[definition.key]?.errors?.required" class="text-red">
+                                Property is required!
+                            </div>
+                            <div *ngIf="form.controls[definition.key]?.errors?.type" class="text-red">
+                                <p>Invalid type!</p>
+                            </div>
+                            <div *ngIf="form.controls[definition.key]?.errors?.constraint" class="text-red">
+                                <p>The constraint "{{ form.controls[definition.key]?.errors?.constraint }}" is not satisfied!</p>
+                            </div>
+                        </ng-container>
+                        <p *ngIf="definition.type" class="text-muted">Type is "{{ definition.type }}".</p>
+                        <p *ngIf="!definition.type" class="text-muted">No type defined.</p>
+                        <p *ngIf="definition.defaultValue" class="text-muted">
+                            Default is "{{ definition.defaultValue }}".
+                        </p>
+                        <p *ngIf="!definition.defaultValue" class="text-muted">No default defined.</p>
+                        <p *ngIf="definition.description" class="text-muted">{{ definition.description }}</p>
+                        <ng-container *ngIf="definition.constraints?.length">
+                            <button type="button" (click)="show[definition.key] = !show[definition.key]">
+                                {{ show[definition.key] ? "Hide constraints" : "Show constraints" }}
+                            </button>
+                            <span [hidden]="!show[definition.key]">
+                                <br/>
+                                <br/>
+                                <pre>{{ definition.constraints | json }}</pre>
+                            </span>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </form>
+        </ng-container>
+    </ng-container>
 </div>
+
 <ng-template #loadingIcon>
     <div>
         <winery-loader></winery-loader>

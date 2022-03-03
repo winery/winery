@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,9 +15,11 @@ import { DifferenceStates, VersionUtils } from './ToscaDiff';
 import { Visuals } from './visuals';
 import { TPolicy } from './policiesModalData';
 import { Interface } from '../../../../tosca-management/src/app/model/interfaces';
-import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinition } from '../../../../tosca-management/src/app/instance/sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { Constraint } from '../../../../tosca-management/src/app/model/constraint';
 import { NodeTemplateInstanceStates } from './enums';
+import { CapabilityModel } from './capabilityModel';
+import { RequirementModel } from './requirementModel';
 
 export class AbstractTEntity {
     constructor(public documentation?: any,
@@ -85,8 +87,8 @@ export class TNodeTemplate extends AbstractTEntity {
                 otherAttributes?: any,
                 public x?: number,
                 public y?: number,
-                public capabilities?: any[],
-                public requirements?: any[],
+                public capabilities?: CapabilityModel[],
+                public requirements?: RequirementModel[],
                 public deploymentArtifacts?: any[],
                 public policies?: Array<TPolicy>,
                 public artifacts?: Array<TArtifact>,

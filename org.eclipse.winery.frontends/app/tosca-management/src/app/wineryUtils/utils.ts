@@ -21,6 +21,29 @@ export class Utils {
         return Object.keys(object).length === 0;
     }
 
+    public static isLoading(map: {[key: string]: boolean}): boolean {
+        return Object.keys(map).some(k => map[k]);
+    }
+
+    public static doubleEncodeNamespace(namespace: string): string {
+        return encodeURIComponent(encodeURIComponent(namespace));
+    }
+
+    public static getFrontendPath(toscaType: string, namespace: string, localname: string) {
+        return '/' + this.join([toscaType, encodeURIComponent(namespace), localname]);
+    }
+
+    public static getBackendUrl(backendUrl: string, toscaType: string, namespace: string, localname: string) {
+        return this.join([backendUrl, toscaType, this.doubleEncodeNamespace(namespace), localname]);
+    }
+
+    public static join(path: string[]): string {
+        return path
+            .map(value => value.startsWith('/') ? value.substr(1) : value)
+            .map(value => value.endsWith('/') ? value.substr(0, value.length - 1) : value)
+            .join('/');
+    }
+
     /**
      * Generates a random alphanumeric string of the given length.
      *
