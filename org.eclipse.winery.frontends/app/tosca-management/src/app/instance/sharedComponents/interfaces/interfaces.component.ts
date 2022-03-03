@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -45,12 +45,13 @@ import { Interfaces } from './interfaces';
 export class InterfacesComponent implements OnInit {
 
     _loading = {
+
         getPropertiesDefinitions: false,
         getInheritedPropertiesDefinitions: false,
         getMergedPropertiesDefinitions: false,
     };
 
-    loading = false;
+    //loading = false;
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
@@ -346,7 +347,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     save() {
-        this.loading = true;
+
         this.service.save(this.interfacesData)
             .subscribe(
                 () => this.handleSave(),
@@ -354,54 +355,49 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
-    isLoading = () => Utils.isLoading(this._loading) || this.loading;
+    isLoading = () => Utils.isLoading(this._loading);
 
-    toggleDiv(par: InheritedInterface) {
-        par.is_shown = !par.is_shown;
+    toggleDiv(parentInterface: InheritedInterface) {
+        parentInterface.is_shown = !parentInterface.is_shown;
     }
 
-    process_url(parentType: string) {
-        const prc = parentType.replace('{', '').split('}');
-        prc[0] = Utils.nodeTypeURL(parentType);
-        return prc;
+    processUrl(parentType: string) {
+        const process = parentType.replace('{', '').split('}');
+        process[0] = Utils.nodeTypeURL(parentType);
+        return process;
 
     }
 
-    override_interface(inh: InterfacesApiData) {
+    overrideInterface(inh: InterfacesApiData) {
         this.interfacesData.push(inh);
     }
 
-    interface_exist(inh: InterfacesApiData) {
-        const filtered_interface: InterfacesApiData[] = this.interfacesData.filter((value) => value.name === inh.name);
-        return filtered_interface.length === 0;
+    interfaceDoesNotExist(inh: InterfacesApiData): boolean {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        return !filteredInterface;
     }
 
-    override_operation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
-        const filtered_interface: InterfacesApiData[] = this.interfacesData.filter((value) => value.name === inh.name);
-        // console.log("filter",filtered_interface);
-        if (filtered_interface.length === 0) {
+    overrideOperation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+
+        if (filteredInterface) {
             const clone = JSON.parse(JSON.stringify(inh));
-            clone.operations = [] as InterfaceOperationApiData[];
-            clone.operations.push(op);
+            clone.operations = [op];
             this.interfacesData.push(clone);
         } else {
             const clone = JSON.parse(JSON.stringify(inh));
-            clone.operations = [] as InterfaceOperationApiData[];
-            clone.operations.push(op);
-            filtered_interface[0].operations.push(op);
-            // this.interfacesData.push(clone);
-
+            clone.operations = [op];
+            filteredInterface.operations.push(op);
         }
     }
 
-    operation_exists(inh: InterfacesApiData, op: InterfaceOperationApiData) {
-        const interface_result = this.interface_exist(inh);
-        if (interface_result) {
+    operationDoesNotExists(inh: InterfacesApiData, op: InterfaceOperationApiData): boolean {
+        if (this.interfaceDoesNotExist(inh)) {
             return true;
         } else {
-            const filtered_interface: InterfacesApiData[] = this.interfacesData.filter((value) => value.name === inh.name);
-            const filtered_operation: InterfaceOperationApiData[] = filtered_interface[0].operations.filter((oper) => op.name === oper.name);
-            return filtered_operation.length === 0;
+            const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+            const filteredOperation: InterfaceOperationApiData = filteredInterface.operations.find((oper) => op.name === oper.name);
+            return !filteredOperation;
         }
     }
 
@@ -410,17 +406,17 @@ export class InterfacesComponent implements OnInit {
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
         this.interfacesData = data ? data : [];
-        this.loading = false;
+
     }
 
     private handleInheritedInterfaceData(data: InheritedInterface[]) {
-        console.log(data);
+
         this.inheritedInterfacesData = data ? data : [];
-        this.loading = false;
+
     }
 
     private handleSave() {
-        this.loading = false;
+
         this.notify.success('Changes saved!');
 
         // If there is a generation of implementations in progress, generate those now.
@@ -441,7 +437,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleError(error: HttpErrorResponse) {
-        this.loading = false;
+
         this.generating = false;
         this.notify.error(error.error);
     }

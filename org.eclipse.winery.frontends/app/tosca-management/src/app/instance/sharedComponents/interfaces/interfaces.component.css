@@ -15,31 +15,23 @@
     margin-top: 15px;
 }
 
-
 .btn-parent {
     border: 2px;
     border-style: solid;
     border-color: #0000c0;
-
     padding: 0.9em;
     margin-top: 1px;
-
-
     width: 100%;
     display: block;
     margin-bottom: 2px;
-
 }
 
 .expand {
-
     width: 5px;
     float: left;
     height: 2px;
     border-style: none;
     font-size: large;
-
-
 }
 
 .btn-override {
@@ -50,13 +42,11 @@
 
 .arefclass {
     text-align: left;
-
 }
 
 h5 {
     text-align: left;
 }
-
 
 .nointerface {
     text-align: left;
@@ -64,8 +54,6 @@ h5 {
 
 .interfaces {
     text-align: left;
-
-
 }
 
 .table-class {
@@ -98,7 +86,6 @@ h5:after {
     content: "\a";
     content: "\a";
     white-space: pre;
-
 }
 
 table {

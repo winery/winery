@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -15,36 +15,31 @@
 <div class="localLoader" [class.hidden]="!isLoading()">
     <winery-loader></winery-loader>
 </div>
-<div *ngFor="let par of inheritedInterfacesData">
-    <button class="btn-parent" (click)="toggleDiv(par)">
-
+<div *ngFor="let parentInterface of inheritedInterfacesData">
+    <button class="btn-parent" (click)="toggleDiv(parentInterface)">
         <div class="arefclass">
-
             <button class="btn-parent expand">
-                <i [ngClass]="par.is_shown? 'glyphicon-minus': 'glyphicon-plus'"></i>
-
+                <i [ngClass]="parentInterface.is_shown? 'glyphicon-minus': 'glyphicon-plus'"></i>
             </button>
             <br>
-            <a href="{{process_url(par.parentType)[0]}}" title="{{par.parentType}}"
+            <a href="{{processUrl(parentInterface.parentType)[0]}}" title="{{parentInterface.parentType}}"
                style="color:#000000;text-decoration:underline;font-size: larger">
-                {{process_url(par.parentType)[1]}}
+                {{processUrl(parentInterface.parentType)[1]}}
             </a>
-
-
         </div>
-        <div *ngIf="par.is_shown">
-            <div *ngIf="par.interfaces && par.interfaces.length !=0 ; else nointerfaces">
+        <div *ngIf="parentInterface.is_shown">
+            <div *ngIf="parentInterface.interfaces && parentInterface.interfaces.length !=0 ; else noInterfaces">
                 <ul class="interfaces">
-                    <li *ngFor="let inh of par.interfaces">
-                        <label class="interfaces-labelclass">{{inh.name}}</label>
-                        <button *ngIf="interface_exist(inh)" class="btn-override" (click)="override_interface(inh)">
+                    <li *ngFor="let inheritedInterface of parentInterface.interfaces">
+                        <label class="interfaces-labelclass">{{inheritedInterface.name}}</label>
+                        <button *ngIf="interfaceDoesNotExist(inheritedInterface)" class="btn-override"
+                                (click)="overrideInterface(inheritedInterface)">
                             Override Interface
                         </button>
-
-                        <ul *ngFor="let op of inh.operations" class="ul-class">
-                            <label class="labelclass">{{op.name}}</label>
-                            <button *ngIf="operation_exists(inh,op)" class="btn-override"
-                                    (click)="override_operation(inh,op)">Override Operation
+                        <ul *ngFor="let operation of inheritedInterface.operations" class="ul-class">
+                            <label class="labelclass">{{operation.name}}</label>
+                            <button *ngIf="operationDoesNotExists(inheritedInterface,operation)" class="btn-override"
+                                    (click)="overrideOperation(inheritedInterface,operation)">Override Operation
                             </button>
                             <br/>
                             <div class="table-class">
@@ -55,12 +50,11 @@
                                         <th>Type</th>
                                         <th>Required</th>
                                     </tr>
-                                    <tr *ngFor="let inp of op.inputParameters">
-                                        <td>{{inp.name}}</td>
-                                        <td>{{inp.type}}</td>
-                                        <td>{{inp.required}}</td>
+                                    <tr *ngFor="let input of operation.inputParameters">
+                                        <td>{{input.name}}</td>
+                                        <td>{{input.type}}</td>
+                                        <td>{{input.required}}</td>
                                     </tr>
-
                                 </table>
                                 <br/>
                                 <table>
@@ -71,31 +65,26 @@
                                         <th>Type</th>
                                         <th>Required</th>
                                     </tr>
-                                    <tr *ngFor="let out of op.outputParameters">
-                                        <td>{{out.name}}</td>
-                                        <td>{{out.type}}</td>
-                                        <td>{{out.required}}</td>
+                                    <tr *ngFor="let output of operation.outputParameters">
+                                        <td>{{output.name}}</td>
+                                        <td>{{output.type}}</td>
+                                        <td>{{output.required}}</td>
                                     </tr>
-
                                 </table>
                             </div>
                             <br/>
-
-
                         </ul>
                     </li>
                 </ul>
             </div>
-            <ng-template #nointerfaces>
+            <ng-template #noInterfaces>
                 <div class="nointerface"> No interfaces available.</div>
             </ng-template>
         </div>
     </button>
 </div>
-
-
 <br>
-<div *ngIf="!loading">
+<div *ngIf="!isLoading()">
     <div class="right">
         <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">
             Save
