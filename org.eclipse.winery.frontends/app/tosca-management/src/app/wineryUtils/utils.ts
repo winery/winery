@@ -20,11 +20,7 @@ export class Utils {
     public static isEmpty(object: object) {
         return Object.keys(object).length === 0;
     }
-
-    public static isLoading(map: {[key: string]: boolean}): boolean {
-        return Object.keys(map).some(k => map[k]);
-    }
-
+    
     public static doubleEncodeNamespace(namespace: string): string {
         return encodeURIComponent(encodeURIComponent(namespace));
     }
