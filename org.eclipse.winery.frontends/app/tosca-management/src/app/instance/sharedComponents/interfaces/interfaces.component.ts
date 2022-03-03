@@ -43,32 +43,27 @@ import { Interfaces } from './interfaces';
     ],
 })
 export class InterfacesComponent implements OnInit {
-
     _loading = {
 
         getPropertiesDefinitions: false,
         getInheritedPropertiesDefinitions: false,
         getMergedPropertiesDefinitions: false,
     };
-    
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
     inheritedInterfacesData: InheritedInterface[];
-
     operations: InterfaceOperationApiData[] = null;
     inputParameters: InterfaceParameter[] = null;
     outputParameters: InterfaceParameter[] = null;
     selectedInterface: InterfacesApiData = null;
     selectedOperation: InterfaceOperationApiData = null;
-
     modalTitle: string;
     elementToRemove: string;
     validatorObject: WineryValidatorObject;
     @ViewChild('addIntOpModal') addIntOpModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addElementForm') addElementForm: NgForm;
-
     @ViewChild('generateImplModal') generateImplModal: ModalDirective;
     @ViewChild('itemList') interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
