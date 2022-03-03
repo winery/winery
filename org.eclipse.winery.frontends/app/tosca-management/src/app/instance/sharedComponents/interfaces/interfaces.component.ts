@@ -347,7 +347,6 @@ export class InterfacesComponent implements OnInit {
     }
 
     save() {
-
         this.service.save(this.interfacesData)
             .subscribe(
                 () => this.handleSave(),
@@ -365,7 +364,6 @@ export class InterfacesComponent implements OnInit {
         const process = parentType.replace('{', '').split('}');
         process[0] = Utils.nodeTypeURL(parentType);
         return process;
-
     }
 
     overrideInterface(inh: InterfacesApiData) {
