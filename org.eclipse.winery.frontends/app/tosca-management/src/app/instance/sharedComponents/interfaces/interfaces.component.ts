@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,7 +19,7 @@ import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicate
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
-import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
+import { InheritedInterface, InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InterfaceParameter } from '../../../model/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
@@ -43,25 +43,27 @@ import { Interfaces } from './interfaces';
     ],
 })
 export class InterfacesComponent implements OnInit {
+    _loading = {
 
-    loading = false;
+        getPropertiesDefinitions: false,
+        getInheritedPropertiesDefinitions: false,
+        getMergedPropertiesDefinitions: false,
+    };
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
-
+    inheritedInterfacesData: InheritedInterface[];
     operations: InterfaceOperationApiData[] = null;
     inputParameters: InterfaceParameter[] = null;
     outputParameters: InterfaceParameter[] = null;
     selectedInterface: InterfacesApiData = null;
     selectedOperation: InterfaceOperationApiData = null;
-
     modalTitle: string;
     elementToRemove: string;
     validatorObject: WineryValidatorObject;
     @ViewChild('addIntOpModal') addIntOpModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addElementForm') addElementForm: NgForm;
-
     @ViewChild('generateImplModal') generateImplModal: ModalDirective;
     @ViewChild('itemList') interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
@@ -82,6 +84,11 @@ export class InterfacesComponent implements OnInit {
         this.service.getInterfaces()
             .subscribe(
                 data => this.handleInterfacesApiData(data),
+                error => this.handleError(error)
+            );
+        this.service.getInheritedInterfaces()
+            .subscribe(
+                data => this.handleInheritedInterfaceData(data),
                 error => this.handleError(error)
             );
         this.toscaType = this.sharedData.toscaComponent.toscaType;
@@ -334,7 +341,6 @@ export class InterfacesComponent implements OnInit {
     }
 
     save() {
-        this.loading = true;
         this.service.save(this.interfacesData)
             .subscribe(
                 () => this.handleSave(),
@@ -342,16 +348,67 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
+    isLoading = () => Utils.isLoading(this._loading);
+
+    toggleDiv(parentInterface: InheritedInterface) {
+        parentInterface.is_shown = !parentInterface.is_shown;
+    }
+
+    processUrl(parentType: string) {
+        const process = parentType.replace('{', '').split('}');
+        process[0] = Utils.nodeTypeURL(parentType);
+        return process;
+    }
+
+    overrideInterface(inh: InterfacesApiData) {
+        this.interfacesData.push(inh);
+    }
+
+    interfaceDoesNotExist(inh: InterfacesApiData): boolean {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        return !filteredInterface;
+    }
+
+    overrideOperation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+
+        if (filteredInterface) {
+            const clone = JSON.parse(JSON.stringify(inh));
+            clone.operations = [op];
+            this.interfacesData.push(clone);
+        } else {
+            const clone = JSON.parse(JSON.stringify(inh));
+            clone.operations = [op];
+            filteredInterface.operations.push(op);
+        }
+    }
+
+    operationDoesNotExists(inh: InterfacesApiData, op: InterfaceOperationApiData): boolean {
+        if (this.interfaceDoesNotExist(inh)) {
+            return true;
+        } else {
+            const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+            const filteredOperation: InterfaceOperationApiData = filteredInterface.operations.find((oper) => op.name === oper.name);
+            return !filteredOperation;
+        }
+    }
+
     // endregion
 
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
         this.interfacesData = data ? data : [];
-        this.loading = false;
+
+    }
+
+    private handleInheritedInterfaceData(data: InheritedInterface[]) {
+
+        this.inheritedInterfacesData = data ? data : [];
+
     }
 
     private handleSave() {
-        this.loading = false;
+
         this.notify.success('Changes saved!');
 
         // If there is a generation of implementations in progress, generate those now.
@@ -372,7 +429,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleError(error: HttpErrorResponse) {
-        this.loading = false;
+
         this.generating = false;
         this.notify.error(error.error);
     }
@@ -429,4 +486,5 @@ export class InterfacesComponent implements OnInit {
     }
 
     // endregion
+
 }

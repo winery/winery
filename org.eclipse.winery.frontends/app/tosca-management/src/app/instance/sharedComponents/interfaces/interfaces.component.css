@@ -14,3 +14,93 @@
 .generateButtons {
     margin-top: 15px;
 }
+
+.btn-parent {
+    border: 2px;
+    border-style: solid;
+    border-color: #0000c0;
+    padding: 0.9em;
+    margin-top: 1px;
+    width: 100%;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.expand {
+    width: 5px;
+    float: left;
+    height: 2px;
+    border-style: none;
+    font-size: large;
+}
+
+.btn-override {
+    color: white;
+    background-color: #337ab7;
+    margin-left: 20px;
+}
+
+.arefclass {
+    text-align: left;
+}
+
+h5 {
+    text-align: left;
+}
+
+.nointerface {
+    text-align: left;
+}
+
+.interfaces {
+    text-align: left;
+}
+
+.table-class {
+    margin-left: 15px;
+}
+
+.ul-class {
+    padding-left: 0;
+    margin-right: 25px;
+}
+
+.labelclass {
+    align-items: stretch;
+    font-size: small;
+    color: black;
+    font-weight: bold;
+}
+
+.interfaces-labelclass {
+    font-size: larger;
+    font-family: arial, verdana, sans-serif;
+    font-weight: bold;
+}
+
+.labelclass::first-letter {
+    text-transform: uppercase;
+}
+
+h5:after {
+    content: "\a";
+    content: "\a";
+    white-space: pre;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+

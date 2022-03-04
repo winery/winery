@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,18 +11,94 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="loading">
+
+<div class="localLoader" [class.hidden]="!isLoading()">
     <winery-loader></winery-loader>
 </div>
+<div *ngFor="let parentInterface of inheritedInterfacesData">
+    <button class="btn-parent" (click)="toggleDiv(parentInterface)">
+        <div class="arefclass">
+            <button class="btn-parent expand">
+                <i [ngClass]="parentInterface.is_shown? 'glyphicon-minus': 'glyphicon-plus'"></i>
+            </button>
+            <br>
+            <a href="{{processUrl(parentInterface.parentType)[0]}}" title="{{parentInterface.parentType}}"
+               style="color:#000000;text-decoration:underline;font-size: larger">
+                {{processUrl(parentInterface.parentType)[1]}}
+            </a>
+        </div>
+        <div *ngIf="parentInterface.is_shown">
+            <div *ngIf="parentInterface.interfaces && parentInterface.interfaces.length !=0 ; else noInterfaces">
+                <ul class="interfaces">
+                    <li *ngFor="let inheritedInterface of parentInterface.interfaces">
+                        <label class="interfaces-labelclass">{{inheritedInterface.name}}</label>
+                        <button *ngIf="interfaceDoesNotExist(inheritedInterface)" class="btn-override"
+                                (click)="overrideInterface(inheritedInterface)">
+                            Override Interface
+                        </button>
+                        <ul *ngFor="let operation of inheritedInterface.operations" class="ul-class">
+                            <label class="labelclass">{{operation.name}}</label>
+                            <button *ngIf="operationDoesNotExists(inheritedInterface,operation)" class="btn-override"
+                                    (click)="overrideOperation(inheritedInterface,operation)">Override Operation
+                            </button>
+                            <br/>
+                            <div class="table-class">
+                                <table>
+                                    <label>Input Parameters</label>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                    </tr>
+                                    <tr *ngFor="let input of operation.inputParameters">
+                                        <td>{{input.name}}</td>
+                                        <td>{{input.type}}</td>
+                                        <td>{{input.required}}</td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table>
+                                    <label>Output Parameters</label>
 
-<div *ngIf="!loading">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                    </tr>
+                                    <tr *ngFor="let output of operation.outputParameters">
+                                        <td>{{output.name}}</td>
+                                        <td>{{output.type}}</td>
+                                        <td>{{output.required}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br/>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <ng-template #noInterfaces>
+                <div class="nointerface"> No interfaces available.</div>
+            </ng-template>
+        </div>
+    </button>
+</div>
+<br>
+<div *ngIf="!isLoading()">
     <div class="right">
-        <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">Save</button>
+        <button class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable" name="save" (click)="save()">
+            Save
+        </button>
     </div>
+
+
     <div style="display: inline-flex;">
+
+
         <winery-selectable-list #itemList
                                 [title]="'Interfaces'"
                                 [rows]="interfacesData"
+
                                 (addButtonClicked)="addInterface()"
                                 (selectionChanged)="onInterfaceSelect($event)"
                                 (removeButtonClicked)="removeInterface()">
