@@ -15,13 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      docker_run_required: ${{ (github.repository_owner == 'OpenTOSCA' && (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/tags'))) }}
     steps:
       - id: skip_check
         uses: fkirc/skip-duplicate-actions@master
-
+  
   java11:
     needs: pre_job
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    if: |
+      needs.pre_job.outputs.should_skip != 'true'
+      || needs.pre_job.outputs.docker_run_required == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -42,9 +45,7 @@ jobs:
         run: mvn -Pjava -B package
       - name: Upload binary to artifacts
         uses: actions/upload-artifact@v2
-        if: |
-          github.repository_owner == 'OpenTOSCA' &&
-          (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/tags'))
+        if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
           path: ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
@@ -57,7 +58,9 @@ jobs:
 
   frontend:
     needs: pre_job
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    if: |
+      needs.pre_job.outputs.should_skip != 'true'
+      || needs.pre_job.outputs.docker_run_required == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -71,9 +74,7 @@ jobs:
         run: mvn -Pfrontend -B package
       - name: Upload binary to artifacts
         uses: actions/upload-artifact@v2
-        if: |
-          github.repository_owner == 'OpenTOSCA' &&
-          (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/tags'))
+        if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
           path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
@@ -81,9 +82,7 @@ jobs:
   dockerBuild:
     needs: [ java11, frontend ]
     runs-on: ubuntu-latest
-    if: | 
-      github.repository_owner == 'OpenTOSCA' &&
-      (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/tags'))
+    if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -98,7 +97,7 @@ jobs:
         id: vars
         run: |
           DOCKER_IMAGE=opentosca/winery
-          VERSION=m1test
+          VERSION=latest
           SHORTREF=${GITHUB_SHA::8}
 
           # If this is git tag, use the tag name
