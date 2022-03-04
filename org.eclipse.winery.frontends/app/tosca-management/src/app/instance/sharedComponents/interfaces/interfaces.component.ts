@@ -361,7 +361,11 @@ export class InterfacesComponent implements OnInit {
     }
 
     overrideInterface(inh: InterfacesApiData) {
-        this.interfacesData.push(inh);
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        if (!filteredInterface) {
+            const clone = JSON.parse(JSON.stringify(inh));
+            this.interfacesData.push(clone);
+         } 
     }
 
     interfaceDoesNotExist(inh: InterfacesApiData): boolean {
