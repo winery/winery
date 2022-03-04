@@ -97,7 +97,7 @@ jobs:
         id: vars
         run: |
           DOCKER_IMAGE=opentosca/winery
-          VERSION=m1test
+          VERSION=latest
           SHORTREF=${GITHUB_SHA::8}
 
           # If this is git tag, use the tag name
