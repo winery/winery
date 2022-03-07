@@ -374,7 +374,7 @@ export class InterfacesComponent implements OnInit {
     }
 
     overrideOperation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
-        let filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
         if (!filteredInterface) {
             const clone = JSON.parse(JSON.stringify(inh));
             const operationClone: InterfaceOperationApiData = JSON.parse(JSON.stringify(op));
