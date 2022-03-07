@@ -374,16 +374,15 @@ export class InterfacesComponent implements OnInit {
     }
 
     overrideOperation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
-        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
-
+        let filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
         if (!filteredInterface) {
             const clone = JSON.parse(JSON.stringify(inh));
-            clone.operations = [op];
+            const operationClone: InterfaceOperationApiData = JSON.parse(JSON.stringify(op));
+            clone.operations = [operationClone];
             this.interfacesData.push(clone);
         } else {
-            const clone = JSON.parse(JSON.stringify(inh));
-            clone.operations = [op];
-            filteredInterface.operations.push(op);
+            const clone = JSON.parse(JSON.stringify(op));
+            filteredInterface.operations.push(clone);
         }
     }
 
