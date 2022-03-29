@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 
 public class YamlToscaExportUtil extends ToscaExportUtil {
 
-    private static final boolean EXPORT_NORMATIVE_TYPES = false;
+    private static final boolean EXPORT_NORMATIVE_TYPES = true;
     private static final Logger LOGGER = LoggerFactory.getLogger(YamlToscaExportUtil.class);
 
     @Override
