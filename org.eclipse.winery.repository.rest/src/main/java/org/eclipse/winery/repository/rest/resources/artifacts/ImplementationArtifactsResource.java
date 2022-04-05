@@ -16,6 +16,8 @@ package org.eclipse.winery.repository.rest.resources.artifacts;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,12 +26,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
+import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TOperation;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 
@@ -69,16 +75,52 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 
         boolean isNodeTypeImplementation = this.res instanceof NodeTypeImplementationResource;
         QName type = RestUtils.getType(this.res);
-        List<Object> interfaces = new ArrayList<>();
-
+        List<InterfacesSelectApiData> interfaces = new ArrayList<>();
         if (isNodeTypeImplementation) {
-            NodeTypeResource typeResource = new NodeTypesResource().getComponentInstanceResource(type);
-            interfaces.addAll(typeResource.getInterfaces().onGet("true"));
+            TNodeType nodeType = RepositoryFactory.getRepository().getElement(new NodeTypeId(type));
+            boolean handlingNodeType;
+            do {
+                
+                if (interfaces.isEmpty()) {
+                    interfaces = RestUtils.getInterfacesSelectApiData(nodeType.getInterfaces());
+                } else {
+                    for (TInterface notContainedInterface : nodeType.getInterfaces()) {
+                        Optional<InterfacesSelectApiData> foundInterface = interfaces.stream()
+                            .filter(containedInterface -> containedInterface.getId().equals(notContainedInterface.getName()))
+                            .findFirst();
+
+                        if (foundInterface.isPresent()) {
+                            InterfacesSelectApiData apiDateInterface = foundInterface.get();
+                            List<TOperation> notContainedOperations = notContainedInterface.getOperations().stream()
+                                .filter(operation -> !apiDateInterface.operations.contains(operation.getName()))
+                                .collect(Collectors.toList());
+                            
+                            if (!notContainedOperations.isEmpty()) {
+                                apiDateInterface.operations.addAll(
+                                    notContainedOperations.stream()
+                                        .map(TOperation::getName)
+                                        .collect(Collectors.toList())
+                                );
+                            }
+                        } else {                                
+                            interfaces.add(RestUtils.convertInterfaceToSelectApiData(notContainedInterface));
+                        }
+                    }
+                }
+
+                if (nodeType.getDerivedFrom() != null) {
+                    QName parentType = nodeType.getDerivedFrom().getTypeAsQName();
+                    handlingNodeType = true;
+                    nodeType = RepositoryFactory.getRepository().getElement(new NodeTypeId(parentType));
+                }else{
+                    handlingNodeType = false;
+                }
+            } while (handlingNodeType);
         } else {
             RelationshipTypeResource typeResource = new RelationshipTypesResource().getComponentInstanceResource(type);
-            interfaces.addAll(typeResource.getInterfaces().onGet("true"));
-            interfaces.addAll(typeResource.getSourceInterfaces().onGet("true"));
-            interfaces.addAll(typeResource.getTargetInterfaces().onGet("true"));
+           // interfaces.addAll(typeResource.getInterfaces().onGet("true"));
+            // interfaces.addAll(typeResource.getSourceInterfaces().onGet("true"));
+            // interfaces.addAll(typeResource.getTargetInterfaces().onGet("true"));
         }
         return interfaces;
     }
@@ -94,3 +136,4 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
         return this.getEntityResourceFromEncodedId(id);
     }
 }
+

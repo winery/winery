@@ -76,9 +76,11 @@ import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -107,6 +109,7 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsR
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
+import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
@@ -120,6 +123,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1086,5 +1090,21 @@ public class RestUtils {
 
         return null;
     }
-    
+
+
+    public static List<InterfacesSelectApiData> getInterfacesSelectApiData(List<TInterface> interfaceList) {
+        List<InterfacesSelectApiData> list = new ArrayList<>();
+        for (TInterface item : interfaceList) {
+            list.add(convertInterfaceToSelectApiData(item));
+        }
+        return list;
+    }
+
+    public static InterfacesSelectApiData convertInterfaceToSelectApiData(TInterface notContainedInterface) {
+        List<String> ops = new ArrayList<>();
+        for (TOperation op : notContainedInterface.getOperations()) {
+            ops.add(op.getName());
+        }
+        return new InterfacesSelectApiData(notContainedInterface.getName(), ops);
+    }
 }
