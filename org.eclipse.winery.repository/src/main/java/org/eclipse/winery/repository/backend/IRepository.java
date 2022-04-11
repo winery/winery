@@ -1125,7 +1125,7 @@ public interface IRepository extends IWineryRepositoryCommon {
         RepositoryCorruptException {
         Collection<DefinitionsChildId> referencedDefinitionsChildIds;
 
-        // First of all, handle the concrete types
+        // First, handle the concrete types
         if (id instanceof ServiceTemplateId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ServiceTemplateId) id);
         } else if (id instanceof NodeTypeId) {
