@@ -17,68 +17,80 @@
 </div>
 <div *ngFor="let parentInterface of inheritedInterfacesData">
     <button class="btn-parent" (click)="toggleDiv(parentInterface)">
-        <div class="arefclass">
-            <button class="btn-parent expand">
-                <i [ngClass]="parentInterface.is_shown? 'glyphicon-minus': 'glyphicon-plus'"></i>
-            </button>
-            <br>
-            <a href="{{processUrl(parentInterface.parentType)[0]}}" title="{{parentInterface.parentType}}"
-               style="color:#000000;text-decoration:underline;font-size: larger">
-                {{processUrl(parentInterface.parentType)[1]}}
+        <div class="parentTypeContainer">
+            <i class="glyphicon" [ngClass]="parentInterface.is_shown? 'glyphicon-minus' : 'glyphicon-plus'"></i>
+            Show interfaces inherited from
+            <a href="{{ processUrl(parentInterface.parentType)[0] }}"
+               title="Show interfaces inherited from {{parentInterface.parentType}}">
+                <b>{{ processUrl(parentInterface.parentType)[1] }}</b>
             </a>
         </div>
-        <div *ngIf="parentInterface.is_shown">
-            <div *ngIf="parentInterface.interfaces && parentInterface.interfaces.length !=0 ; else noInterfaces">
+        <div *ngIf="parentInterface.is_shown" class="parentInterfaceContainer">
+            <div *ngIf="parentInterface.interfaces && parentInterface.interfaces.length > 0; else noInterfaces">
                 <ul class="interfaces">
                     <li *ngFor="let inheritedInterface of parentInterface.interfaces">
-                        <label class="interfaces-labelclass">{{inheritedInterface.name}}</label>
-                        <button *ngIf="interfaceDoesNotExist(inheritedInterface)" class="btn-override"
-                                (click)="overrideInterface(inheritedInterface)">
-                            Override Interface
-                        </button>
+                        <label class="interfacesLabel">
+                            {{ inheritedInterface.name }}
+                            <button *ngIf="interfaceDoesNotExist(inheritedInterface)" class="btn btn-info btn-xs"
+                                    (click)="overrideInterface(inheritedInterface)">
+                                Override Interface
+                            </button>
+                        </label>
                         <ul *ngFor="let operation of inheritedInterface.operations" class="ul-class">
-                            <label class="labelclass">{{operation.name}}</label>
-                            <button *ngIf="operationDoesNotExists(inheritedInterface,operation)" class="btn-override"
+                            <label class="operationLabel">{{operation.name}}</label>
+                            <button *ngIf="operationDoesNotExists(inheritedInterface,operation)"
+                                    class="btn btn-info btn-xs"
                                     (click)="overrideOperation(inheritedInterface,operation)">Override Operation
                             </button>
                             <br/>
                             <div class="table-class">
-                                <table>
-                                    <label>Input Parameters</label>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Required</th>
-                                    </tr>
-                                    <tr *ngFor="let input of operation.inputParameters">
-                                        <td>{{input.name}}</td>
-                                        <td>{{input.type}}</td>
-                                        <td>{{input.required}}</td>
-                                    </tr>
-                                </table>
+                                <div *ngIf="operation.inputParameters && operation.inputParameters.length > 0;
+                                else noInputParameters">
+                                    <table>
+                                        <label>Input Parameters</label>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                        </tr>
+                                        <tr *ngFor="let input of operation.inputParameters">
+                                            <td>{{ input.name }}</td>
+                                            <td>{{ input.type }}</td>
+                                            <td>{{ input.required }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <ng-template #noInputParameters>
+                                    No input parameters defined.
+                                </ng-template>
                                 <br/>
-                                <table>
-                                    <label>Output Parameters</label>
-
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Required</th>
-                                    </tr>
-                                    <tr *ngFor="let output of operation.outputParameters">
-                                        <td>{{output.name}}</td>
-                                        <td>{{output.type}}</td>
-                                        <td>{{output.required}}</td>
-                                    </tr>
-                                </table>
+                                <div *ngIf="operation.outputParameters && operation.outputParameters.length > 0;
+                                 else noOutputParameters">
+                                    <table>
+                                        <label>Output Parameters</label>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                        </tr>
+                                        <tr *ngFor="let output of operation.outputParameters">
+                                            <td>{{ output.name }}</td>
+                                            <td>{{ output.type }}</td>
+                                            <td>{{ output.required }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <ng-template #noOutputParameters>
+                                    No output parameters defined.
+                                </ng-template>
                             </div>
                             <br/>
                         </ul>
                     </li>
                 </ul>
             </div>
-            <ng-template #noInterfaces>
-                <div class="nointerface"> No interfaces available.</div>
+            <ng-template #noInterfaces class="noInterface">
+                No interfaces defined.
             </ng-template>
         </div>
     </button>
@@ -91,10 +103,7 @@
         </button>
     </div>
 
-
     <div style="display: inline-flex;">
-
-
         <winery-selectable-list #itemList
                                 [title]="'Interfaces'"
                                 [rows]="interfacesData"

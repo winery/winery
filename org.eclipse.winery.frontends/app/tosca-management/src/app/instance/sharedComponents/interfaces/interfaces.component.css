@@ -16,14 +16,12 @@
 }
 
 .btn-parent {
-    border: 2px;
-    border-style: solid;
-    border-color: #0000c0;
+    border-radius: 5px;
+    border: 1px solid;
     padding: 0.9em;
-    margin-top: 1px;
     width: 100%;
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
 }
 
 .expand {
@@ -40,20 +38,27 @@
     margin-left: 20px;
 }
 
-.arefclass {
+.parentTypeContainer {
     text-align: left;
+    font-size: larger;
 }
 
 h5 {
     text-align: left;
 }
 
-.nointerface {
+.noInterface {
     text-align: left;
+}
+
+.parentInterfaceContainer {
+    padding-top: 20px;
 }
 
 .interfaces {
     text-align: left;
+    list-style-type: none;
+    padding-left: 10px;
 }
 
 .table-class {
@@ -61,29 +66,28 @@ h5 {
 }
 
 .ul-class {
-    padding-left: 0;
-    margin-right: 25px;
+    padding-left: 10px;
 }
 
-.labelclass {
+.operationLabel {
     align-items: stretch;
-    font-size: small;
+    font-size: larger;
     color: black;
     font-weight: bold;
+    padding-right: 10px;
 }
 
-.interfaces-labelclass {
+.interfacesLabel {
     font-size: larger;
     font-family: arial, verdana, sans-serif;
     font-weight: bold;
 }
 
-.labelclass::first-letter {
+.operationLabel::first-letter {
     text-transform: uppercase;
 }
 
 h5:after {
-    content: "\a";
     content: "\a";
     white-space: pre;
 }
