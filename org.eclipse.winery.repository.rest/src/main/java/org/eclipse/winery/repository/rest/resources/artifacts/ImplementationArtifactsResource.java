@@ -27,23 +27,28 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
+import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ImplementationArtifact instead of TImplementationArtifact has to be used because of difference in the XSD at
  * tImplementationArtifacts vs. tDeploymentArtifacts
  */
 public class ImplementationArtifactsResource extends GenericArtifactsResource<ImplementationArtifactResource, TImplementationArtifact> {
+
+    private final static Logger logger = LoggerFactory.getLogger(ImplementationArtifactsResource.class);
 
     private List<TImplementationArtifact> implementationArtifacts;
 
@@ -78,51 +83,71 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
         List<InterfacesSelectApiData> interfaces = new ArrayList<>();
         if (isNodeTypeImplementation) {
             TNodeType nodeType = RepositoryFactory.getRepository().getElement(new NodeTypeId(type));
-            boolean handlingNodeType;
-            do {
-                
-                if (interfaces.isEmpty()) {
-                    interfaces = RestUtils.getInterfacesSelectApiData(nodeType.getInterfaces());
-                } else {
-                    for (TInterface notContainedInterface : nodeType.getInterfaces()) {
-                        Optional<InterfacesSelectApiData> foundInterface = interfaces.stream()
-                            .filter(containedInterface -> containedInterface.getId().equals(notContainedInterface.getName()))
-                            .findFirst();
+            boolean typeToHandle;
 
-                        if (foundInterface.isPresent()) {
-                            InterfacesSelectApiData apiDateInterface = foundInterface.get();
-                            List<TOperation> notContainedOperations = notContainedInterface.getOperations().stream()
-                                .filter(operation -> !apiDateInterface.operations.contains(operation.getName()))
-                                .collect(Collectors.toList());
-                            
-                            if (!notContainedOperations.isEmpty()) {
-                                apiDateInterface.operations.addAll(
-                                    notContainedOperations.stream()
-                                        .map(TOperation::getName)
-                                        .collect(Collectors.toList())
-                                );
-                            }
-                        } else {                                
-                            interfaces.add(RestUtils.convertInterfaceToSelectApiData(notContainedInterface));
-                        }
+            if (nodeType == null) {
+                logger.error("Repository corrupt! Relationship Type '{}' cannot be found!", type);
+            } else {
+                do {
+                    mergeInterfaces(interfaces, nodeType.getInterfaces());
+
+                    if (nodeType.getDerivedFrom() != null) {
+                        QName parentType = nodeType.getDerivedFrom().getType();
+                        nodeType = RepositoryFactory.getRepository().getElement(new NodeTypeId(parentType));
+                        typeToHandle = true;
+                    } else {
+                        typeToHandle = false;
                     }
-                }
-
-                if (nodeType.getDerivedFrom() != null) {
-                    QName parentType = nodeType.getDerivedFrom().getTypeAsQName();
-                    handlingNodeType = true;
-                    nodeType = RepositoryFactory.getRepository().getElement(new NodeTypeId(parentType));
-                }else{
-                    handlingNodeType = false;
-                }
-            } while (handlingNodeType);
+                } while (typeToHandle);
+            }
         } else {
-            RelationshipTypeResource typeResource = new RelationshipTypesResource().getComponentInstanceResource(type);
-           // interfaces.addAll(typeResource.getInterfaces().onGet("true"));
-            // interfaces.addAll(typeResource.getSourceInterfaces().onGet("true"));
-            // interfaces.addAll(typeResource.getTargetInterfaces().onGet("true"));
+            TRelationshipType relationshipType = RepositoryFactory.getRepository().getElement(new RelationshipTypeId(type));
+            boolean typeToHandle;
+
+            if (relationshipType == null) {
+                logger.error("Repository corrupt! Relationship Type '{}' cannot be found!", type);
+            } else {
+                do {
+                    mergeInterfaces(interfaces, relationshipType.getInterfaces());
+                    mergeInterfaces(interfaces, relationshipType.getSourceInterfaces());
+                    mergeInterfaces(interfaces, relationshipType.getTargetInterfaces());
+
+                    if (relationshipType.getDerivedFrom() != null) {
+                        QName parentType = relationshipType.getDerivedFrom().getTypeAsQName();
+                        relationshipType = RepositoryFactory.getRepository().getElement(new RelationshipTypeId(parentType));
+                        typeToHandle = true;
+                    } else {
+                        typeToHandle = false;
+                    }
+                } while (typeToHandle);
+            }
         }
         return interfaces;
+    }
+
+    private void mergeInterfaces(List<InterfacesSelectApiData> interfaces, List<TInterface> interfacesList) {
+        if (interfacesList != null) {
+            for (TInterface notContainedInterface : interfacesList) {
+                Optional<InterfacesSelectApiData> foundInterface = interfaces.stream()
+                    .filter(containedInterface -> containedInterface.getId().equals(notContainedInterface.getName()))
+                    .findFirst();
+
+                if (foundInterface.isPresent()) {
+                    InterfacesSelectApiData apiDateInterface = foundInterface.get();
+                    List<TOperation> notContainedOperations = notContainedInterface.getOperations().stream()
+                        .filter(operation -> !apiDateInterface.operations.contains(operation.getName()))
+                        .collect(Collectors.toList());
+
+                    if (!notContainedOperations.isEmpty()) {
+                        apiDateInterface.operations.addAll(notContainedOperations.stream()
+                            .map(TOperation::getName)
+                            .collect(Collectors.toList()));
+                    }
+                } else {
+                    interfaces.add(RestUtils.convertInterfaceToSelectApiData(notContainedInterface));
+                }
+            }
+        }
     }
 
     @Override
