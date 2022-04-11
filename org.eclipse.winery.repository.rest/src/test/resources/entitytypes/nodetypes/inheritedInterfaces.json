@@ -1,0 +1,74 @@
+[
+    {
+        "parentType": "{http://plain.winery.org/pattern-based/nodetypes}AbstractNodeTypeWithProperties_1-w1-wip1",
+        "interfaces": [
+        ]
+    },
+    {
+        "parentType": "{http://plain.winery.opentosca.org/nodetypes}AbstractNodeTypeWithInterfaces_w1-wip1",
+        "interfaces": [
+            {
+                "operations": [
+                    {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "name": "install"
+                    },
+                    {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "name": "start"
+                    },
+                    {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "name": "stop"
+                    },
+                    {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "name": "uninstall"
+                    }
+                ],
+                "name": "http://opentosca.org/interfaces/lifecycle"
+            },
+            {
+                "operations": [
+                    {
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "outputParameters": [
+                            {
+                                "name": "success",
+                                "type": "boolean",
+                                "required": "YES"
+                            }
+                        ],
+                        "name": "test"
+                    }
+                ],
+                "name": "secondInterface"
+            }
+        ]
+    }
+]

@@ -104,6 +104,10 @@ td, th {
     padding: 8px;
 }
 
+hr {
+    border-color: #aaa;
+}
+
 tr:nth-child(even) {
     background-color: #dddddd;
 }

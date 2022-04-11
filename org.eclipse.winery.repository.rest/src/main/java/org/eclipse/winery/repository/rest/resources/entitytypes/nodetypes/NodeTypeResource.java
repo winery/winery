@@ -25,7 +25,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.IdNames;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
@@ -58,6 +57,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
     public TNodeType getNodeType() {
         return (TNodeType) this.getElement();
     }
+
     /**
      * sub-resources
      **/

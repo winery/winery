@@ -123,7 +123,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1090,7 +1089,6 @@ public class RestUtils {
 
         return null;
     }
-
 
     public static List<InterfacesSelectApiData> getInterfacesSelectApiData(List<TInterface> interfaceList) {
         List<InterfacesSelectApiData> list = new ArrayList<>();

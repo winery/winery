@@ -29,6 +29,7 @@
             <div *ngIf="parentInterface.interfaces && parentInterface.interfaces.length > 0; else noInterfaces">
                 <ul class="interfaces">
                     <li *ngFor="let inheritedInterface of parentInterface.interfaces">
+                        <hr/>
                         <label class="interfacesLabel">
                             {{ inheritedInterface.name }}
                             <button *ngIf="interfaceDoesNotExist(inheritedInterface)" class="btn btn-info btn-xs"

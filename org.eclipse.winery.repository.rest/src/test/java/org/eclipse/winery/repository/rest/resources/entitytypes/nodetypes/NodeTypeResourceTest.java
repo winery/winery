@@ -192,4 +192,11 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
         this.assertGet("nodetypes/http%253A%252F%252Fopentosca.org%252Fnodetypes/NodeTypeWith5Versions_0.3.4-w3?versions",
             "entitytypes/nodetypes/nodeTypeWith5Versions.json");
     }
+    
+    @Test
+    public void getInheritedInterfaces() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("nodetypes/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypes/ConcreteTypeOverridingInterfaceOperations_w1-wip1/interfaces/inherited_interfaces",
+            "entitytypes/nodetypes/inheritedInterfaces.json");
+    }
 }
