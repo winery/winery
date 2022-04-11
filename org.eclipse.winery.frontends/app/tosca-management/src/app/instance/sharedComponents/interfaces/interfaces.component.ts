@@ -365,7 +365,7 @@ export class InterfacesComponent implements OnInit {
         if (!filteredInterface) {
             const clone = JSON.parse(JSON.stringify(inh));
             this.interfacesData.push(clone);
-         } 
+        }
     }
 
     interfaceDoesNotExist(inh: InterfacesApiData): boolean {
