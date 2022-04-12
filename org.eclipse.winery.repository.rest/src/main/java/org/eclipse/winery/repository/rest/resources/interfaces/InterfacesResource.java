@@ -36,7 +36,6 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.InheritedInterfaces;
-import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
@@ -103,16 +102,7 @@ public class InterfacesResource {
             return this.interfaces;
         }
 
-        List<InterfacesSelectApiData> list = new ArrayList<>();
-        for (TInterface item : this.interfaces) {
-            List<String> ops = new ArrayList<>();
-            for (TOperation op : item.getOperations()) {
-                ops.add(op.getName());
-            }
-            list.add(new InterfacesSelectApiData(item.getName(), ops));
-        }
-
-        return list;
+        return RestUtils.getInterfacesSelectApiData(this.interfaces);
     }
 
     @GET
