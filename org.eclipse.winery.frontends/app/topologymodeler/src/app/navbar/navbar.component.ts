@@ -94,24 +94,13 @@ export class NavbarComponent implements OnDestroy {
                 public configurationService: WineryRepositoryConfigurationService,
                 private versionSliderService: VersionSliderService,
                 private che: CheService) {
-        this.subscriptions.push(ngRedux.select((state) => {
-            return state.topologyRendererState;
-        })
-            .subscribe((newButtonsState) => {
-                this.setButtonsState(newButtonsState);
-            }));
-        this.subscriptions.push(ngRedux.select((currentState) => {
-            return currentState.wineryState.currentJsonTopology;
-        })
-            .subscribe((topologyTemplate) => {
-                this.currentTopologyTemplate = topologyTemplate;
-            }));
-        this.subscriptions.push(ngRedux.select((currentState) => {
-            return currentState.wineryState.unsavedChanges;
-        })
-            .subscribe((unsavedChanges) => {
-                this.unsavedChanges = unsavedChanges;
-            }));
+        this.subscriptions.push(ngRedux.select((state) => state.topologyRendererState)
+            .subscribe((newButtonsState) => this.setButtonsState(newButtonsState)));
+        this.subscriptions.push(ngRedux.select((currentState) => currentState.wineryState.currentJsonTopology)
+            .subscribe((topologyTemplate) => this.currentTopologyTemplate = topologyTemplate));
+        this.subscriptions.push(ngRedux.select((currentState) => currentState.wineryState.unsavedChanges)
+            .subscribe((unsavedChanges) => this.unsavedChanges = unsavedChanges));
+
         this.hotkeysService.add(new Hotkey('mod+s', (event: KeyboardEvent): boolean => {
             event.stopPropagation();
             this.saveTopologyTemplateToRepository();
@@ -178,6 +167,7 @@ export class NavbarComponent implements OnDestroy {
      * @param event -- The click event of a button.
      */
     toggleButton(event) {
+        event.preventDefault();
         switch (event.target.id) {
             case 'targetLocations': {
                 this.ngRedux.dispatch(this.actions.toggleTargetLocations());

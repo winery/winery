@@ -86,7 +86,6 @@ export const WineryReducer =
                     entityTypes: (<AddEntityTypesAction>action).types,
                 };
             case WineryActions.SEND_PALETTE_OPENED:
-            case WineryActions.SEND_PALETTE_OPENED:
                 const paletteOpened: boolean = (<SendPaletteOpenedAction>action).paletteOpened;
 
                 return <WineryState>{
