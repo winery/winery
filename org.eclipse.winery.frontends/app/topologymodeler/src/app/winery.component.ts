@@ -212,7 +212,6 @@ export class WineryComponent implements OnInit, AfterViewInit {
         this.ngRedux.dispatch(this.wineryActions.setLastSavedJsonTopology(this.ngRedux.getState().wineryState.currentJsonTopology));
         this.topologyService.enableCheck();
         window.addEventListener('beforeunload', ((e) => {
-            debugger
             if (this.ngRedux.getState().wineryState.unsavedChanges) {
                 e.preventDefault();
                 e.returnValue = '';
