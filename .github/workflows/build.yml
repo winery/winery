@@ -49,8 +49,8 @@ jobs:
         with:
           name: artifacts
           path: |
-            **/org.eclipse.winery.repository.rest/target/winery.war
-            **/org.eclipse.winery.cli/target/winery-cli.jar
+            ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
+            ${{ github.workspace }}/org.eclipse.winery.cli/target/winery-cli.jar
       - name: Run codacy-coverage-reporter
         if: ${{ github.repository_owner == 'OpenTOSCA' }}
         uses: codacy/codacy-coverage-reporter-action@master
@@ -79,7 +79,7 @@ jobs:
         if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
-          path: '**/org.eclipse.winery.frontends/target/*.war'
+          path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
 
   dockerBuild:
     needs: [ java11, frontend ]
