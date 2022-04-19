@@ -49,8 +49,8 @@ jobs:
         with:
           name: artifacts
           path: |
-            ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
-            ${{ github.workspace }}/org.eclipse.winery.cli/target/winery-cli.jar
+            org.eclipse.winery.repository.rest/target/winery.war
+            org.eclipse.winery.cli/target/winery-cli.jar
       - name: Run codacy-coverage-reporter
         if: ${{ github.repository_owner == 'OpenTOSCA' }}
         uses: codacy/codacy-coverage-reporter-action@master
