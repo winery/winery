@@ -37,9 +37,8 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
     }
 
     /**
-     * Even if both node type implementations and relationship type
-     * implementations have implementation artifacts, there is no common
-     * supertype. To avoid endless casts, we just implement the method here
+     * Even if both node type implementations and relationship type implementations have implementation artifacts, there
+     * is no common supertype. To avoid endless casts, we just implement the method here
      */
     @Path("implementationartifacts/")
     public ImplementationArtifactsResource getImplementationArtifacts() {
@@ -48,7 +47,7 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
             implementationArtifacts = new ArrayList<>();
             this.getRTI().setImplementationArtifacts(implementationArtifacts);
         }
-        return new ImplementationArtifactsResource(implementationArtifacts        , this);
+        return new ImplementationArtifactsResource(implementationArtifacts, this);
     }
 
     @Override

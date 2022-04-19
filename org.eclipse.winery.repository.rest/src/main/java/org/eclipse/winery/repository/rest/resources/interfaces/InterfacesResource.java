@@ -23,11 +23,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -108,7 +111,7 @@ public class InterfacesResource {
     @GET
     @Path("inherited_interfaces")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<InheritedInterfaces> getInheritedInterfaces() {
+    public List<InheritedInterfaces> getInheritedInterfaces(@Context UriInfo uriInfo) {
         TExtensibleElements element = this.res.getElement();
 
         ArrayList<InheritedInterfaces> inheritedInterfaces = new ArrayList<>();
@@ -116,21 +119,45 @@ public class InterfacesResource {
             TNodeType nodeType = (TNodeType) element;
             while (nodeType.getDerivedFrom() != null) {
                 QName parentType = nodeType.getDerivedFrom().getType();
-                TNodeType parent = RepositoryFactory.getRepository().getElement(
+                nodeType = RepositoryFactory.getRepository().getElement(
                     new NodeTypeId(parentType)
                 );
 
-                if (parent.getInterfaces() != null) {
+                inheritedInterfaces.add(
+                    new InheritedInterfaces(parentType, nodeType.getInterfaces() != null
+                        ? nodeType.getInterfaces()
+                        : Collections.emptyList())
+                );
+            }
+        } else if (element instanceof TRelationshipType) {
+            TRelationshipType relationshipType = (TRelationshipType) element;
+            while (relationshipType.getDerivedFrom() != null) {
+                QName parentType = relationshipType.getDerivedFrom().getType();
+                relationshipType = RepositoryFactory.getRepository().getElement(
+                    new RelationshipTypeId(parentType)
+                );
+                // Use /.../ in the checks to avoid false positives in the name or namespace
+                if (uriInfo.getPath().contains("/targetinterfaces/")) {
                     inheritedInterfaces.add(
-                        new InheritedInterfaces(parentType, parent.getInterfaces())
+                        new InheritedInterfaces(parentType, relationshipType.getTargetInterfaces() != null
+                            ? relationshipType.getTargetInterfaces()
+                            : Collections.emptyList()
+                        )
+                    );
+                } else if (uriInfo.getPath().contains("/sourceinterfaces/")) {
+                    inheritedInterfaces.add(
+                        new InheritedInterfaces(parentType, relationshipType.getSourceInterfaces() != null
+                            ? relationshipType.getSourceInterfaces()
+                            : Collections.emptyList()
+                        )
                     );
                 } else {
                     inheritedInterfaces.add(
-                        new InheritedInterfaces(parentType, Collections.emptyList())
+                        new InheritedInterfaces(parentType, relationshipType.getInterfaces() != null
+                            ? relationshipType.getInterfaces()
+                            : Collections.emptyList())
                     );
                 }
-
-                nodeType = parent;
             }
         }
 
