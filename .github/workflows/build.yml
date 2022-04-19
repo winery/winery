@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
-      docker_run_required: ${{ (github.repository_owner == 'OpenTOSCA' && (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/tags'))) }}
+      docker_run_required: 'true'
     steps:
       - id: skip_check
         uses: fkirc/skip-duplicate-actions@master
@@ -48,7 +48,9 @@ jobs:
         if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
-          path: ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
+          path: |
+            **/org.eclipse.winery.repository.rest/target/winery.war
+            **/org.eclipse.winery.cli/target/winery-cli.jar
       - name: Run codacy-coverage-reporter
         if: ${{ github.repository_owner == 'OpenTOSCA' }}
         uses: codacy/codacy-coverage-reporter-action@master
@@ -77,7 +79,7 @@ jobs:
         if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
-          path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
+          path: '**/org.eclipse.winery.frontends/target/*.war'
 
   dockerBuild:
     needs: [ java11, frontend ]
@@ -123,3 +125,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.vars.outputs.tags }}
+      - name: Build and push latest CLI Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.cli
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: 'opentosca/winery-cli:latest'
