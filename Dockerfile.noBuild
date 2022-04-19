@@ -60,7 +60,7 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && git lfs install \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-COPY winery.war ${CATALINA_HOME}/webapps/winery.war
+COPY org.eclipse.winery.repository.rest/target/winery.war ${CATALINA_HOME}/webapps/winery.war
 COPY tosca-management.war ${CATALINA_HOME}/webapps/ROOT.war
 COPY topologymodeler.war ${CATALINA_HOME}/webapps/winery-topologymodeler.war
 COPY workflowmodeler.war ${CATALINA_HOME}/webapps/winery-workflowmodeler.war
