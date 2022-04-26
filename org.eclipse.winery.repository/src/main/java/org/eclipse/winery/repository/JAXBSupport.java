@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,8 +19,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
+import org.eclipse.winery.model.researchobject.ResearchObject;
 import org.eclipse.winery.model.selfservice.Application;
+import org.eclipse.winery.model.jaxbsupport.map.PropertiesAdapter;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
@@ -51,6 +52,7 @@ public class JAXBSupport {
                 TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
                 WinerysPropertiesDefinition.class,
                 Application.class,
+                ResearchObject.class,
                 MockXMLElement.class, // MockXMLElement is added for testing purposes only.
                 TEntityTemplate.XmlProperties.class // required because we're not XmlSeeAlso referring it
             );

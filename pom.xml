@@ -124,7 +124,7 @@
                 <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
-                <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.extension</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
@@ -157,7 +157,7 @@
                 <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
-                <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.extension</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>

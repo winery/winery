@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ export interface WineryConfiguration {
         patternRefinement: boolean;
         problemDetection: boolean;
         radon: boolean;
+        researchObject: boolean;
         splitting: boolean;
         multiParticipant: boolean;
         testRefinement: boolean;
