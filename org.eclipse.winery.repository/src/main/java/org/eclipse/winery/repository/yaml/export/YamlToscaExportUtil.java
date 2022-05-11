@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
@@ -59,8 +60,12 @@ import org.slf4j.LoggerFactory;
 
 public class YamlToscaExportUtil extends ToscaExportUtil {
 
-    private static final boolean EXPORT_NORMATIVE_TYPES = true;
     private static final Logger LOGGER = LoggerFactory.getLogger(YamlToscaExportUtil.class);
+    private final boolean exportNormativeTypes;
+
+    public YamlToscaExportUtil(boolean exportNormativeTypes) {
+        this.exportNormativeTypes = exportNormativeTypes;
+    }
 
     @Override
     protected Collection<DefinitionsChildId> processDefinitionsElement(IRepository repository, DefinitionsChildId tcId, CsarContentProperties definitionsFileProperties)
@@ -76,7 +81,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
 
         Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(tcId);
 
-        if (!EXPORT_NORMATIVE_TYPES) {
+        if (!exportNormativeTypes) {
             referencedDefinitionsChildIds.removeIf(id -> id.getQName().getNamespaceURI().startsWith("tosca"));
         }
 
@@ -99,7 +104,7 @@ public class YamlToscaExportUtil extends ToscaExportUtil {
 
         // Custom Adjustments for Service Templates
         YamlExportAdjustmentsBuilder adjustmentsBuilder = new YamlExportAdjustmentsBuilder(entry);
-        if (!EXPORT_NORMATIVE_TYPES) {
+        if (!exportNormativeTypes) {
             adjustmentsBuilder.removeNormativeTypeImports();
         }
         entry = adjustmentsBuilder.setMetadataName(tcId).build();
