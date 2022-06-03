@@ -15,6 +15,7 @@ package org.eclipse.winery.model.tosca.yaml;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
@@ -54,14 +55,14 @@ public class YTTopologyTemplateDefinition implements VisitorNode {
         if (!(o instanceof YTTopologyTemplateDefinition)) return false;
         YTTopologyTemplateDefinition that = (YTTopologyTemplateDefinition) o;
         return Objects.equals(getDescription(), that.getDescription()) &&
-            Objects.equals(getInputs(), that.getInputs()) &&
-            Objects.equals(getNodeTemplates(), that.getNodeTemplates()) &&
-            Objects.equals(getRelationshipTemplates(), that.getRelationshipTemplates()) &&
-            Objects.equals(getGroups(), that.getGroups()) &&
-            Objects.equals(getPolicies(), that.getPolicies()) &&
-            Objects.equals(getOutputs(), that.getOutputs()) &&
-            Objects.equals(getSubstitutionMappings(), that.getSubstitutionMappings()) &&
-            Objects.equals(getWorkflows(), that.getWorkflows());
+                Objects.equals(getInputs(), that.getInputs()) &&
+                Objects.equals(getNodeTemplates(), that.getNodeTemplates()) &&
+                Objects.equals(getRelationshipTemplates(), that.getRelationshipTemplates()) &&
+                Objects.equals(getGroups(), that.getGroups()) &&
+                Objects.equals(getPolicies(), that.getPolicies()) &&
+                Objects.equals(getOutputs(), that.getOutputs()) &&
+                Objects.equals(getSubstitutionMappings(), that.getSubstitutionMappings()) &&
+                Objects.equals(getWorkflows(), that.getWorkflows());
     }
 
     @Override
@@ -72,16 +73,16 @@ public class YTTopologyTemplateDefinition implements VisitorNode {
     @Override
     public String toString() {
         return "TTopologyTemplateDefinition{" +
-            "description='" + getDescription() + '\'' +
-            ", inputs=" + getInputs() +
-            ", nodeTemplates=" + getNodeTemplates() +
-            ", relationshipTemplates=" + getRelationshipTemplates() +
-            ", groups=" + getGroups() +
-            ", policies=" + getPolicies() +
-            ", outputs=" + getOutputs() +
-            ", substitutionMappings=" + getSubstitutionMappings() +
-            ", workflows=" + getWorkflows() +
-            '}';
+                "description='" + getDescription() + '\'' +
+                ", inputs=" + getInputs() +
+                ", nodeTemplates=" + getNodeTemplates() +
+                ", relationshipTemplates=" + getRelationshipTemplates() +
+                ", groups=" + getGroups() +
+                ", policies=" + getPolicies() +
+                ", outputs=" + getOutputs() +
+                ", substitutionMappings=" + getSubstitutionMappings() +
+                ", workflows=" + getWorkflows() +
+                '}';
     }
 
     @Nullable

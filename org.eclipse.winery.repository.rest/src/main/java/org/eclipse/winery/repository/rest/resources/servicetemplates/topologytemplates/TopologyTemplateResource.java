@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
@@ -46,19 +47,34 @@ import org.eclipse.winery.repository.rest.resources.apiData.UpdateInfo;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+
 import java.io.IOException;
 import java.net.URI;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TopologyTemplateResource {
@@ -86,11 +102,11 @@ public class TopologyTemplateResource {
     @Produces(MediaType.TEXT_HTML)
     // @formatter:off
     public Response getHTML(
-        @QueryParam(value = "edit") String edit,
-        @QueryParam(value = "script") @ApiParam(value = "the script to include in a <script> tag. The function wineryViewExternalScriptOnLoad if it is defined. Only available if 'view' is also set") String script,
-        @QueryParam(value = "view") String view,
-        @QueryParam(value = "autoLayoutOnLoad") String autoLayoutOnLoad,
-        @Context UriInfo uriInfo) {
+            @QueryParam(value = "edit") String edit,
+            @QueryParam(value = "script") @ApiParam(value = "the script to include in a <script> tag. The function wineryViewExternalScriptOnLoad if it is defined. Only available if 'view' is also set") String script,
+            @QueryParam(value = "view") String view,
+            @QueryParam(value = "autoLayoutOnLoad") String autoLayoutOnLoad,
+            @Context UriInfo uriInfo) {
         // @formatter:on
         Response res;
         String JSPName;
@@ -121,9 +137,9 @@ public class TopologyTemplateResource {
     // @formatter:off
     @GET
     @ApiOperation(value = "Returns a JSON representation of the topology template." +
-        "X and Y coordinates are embedded as attributes. QName string with Namespace: " +
-        "{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE}" +
-        "@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
+            "X and Y coordinates are embedded as attributes. QName string with Namespace: " +
+            "{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE}" +
+            "@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
     @Produces(MediaType.APPLICATION_JSON)
     // @formatter:on
     public TTopologyTemplate getTopologyTemplate() {
@@ -206,13 +222,13 @@ public class TopologyTemplateResource {
     // @formatter:off
     @GET
     @ApiOperation(value = "<p>Returns an XML representation of the topology template." +
-        " X and Y coordinates are embedded as attributes. Namespace:" +
-        "{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} </p>" +
-        "<p>{@link org.eclipse.winery.repository.client.WineryRepositoryClient." +
-        "getTopologyTemplate(QName)} consumes this template</p>" +
-        "<p>@return The XML representation of the topology template <em>without</em>" +
-        "associated artifacts and without the parent service template </p>")
-    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+            " X and Y coordinates are embedded as attributes. Namespace:" +
+            "{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} </p>" +
+            "<p>{@link org.eclipse.winery.repository.client.WineryRepositoryClient." +
+            "getTopologyTemplate(QName)} consumes this template</p>" +
+            "<p>@return The XML representation of the topology template <em>without</em>" +
+            "associated artifacts and without the parent service template </p>")
+    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     // @formatter:on
     public Response getComponentInstanceXML() {
         return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate, requestRepository);
@@ -269,8 +285,8 @@ public class TopologyTemplateResource {
 
     @POST
     @Path("compose/")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Consumes( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     public Response composeServiceTemplates(CompositionData compositionData, @Context UriInfo uriInfo) {
         Splitting splitting = new Splitting();
         String newComposedSolutionServiceTemplateId = compositionData.getTargetid();
@@ -323,12 +339,12 @@ public class TopologyTemplateResource {
         List<String> newProperties = new ArrayList<>();
 
         Optional<TEntityTemplate> foundTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
-            .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
-            .filter(template -> template.getProperties() != null)
-            .findFirst();
+                .filter(template -> template.getId().equals(updateInfo.getNodeTemplateId()))
+                .filter(template -> template.getProperties() != null)
+                .findFirst();
 
         if (foundTemplate.isPresent() && Objects.nonNull(foundTemplate.get().getProperties()) &&
-            Objects.nonNull(ModelUtilities.getPropertiesKV(foundTemplate.get()))) {
+                Objects.nonNull(ModelUtilities.getPropertiesKV(foundTemplate.get()))) {
             HashMap<String, String> oldKvs = ModelUtilities.getPropertiesKV(foundTemplate.get());
 
             QName qNameType = QName.valueOf(updateInfo.getNewComponentType());
@@ -337,35 +353,35 @@ public class TopologyTemplateResource {
 
             if (Objects.nonNull(newNodeTypeVersion) && Objects.nonNull(newNodeTypeVersion.getWinerysPropertiesDefinition())) {
                 List<PropertyDefinitionKV> newKvs = newNodeTypeVersion.getWinerysPropertiesDefinition()
-                    .getPropertyDefinitions();
+                        .getPropertyDefinitions();
 
                 resolvedProperties = newKvs.stream()
-                    .map(PropertyDefinitionKV::getKey)
-                    .filter(keys -> oldKvs.keySet()
-                        .stream()
-                        .map(String::toLowerCase)
-                        .collect(Collectors.toList())
-                        .contains(keys.toLowerCase())
-                    )
-                    .collect(Collectors.toList());
+                        .map(PropertyDefinitionKV::getKey)
+                        .filter(keys -> oldKvs.keySet()
+                                .stream()
+                                .map(String::toLowerCase)
+                                .collect(Collectors.toList())
+                                .contains(keys.toLowerCase())
+                        )
+                        .collect(Collectors.toList());
 
                 removedProperties = oldKvs.keySet().stream()
-                    .filter(keys -> !newKvs.stream()
-                        .map(newProp -> newProp.getKey().toLowerCase())
-                        .collect(Collectors.toList())
-                        .contains(keys.toLowerCase())
-                    )
-                    .collect(Collectors.toList());
+                        .filter(keys -> !newKvs.stream()
+                                .map(newProp -> newProp.getKey().toLowerCase())
+                                .collect(Collectors.toList())
+                                .contains(keys.toLowerCase())
+                        )
+                        .collect(Collectors.toList());
 
                 newProperties = newKvs.stream()
-                    .map(PropertyDefinitionKV::getKey)
-                    .filter(keys -> !oldKvs.keySet()
-                        .stream()
-                        .map(String::toLowerCase)
-                        .collect(Collectors.toList())
-                        .contains(keys.toLowerCase())
-                    )
-                    .collect(Collectors.toList());
+                        .map(PropertyDefinitionKV::getKey)
+                        .filter(keys -> !oldKvs.keySet()
+                                .stream()
+                                .map(String::toLowerCase)
+                                .collect(Collectors.toList())
+                                .contains(keys.toLowerCase())
+                        )
+                        .collect(Collectors.toList());
             }
         }
 
@@ -382,7 +398,7 @@ public class TopologyTemplateResource {
         if (nodeTemplate != null && nodeTemplate.getProperties() != null) {
             Map<String, String> propertyMappings = new LinkedHashMap<>();
             updateInfo.getMappingList().forEach(
-                propertyMatching -> propertyMappings.put(propertyMatching.getOldKey(), propertyMatching.getNewKey())
+                    propertyMatching -> propertyMappings.put(propertyMatching.getOldKey(), propertyMatching.getNewKey())
             );
 
             LinkedHashMap<String, String> resultKvs = new LinkedHashMap<>();
@@ -460,17 +476,17 @@ public class TopologyTemplateResource {
         if (this.parent.getElement() instanceof HasTags && ((HasTags) this.parent.getElement()).getTags() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             deploymentTechnologies = ModelUtilities.extractDeploymentTechnologiesFromTags(((HasTags) this.parent.getElement()).getTags(),
-                objectMapper);
+                    objectMapper);
         }
 
         EnhancementUtils.getAvailableFeaturesForTopology(this.topologyTemplate, deploymentTechnologies)
-            .forEach((nodeTemplateId, featuresMap) -> {
-                ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
-                featuresMap.forEach(
-                    (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
-                );
-                apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
-            });
+                .forEach((nodeTemplateId, featuresMap) -> {
+                    ArrayList<AvailableFeaturesApiData.Features> features = new ArrayList<>();
+                    featuresMap.forEach(
+                            (featureType, featureName) -> features.add(new AvailableFeaturesApiData.Features(featureType, featureName))
+                    );
+                    apiData.add(new AvailableFeaturesApiData(nodeTemplateId, features));
+                });
 
         return apiData;
     }
@@ -485,9 +501,9 @@ public class TopologyTemplateResource {
         featuresList.forEach(availableFeaturesApiData -> {
             HashMap<QName, String> featureTypesMap = new HashMap<>();
             if (Objects.nonNull(availableFeaturesApiData.getFeatures())
-                && availableFeaturesApiData.getFeatures().size() > 0) {
+                    && availableFeaturesApiData.getFeatures().size() > 0) {
                 availableFeaturesApiData.getFeatures()
-                    .forEach(features -> featureTypesMap.put(features.getType(), features.getFeatureName()));
+                        .forEach(features -> featureTypesMap.put(features.getType(), features.getFeatureName()));
                 featureMap.put(availableFeaturesApiData.getNodeTemplateId(), featureTypesMap);
             }
         });
@@ -513,13 +529,13 @@ public class TopologyTemplateResource {
                 NodeTypeId nodeTypeId = new NodeTypeId(node.getType());
                 if (!versionElements.containsKey(nodeTypeId.getQName())) {
                     List<WineryVersion> versionList = WineryVersionUtils.getAllVersionsOfOneDefinition(nodeTypeId, repository).stream()
-                        .filter(wineryVersion -> {
-                            QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
-                            NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
-                            return !(namespaceProperties.isGeneratedNamespace()
-                                || ModelUtilities.isFeatureType(qName, nodeTypes));
-                        })
-                        .collect(Collectors.toList());
+                            .filter(wineryVersion -> {
+                                QName qName = VersionSupport.getDefinitionInTheGivenVersion(nodeTypeId, wineryVersion).getQName();
+                                NamespaceProperties namespaceProperties = repository.getNamespaceManager().getNamespaceProperties(qName.getNamespaceURI());
+                                return !(namespaceProperties.isGeneratedNamespace()
+                                        || ModelUtilities.isFeatureType(qName, nodeTypes));
+                            })
+                            .collect(Collectors.toList());
 
                     versionElements.put(nodeTypeId.getQName(), versionList);
                 }
@@ -527,8 +543,8 @@ public class TopologyTemplateResource {
         }
 
         return versionElements.entrySet().stream()
-            .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
-            .collect(Collectors.toList());
+                .map(qNameListEntry -> new NewVersionListElement(qNameListEntry.getKey(), qNameListEntry.getValue()))
+                .collect(Collectors.toList());
     }
 
     @POST
@@ -537,7 +553,7 @@ public class TopologyTemplateResource {
     public Response applyGroupingAndPlacement(@Context UriInfo uriInfo) {
         try {
             TTopologyTemplate topology =
-                PlacementUtils.groupAndPlaceComponents((ServiceTemplateId) this.parent.getId(), this.topologyTemplate);
+                    PlacementUtils.groupAndPlaceComponents((ServiceTemplateId) this.parent.getId(), this.topologyTemplate);
             this.parent.setTopology(topology, this.type);
             RestUtils.persist(this.parent);
             ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.parent.getId();

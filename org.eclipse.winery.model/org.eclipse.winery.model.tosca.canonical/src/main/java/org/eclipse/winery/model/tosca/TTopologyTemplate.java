@@ -19,11 +19,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
 import org.eclipse.winery.model.tosca.extensions.OTParticipant;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,21 +31,28 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTopologyTemplate", propOrder = {
-    "nodeTemplateOrRelationshipTemplate",
-    "groups",
-    "policies",
-    "inputs",
-    "outputs",
-    "participants",
-    "workflows"
+        "nodeTemplateOrRelationshipTemplate",
+        "groups",
+        "policies",
+        "inputs",
+        "outputs",
+        "participants",
+        "workflows"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TTopologyTemplate extends TExtensibleElements {
-    @XmlElements({
-        @XmlElement(name = "RelationshipTemplate", type = TRelationshipTemplate.class),
-        @XmlElement(name = "NodeTemplate", type = TNodeTemplate.class)
+    @XmlElements( {
+            @XmlElement(name = "RelationshipTemplate", type = TRelationshipTemplate.class),
+            @XmlElement(name = "NodeTemplate", type = TNodeTemplate.class)
     })
     protected List<TEntityTemplate> nodeTemplateOrRelationshipTemplate;
 
@@ -60,7 +67,7 @@ public class TTopologyTemplate extends TExtensibleElements {
     protected List<ParameterDefinition> outputs;
     // added to support conversion from/to YAML workflows
     @JsonProperty("workflows")
-    private List<TWorkflow> workflows;
+    protected List<TWorkflow> workflows;
 
     @XmlElementWrapper(name = "Participants")
     @XmlElement(name = "Participant")
@@ -88,11 +95,11 @@ public class TTopologyTemplate extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TTopologyTemplate that = (TTopologyTemplate) o;
         return Objects.equals(nodeTemplateOrRelationshipTemplate, that.nodeTemplateOrRelationshipTemplate) &&
-            Objects.equals(policies, that.policies) &&
-            Objects.equals(inputs, that.inputs) &&
-            Objects.equals(outputs, that.outputs) &&
-            Objects.equals(workflows, that.workflows) &&
-            Objects.equals(participants, that.participants);
+                Objects.equals(policies, that.policies) &&
+                Objects.equals(inputs, that.inputs) &&
+                Objects.equals(outputs, that.outputs) &&
+                Objects.equals(workflows, that.workflows) &&
+                Objects.equals(participants, that.participants);
     }
 
     @Override
@@ -114,9 +121,9 @@ public class TTopologyTemplate extends TExtensibleElements {
     public TEntityTemplate getNodeTemplateOrRelationshipTemplate(String id) {
         Objects.requireNonNull(id);
         return this.getNodeTemplateOrRelationshipTemplate().stream()
-            .filter(x -> id.equals(x.getId()))
-            .findAny()
-            .orElse(null);
+                .filter(x -> id.equals(x.getId()))
+                .findAny()
+                .orElse(null);
     }
 
     /**
@@ -125,17 +132,17 @@ public class TTopologyTemplate extends TExtensibleElements {
     @NonNull
     public List<TNodeTemplate> getNodeTemplates() {
         return this.getNodeTemplateOrRelationshipTemplate()
-            .stream()
-            .filter(x -> x instanceof TNodeTemplate)
-            .map(TNodeTemplate.class::cast)
-            .collect(Collectors.toList());
+                .stream()
+                .filter(x -> x instanceof TNodeTemplate)
+                .map(TNodeTemplate.class::cast)
+                .collect(Collectors.toList());
     }
 
     public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-                nodeTemplates.stream().map(TEntityTemplate.class::cast),
-                this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
-            .collect(Collectors.toList());
+                        nodeTemplates.stream().map(TEntityTemplate.class::cast),
+                        this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -145,9 +152,9 @@ public class TTopologyTemplate extends TExtensibleElements {
     public TNodeTemplate getNodeTemplate(String id) {
         Objects.requireNonNull(id);
         return this.getNodeTemplates().stream()
-            .filter(x -> id.equals(x.getId()))
-            .findAny()
-            .orElse(null);
+                .filter(x -> id.equals(x.getId()))
+                .findAny()
+                .orElse(null);
     }
 
     /**
@@ -156,17 +163,17 @@ public class TTopologyTemplate extends TExtensibleElements {
     @NonNull
     public List<TRelationshipTemplate> getRelationshipTemplates() {
         return this.getNodeTemplateOrRelationshipTemplate()
-            .stream()
-            .filter(x -> x instanceof TRelationshipTemplate)
-            .map(TRelationshipTemplate.class::cast)
-            .collect(Collectors.toList());
+                .stream()
+                .filter(x -> x instanceof TRelationshipTemplate)
+                .map(TRelationshipTemplate.class::cast)
+                .collect(Collectors.toList());
     }
 
     public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-                this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
-                relationshipTemplates.stream().map(TEntityTemplate.class::cast))
-            .collect(Collectors.toList());
+                        this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
+                        relationshipTemplates.stream().map(TEntityTemplate.class::cast))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -176,9 +183,9 @@ public class TTopologyTemplate extends TExtensibleElements {
     public TRelationshipTemplate getRelationshipTemplate(String id) {
         Objects.requireNonNull(id);
         return this.getRelationshipTemplates().stream()
-            .filter(x -> id.equals(x.getId()))
-            .findAny()
-            .orElse(null);
+                .filter(x -> id.equals(x.getId()))
+                .findAny()
+                .orElse(null);
     }
 
     public void addNodeTemplate(TNodeTemplate nt) {
