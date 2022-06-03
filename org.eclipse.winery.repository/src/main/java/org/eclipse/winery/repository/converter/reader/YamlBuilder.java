@@ -14,92 +14,28 @@
 
 package org.eclipse.winery.repository.converter.reader;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.common.version.VersionUtils;
-import org.eclipse.winery.model.converter.support.Namespaces;
-import org.eclipse.winery.model.converter.support.exception.InvalidToscaSyntax;
-import org.eclipse.winery.model.converter.support.exception.MultiException;
-import org.eclipse.winery.model.tosca.yaml.YTActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
-import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
-import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
-import org.eclipse.winery.model.tosca.yaml.YTDataType;
-import org.eclipse.winery.model.tosca.yaml.YTEntityType;
-import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTGroupType;
-import org.eclipse.winery.model.tosca.yaml.YTImplementation;
-import org.eclipse.winery.model.tosca.yaml.YTImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceType;
-import org.eclipse.winery.model.tosca.yaml.YTNodeFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTNodeTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTNodeType;
-import org.eclipse.winery.model.tosca.yaml.YTOperationDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTParameterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPolicyDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPolicyType;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignmentOrDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipType;
-import org.eclipse.winery.model.tosca.yaml.YTRepositoryDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRequirementAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTRequirementDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTStatusValue;
-import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
-import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTVersion;
-import org.eclipse.winery.model.tosca.yaml.support.Metadata;
-import org.eclipse.winery.model.tosca.yaml.support.YTListString;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapObject;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapPolicyDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapPropertyFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementAssignment;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YamlSpecKeywords;
-import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
-import org.eclipse.winery.repository.converter.validator.FieldValidator;
-
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.model.converter.support.Namespaces;
+import org.eclipse.winery.model.converter.support.exception.InvalidToscaSyntax;
+import org.eclipse.winery.model.converter.support.exception.MultiException;
+import org.eclipse.winery.model.tosca.yaml.*;
+import org.eclipse.winery.model.tosca.yaml.support.*;
+import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
+import org.eclipse.winery.repository.converter.validator.FieldValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.namespace.QName;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class YamlBuilder {
     public static final Logger LOGGER = LoggerFactory.getLogger(YamlBuilder.class);
@@ -219,6 +155,7 @@ public class YamlBuilder {
             .setSubstitutionMappings(buildSubstitutionMappings(map.get(YamlSpecKeywords.SUBSTITUTION_MAPPINGS),
                 parameter.copy().addContext(YamlSpecKeywords.SUBSTITUTION_MAPPINGS)
             ))
+            .setWorkflows(buildMap(map, YamlSpecKeywords.WORKFLOWS, this::buildWorkflowDefinition, parameter))
             .build();
     }
 
@@ -1309,6 +1246,30 @@ public class YamlBuilder {
             .setTargets(buildListQName(buildListString(map.get(YamlSpecKeywords.TARGETS),
                 new Parameter<List<String>>(parameter.getContext()).addContext(YamlSpecKeywords.TARGETS)
             )))
+            .build();
+    }
+
+    @Nullable
+    public YTWorkflow buildWorkflowDefinition(Object object, Parameter<YTWorkflow> parameter) {
+        if (Objects.isNull(object)) {
+            return null;
+        }
+        if (!validate(YTWorkflow.class, object, parameter)) {
+            return null;
+        }
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) object;
+        return new YTWorkflow.Builder()
+            .setDescription(buildDescription(map.get(YamlSpecKeywords.DESCRIPTION)))
+            .setInputs(buildParameterDefinitions(map.get(YamlSpecKeywords.INPUTS),
+                new Parameter<>(parameter.getContext()).addContext(YamlSpecKeywords.INPUTS).setValue(parameter.getValue())
+            ))
+            .setOutputs(buildParameterDefinitions(map.get(YamlSpecKeywords.OUTPUTS),
+                new Parameter<>(parameter.getContext()).addContext(YamlSpecKeywords.OUTPUTS).setValue(parameter.getValue())
+            ))
+            .setImplementation(buildImplementation(map.get(YamlSpecKeywords.IMPLEMENTATION),
+                new Parameter<YTImplementation>(parameter.getContext()).addContext(YamlSpecKeywords.IMPLEMENTATION)
+            ))
             .build();
     }
 

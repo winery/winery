@@ -13,6 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.converter.writer;
 
+import org.eclipse.winery.model.tosca.yaml.*;
+import org.eclipse.winery.model.tosca.yaml.support.*;
+import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractVisitor;
+import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,83 +29,15 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
-import org.eclipse.winery.model.tosca.yaml.YTAttributeAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
-import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
-import org.eclipse.winery.model.tosca.yaml.YTDataType;
-import org.eclipse.winery.model.tosca.yaml.YTEntityType;
-import org.eclipse.winery.model.tosca.yaml.YTEventFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTGroupType;
-import org.eclipse.winery.model.tosca.yaml.YTImplementation;
-import org.eclipse.winery.model.tosca.yaml.YTImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceType;
-import org.eclipse.winery.model.tosca.yaml.YTNodeFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTNodeTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTNodeType;
-import org.eclipse.winery.model.tosca.yaml.YTOperationDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTParameterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPolicyDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPolicyType;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipType;
-import org.eclipse.winery.model.tosca.yaml.YTRepositoryDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRequirementAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTRequirementDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTStatusValue;
-import org.eclipse.winery.model.tosca.yaml.YTSubstitutionMappings;
-import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTVersion;
-import org.eclipse.winery.model.tosca.yaml.support.Metadata;
-import org.eclipse.winery.model.tosca.yaml.support.YTListString;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapObject;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapPropertyFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementAssignment;
-import org.eclipse.winery.model.tosca.yaml.support.YTMapRequirementDefinition;
-import org.eclipse.winery.model.tosca.yaml.support.YamlSpecKeywords;
-import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractVisitor;
-import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // FIXME this belongs with the specific implementation
 public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Parameter> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractVisitor.class);
 
-    private static final String[] PROPERTY_FUNCTIONS = new String[] {
+    private static final String[] PROPERTY_FUNCTIONS = new String[]{
         "get_input", "get_property", "get_attribute", "get_operation_output", "get_nodes_of_type", "get_artifact"
     };
 
@@ -175,7 +116,8 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
             .print(printListMap(YamlSpecKeywords.POLICIES,
                 node.getPolicies().size() > 0 ? Collections.singletonList(node.getPolicies()) : new ArrayList<>(), parameter))
             .print(printMap(YamlSpecKeywords.OUTPUTS, node.getOutputs(), parameter))
-            .print(printVisitorNode(node.getSubstitutionMappings(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.SUBSTITUTION_MAPPINGS)));
+            .print(printVisitorNode(node.getSubstitutionMappings(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.SUBSTITUTION_MAPPINGS)))
+            .print(printMap(YamlSpecKeywords.WORKFLOWS, node.getWorkflows(), parameter));
     }
 
     public YamlPrinter visit(Metadata node, Parameter parameter) {
@@ -288,6 +230,14 @@ public class YamlWriter extends AbstractVisitor<YamlPrinter, YamlWriter.Paramete
     }
 
     public YamlPrinter visit(YTOperationDefinition node, Parameter parameter) {
+        return new YamlPrinter(parameter.getIndent())
+            .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
+            .print(printMap(YamlSpecKeywords.INPUTS, node.getInputs(), new Parameter(parameter.getIndent())))
+            .print(printMap(YamlSpecKeywords.OUTPUTS, node.getOutputs(), new Parameter(parameter.getIndent())))
+            .print(printVisitorNode(node.getImplementation(), new Parameter(parameter.getIndent()).addContext(YamlSpecKeywords.IMPLEMENTATION)));
+    }
+
+    public YamlPrinter visit(YTWorkflow node, Parameter parameter) {
         return new YamlPrinter(parameter.getIndent())
             .printKeyValue(YamlSpecKeywords.DESCRIPTION, node.getDescription())
             .print(printMap(YamlSpecKeywords.INPUTS, node.getInputs(), new Parameter(parameter.getIndent())))

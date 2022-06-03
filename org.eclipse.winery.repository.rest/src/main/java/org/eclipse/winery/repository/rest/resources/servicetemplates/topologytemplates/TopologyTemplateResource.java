@@ -13,32 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
-import java.io.IOException;
-import java.net.URI;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.adaptation.enhance.EnhancementUtils;
@@ -50,14 +27,7 @@ import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
-import org.eclipse.winery.model.tosca.HasTags;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.version.VersionSupport;
@@ -76,12 +46,20 @@ import org.eclipse.winery.repository.rest.resources.apiData.UpdateInfo;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.net.URI;
+import java.security.InvalidParameterException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TopologyTemplateResource {
 
@@ -215,6 +193,10 @@ public class TopologyTemplateResource {
             topologyTemplate.setOutputs(this.parent.getTopology().getOutputs());
         }
 
+        if (topologyTemplate.getWorkflows().isEmpty() && !this.parent.getTopology().getWorkflows().isEmpty()) {
+            topologyTemplate.setWorkflows(this.parent.getTopology().getWorkflows());
+        }
+
         // the following method includes patching of the topology template (removing empty lists, ..)
         this.parent.setTopology(topologyTemplate, this.type);
         requestRepository.putDefinition(parent.getId(), this.parent.getDefinitions());
@@ -230,7 +212,7 @@ public class TopologyTemplateResource {
         "getTopologyTemplate(QName)} consumes this template</p>" +
         "<p>@return The XML representation of the topology template <em>without</em>" +
         "associated artifacts and without the parent service template </p>")
-    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     // @formatter:on
     public Response getComponentInstanceXML() {
         return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate, requestRepository);
@@ -287,8 +269,8 @@ public class TopologyTemplateResource {
 
     @POST
     @Path("compose/")
-    @Consumes( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     public Response composeServiceTemplates(CompositionData compositionData, @Context UriInfo uriInfo) {
         Splitting splitting = new Splitting();
         String newComposedSolutionServiceTemplateId = compositionData.getTargetid();

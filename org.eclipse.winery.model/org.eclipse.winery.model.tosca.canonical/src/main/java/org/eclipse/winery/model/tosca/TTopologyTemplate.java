@@ -14,29 +14,22 @@
 
 package org.eclipse.winery.model.tosca;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.winery.model.tosca.extensions.OTParticipant;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
+import org.eclipse.winery.model.tosca.visitor.Visitor;
+
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.winery.model.tosca.extensions.OTParticipant;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
-import org.eclipse.winery.model.tosca.visitor.Visitor;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTopologyTemplate", propOrder = {
@@ -45,12 +38,12 @@ import org.eclipse.jdt.annotation.Nullable;
     "policies",
     "inputs",
     "outputs",
-    "participants"
+    "participants",
+    "workflows"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TTopologyTemplate extends TExtensibleElements {
-
-    @XmlElements( {
+    @XmlElements({
         @XmlElement(name = "RelationshipTemplate", type = TRelationshipTemplate.class),
         @XmlElement(name = "NodeTemplate", type = TNodeTemplate.class)
     })
@@ -65,6 +58,9 @@ public class TTopologyTemplate extends TExtensibleElements {
     protected List<ParameterDefinition> inputs;
     @JsonProperty("outputs")
     protected List<ParameterDefinition> outputs;
+    // added to support conversion from/to YAML workflows
+    @JsonProperty("workflows")
+    private List<TWorkflow> workflows;
 
     @XmlElementWrapper(name = "Participants")
     @XmlElement(name = "Participant")
@@ -82,6 +78,7 @@ public class TTopologyTemplate extends TExtensibleElements {
         this.outputs = builder.outputs;
         this.groups = builder.groups;
         this.participants = builder.participants;
+        this.workflows = builder.workflows;
     }
 
     @Override
@@ -94,12 +91,13 @@ public class TTopologyTemplate extends TExtensibleElements {
             Objects.equals(policies, that.policies) &&
             Objects.equals(inputs, that.inputs) &&
             Objects.equals(outputs, that.outputs) &&
+            Objects.equals(workflows, that.workflows) &&
             Objects.equals(participants, that.participants);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), nodeTemplateOrRelationshipTemplate, policies, inputs, outputs, participants);
+        return Objects.hash(super.hashCode(), nodeTemplateOrRelationshipTemplate, policies, inputs, outputs, workflows, participants);
     }
 
     @JsonIgnore
@@ -218,6 +216,19 @@ public class TTopologyTemplate extends TExtensibleElements {
         this.outputs = outputs;
     }
 
+    @NonNull
+    public List<TWorkflow> getWorkflows() {
+        if (this.workflows == null) {
+            this.workflows = new ArrayList<>();
+        }
+
+        return workflows;
+    }
+
+    public void setWorkflows(List<TWorkflow> workflows) {
+        this.workflows = workflows;
+    }
+
     @Nullable
     public List<TGroupDefinition> getGroups() {
         return groups;
@@ -253,6 +264,7 @@ public class TTopologyTemplate extends TExtensibleElements {
         private List<TPolicy> policies;
         private List<ParameterDefinition> inputs;
         private List<ParameterDefinition> outputs;
+        private List<TWorkflow> workflows;
         private List<TGroupDefinition> groups;
         private List<OTParticipant> participants;
 
@@ -332,6 +344,25 @@ public class TTopologyTemplate extends TExtensibleElements {
 
         public Builder setOutputs(List<ParameterDefinition> outputs) {
             this.outputs = outputs;
+            return this;
+        }
+
+        public Builder setWorkflows(List<TWorkflow> workflows) {
+            this.workflows = workflows;
+            return this;
+        }
+
+        public Builder addWorkflows(List<TWorkflow> workflows) {
+            if (workflows == null || workflows.isEmpty()) {
+                return this;
+            }
+
+            if (this.workflows == null) {
+                this.workflows = new ArrayList<>(workflows);
+            } else {
+                this.workflows.addAll(workflows);
+            }
+
             return this;
         }
 

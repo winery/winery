@@ -13,107 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.yaml.converter;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.xml.namespace.QName;
-
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.winery.model.converter.support.Defaults;
 import org.eclipse.winery.model.converter.support.Namespaces;
 import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.tosca.HasInheritance;
-import org.eclipse.winery.model.tosca.TActivityDefinition;
-import org.eclipse.winery.model.tosca.TArtifact;
-import org.eclipse.winery.model.tosca.TArtifactReference;
-import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
-import org.eclipse.winery.model.tosca.TCallOperationActivityDefinition;
-import org.eclipse.winery.model.tosca.TCapability;
-import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.TDataType;
-import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TEventFilterDefinition;
-import org.eclipse.winery.model.tosca.TGroupDefinition;
-import org.eclipse.winery.model.tosca.TGroupType;
-import org.eclipse.winery.model.tosca.TImplementation;
-import org.eclipse.winery.model.tosca.TImplementationArtifact;
-import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TInterfaceDefinition;
-import org.eclipse.winery.model.tosca.TInterfaceType;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.TOperationDefinition;
-import org.eclipse.winery.model.tosca.TParameter;
-import org.eclipse.winery.model.tosca.TPolicy;
-import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
-import org.eclipse.winery.model.tosca.TRequirement;
-import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.model.tosca.TRequirementType;
-import org.eclipse.winery.model.tosca.TSchema;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.TTriggerDefinition;
+import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.AttributeDefinition;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ConstraintClauseKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTArtifactDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTArtifactType;
-import org.eclipse.winery.model.tosca.yaml.YTAttributeDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCallOperationActivityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTCapabilityType;
-import org.eclipse.winery.model.tosca.yaml.YTConstraintClause;
-import org.eclipse.winery.model.tosca.yaml.YTDataType;
-import org.eclipse.winery.model.tosca.yaml.YTEntityType;
-import org.eclipse.winery.model.tosca.yaml.YTGroupDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTGroupType;
-import org.eclipse.winery.model.tosca.yaml.YTImplementation;
-import org.eclipse.winery.model.tosca.yaml.YTImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTInterfaceType;
-import org.eclipse.winery.model.tosca.yaml.YTNodeTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTNodeType;
-import org.eclipse.winery.model.tosca.yaml.YTOperationDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTParameterDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPolicyDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPolicyType;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyAssignmentOrDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTPropertyDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTRelationshipType;
-import org.eclipse.winery.model.tosca.yaml.YTRequirementAssignment;
-import org.eclipse.winery.model.tosca.yaml.YTRequirementDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTSchemaDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTServiceTemplate;
-import org.eclipse.winery.model.tosca.yaml.YTTopologyTemplateDefinition;
-import org.eclipse.winery.model.tosca.yaml.YTTriggerDefinition;
+import org.eclipse.winery.model.tosca.yaml.*;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.support.ValueHelper;
 import org.eclipse.winery.model.tosca.yaml.support.YTMapActivityDefinition;
@@ -123,12 +34,15 @@ import org.eclipse.winery.repository.yaml.converter.support.AssignmentBuilder;
 import org.eclipse.winery.repository.yaml.converter.support.InheritanceUtils;
 import org.eclipse.winery.repository.yaml.converter.support.TypeConverter;
 import org.eclipse.winery.repository.yaml.converter.support.extension.YTImplementationArtifactDefinition;
-
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ToCanonical {
 
@@ -721,6 +635,10 @@ public class ToCanonical {
             builder.setOutputs(convert(node.getOutputs()));
         }
 
+        if (node.getWorkflows() != null) {
+            builder.setWorkflows(convert(node.getWorkflows()));
+        }
+
         return builder.build();
     }
 
@@ -1064,6 +982,19 @@ public class ToCanonical {
         return builder.build();
     }
 
+    private TWorkflow convert(YTWorkflow node, String id) {
+        if (Objects.isNull(node)) {
+            return null;
+        }
+
+        TWorkflow.Builder builder = new TWorkflow.Builder(id)
+            .setDescription(node.getDescription())
+            .setInputs(convert(node.getInputs()))
+            .setOutputs(convert(node.getOutputs()))
+            .setImplementation(convert(node.getImplementation()));
+        return builder.build();
+    }
+
     private TImplementation convert(YTImplementation node) {
         if (Objects.isNull(node)) {
             return null;
@@ -1152,7 +1083,7 @@ public class ToCanonical {
         return result;
     }
 
-    @SuppressWarnings( {"unchecked"})
+    @SuppressWarnings({"unchecked"})
     private <V, T> List<T> convert(List<? extends Map<String, V>> node) {
         return node.stream()
             .flatMap(map -> map.entrySet().stream())
@@ -1177,7 +1108,7 @@ public class ToCanonical {
             .collect(Collectors.toList());
     }
 
-    @SuppressWarnings( {"unchecked"})
+    @SuppressWarnings({"unchecked"})
     private <V, T> List<T> convert(@NonNull Map<String, V> map) {
         return map.entrySet().stream()
             .map((Map.Entry<String, V> entry) -> {
@@ -1227,6 +1158,8 @@ public class ToCanonical {
                     return convert((YTPropertyDefinition) entry.getValue(), entry.getKey());
                 } else if (entry.getValue() instanceof YTAttributeDefinition) {
                     return convert((YTAttributeDefinition) entry.getValue(), entry.getKey());
+                } else if (entry.getValue() instanceof YTWorkflow) {
+                    return convert((YTWorkflow) entry.getValue(), entry.getKey());
                 } else {
                     V v = entry.getValue();
                     System.err.println(v);
