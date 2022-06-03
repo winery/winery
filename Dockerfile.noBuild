@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk11-openjdk-buster
+FROM tomcat:9-jdk17-openjdk-buster
 LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Michael Wurster <miwurster@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
 
 ENV WINERY_USER_ID 1724

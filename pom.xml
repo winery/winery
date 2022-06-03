@@ -57,7 +57,7 @@
         <github.global.server>github</github.global.server>
         <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.surefire.version>3.0.0-M5</maven.surefire.version>
@@ -88,7 +88,7 @@
         <io.rest-assured>3.0.2</io.rest-assured>
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
-        <edmm.version>1.0.18</edmm.version>
+        <edmm.version>-b8ccf39ae2-1</edmm.version>
         <tika.version>1.26</tika.version>
 
         <!-- grouped libraries -->
