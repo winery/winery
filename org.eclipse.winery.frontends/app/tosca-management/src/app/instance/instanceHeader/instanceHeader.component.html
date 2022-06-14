@@ -14,7 +14,7 @@
 <div class="top" [class.twolines]="needTwoLines">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon" alt="Icon of the Node Type.">
     <img *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible" src="../../../assets/images/toscaLight.png"
-         class="toscaLightCompatible" alt="This Service Tempalte is TOSCALight compatible.">
+         class="toscaLightCompatible" alt="This Service Template is TOSCALight compatible.">
     <div class="informationContainer">
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
@@ -23,6 +23,10 @@
     </div>
     <div class="managementButtons row" *ngIf="showManagementButtons">
         <button class="btn btn-danger" (click)="openDeleteConfirmationModel()">Delete</button>
+        <button *ngIf="this.configurationService.configuration.features.normalization" class="btn btn-info"
+                (click)="sendToDeploymentNormalizerAssistant()">
+            Normalize
+        </button>
         <button *wineryRepositoryShowOnFeature="'radon'" (click)="openChe()" class="btn btn-info">
             Open in IDE
         </button>

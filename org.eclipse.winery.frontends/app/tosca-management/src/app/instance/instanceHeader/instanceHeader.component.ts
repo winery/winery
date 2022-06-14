@@ -19,7 +19,9 @@ import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
 import { InstanceService, ToscaLightCompatibilityData } from '../instance.service';
-import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
@@ -131,6 +133,10 @@ export class InstanceHeaderComponent implements OnInit {
                     }
                 }
             });
+    }
+
+    sendToDeploymentNormalizerAssistant() {
+
     }
 
     private handleSuccess(message: string) {
