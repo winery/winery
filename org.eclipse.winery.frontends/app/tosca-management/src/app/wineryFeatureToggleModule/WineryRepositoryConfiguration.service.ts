@@ -65,6 +65,7 @@ export interface WineryRepositoryConfiguration {
 
 @Injectable()
 export class WineryRepositoryConfigurationService {
+
     configuration: WineryConfiguration;
 
     constructor(private http: HttpClient) {

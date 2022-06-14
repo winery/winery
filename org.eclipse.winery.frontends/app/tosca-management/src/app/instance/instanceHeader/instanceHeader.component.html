@@ -25,7 +25,8 @@
         <button class="btn btn-danger" (click)="openDeleteConfirmationModel()">Delete</button>
         <button *ngIf="this.configurationService.configuration.features.normalization" class="btn btn-info"
                 (click)="sendToDeploymentNormalizerAssistant()">
-            Normalize
+            <span [hidden]="contactingNormalization">Normalize</span>
+            <winery-loader [loaderSize]="20" [hidden]="!contactingNormalization"></winery-loader>
         </button>
         <button *wineryRepositoryShowOnFeature="'radon'" (click)="openChe()" class="btn btn-info">
             Open in IDE
