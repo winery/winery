@@ -119,8 +119,7 @@ public class YTWorkflow implements VisitorNode {
     public void setImplementation(YTImplementation implementation) {
         this.implementation = implementation;
     }
-
-
+    
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {
         return visitor.visit(this, parameter);
     }
