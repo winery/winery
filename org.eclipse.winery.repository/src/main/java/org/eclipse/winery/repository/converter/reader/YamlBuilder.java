@@ -1033,6 +1033,11 @@ public class YamlBuilder {
         if (Objects.isNull(object)) {
             return null;
         }
+        
+        // TODO FIXME temporary fix
+        if (object instanceof Map) {
+            return new YTParameterDefinition.Builder().setType(QName.valueOf((String)((Map)object).get("type"))).setRequired((Boolean)((Map)object).get("required")).build();
+        }
         return new YTParameterDefinition.Builder()
                 .setValue(object)
                 .build();
