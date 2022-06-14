@@ -116,6 +116,9 @@
            name="patternDetection"
            [checked]="config.features.normalization">
     <label for="deploymentModelNormalizer">Deployment-Model Normalization</label>
+    <input *ngIf="config.features.normalization" id="deploymentModelNormalizerURL" class="form-control"
+           type="text" [(ngModel)]="config.endpoints.deploymentNormalizationAssistant" 
+           placeholder="Deployment Model Analyzer URL">
 </div>
 <div>
     <button class="btn btn-primary" (click)="saveChanges()">Save Changes</button>
