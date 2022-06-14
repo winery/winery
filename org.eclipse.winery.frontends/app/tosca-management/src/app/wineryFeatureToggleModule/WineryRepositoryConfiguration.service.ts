@@ -39,6 +39,7 @@ export interface WineryConfiguration {
         propertyCheck: boolean;
         yaml: boolean;
         patternDetection: boolean;
+        normalization: boolean;
     };
     endpoints: {
         bpmnModeler: string;
@@ -48,6 +49,7 @@ export interface WineryConfiguration {
         edmmTransformationTool: string;
         eclipseChe: string;
         tops: string;
+        deploymentNormalizationAssistant: string;
     };
     git: {
         clientId: string;
@@ -63,6 +65,7 @@ export interface WineryRepositoryConfiguration {
 
 @Injectable()
 export class WineryRepositoryConfigurationService {
+
     configuration: WineryConfiguration;
 
     constructor(private http: HttpClient) {
