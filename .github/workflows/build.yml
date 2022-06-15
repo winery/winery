@@ -114,6 +114,7 @@ jobs:
         run: |
           echo ${{ github.workspace }}
           echo ${pwd}
+          cd org.eclipse.winery.repository.rest
           ls -al
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
