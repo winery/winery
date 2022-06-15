@@ -1,0 +1,24 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<h4 mat-dialog-title>Are you sure you want</h4>
+<h4 *ngIf="!data.isFile" mat-dialog-title>to delete this folder?</h4>
+<h4 *ngIf="data.isFile" mat-dialog-title>to delete this file?</h4>
+<h3 mat-dialog-title><strong>{{data.name}}</strong></h3>
+
+
+<mat-dialog-actions>
+    <button mat-raised-button mat-dialog-close="delete" color="warn">Delete</button>
+    <span class="spacer"></span>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

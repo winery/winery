@@ -19,7 +19,7 @@
         <artifactId>winery</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>org.eclipse.winery.model.selfservice</artifactId>
+    <artifactId>org.eclipse.winery.model.extension</artifactId>
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <main.basedir>${project.parent.basedir}</main.basedir>
@@ -80,6 +80,7 @@
                 <version>3.3.1</version>
                 <executions>
                     <execution>
+                        <id>selfservice</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>xsdtojava</goal>
@@ -90,6 +91,22 @@
                                 <xsdOption>
                                     <xsd>${project.basedir}/src/main/resources/SelfServiceModel.xsd</xsd>
                                     <packagename>org.eclipse.winery.model.selfservice</packagename>
+                                </xsdOption>
+                            </xsdOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>researchobject</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xsdtojava</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <xsdOptions>
+                                <xsdOption>
+                                    <xsd>${project.basedir}/src/main/resources/ResearchObjectModel.xsd</xsd>
+                                    <packagename>org.eclipse.winery.model.researchobject</packagename>
                                 </xsdOption>
                             </xsdOptions>
                         </configuration>

@@ -123,6 +123,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
  */
 export const TopologyRendererReducer =
     function (lastState: TopologyRendererState = INITIAL_TOPOLOGY_RENDERER_STATE, action: Action): TopologyRendererState {
+
         switch (action.type) {
             // disables all research plugins globally
             case TopologyRendererActions.DISABLE_RESEARCH_PLUGIN:

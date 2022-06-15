@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -245,6 +245,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Path("selfserviceportal/")
     public SelfServicePortalResource getSelfServicePortalResource() {
         return new SelfServicePortalResource(this, requestRepository);
+    }
+
+    @Path("researchobject/")
+    public ResearchObjectResource getResearchObjectResource() {
+        return new ResearchObjectResource(this);
     }
 
     @Path("boundarydefinitions/")

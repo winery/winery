@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
@@ -408,6 +409,21 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
         }
     }
 
+    @Override
+    public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        return repository.getAllDirsAndFiles(ref, depth);
+    }
+
+    @Override
+    public Path move(RepositoryFileReference refSource, RepositoryFileReference refTarget) throws IOException {
+        return repository.move(refSource, refTarget);
+    }
+
+    @Override
+    public void createDir(RepositoryFileReference ref) throws IOException {
+        repository.createDir(ref);
+    }
+    
     @Override
     public boolean hasChangesInFile(DefinitionsChildId id) {
         RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);

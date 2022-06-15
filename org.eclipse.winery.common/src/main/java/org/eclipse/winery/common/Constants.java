@@ -80,6 +80,10 @@ public class Constants {
 
     public static final String DIRNAME_SELF_SERVICE_METADATA = "SELFSERVICE-Metadata";
 
+    public static final String DIRNAME_RESEARCH_OBJECT = "ResearchObject";
+    public static final String DIRNAME_RESEARCH_OBJECT_METADATA_FILE = "MetaData.xml";
+    public static final String DIRNAME_RESEARCH_OBJECT_FILES = "Files";
+    
     public static final String LICENSE_FILE_NAME = "LICENSE";
     public static final String README_FILE_NAME = "README.md";
 }

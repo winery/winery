@@ -1,0 +1,28 @@
+[
+    {
+        "id": "http://docs.oasis-open.org/tosca/ns/2011/12/interfaces/relationship/configure",
+        "text": "http://docs.oasis-open.org/tosca/ns/2011/12/interfaces/relationship/configure",
+        "operations": [
+            "preConfigureSource",
+            "preConfigureTarget",
+            "postConfigureSource",
+            "postConfigureTarget"
+        ]
+    },
+    {
+        "id": "sourceInterface",
+        "text": "sourceInterface",
+        "operations": [
+            "postConfigure",
+            "prepare"
+        ]
+    },
+    {
+        "id": "targetInterface",
+        "text": "targetInterface",
+        "operations": [
+            "firstOp",
+            "secondOp"
+        ]
+    }
+]

@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
@@ -477,6 +478,24 @@ public class MultiRepository implements IWrappingRepository {
         IRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
         repository.putContentToFile(ref, inputStream, mediaType);
         addNamespacesToRepository(repository, ref);
+    }
+
+    @Override
+    public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        IRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
+        return repository.getAllDirsAndFiles(ref, depth);
+    }
+
+    @Override
+    public void createDir(RepositoryFileReference ref) throws IOException {
+        IRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
+        repository.createDir(ref);
+    }
+
+    @Override
+    public Path move(RepositoryFileReference sourceRef, RepositoryFileReference targetRef) throws IOException {
+        IRepository repository = RepositoryUtils.getRepositoryByRef(sourceRef, this);
+        return repository.move(sourceRef, targetRef);
     }
 
     @Override

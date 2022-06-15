@@ -1,0 +1,28 @@
+[
+    {
+        "parentType": "{http://plain.winery.opentosca.org/relationshiptypes}AbstracRelationshipTypeWithInterfaces_w1-wip1",
+        "interfaces": [
+            {
+                "operations": [
+                    {
+                        "documentation": [],
+                        "any": [],
+                        "otherAttributes": {},
+                        "name": "firstOp"
+                    },
+                    {
+                        "documentation": [],
+                        "any": [],
+                        "otherAttributes": {},
+                        "name": "secondOp"
+                    }
+                ],
+                "name": "targetInterface"
+            }
+        ]
+    },
+    {
+        "parentType": "{http://plain.winery.opentosca.org/relationshiptypes}AbstractRelationshipTypeInhertingInterfaces_w1-wip1",
+        "interfaces": []
+    }
+]

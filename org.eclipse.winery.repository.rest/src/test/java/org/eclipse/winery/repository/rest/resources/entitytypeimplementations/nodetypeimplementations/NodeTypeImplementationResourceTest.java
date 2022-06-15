@@ -50,6 +50,13 @@ public class NodeTypeImplementationResourceTest extends AbstractResourceTest {
     }
 
     @Test
+    public void getInterfacesOfAssociatedTypeWithInheritance() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("nodetypeimplementations/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypeimplementations/ConcreteTypeOverridingInterfaceOperations-Implementation_w1-wip1/implementationartifacts/interfaces/",
+            "entityimplementations/nodetypeimplementations/inheritedInterfaces.json");
+    }
+    
+    @Test
     public void getInterfacesOfAssociatedType() throws Exception {
         this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
         this.assertGet("nodetypeimplementations/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypeimplementations%252Ffruits/baobab_impl/implementationartifacts/interfaces/",

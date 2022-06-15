@@ -9,6 +9,7 @@ ui:
     patternRefinement: {{ .Env.WINERY_FEATURE_PATTERN_REFINEMENT }}
     problemDetection: {{ .Env.WINERY_FEATURE_PROBLEM_DETECTION }}
     radon: {{ .Env.WINERY_FEATURE_RADON }}
+    researchObject: {{ .Env.WINERY_FEATURE_RESEARCH_OBJECT }}
     splitting: {{ .Env.WINERY_FEATURE_SPLITTING }}
     testRefinement: {{ .Env.WINERY_FEATURE_TEST_REFINEMENT }}
     edmmModeling: {{ .Env.WINERY_FEATURE_EDMM_MODELING }}
@@ -22,6 +23,7 @@ ui:
     edmmTransformationTool: http://{{ .Env.EDMM_TRANSFORMATION_HOSTNAME }}:{{ .Env.EDMM_TRANSFORMATION_PORT }}/plugins/check-model-support
     eclipseChe: {{ .Env.CHE_URL_PROTOCOL }}://{{ .Env.CHE_URL }}
     tops: http://{{ .Env.TOPS_HOSTNAME }}:{{ .Env.TOPS_PORT }}
+    deploymentNormalizationAssistant: http://{{ .Env.DNA_HOSTNAME }}:{{ .Env.DNA_PORT }}/{{ .Env.DNA_CONTEXT }}
 repository:
   provider: {{ .Env.WINERY_REPOSITORY_PROVIDER }}
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}
