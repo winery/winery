@@ -14,6 +14,8 @@
 
 /* override jquery redmond theme */
 
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
 #cap-or-reqdef-table tr td:nth-of-type(2) { /* Select the 2nd td */
     cursor: pointer;
 }

@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -98,7 +99,15 @@ public abstract class AbstractFileBasedRepository implements IRepository {
 
     public void forceDelete(RepositoryFileReference ref) throws IOException {
         Path relativePath = this.fileSystem.getPath(BackendUtils.getPathInsideRepo(ref));
-        Path fileToDelete = this.makeAbsolute(relativePath);
+        Path pathToDelete = this.makeAbsolute(relativePath);
+        if (Files.isDirectory(pathToDelete)) {
+            FileUtils.forceDelete(pathToDelete);
+        } else {
+            forceDeleteFile(pathToDelete, ref);
+        }
+    }
+
+    public void forceDeleteFile(Path fileToDelete, RepositoryFileReference ref) throws IOException {
         try {
             this.provider.delete(fileToDelete);
             // Quick hack for deletion of the mime type information
@@ -547,6 +556,22 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         Path path = this.ref2AbsolutePath(ref);
         FileUtils.createDirectory(path.getParent());
         Files.write(path, content.getBytes());
+    }
+
+    public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        Path path = this.ref2AbsolutePath(ref);
+        return Files.walk(path, depth);
+    }
+
+    public Path move(RepositoryFileReference refSource, RepositoryFileReference refTarget) throws IOException {
+        Path pathSource = this.ref2AbsolutePath(refSource);
+        Path pathTarget = this.ref2AbsolutePath(refTarget);
+        return Files.move(pathSource, pathTarget, StandardCopyOption.ATOMIC_MOVE);
+    }
+
+    public void createDir(RepositoryFileReference ref) throws IOException {
+        Path path = this.ref2AbsolutePath(ref);
+        FileUtils.createDirectory(path);
     }
 
     public void writeInputStreamToPath(Path targetPath, InputStream inputStream) throws IOException {

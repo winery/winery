@@ -19,7 +19,7 @@
         <artifactId>winery</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>org.eclipse.winery.model.selfservice</artifactId>    
+    <artifactId>org.eclipse.winery.model.extension</artifactId>
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <main.basedir>${project.parent.basedir}</main.basedir>
@@ -80,13 +80,29 @@
                 <version>1.5</version>
                 <executions>
                     <execution>
+                        <id>selfservice</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>xjc</goal>
                         </goals>
                         <configuration>
-                            <schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/resources/selfservice</schemaDirectory>
                             <packageName>org.eclipse.winery.model.selfservice</packageName>
+                            <staleFile>${project.build.directory}/jaxb2/.xjcStaleFlag1</staleFile>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>researchobject</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>${project.basedir}/src/main/resources/researchobject</schemaDirectory>
+                            <packageName>org.eclipse.winery.model.researchobject</packageName>
+                            <staleFile>${project.build.directory}/jaxb2/.xjcStaleFlag2</staleFile>
+                            <clearOutputDir>false</clearOutputDir>
                         </configuration>
                     </execution>
                 </executions>

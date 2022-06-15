@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -67,6 +67,7 @@ export class SubMenuItems {
     static readonly requiredStructure: SubMenuItem = { displayName: 'Required Structure', urlFragment: 'requiredstructure' };
     static readonly requirementDefinitions: SubMenuItem = { displayName: 'Requirement Definitions', urlFragment: 'requirementdefinitions' };
     static readonly requirementDefinitionsYaml: SubMenuItem = { displayName: 'Requirement Definitions', urlFragment: 'requirementdefinitionsyaml' };
+    static readonly researchObject: SubMenuItem = {displayName: 'Research Object', urlFragment: 'researchobject'};
     static readonly selfServicePortal: SubMenuItem = { displayName: 'Self-Service Portal', urlFragment: 'selfserviceportal' };
     static readonly source: SubMenuItem = { displayName: 'Source', urlFragment: 'source' };
     static readonly sourceInterfaces: SubMenuItem = { displayName: 'Source Interfaces', urlFragment: 'sourceinterfaces' };

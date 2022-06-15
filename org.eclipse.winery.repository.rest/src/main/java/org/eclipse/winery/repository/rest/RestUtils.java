@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.security.AccessControlException;
 import java.time.Duration;
@@ -33,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientBuilder;
@@ -69,11 +71,10 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.selfservice.Application;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
@@ -240,8 +241,7 @@ public class RestUtils {
                 // check which options are chosen
                 if (options.isAddToProvenance()) {
                     // We wait for the accountability layer to confirm the transaction
-                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output)
-                        .get();
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output).get();
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
                 } else if (options.isIncludeDependencies() && resource.getId() instanceof ServiceTemplateId) {
                     SelfContainmentPackager packager = new SelfContainmentPackager(RepositoryFactory.getRepository());
@@ -257,15 +257,9 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
-            resource.getXmlId().getEncoded(),
-            Constants.SUFFIX_CSAR);
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"", resource.getXmlId().getEncoded(), Constants.SUFFIX_CSAR);
 
-        return Response.ok()
-            .header("Content-Disposition", contentDisposition)
-            .type(MimeTypes.MIMETYPE_ZIP)
-            .entity(so)
-            .build();
+        return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
@@ -294,15 +288,9 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
-            resource.getXmlId().getEncoded(),
-            Constants.SUFFIX_CSAR);
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"", resource.getXmlId().getEncoded(), Constants.SUFFIX_CSAR);
 
-        return Response.ok()
-            .header("Content-Disposition", contentDisposition)
-            .type(MimeTypes.MIMETYPE_ZIP)
-            .entity(so)
-            .build();
+        return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
     public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
@@ -324,8 +312,7 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
-            artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
 
         return edmmConverter.transform(element);
     }
@@ -337,10 +324,7 @@ public class RestUtils {
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
-        return Response.ok()
-            .type(MimeTypes.MIMETYPE_YAML)
-            .entity(stringWriter.toString())
-            .build();
+        return Response.ok().type(MimeTypes.MIMETYPE_YAML).entity(stringWriter.toString()).build();
     }
 
     /**
@@ -367,9 +351,7 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        String sb = "attachment;filename=\"" +
-            name +
-            "\"";
+        String sb = "attachment;filename=\"" + name + "\"";
         return Response.ok().header("Content-Disposition", sb).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
@@ -487,10 +469,7 @@ public class RestUtils {
      * Checks whether a given resource (with absolute URL!) is available with a HEAD request on it.
      */
     public static boolean isResourceAvailable(String path) {
-        Response response = ClientBuilder.newClient()
-            .target(path)
-            .request()
-            .head();
+        Response response = ClientBuilder.newClient().target(path).request().head();
 
         return response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL);
     }
@@ -660,9 +639,9 @@ public class RestUtils {
     /**
      * Persists the given object
      */
-    public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
+    public static Response persist(Object object, RepositoryFileReference data_xml_ref, String mimeType) {
         try {
-            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
+            BackendUtils.persist(object, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -901,10 +880,7 @@ public class RestUtils {
             return Response.serverError();
         }
         // set filename
-        ContentDisposition contentDisposition = ContentDisposition.type("attachment")
-            .fileName(ref.getFileName())
-            .modificationDate(new Date(lastModified.toMillis()))
-            .build();
+        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
         res.header("Content-Disposition", contentDisposition);
         res.header("Cache-Control", "max-age=0");
         return res;
@@ -941,6 +917,33 @@ public class RestUtils {
         return putContentToFile(ref, inputStream, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
     }
 
+    public static Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        return RepositoryFactory.getRepository().getAllDirsAndFiles(ref, depth);
+    }
+
+    public static Response move(RepositoryFileReference refSource, RepositoryFileReference refTarget) {
+        if (!RepositoryFactory.getRepository().exists(refSource)) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        try {
+            RepositoryFactory.getRepository().move(refSource, refTarget);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.noContent().build();
+    }
+
+    public static Response createDir(RepositoryFileReference ref) {
+        try {
+            RepositoryFactory.getRepository().createDir(ref);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.noContent().build();
+    }
+
     /**
      * Updates the color if the color is not yet existent
      *
@@ -972,13 +975,11 @@ public class RestUtils {
 
     public static List<NamespaceAndDefinedLocalNamesForAngular> convert(List<NamespaceAndDefinedLocalNames> list) {
         return list.stream().map(namespaceAndDefinedLocalNames -> {
-            List<LocalNameForAngular> names = namespaceAndDefinedLocalNames.getDefinedLocalNames()
-                .stream().map(localName -> {
-                    final String id = "{" + namespaceAndDefinedLocalNames.getNamespace().getDecoded() + "}" + localName;
-                    return new LocalNameForAngular(id, localName);
-                }).collect(Collectors.toList());
-            return new NamespaceAndDefinedLocalNamesForAngular(
-                namespaceAndDefinedLocalNames.getNamespace(), names);
+            List<LocalNameForAngular> names = namespaceAndDefinedLocalNames.getDefinedLocalNames().stream().map(localName -> {
+                final String id = "{" + namespaceAndDefinedLocalNames.getNamespace().getDecoded() + "}" + localName;
+                return new LocalNameForAngular(id, localName);
+            }).collect(Collectors.toList());
+            return new NamespaceAndDefinedLocalNamesForAngular(namespaceAndDefinedLocalNames.getNamespace(), names);
         }).collect(Collectors.toList());
     }
 
@@ -1048,36 +1049,28 @@ public class RestUtils {
 
     public static <X extends DefinitionsChildId> List<QNameApiData> getAllElementsReferencingGivenType(Class<X> clazz, QName qNameOfTheType) {
         final QNameConverter adapter = new QNameConverter();
-        return RepositoryFactory.getRepository()
-            .getAllElementsReferencingGivenType(clazz, qNameOfTheType)
-            .stream()
-            .map(id -> adapter.marshal(id.getQName()))
-            .collect(Collectors.toList());
+        return RepositoryFactory.getRepository().getAllElementsReferencingGivenType(clazz, qNameOfTheType).stream().map(id -> adapter.marshal(id.getQName())).collect(Collectors.toList());
     }
 
-    public static List<ComponentId> getListOfIds(Set<? extends DefinitionsChildId> allDefinitionsChildIds,
-                                                 boolean includeFullDefinitions, boolean includeVersions) {
-        return allDefinitionsChildIds.stream()
-            .sorted()
-            .map(id -> {
-                String name = id.getXmlId().getDecoded();
-                TDefinitions definitions = null;
-                WineryVersion version = null;
-                if (Util.instanceSupportsNameAttribute(id.getClass())) {
-                    TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
-                    if (element instanceof IHasName) {
-                        name = ((IHasName) element).getName();
-                    }
+    public static List<ComponentId> getListOfIds(Set<? extends DefinitionsChildId> allDefinitionsChildIds, boolean includeFullDefinitions, boolean includeVersions) {
+        return allDefinitionsChildIds.stream().sorted().map(id -> {
+            String name = id.getXmlId().getDecoded();
+            TDefinitions definitions = null;
+            WineryVersion version = null;
+            if (Util.instanceSupportsNameAttribute(id.getClass())) {
+                TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
+                if (element instanceof IHasName) {
+                    name = ((IHasName) element).getName();
                 }
-                if (includeFullDefinitions) {
-                    definitions = getFullComponentData(id);
-                }
-                if (includeVersions) {
-                    version = VersionUtils.getVersion(id.getXmlId().getDecoded());
-                }
-                return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
-            })
-            .collect(Collectors.toList());
+            }
+            if (includeFullDefinitions) {
+                definitions = getFullComponentData(id);
+            }
+            if (includeVersions) {
+                version = VersionUtils.getVersion(id.getXmlId().getDecoded());
+            }
+            return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
+        }).collect(Collectors.toList());
     }
 
     public static TDefinitions getFullComponentData(DefinitionsChildId id) {
