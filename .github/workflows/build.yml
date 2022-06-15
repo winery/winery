@@ -49,7 +49,7 @@ jobs:
         with:
           name: artifacts
           path: |
-            ${{ github.workspace }}/org.eclipse.winery.repository.rest/target/winery.war
+            **/winery.war
             **/winery-cli.jar
       - name: Run codacy-coverage-reporter
         if: ${{ github.repository_owner == 'OpenTOSCA' }}
@@ -91,6 +91,11 @@ jobs:
         with:
           name: artifacts
           path: ${{ github.workspace }}
+      - name: Prepare artifacts
+        run: |
+          mv org.eclipse.winery.cli/target/winery-cli.jar winery-cli.jar
+          mv org.eclipse.winery.repository.rest/target/winery.war winery.war
+          ls -al
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
