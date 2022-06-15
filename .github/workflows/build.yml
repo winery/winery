@@ -112,9 +112,7 @@ jobs:
           echo ::set-output name=tags::${TAGS}
       - name: Output folder structure
         run: |
-          echo ${{ github.workspace }}
-          echo ${pwd}
-          cd org.eclipse.winery.repository.rest
+          cd org.eclipse.winery.repository.rest/target
           ls -al
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -126,7 +124,7 @@ jobs:
       - name: Build and push latest Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ${{ github.workspace }}
           file: Dockerfile.noBuild
           platforms: linux/amd64,linux/arm64
           push: true
