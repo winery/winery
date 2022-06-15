@@ -65,4 +65,11 @@ public class RelationshipTypeImplementationResourceTest extends AbstractResource
             "entityimplementations/relationshiptypeimplementations/attendTo_inheritance.xml");
 
     }
+
+    @Test
+    public void getInterfacesOfAssociatedTypeWithInheritance() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("nodetypeimplementations/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypeimplementations/ConcreteTypeOverridingInterfaceOperations-Implementation_w1-wip1/implementationartifacts/interfaces/",
+            "entityimplementations/nodetypeimplementations/inheritedInterfaces.json");
+    }
 }

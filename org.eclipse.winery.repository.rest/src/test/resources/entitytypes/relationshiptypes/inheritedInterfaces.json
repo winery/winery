@@ -1,0 +1,10 @@
+[
+    {
+        "parentType": "{http://plain.winery.opentosca.org/relationshiptypes}AbstracRelationshipTypeWithInterfaces_w1-wip1",
+        "interfaces": []
+    },
+    {
+        "parentType": "{http://plain.winery.opentosca.org/relationshiptypes}AbstractRelationshipTypeInhertingInterfaces_w1-wip1",
+        "interfaces": []
+    }
+]

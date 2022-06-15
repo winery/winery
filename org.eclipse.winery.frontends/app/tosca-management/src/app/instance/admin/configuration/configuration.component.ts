@@ -12,7 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { WineryConfiguration, WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryConfiguration, WineryRepositoryConfigurationService
+} from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { HttpClient } from '@angular/common/http';
 import { backendBaseURL, modelerURL } from '../../../configuration';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -27,10 +29,12 @@ import { FormControl } from '@angular/forms';
 })
 
 export class FeatureConfigurationComponent implements OnInit {
+
     config: WineryConfiguration;
     public containerUrlAvailable: boolean;
     public containerUrlControl: FormControl = new FormControl();
     public containerUrl;
+
     constructor(private http: HttpClient,
                 private configData: WineryRepositoryConfigurationService,
                 private notify: WineryNotificationService) {
@@ -44,7 +48,7 @@ export class FeatureConfigurationComponent implements OnInit {
     }
 
     checkModelerAvailability() {
-        const containerURL = (<HTMLInputElement> document.getElementById('containerUrl2')).value;
+        const containerURL = (<HTMLInputElement>document.getElementById('containerUrl2')).value;
         if (containerURL) {
             this.containerUrl = containerURL;
             this.http.get(this.containerUrl, { responseType: 'text' }).subscribe(

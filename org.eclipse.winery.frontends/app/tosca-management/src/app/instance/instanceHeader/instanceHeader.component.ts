@@ -19,12 +19,15 @@ import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
 import { InstanceService, ToscaLightCompatibilityData } from '../instance.service';
-import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { CheService } from '../../../../../topologymodeler/src/app/services/che.service';
 import { backendBaseURL } from '../../configuration';
+import { DeploymentNormalizationAnalyzerService } from './deploymentNormalizationAnalyzer.service';
 
 @Component({
     selector: 'winery-instance-header',
@@ -33,7 +36,8 @@ import { backendBaseURL } from '../../configuration';
         './instanceHeader.component.css'
     ],
     providers: [
-        RemoveWhiteSpacesPipe
+        RemoveWhiteSpacesPipe,
+        DeploymentNormalizationAnalyzerService,
     ],
 })
 
@@ -65,11 +69,14 @@ export class InstanceHeaderComponent implements OnInit {
     toscaLightErrorKeys: string[];
     deleteConfirmationModalRef: BsModalRef;
 
+    contactingNormalization = false;
+
     constructor(private router: Router, public sharedData: InstanceService,
                 public configurationService: WineryRepositoryConfigurationService,
                 private modalService: BsModalService,
                 private notify: WineryNotificationService,
-                private che: CheService) {
+                private che: CheService,
+                private dna: DeploymentNormalizationAnalyzerService) {
     }
 
     ngOnInit(): void {
@@ -131,6 +138,24 @@ export class InstanceHeaderComponent implements OnInit {
                     }
                 }
             });
+    }
+
+    sendToDeploymentNormalizerAssistant() {
+        if (!this.contactingNormalization) {
+            this.contactingNormalization = true;
+            this.dna.startNormalization(this.toscaComponent)
+                .subscribe(
+                    (location) => {
+                        this.contactingNormalization = false;
+                        if (location) {
+                            window.open(location, '_blank');
+                        } else {
+                            this.notify.error('Response did not contain a valid location!');
+                        }
+                    },
+                    () => this.contactingNormalization = false
+                );
+        }
     }
 
     private handleSuccess(message: string) {

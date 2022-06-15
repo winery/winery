@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
+
 import org.junit.jupiter.api.Test;
 
 public class RelationshipTypeResourceTest extends AbstractResourceTest {
@@ -55,7 +56,7 @@ public class RelationshipTypeResourceTest extends AbstractResourceTest {
         this.setRevisionTo("d71de5e3c4c8bd117d035602ffbae115eff981d8");
         this.assertPut("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/appearance",
             "entitytypes/relationshiptypes/kiwi_visualAppearance_put.json");
-        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/appearance", 
+        this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/appearance",
             "entitytypes/relationshiptypes/kiwi_visualAppearance.json");
     }
 
@@ -71,5 +72,26 @@ public class RelationshipTypeResourceTest extends AbstractResourceTest {
         this.setRevisionTo("d71de5e3c4c8bd117d035602ffbae115eff981d8");
         this.assertPut("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/validsourcesandtargets/", "entitytypes/relationshiptypes/kiwi_validEndings_put.json");
         this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/validsourcesandtargets/", "entitytypes/relationshiptypes/kiwi_validEndings_put.json");
+    }
+
+    @Test
+    public void getInheritedSourceInterfaces() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fplain.winery.opentosca.org%252Frelationshiptypes/ConcreteRelationshipType_w1-wip1/sourceinterfaces/inherited_interfaces",
+            "entitytypes/relationshiptypes/inheritedSourceInterfaces.json");
+    }
+
+    @Test
+    public void getInheritedTargetInterfaces() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fplain.winery.opentosca.org%252Frelationshiptypes/ConcreteRelationshipType_w1-wip1/targetinterfaces/inherited_interfaces",
+            "entitytypes/relationshiptypes/inheritedTargetInterfaces.json");
+    }
+
+    @Test
+    public void getInheritedInterfaces() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("relationshiptypes/http%253A%252F%252Fplain.winery.opentosca.org%252Frelationshiptypes/ConcreteRelationshipType_w1-wip1/interfaces/inherited_interfaces",
+            "entitytypes/relationshiptypes/inheritedInterfaces.json");
     }
 }
