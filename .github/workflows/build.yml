@@ -110,6 +110,11 @@ jobs:
 
           # Set output parameters.
           echo ::set-output name=tags::${TAGS}
+      - name: Output folder structure
+        run: |
+          echo ${{ github.workspace }}
+          echo ${pwd}
+          ls -al
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to DockerHub
