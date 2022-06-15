@@ -11,9 +11,10 @@ ui:
     testRefinement: false
     completion: false
     accountability: false
-    compliance: false   
+    compliance: false
     placement: false
     radon: false
+    researchObject: false
     patternDetection: true
     liveModeling: true
     propertyCheck: true

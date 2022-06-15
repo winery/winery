@@ -63,6 +63,7 @@ export class InstanceHeaderComponent implements OnInit {
     showEdmmExport: boolean;
     requiresTabFix = false;
     radon: boolean;
+    researchObject: boolean;
     toscaTypes = ToscaTypes;
 
     toscaLightCompatibilityErrorReportModalRef: BsModalRef;
@@ -106,6 +107,7 @@ export class InstanceHeaderComponent implements OnInit {
         }
 
         this.radon = this.configurationService.configuration.features.radon;
+        this.researchObject = this.configurationService.configuration.features.researchObject;
     }
 
     removeConfirmed() {

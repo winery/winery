@@ -76,6 +76,9 @@ export class InstanceService {
                     if (this.configurationService.configuration.features.nfv) {
                         subMenu.push(SubMenuItems.threatModeling);
                     }
+                    if (this.configurationService.configuration.features.researchObject) {
+                        subMenu.push(SubMenuItems.researchObject);
+                    }
                 }
                 break;
             case ToscaTypes.RelationshipType:

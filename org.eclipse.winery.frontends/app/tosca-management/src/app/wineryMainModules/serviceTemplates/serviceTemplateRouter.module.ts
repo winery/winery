@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,8 @@ import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.
 import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
 import { ThreatAssessmentComponent } from '../../instance/serviceTemplates/threatAssessment/threatAssessment.component';
 import { InputOutputParametersComponent } from '../../instance/serviceTemplates/inputOutputParameters/inputOutputParameters.component';
+import { ResearchObjectComponent } from '../../instance/serviceTemplates/researchObject/researchObject.component';
+import { researchObjectRoutes } from '../../instance/serviceTemplates/researchObject/researchObjectRouter.module';
 
 const toscaType = ToscaTypes.ServiceTemplate;
 
@@ -65,6 +67,11 @@ const serviceTemplateRoutes: Routes = [
             { path: 'constraintchecking', component: ConstraintCheckingComponent },
             { path: 'tags', component: TagComponent },
             { path: 'documentation', component: DocumentationComponent },
+            {
+                path: 'researchobject',
+                component: ResearchObjectComponent,
+                children: researchObjectRoutes
+            },
             { path: 'xml', component: EditXMLComponent },
             { path: 'threatmodeling', component: ThreatAssessmentComponent },
             { path: '', redirectTo: 'readme', pathMatch: 'full' }

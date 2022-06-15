@@ -9,6 +9,7 @@ ui:
     patternRefinement: {{ .Env.WINERY_FEATURE_PATTERN_REFINEMENT }}
     problemDetection: {{ .Env.WINERY_FEATURE_PROBLEM_DETECTION }}
     radon: {{ .Env.WINERY_FEATURE_RADON }}
+    researchObject: {{ .Env.WINERY_FEATURE_RESEARCH_OBJECT }}
     splitting: {{ .Env.WINERY_FEATURE_SPLITTING }}
     testRefinement: {{ .Env.WINERY_FEATURE_TEST_REFINEMENT }}
     edmmModeling: {{ .Env.WINERY_FEATURE_EDMM_MODELING }}

@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
@@ -200,6 +201,12 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @see #putDefinition(DefinitionsChildId, TDefinitions)
      */
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
+
+    Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException;
+
+    Path move(RepositoryFileReference refSource, RepositoryFileReference refTarget) throws IOException;
+
+    void createDir(RepositoryFileReference ref) throws IOException;
 
     /**
      * Serializes the given content at a location that the repository makes as belonging to the given id. This acts as a
