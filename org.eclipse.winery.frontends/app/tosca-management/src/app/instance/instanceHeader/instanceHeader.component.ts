@@ -147,7 +147,11 @@ export class InstanceHeaderComponent implements OnInit {
                 .subscribe(
                     (location) => {
                         this.contactingNormalization = false;
-                        window.open(location, '_blank');
+                        if (location) {
+                            window.open(location, '_blank');
+                        } else {
+                            this.notify.error('Response did not contain a valid location!');
+                        }
                     },
                     () => this.contactingNormalization = false
                 );

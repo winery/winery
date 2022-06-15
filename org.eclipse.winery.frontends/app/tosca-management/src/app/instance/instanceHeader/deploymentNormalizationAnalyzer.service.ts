@@ -40,7 +40,7 @@ export class DeploymentNormalizationAnalyzerService {
 
         return this.http.post<HttpResponse<any>>(url,
             { namespace: toscaComponent.namespace, id: toscaComponent.localName },
-            { headers: headers }
+            { headers: headers, observe: 'response' }
         )
             .map(response => url + response.headers.get('Location'));
     }
