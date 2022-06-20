@@ -19,22 +19,23 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinitio
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
 import java.io.Serializable;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Workflow", propOrder = {
-    "name",
-    "description",
-    "inputs",
-    "outputs",
-    "implementation",
+        "name",
+        "description",
+        "inputs",
+        "outputs",
+        "implementation",
 })
 public class TWorkflow implements HasName, Serializable {
 
     private String name;
     private String description;
-    private List<ParameterDefinition> inputs;
+    private TEntityTemplate.Properties inputs;
     private List<ParameterDefinition> outputs;
     private TImplementation implementation;
 
@@ -68,11 +69,11 @@ public class TWorkflow implements HasName, Serializable {
         this.description = description;
     }
 
-    public List<ParameterDefinition> getInputs() {
+    public TEntityTemplate.Properties getInputs() {
         return inputs;
     }
 
-    public void setInputs(List<ParameterDefinition> inputs) {
+    public void setInputs(TEntityTemplate.Properties inputs) {
         this.inputs = inputs;
     }
 
@@ -95,7 +96,7 @@ public class TWorkflow implements HasName, Serializable {
     public static class Builder {
         private final String name;
         private String description;
-        private List<ParameterDefinition> inputs;
+        private TEntityTemplate.Properties inputs;
         private List<ParameterDefinition> outputs;
         private TImplementation implementation;
 
@@ -108,7 +109,7 @@ public class TWorkflow implements HasName, Serializable {
             return this;
         }
 
-        public Builder setInputs(List<ParameterDefinition> inputs) {
+        public Builder setInputs(TEntityTemplate.Properties inputs) {
             this.inputs = inputs;
             return this;
         }

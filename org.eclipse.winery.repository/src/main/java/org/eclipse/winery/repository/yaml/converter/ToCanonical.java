@@ -1078,9 +1078,15 @@ public class ToCanonical {
 
         TWorkflow.Builder builder = new TWorkflow.Builder(id)
                 .setDescription(node.getDescription())
-                .setInputs(convert(node.getInputs()))
                 .setOutputs(convert(node.getOutputs()))
                 .setImplementation(convert(node.getImplementation()));
+
+        if (node.getInputs().entrySet().size() > 0) {
+            Map<String, YTPropertyAssignment> originalProperties = node.getInputs();
+            TEntityTemplate.Properties toscaProperties = this.convertPropertyAssignments(originalProperties);
+            builder.setInputs(toscaProperties).build();
+        }
+
         return builder.build();
     }
 

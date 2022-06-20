@@ -1033,11 +1033,7 @@ public class YamlBuilder {
         if (Objects.isNull(object)) {
             return null;
         }
-        
-        // TODO FIXME temporary fix
-        if (object instanceof Map) {
-            return new YTParameterDefinition.Builder().setType(QName.valueOf((String)((Map)object).get("type"))).setRequired((Boolean)((Map)object).get("required")).build();
-        }
+
         return new YTParameterDefinition.Builder()
                 .setValue(object)
                 .build();
@@ -1332,9 +1328,7 @@ public class YamlBuilder {
         Map<String, Object> map = (Map<String, Object>) object;
         return new YTWorkflow.Builder()
                 .setDescription(buildDescription(map.get(YamlSpecKeywords.DESCRIPTION)))
-                .setInputs(buildParameterDefinitions(map.get(YamlSpecKeywords.INPUTS),
-                        new Parameter<>(parameter.getContext()).addContext(YamlSpecKeywords.INPUTS).setValue(parameter.getValue())
-                ))
+                .setInputs(buildMap(map, YamlSpecKeywords.INPUTS, this::buildPropertyAssignment, parameter))
                 .setOutputs(buildParameterDefinitions(map.get(YamlSpecKeywords.OUTPUTS),
                         new Parameter<>(parameter.getContext()).addContext(YamlSpecKeywords.OUTPUTS).setValue(parameter.getValue())
                 ))

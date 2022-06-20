@@ -16,6 +16,7 @@ package org.eclipse.winery.model.tosca.yaml;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
@@ -29,7 +30,7 @@ import java.util.Objects;
 public class YTWorkflow implements VisitorNode {
     private String name;
     private String description;
-    private Map<String, YTParameterDefinition> inputs;
+    private Map<String, YTPropertyAssignment> inputs;
     private Map<String, YTParameterDefinition> outputs;
     private YTImplementation implementation;
 
@@ -47,10 +48,10 @@ public class YTWorkflow implements VisitorNode {
         if (!(o instanceof YTWorkflow)) return false;
         YTWorkflow that = (YTWorkflow) o;
         return Objects.equals(getName(), that.getName()) &&
-            Objects.equals(getDescription(), that.getDescription()) &&
-            Objects.equals(getInputs(), that.getInputs()) &&
-            Objects.equals(getOutputs(), that.getOutputs()) &&
-            Objects.equals(getImplementation(), that.getImplementation());
+                Objects.equals(getDescription(), that.getDescription()) &&
+                Objects.equals(getInputs(), that.getInputs()) &&
+                Objects.equals(getOutputs(), that.getOutputs()) &&
+                Objects.equals(getImplementation(), that.getImplementation());
     }
 
     @Override
@@ -61,12 +62,12 @@ public class YTWorkflow implements VisitorNode {
     @Override
     public String toString() {
         return "YTWorkflow{" +
-            "name='" + getName() + '\'' +
-            ", description='" + getDescription() + '\'' +
-            ", inputs=" + getInputs() +
-            ", outputs=" + getOutputs() +
-            ", implementation=" + getImplementation() +
-            '}';
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", inputs=" + getInputs() +
+                ", outputs=" + getOutputs() +
+                ", implementation=" + getImplementation() +
+                '}';
     }
 
     public String getName() {
@@ -87,7 +88,7 @@ public class YTWorkflow implements VisitorNode {
     }
 
     @NonNull
-    public Map<String, YTParameterDefinition> getInputs() {
+    public Map<String, YTPropertyAssignment> getInputs() {
         if (this.inputs == null) {
             this.inputs = new LinkedHashMap<>();
         }
@@ -95,7 +96,7 @@ public class YTWorkflow implements VisitorNode {
         return inputs;
     }
 
-    public void setInputs(Map<String, YTParameterDefinition> inputs) {
+    public void setInputs(Map<String, YTPropertyAssignment> inputs) {
         this.inputs = inputs;
     }
 
@@ -119,7 +120,7 @@ public class YTWorkflow implements VisitorNode {
     public void setImplementation(YTImplementation implementation) {
         this.implementation = implementation;
     }
-    
+
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {
         return visitor.visit(this, parameter);
     }
@@ -128,7 +129,7 @@ public class YTWorkflow implements VisitorNode {
 
         private String name;
         private String description;
-        private Map<String, YTParameterDefinition> inputs;
+        private Map<String, YTPropertyAssignment> inputs;
         private Map<String, YTParameterDefinition> outputs;
         private YTImplementation implementation;
 
@@ -142,7 +143,7 @@ public class YTWorkflow implements VisitorNode {
             return this;
         }
 
-        public Builder setInputs(Map<String, YTParameterDefinition> inputs) {
+        public Builder setInputs(Map<String, YTPropertyAssignment> inputs) {
             this.inputs = inputs;
             return this;
         }
@@ -157,7 +158,7 @@ public class YTWorkflow implements VisitorNode {
             return this;
         }
 
-        public Builder addInputs(Map<String, YTParameterDefinition> inputs) {
+        public Builder addInputs(Map<String, YTPropertyAssignment> inputs) {
             if (inputs == null || inputs.isEmpty()) {
                 return this;
             }
@@ -171,7 +172,7 @@ public class YTWorkflow implements VisitorNode {
             return this;
         }
 
-        public Builder addInputs(String name, YTParameterDefinition input) {
+        public Builder addInputs(String name, YTPropertyAssignment input) {
             if (name == null || name.isEmpty()) {
                 return this;
             }
