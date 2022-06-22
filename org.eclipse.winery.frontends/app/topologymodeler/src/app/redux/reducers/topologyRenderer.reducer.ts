@@ -25,7 +25,8 @@ export enum ResearchPlugin {
     GROUP_VIEW = 'GROUP_VIEW',
     MNG_PARTICIPANTS = 'MNG_PARTICIPANTS',
     MULTI_PARTICIPANTS = 'MULTI_PARTICIPANTS',
-    INSTANCE_MODEL_REFINEMENT = 'INSTANCE_MODEL_REFINEMENT'
+    INSTANCE_MODEL_REFINEMENT = 'INSTANCE_MODEL_REFINEMENT',
+    PLACEHOLDER_SUBSTITUTION = 'PLACEHOLDER_SUBSTITUTION'
 }
 
 export interface TopologyRendererState {
@@ -405,7 +406,8 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         generatePlaceholderSubs: !lastState.buttonsState.generatePlaceholderSubs
-                    }
+                    },
+                    activeResearchPlugin: ResearchPlugin.PLACEHOLDER_SUBSTITUTION,
                 };
             case TopologyRendererActions.HIGHLIGHT_NODES:
                 const data = <HighlightNodesAction>action;

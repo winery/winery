@@ -36,7 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class DriverInjection {
 
-    public static TTopologyTemplate injectDriver(TTopologyTemplate topologyTemplate) throws Exception {
+    public static TTopologyTemplate injectDriver(TTopologyTemplate topologyTemplate) throws DriverInjectionException {
 
         List<TNodeTemplate> nodeTemplatesWithAbstractDA = DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate);
 
@@ -66,7 +66,7 @@ public class DriverInjection {
         return topologyTemplate;
     }
 
-    public static void setDriverProperty(TRelationshipTemplate relationshipTemplate, TDeploymentArtifact driverDeploymentArtifact) throws Exception {
+    public static void setDriverProperty(TRelationshipTemplate relationshipTemplate, TDeploymentArtifact driverDeploymentArtifact) throws DriverInjectionException {
         QName DAArtifactTemplateQName = driverDeploymentArtifact.getArtifactRef();
         ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(DAArtifactTemplateQName);
         TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
@@ -79,7 +79,7 @@ public class DriverInjection {
             relationshipProperties.put("Driver", artifactProperties.get("Driver"));
             ModelUtilities.setPropertiesKV(relationshipTemplate, relationshipProperties);
         } else {
-            throw new WineryRepositoryException("No Property found to set to the driver classname");
+            throw new DriverInjectionException("No Property found to set to the driver classname");
         }
     }
 }

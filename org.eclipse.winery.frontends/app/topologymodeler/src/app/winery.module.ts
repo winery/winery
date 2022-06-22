@@ -72,6 +72,8 @@ import { ManageParticipantsComponent } from './participants/manage-participants.
 import { ResearchPluginsComponent } from './sidebars/research-plugins/research-plugins.component';
 import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.component';
 import { WineryNamespaceSelectorService } from '../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
+import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
+import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstitution/placeholderSubstitution.service';
 
 @NgModule({
     declarations: [
@@ -91,6 +93,7 @@ import { WineryNamespaceSelectorService } from '../../../tosca-management/src/ap
         ManageParticipantsComponent,
         ResearchPluginsComponent,
         EdmmReplacementRulesComponent,
+        PlaceholderSubstitutionComponent,
     ],
     exports: [WineryComponent],
     imports: [
@@ -147,7 +150,8 @@ import { WineryNamespaceSelectorService } from '../../../tosca-management/src/ap
         PolicyService,
         VersionSliderService,
         MultiParticipantsService,
-        WineryNamespaceSelectorService
+        WineryNamespaceSelectorService,
+        PlaceholderSubstitutionService
     ],
     bootstrap: [WineryComponent]
 })

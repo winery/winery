@@ -581,6 +581,106 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Path("placeholdersubstitution")
     @POST()
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createPlaceholderSubstituteVersion(TTopologyTemplate detectorSubTopology) throws IOException, SplittingException {
+        TTopologyTemplate originTopologyTemplate = this.getServiceTemplate().getTopologyTemplate();
+        if (originTopologyTemplate == null) {
+            return Response.notModified().build();
+        }
+
+        List<TTag> tagsOfServiceTemplate = this.getServiceTemplate().getTags();
+        List<OTParticipant> participants = originTopologyTemplate.getParticipants();
+
+        String participantId = "";
+        List<TTag> newTagList = new ArrayList<>();
+        for (TTag tagOfServiceTemplate : tagsOfServiceTemplate) {
+            if (tagOfServiceTemplate.getName().equals("participant")) {
+                participantId = tagOfServiceTemplate.getValue();
+                newTagList.add(tagOfServiceTemplate);
+            } else if (!tagOfServiceTemplate.getName().equals("choreography")) {
+                newTagList.add(tagOfServiceTemplate);
+            }
+        }
+        final String finalParticipantId = participantId;
+
+        List<String> nodeTemplatesWithNewHost = new ArrayList<>();
+
+        for (TNodeTemplate tNodeTemplate : originTopologyTemplate.getNodeTemplates()) {
+            //Multiple participants can be annotated on one node template
+            Optional<String> nodeOwners = ModelUtilities.getParticipant(tNodeTemplate);
+            if (nodeOwners.isPresent() && nodeOwners.get().contains(finalParticipantId)) {
+                for (TRelationshipTemplate tRelationshipTemplate :
+                    ModelUtilities.getIncomingRelationshipTemplates(originTopologyTemplate, tNodeTemplate)) {
+                    nodeTemplatesWithNewHost.add(
+                        ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(originTopologyTemplate, tRelationshipTemplate)
+                            .getId()
+                    );
+                }
+            }
+        }
+
+        ServiceTemplateId id = (ServiceTemplateId) this.getId();
+        WineryVersion version = VersionUtils.getVersion(id.getXmlId().getDecoded());
+
+        WineryVersion newVersion = new WineryVersion(
+            "_substituted_" + version.toString(),
+            1,
+            1
+        );
+
+        ServiceTemplateId newId = new ServiceTemplateId(id.getNamespace().getDecoded(),
+            VersionUtils.getNameWithoutVersion(id.getXmlId().getDecoded()) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersion.toString(),
+            false);
+
+        IRepository repo = RepositoryFactory.getRepository();
+        if (repo.exists(newId)) {
+            repo.forceDelete(newId);
+        }
+
+        ResourceResult response = RestUtils.duplicate(id, newId);
+
+        TServiceTemplate newServiceTemplate = repo.getElement(newId);
+        newServiceTemplate.setTopologyTemplate(BackendUtils.clone(originTopologyTemplate));
+        newServiceTemplate.getTopologyTemplate().setParticipants(participants);
+
+        Splitting splitting = new Splitting();
+
+        Map<String, List<TTopologyTemplate>> resultList = splitting.getHostingInjectionOptions(BackendUtils.clone(newServiceTemplate.getTopologyTemplate()));
+        for (Map.Entry<String, List<TTopologyTemplate>> entry : resultList.entrySet()) {
+            Optional<String> nodeOwners = ModelUtilities.getParticipant(newServiceTemplate.getTopologyTemplate().getNodeTemplate(entry.getKey()));
+            if (nodeOwners.isPresent() && nodeOwners.get().contains(finalParticipantId)) {
+                if (nodeTemplatesWithNewHost.contains(entry.getKey()) && !resultList.get(entry.getKey()).isEmpty()) {
+                    Map<String, TTopologyTemplate> choiceTopologyTemplate = new LinkedHashMap<>();
+                    choiceTopologyTemplate.put(entry.getKey(), entry.getValue().get(0));
+                    splitting.injectNodeTemplates(newServiceTemplate.getTopologyTemplate(), choiceTopologyTemplate, InjectRemoval.REMOVE_REPLACED);
+                    for (TNodeTemplate injectNodeTemplate : choiceTopologyTemplate.get(entry.getKey()).getNodeTemplates()) {
+                        injectNodeTemplate.getOtherAttributes().put(QNAME_PARTICIPANT, finalParticipantId);
+                    }
+                }
+            }
+        }
+
+        String choreoValue = splitting.calculateChoreographyTag(newServiceTemplate.getTopologyTemplate().getNodeTemplates(), participantId);
+
+        TTag choreoTag = new TTag();
+        choreoTag.setName("choreography");
+        choreoTag.setValue(choreoValue);
+
+        newTagList.add(choreoTag);
+        newServiceTemplate.setTags(newTagList);
+
+        repo.setElement(newId, newServiceTemplate);
+
+        if (response.getStatus() == Status.CREATED) {
+            response.setUri(null);
+            response.setMessage(new QNameApiData(newId));
+        }
+
+        return response.getResponse();
+    }
+
+    @Path("placeholdersubstitution")
+    @POST()
+    @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createPlaceholderSubstituteVersion() throws IOException, SplittingException {
         TTopologyTemplate originTopologyTemplate = this.getServiceTemplate().getTopologyTemplate();
         if (originTopologyTemplate == null) {
@@ -681,7 +781,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @POST()
     @Path("createparticipantsversion")
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Response> createParticipantsVersion() throws IOException {
+    public List<Response> createParticipantsVersion() {
         IRepository repo = RepositoryFactory.getRepository();
         // create list of responses because we create multiple resources at once
         List<Response> listOfResponses = new ArrayList<>();
@@ -693,6 +793,18 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         TTopologyTemplate topologyTemplate = this.getTopology();
 
         List<TTag> tags = new ArrayList<>();
+
+        //Try Driver Injection
+        TTopologyTemplate daSpecifiedTopology = topologyTemplate;
+        if (!DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate).isEmpty() &&
+            DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate) != null) {
+            try {
+                daSpecifiedTopology = DriverInjection.injectDriver(topologyTemplate);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        //End Driver Injection
 
         Splitting splitting = new Splitting();
         // iterate over tags of origin service template
@@ -725,7 +837,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                     false);
 
                 if (repo.exists(newId)) {
-                    repo.forceDelete(newId);
+                    try {
+                        repo.forceDelete(newId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 ResourceResult response = RestUtils.duplicate(id, newId);
@@ -741,7 +857,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
                 listOfResponses.add(response.getResponse());
                 // set element to propagate changed tags
-                repo.setElement(newId, tempServiceTempl);
+                try {
+                    repo.setElement(newId, tempServiceTempl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return listOfResponses;
