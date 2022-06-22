@@ -112,7 +112,7 @@ public class XmlRepository extends AbstractFileBasedRepository {
             }
         } else {
             // another quick hack; storing the mime type is not required for research object files
-            if (!ref.getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT_FILES) && !ref.getParent().getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT)) {
+            if (ref.getParent() != null && ref.getParent().getParent() != null && !ref.getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT_FILES) && !ref.getParent().getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT)) {
                 this.setMimeType(ref, mediaType);
             }
             Path targetPath = this.ref2AbsolutePath(ref);
