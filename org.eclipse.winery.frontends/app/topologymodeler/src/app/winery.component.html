@@ -38,16 +38,25 @@
         <hotkeys-cheatsheet></hotkeys-cheatsheet>
         <router-outlet *ngIf="!readonly"></router-outlet>
 
-        <winery-topology-renderer *ngIf="loaded?.loadedData"
-                                  [readonly]="backendService.configuration.isReadonly"
-                                  [entityTypes]="entityTypes"
-                                  [differencesData]="topologyDifferences"
-                                  [nodeTemplates]="nodeTemplates"
-                                  [relationshipTemplates]="relationshipTemplates"
-                                  [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
-                                  [templateParameter]="templateParameter"
-                                  (generatedReduxState)="onReduxReady()">
-        </winery-topology-renderer>
+<winery-overlay *ngIf="!readonly && loaded?.loadedData"></winery-overlay>
+
+<winery-navbar
+    *ngIf="loaded?.loadedData"
+    [readonly]="readonly"
+    [hideNavBarState]="hideNavBarState"
+    (resized)="onNavbarResized($event)">
+</winery-navbar>
+
+<winery-topology-renderer *ngIf="loaded?.loadedData"
+                          [readonly]="backendService.configuration.isReadonly"
+                          [entityTypes]="entityTypes"
+                          [differencesData]="topologyDifferences"
+                          [nodeTemplates]="nodeTemplates"
+                          [relationshipTemplates]="relationshipTemplates"
+                          [sidebarDeleteButtonClickEvent]="sidebarDeleteButtonClickEvent"
+                          [templateParameter]="templateParameter"
+                          (generatedReduxState)="onReduxReady()">
+</winery-topology-renderer>
 
         <div *ngIf="loaded?.generatedReduxState">
             <div *ngIf="!hideNavBarState && templateParameter.elementPath !== prmModellingUrlFragment">
@@ -55,6 +64,21 @@
                                           style="width:300px;float:left;margin-top:50px;"
                                           [entityTypes]="this.entityTypes">
                 </winery-palette-component>
+
+                <div *wineryRepositoryFeatureToggle="configEnum.LiveModeling">
+                    <winery-live-modeling-sidebar *ngIf="!hideNavBarState && !readonly"
+                                                  [top]="this.navbarHeight">
+                    </winery-live-modeling-sidebar>
+                </div>
+
+                <div *ngIf="topologyDifferences" style="position: fixed; right: 0;" class="sidebar-root">
+                    <h5 [style.margin.px]="15">Diff Legend</h5>
+                    <ul>
+                        <li>Green elements -> added</li>
+                        <li>Yellow elements -> changed</li>
+                        <li>Red elements -> removed</li>
+                    </ul>
+                </div>
             </div>
         </div>
 

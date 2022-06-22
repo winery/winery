@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,11 +16,24 @@ import { WineryVersion } from '../model/wineryVersion';
 import { QName } from '../../../../shared/src/app/model/qName';
 
 export class Utils {
-
     public static isEmpty(object: object) {
         return Object.keys(object).length === 0;
     }
-
+    public static doubleEncodeNamespace(namespace: string): string {
+        return encodeURIComponent(encodeURIComponent(namespace));
+    }
+    public static getFrontendPath(toscaType: string, namespace: string, localname: string) {
+        return '/' + this.join([toscaType, encodeURIComponent(namespace), localname]);
+    }
+    public static getBackendUrl(backendUrl: string, toscaType: string, namespace: string, localname: string) {
+        return this.join([backendUrl, toscaType, this.doubleEncodeNamespace(namespace), localname]);
+    }
+    public static join(path: string[]): string {
+        return path
+            .map(value => value.startsWith('/') ? value.substr(1) : value)
+            .map(value => value.endsWith('/') ? value.substr(0, value.length - 1) : value)
+            .join('/');
+    }
     /**
      * Generates a random alphanumeric string of the given length.
      *
@@ -34,10 +47,11 @@ export class Utils {
         for (let iterator = 0; iterator < length; iterator++) {
             state += elements.charAt(Math.floor(Math.random() * elements.length));
         }
-
         return state;
     }
-
+    public static isLoading(map: { [key: string]: boolean }): boolean {
+        return Object.keys(map).some(k => map[k]);
+    }
     public static getToscaTypeFromString(value: string): ToscaTypes {
         switch (value.toLowerCase()) {
             case ToscaTypes.ServiceTemplate:
@@ -91,7 +105,6 @@ export class Utils {
                 return ToscaTypes.Admin;
         }
     }
-
     public static getToscaTypeNameFromToscaType(value: ToscaTypes, plural = false): string {
         let type: string;
 
@@ -150,14 +163,12 @@ export class Utils {
             default:
                 type = 'Admin';
         }
-
         if (value !== ToscaTypes.Admin && plural) {
             type += 's';
         }
 
         return type;
     }
-
     public static getTypeOfTemplateOrImplementation(value: ToscaTypes): ToscaTypes {
         switch (value) {
             case ToscaTypes.ArtifactTemplate:
@@ -172,7 +183,6 @@ export class Utils {
                 return null;
         }
     }
-
     public static getImplementationOrTemplateOfType(value: ToscaTypes): ToscaTypes {
         switch (value) {
             case ToscaTypes.NodeType:
@@ -202,7 +212,6 @@ export class Utils {
                 return null;
         }
     }
-
     public static getServiceTemplateTemplateType(value: ToscaTypes): ServiceTemplateTemplateTypes {
         switch (value) {
             case ToscaTypes.CapabilityType:
@@ -217,7 +226,6 @@ export class Utils {
                 return null;
         }
     }
-
     public static getServiceTemplateTemplateFromString(value: string): ServiceTemplateTemplateTypes {
         switch (value) {
             case ServiceTemplateTemplateTypes.CapabilityTemplate:
@@ -232,11 +240,9 @@ export class Utils {
                 return null;
         }
     }
-
     public static getNameFromQName(qName: string) {
         return qName.split('}').pop();
     }
-
     public static getNamespaceAndLocalNameFromQName(qname: string): WineryComponentNameAndNamespace {
         const i = qname.indexOf('}');
         return {
@@ -244,7 +250,6 @@ export class Utils {
             localName: qname.substr(i + 1)
         };
     }
-
     public static getNameWithoutVersion(name: string): string {
         const res = name.match(/_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$/);
         if (!res) {
@@ -253,16 +258,13 @@ export class Utils {
             return name.substr(0, res.index);
         }
     }
-
     public static nodeTypeUrlForQName(nodeType: QName): string {
         return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(nodeType.nameSpace))}/${nodeType.localName}/readme`;
     }
-
     public static nodeTypeURL(nodeTypeName: string): string {
         const qname = QName.stringToQName(nodeTypeName);
         return `/#/nodetypes/${encodeURIComponent(encodeURIComponent(qname.nameSpace))}/${qname.localName}/readme`;
     }
-
     static getVersionFromString(qName: string) {
         const res = qName.match(/_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$/);
         if (res) {
@@ -276,7 +278,6 @@ export class Utils {
         return undefined;
     }
 }
-
 export interface WineryComponentNameAndNamespace {
     namespace: string;
     localName: string;

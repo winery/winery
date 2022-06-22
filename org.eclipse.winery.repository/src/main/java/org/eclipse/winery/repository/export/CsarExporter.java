@@ -161,7 +161,7 @@ public class CsarExporter {
         Collection<DefinitionsChildId> referencedIds;
 
         if (entryId.isSelfContained()) {
-            exportConfiguration.put(CsarExportConfiguration.INCLUDE_HASHES.name(), true);
+            exportConfiguration.put(CsarExportConfiguration.INCLUDE_DEPENDENCIES.name(), true);
         }
 
         // Process definitions and referenced files

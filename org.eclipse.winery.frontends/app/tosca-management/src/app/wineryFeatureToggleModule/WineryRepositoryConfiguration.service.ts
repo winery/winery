@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ export interface WineryConfiguration {
         patternRefinement: boolean;
         problemDetection: boolean;
         radon: boolean;
+        researchObject: boolean;
         splitting: boolean;
         multiParticipant: boolean;
         testRefinement: boolean;
@@ -35,8 +36,11 @@ export interface WineryConfiguration {
         placement: boolean;
         edmmModeling: boolean;
         updateTemplates: boolean;
+        liveModeling: boolean;
+        propertyCheck: boolean;
         yaml: boolean;
         patternDetection: boolean;
+        normalization: boolean;
     };
     endpoints: {
         bpmnModeler: string;
@@ -46,6 +50,7 @@ export interface WineryConfiguration {
         edmmTransformationTool: string;
         eclipseChe: string;
         tops: string;
+        deploymentNormalizationAssistant: string;
     };
     git: {
         clientId: string;
@@ -61,6 +66,7 @@ export interface WineryRepositoryConfiguration {
 
 @Injectable()
 export class WineryRepositoryConfigurationService {
+
     configuration: WineryConfiguration;
 
     constructor(private http: HttpClient) {

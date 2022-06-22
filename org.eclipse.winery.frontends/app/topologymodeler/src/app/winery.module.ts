@@ -21,7 +21,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { JsPlumbService } from './services/jsPlumb.service';
 import { WineryComponent } from './winery.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { PaletteComponent } from './palette/palette.component';
 import { TopologyRendererModule } from './topology-renderer/topology-renderer.module';
@@ -49,8 +48,14 @@ import { EnricherComponent } from './enricher/enricher.component';
 import { WineryFeatureToggleModule } from '../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { PlaceComponentsService } from './services/placement.service';
 import { MultiParticipantsComponent } from './multi-participants/multi-participants.component';
+import { LiveModelingService } from './services/live-modeling.service';
+import { ContainerService } from './services/container.service';
+import { ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
+import { LiveModelingActions } from './redux/actions/live-modeling.actions';
+import { AngularResizedEventModule } from 'angular-resize-event';
+import { OverlayComponent } from './overlay/overlay.component';
 import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmmTransformationCheck.component';
 import { EdmmReplacementRulesComponent } from './edmmTransformationCheck/edmm-replacement-rules/edmm-replacement-rules.component';
 import { ManageTopologyService } from './services/manage-topology.service';
@@ -72,6 +77,13 @@ import { ManageParticipantsComponent } from './participants/manage-participants.
 import { ResearchPluginsComponent } from './sidebars/research-plugins/research-plugins.component';
 import { InstanceModelComponent } from './sidebars/instanceModel/instanceModel.component';
 import { WineryNamespaceSelectorService } from '../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
+import { PropertyValidatorService } from './services/property-validator.service';
+import { OverlayService } from './services/overlay.service';
+import { TopologyService } from './services/topology.service';
+import { LoggingService } from './services/logging.service';
+import { LiveModelingSidebarModule } from './live-modeling/live-modeling-sidebar.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavbarModule } from './navbar/navbar.module';
 import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
 import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstitution/placeholderSubstitution.service';
 
@@ -84,6 +96,7 @@ import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstituti
         RefinementSidebarComponent,
         ProblemDetectionComponent,
         EnricherComponent,
+        OverlayComponent,
         MultiParticipantsComponent,
         EdmmTransformationCheckComponent,
         VersionSliderComponent,
@@ -127,13 +140,19 @@ import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstituti
         WineryDuplicateValidatorModule,
         CollapseModule,
         WineryTableModule,
-        NgxSliderModule
+        NgxSliderModule,
+        TooltipModule.forRoot(),
+        AngularResizedEventModule,
+        ModalModule.forRoot(),
+        LiveModelingSidebarModule,
+        NavbarModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
         JsPlumbService,
         WineryActions,
         TopologyRendererActions,
+        LiveModelingActions,
         LoadedService,
         AppReadyEventService,
         BackendService,
@@ -151,6 +170,14 @@ import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstituti
         VersionSliderService,
         MultiParticipantsService,
         WineryNamespaceSelectorService,
+        PolicyService,
+        ContainerService,
+        PropertyValidatorService,
+        LiveModelingService,
+        ReqCapRelationshipService,
+        OverlayService,
+        TopologyService,
+        LoggingService,
         PlaceholderSubstitutionService
     ],
     bootstrap: [WineryComponent]

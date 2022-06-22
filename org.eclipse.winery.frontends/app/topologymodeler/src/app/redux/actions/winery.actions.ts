@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,13 +15,16 @@
 import { Action, ActionCreator } from 'redux';
 import { Injectable } from '@angular/core';
 import {
-    OTParticipant, TArtifact, TGroupDefinition, TNodeTemplate, TRelationshipTemplate
+    OTParticipant, TArtifact, TGroupDefinition, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate
 } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { TPolicy } from '../../models/policiesModalData';
 import { Visuals } from '../../models/visuals';
 import { DetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
 import { EntityTypesModel } from '../../models/entityTypesModel';
+import { NodeTemplateInstanceStates } from '../../models/enums';
+import { RequirementModel } from '../../models/requirementModel';
+import { CapabilityModel } from '../../models/capabilityModel';
 
 export interface SendPaletteOpenedAction extends Action {
     paletteOpened: boolean;
@@ -124,27 +127,23 @@ export interface SetPropertyAction extends Action {
     };
 }
 
-export interface SetCapabilityAction extends Action {
-    nodeCapability: {
+export interface SetCapability {
+    nodeCapabilities: {
         nodeId: string,
-        color: string,
-        id: string,
-        name: string,
-        namespace: string,
-        qName: string
+        capabilities: CapabilityModel[];
     };
 }
 
-export interface SetRequirementAction extends Action {
-    nodeRequirement: {
+export type SetCapabilityAction = SetCapability & Action;
+
+export interface SetRequirement {
+    nodeRequirements: {
         nodeId: string,
-        color: string,
-        id: string,
-        name: string,
-        namespace: string,
-        qName: string
+        requirements: RequirementModel[];
     };
 }
+
+export type SetRequirementAction = SetRequirement & Action;
 
 export interface SetDeploymentArtifactAction extends Action {
     nodeDeploymentArtifact: {
@@ -225,6 +224,39 @@ export interface SetNodeVisuals extends Action {
     visuals: Visuals[];
 }
 
+export interface SendLiveModelingSidebarOpenedAction extends Action {
+    sidebarOpened: boolean;
+}
+
+export interface SetLastSavedJsonTopologyAction extends Action {
+    lastSavedJsonTopology: TTopologyTemplate;
+}
+
+export interface SetUnsavedChangesAction extends Action {
+    unsavedChanges: boolean;
+}
+
+export interface SetNodePropertyValidityAction extends Action {
+    nodeValidity: {
+        nodeId: string;
+        valid: boolean;
+    };
+}
+
+export interface SetNodeInstanceStateAction extends Action {
+    nodeInstanceState: {
+        nodeId: string;
+        state: NodeTemplateInstanceStates
+    };
+}
+
+export interface SetNodeWorkingAction extends Action {
+    nodeWorking: {
+        nodeId: string;
+        working: boolean;
+    };
+}
+
 /**
  * Winery Actions
  */
@@ -262,9 +294,15 @@ export class WineryActions {
     static DELETE_POLICY = 'DELETE_POLICY';
     static SEND_CURRENT_NODE_ID = 'SEND_CURRENT_NODE_ID';
     static SET_NODE_VISUALS = 'SET_NODE_VISUALS';
+    static SEND_LIVE_MODELING_SIDEBAR_OPENED = 'SEND_LIVE_MODELING_SIDEBAR_OPENED';
     static UPDATE_GROUP_DEFINITIONS = 'UPDATE_GROUP_DEFINITIONS';
     static UPDATE_PARTICIPANTS = 'UPDATE_PARTICIPANTS';
     static ASSIGN_PARTICIPANT = 'ASSIGN_PARTICIPANT';
+    static SET_LAST_SAVED_JSON_TOPOLOGY = 'SET_LAST_SAVED_JSON_TOPOLOGY';
+    static SET_UNSAVED_CHANGES = 'SET_UNSAVED_CHANGES';
+    static SET_NODE_VALIDITY = 'SET_NODE_VALIDITY';
+    static SET_NODE_INSTANCE_STATE = 'SET_NODE_INSTANCE_STATE';
+    static SET_NODE_WORKING = 'SET_NODE_WORKING';
     static ASSIGN_DEPLOYMENT_TECHNOLOGY = 'ASSIGN_DEPLOYMENT_TECHNOLOGY';
 
     addEntityTypes: ActionCreator<AddEntityTypesAction> = ((entityTypes) => ({
@@ -283,9 +321,9 @@ export class WineryActions {
             hideNavBarAndPalette: hideNavBarAndPalette
         }));
     triggerSidebar: ActionCreator<SidebarStateAction> =
-        ((newSidebarData) => ({
+        ((newSidebarData: DetailsSidebarState) => ({
             type: WineryActions.TRIGGER_SIDEBAR,
-            sidebarContents: newSidebarData.sidebarContents
+            sidebarContents: newSidebarData
         }));
     changeNodeName: ActionCreator<SidebarChangeNodeName> =
         ((nodeNames) => ({
@@ -358,14 +396,14 @@ export class WineryActions {
             propertyData: data,
         }));
     setCapability: ActionCreator<SetCapabilityAction> =
-        ((newCapability) => ({
+        ((capabilities) => ({
             type: WineryActions.SET_CAPABILITY,
-            nodeCapability: newCapability
+            nodeCapabilities: capabilities
         }));
     setRequirement: ActionCreator<SetRequirementAction> =
-        ((newRequirement) => ({
+        ((requirements) => ({
             type: WineryActions.SET_REQUIREMENT,
-            nodeRequirement: newRequirement
+            nodeRequirements: requirements
         }));
     setDeploymentArtifact: ActionCreator<SetDeploymentArtifactAction> =
         ((newDepArt) => ({
@@ -443,5 +481,44 @@ export class WineryActions {
         ((visuals: Visuals[]) => ({
             type: WineryActions.SET_NODE_VISUALS,
             visuals: visuals
+        }));
+    sendLiveModelingSidebarOpened: ActionCreator<SendLiveModelingSidebarOpenedAction> =
+        ((sidebarOpened) => ({
+            type: WineryActions.SEND_LIVE_MODELING_SIDEBAR_OPENED,
+            sidebarOpened: sidebarOpened
+        }));
+    setLastSavedJsonTopology: ActionCreator<SetLastSavedJsonTopologyAction> =
+        ((lastSavedJsonTopology: TTopologyTemplate) => ({
+            type: WineryActions.SET_LAST_SAVED_JSON_TOPOLOGY,
+            lastSavedJsonTopology: lastSavedJsonTopology
+        }));
+    setUnsavedChanges: ActionCreator<SetUnsavedChangesAction> =
+        ((unsavedChanges: boolean) => ({
+            type: WineryActions.SET_UNSAVED_CHANGES,
+            unsavedChanges: unsavedChanges
+        }));
+    setNodePropertyValidity: ActionCreator<SetNodePropertyValidityAction> =
+        ((nodeId: string, valid: boolean) => ({
+            type: WineryActions.SET_NODE_VALIDITY,
+            nodeValidity: {
+                nodeId: nodeId,
+                valid: valid
+            }
+        }));
+    setNodeInstanceState: ActionCreator<SetNodeInstanceStateAction> =
+        ((nodeId: string, state: NodeTemplateInstanceStates) => ({
+            type: WineryActions.SET_NODE_INSTANCE_STATE,
+            nodeInstanceState: {
+                nodeId: nodeId,
+                state: state
+            }
+        }));
+    setNodeWorking: ActionCreator<SetNodeWorkingAction> =
+        ((nodeId: string, working: boolean) => ({
+            type: WineryActions.SET_NODE_WORKING,
+            nodeWorking: {
+                nodeId: nodeId,
+                working: working
+            }
         }));
 }

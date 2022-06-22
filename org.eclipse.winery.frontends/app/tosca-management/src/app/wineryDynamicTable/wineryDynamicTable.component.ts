@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -71,11 +71,13 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
 
     @Input() dynamicMetadata: WineryDynamicTableMetadata[] = [];
     @Input() tableTitle = 'Table';
+    @Input() titleRouterLink?: any[] | string;
     @Input() modalTitle = 'Add/Edit Entry';
     @Input() deleteModalTitle = 'Delete';
     @Input() data: any[];
     @Input() avoidDuplicateProperties: string[] = [];
     @Input() disableFiltering = true;
+    @Input() disableButtons = false;
 
     @Output() entryEdited = new EventEmitter<any>();
     @Output() entryRemoved = new EventEmitter<any>();

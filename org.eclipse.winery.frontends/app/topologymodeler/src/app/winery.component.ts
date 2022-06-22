@@ -29,10 +29,17 @@ import { ToastrService } from 'ngx-toastr';
 import { ResearchPlugin, TopologyRendererState } from './redux/reducers/topologyRenderer.reducer';
 import { VersionElement } from './models/versionElement';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
-import { WineryRepositoryConfigurationService } from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { WineryActions } from './redux/actions/winery.actions';
 import { DetailsSidebarState } from './sidebars/node-details/node-details-sidebar';
 import { SubMenuItems } from '../../../tosca-management/src/app/model/subMenuItem';
+import { ResizedEvent } from 'angular-resize-event';
+import {
+    FeatureEnum
+} from '../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { TopologyService } from './services/topology.service';
 
 /**
  * This is the root component of the topology modeler.
@@ -69,6 +76,9 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     showVersionSlider: boolean;
 
+    navbarHeight = 0;
+    configEnum = FeatureEnum;
+
     public loaded: ILoaded;
     private loadedRelationshipVisuals = 0;
 
@@ -76,11 +86,13 @@ export class WineryComponent implements OnInit, AfterViewInit {
                 private appReadyEvent: AppReadyEventService,
                 public backendService: BackendService,
                 private ngRedux: NgRedux<IWineryState>,
+                private wineryActions: WineryActions,
                 private actions: TopologyRendererActions,
                 private uiActions: WineryActions,
                 private alert: ToastrService,
                 private activatedRoute: ActivatedRoute,
-                private configurationService: WineryRepositoryConfigurationService) {
+                private configurationService: WineryRepositoryConfigurationService,
+                private topologyService: TopologyService) {
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.hideNavBarAndPaletteState)
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
         this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
@@ -157,8 +169,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
     notifyClose(key: string): void {
         // FIXME this currently basically only supports the node-details sidebar
         //  because none of the other sidebars are based off ng-sidebar
-        this.ngRedux.dispatch(this.uiActions.triggerSidebar(
-            { sidebarContents: new DetailsSidebarState(false) }));
+        this.ngRedux.dispatch(this.uiActions.triggerSidebar( new DetailsSidebarState(false)));
     }
 
     initTopologyTemplateForRendering(nodeTemplateArray: Array<TNodeTemplate>, relationshipTemplateArray: Array<TRelationshipTemplate>) {
@@ -198,10 +209,24 @@ export class WineryComponent implements OnInit, AfterViewInit {
 
     onReduxReady() {
         this.loaded.generatedReduxState = true;
+        this.ngRedux.dispatch(this.wineryActions.setLastSavedJsonTopology(this.ngRedux.getState().wineryState.currentJsonTopology));
+        this.topologyService.enableCheck();
+        window.addEventListener('beforeunload', ((e) => {
+            if (this.ngRedux.getState().wineryState.unsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            } else {
+                delete e['returnValue'];
+            }
+        }));
     }
 
     sidebarDeleteButtonClicked($event) {
         this.sidebarDeleteButtonClickEvent = $event;
+    }
+
+    onNavbarResized(event: ResizedEvent) {
+        this.navbarHeight = event.newHeight;
     }
 
     private configure(params: TopologyModelerConfiguration) {

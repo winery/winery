@@ -64,3 +64,12 @@
 .button-group {
     margin-left: 5px;
 }
+
+.disable-icon {
+    color: grey;
+}
+
+::ng-deep .tooltip-check-properties .tooltip-inner {
+    white-space: nowrap;
+    max-width: none;
+}

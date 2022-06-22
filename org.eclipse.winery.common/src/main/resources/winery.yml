@@ -11,10 +11,13 @@ ui:
     testRefinement: false
     completion: false
     accountability: false
-    compliance: false   
+    compliance: false
     placement: false
     radon: false
+    researchObject: false
     patternDetection: true
+    liveModeling: true
+    propertyCheck: true
   endpoints:
     container: http://localhost:1337
     workflowmodeler: http://localhost:9527

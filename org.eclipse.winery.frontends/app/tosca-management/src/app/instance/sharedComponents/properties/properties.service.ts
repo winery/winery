@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,26 +14,29 @@
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Properties, PropertiesData } from './properties.types';
+import { PropertiesDefinitionsResourceApiData } from '../propertiesDefinition/propertiesDefinition.types';
+import { backendBaseURL } from '../../../configuration';
+import { Utils } from '../../../wineryUtils/utils';
+import { QName } from '../../../../../../shared/src/app/model/qName';
+
 
 @Injectable()
 export class PropertiesService {
 
-    path: string;
+    propertiesUrl: string;
+    propertiesDefinitionsUrl: string;
 
     constructor(private http: HttpClient,
-                private sharedData: InstanceService) {
-        this.path = this.sharedData.path + '/properties/';
+                private instance: InstanceService) {
+        this.propertiesUrl = Utils.join([this.instance.path, 'properties']);
+        this.propertiesDefinitionsUrl = Utils.join([this.instance.type.backendUrl, 'propertiesdefinition', 'merged']);
     }
 
-    /**
-     * We use `any` as return value because the backend delivers the json object containing the property as a key
-     * and the value the value. Example: { "property": "this is my property" }.
-     */
-    public getProperties(): Observable<any> {
-        return this.http.get(this.path, { observe: 'response', responseType: 'text' })
+    public getProperties(): Observable<PropertiesData> {
+        return this.http.get(this.propertiesUrl, { observe: 'response', responseType: 'text' })
             .pipe(map(res => {
                 if (res.headers.get('Content-Type') === 'application/json') {
                     return {
@@ -45,14 +48,18 @@ export class PropertiesService {
             }));
     }
 
-    public saveProperties(properties: any, isXML: boolean): Observable<HttpResponse<string>> {
+    public saveProperties(properties: Properties, isXML: boolean): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders();
         headers.set('Content-Type', isXML ? 'application/xml' : 'application/json');
         return this.http
             .put(
-                this.path,
+                this.propertiesUrl,
                 properties,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );
+    }
+
+    public getPropertiesDefinitions(): Observable<PropertiesDefinitionsResourceApiData> {
+        return this.http.get<PropertiesDefinitionsResourceApiData>(this.propertiesDefinitionsUrl);
     }
 }

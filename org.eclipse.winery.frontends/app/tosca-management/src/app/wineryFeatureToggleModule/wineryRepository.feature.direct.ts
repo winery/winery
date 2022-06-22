@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,10 +18,10 @@ export enum FeatureEnum {
     Accountability = 'accountability', Completion = 'completion', Compliance = 'compliance', EdmmModeling = 'edmmModeling',
     FreezeAndDefrost = 'freezeAndDefrost', ManagementFeatureEnrichment = 'managementFeatureEnrichment', NFV = 'nfv',
     InstanceModelRefinement = 'instanceModelRefinement', PatternRefinement = 'patternRefinement',
-    ProblemDetection = 'problemDetection', Radon = 'radon', Splitting = 'splitting', MultiParticipant = 'multiParticipant',
+    ProblemDetection = 'problemDetection', Radon = 'radon', ResearchObject = 'researchObject', Splitting = 'splitting', MultiParticipant = 'multiParticipant',
     TestRefinement = 'testRefinement', TopologyFragmentRefinementModel = 'topologyFragmentRefinementModel',
     Placement = 'placement', updateTemplates = 'updateTemplates', Yaml = 'yaml',
-    PatternDetection = 'patternDetection'
+    PatternDetection = 'patternDetection', LiveModeling = 'liveModeling', PropertyCheck = 'propertyCheck'
 }
 
 @Directive({

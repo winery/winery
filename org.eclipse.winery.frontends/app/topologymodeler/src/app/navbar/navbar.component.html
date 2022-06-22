@@ -13,17 +13,18 @@
 -->
 
 <nav class="navbar navbar-light bg-faded" *ngIf="!hideNavBarState" [@navbarInOut]>
-    <form class="form-inline" style="justify-content: center;">
+    <div class="form-inline" style="justify-content: center;">
         <h3 style="margin-right: .5em;">winery</h3>
         <button *ngIf="!readonly"
                 class="btn btn-sm align-middle btn-success" type="button"
-                (click)="saveTopologyTemplateToRepository()">Save
+                (click)="saveTopologyTemplateToRepository()">Save<span
+            *ngIf="unsavedChanges">*</span>
         </button>
 
         <button class="btn btn-sm align-middle btn-info button-group" (click)="openManagementUi()">
             Manage
         </button>
-        <div *ngIf="templateParameter.elementPath != 'graficprmmodelling'">
+        <div *ngIf="backendService.configuration.elementPath != 'graficprmmodelling'">
             <div class="btn-group button-group" data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style"
                         type="button"
@@ -75,6 +76,29 @@
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.propertiesButton)">
                 Properties
+                <span *wineryRepositoryFeatureToggle="configEnum.PropertyCheck" >
+                    <ng-template
+                        *ngIf="navbarButtonsState.buttonsState.checkNodePropertiesButton; then squareCheck else square"></ng-template>
+                    <ng-template #square>
+                        <i class="far fa-square"
+                           style="padding-left: .5em;"
+                           [tooltip]="checkNodeTooltip"
+                           containerClass="tooltip-check-properties"
+                           placement="bottom"
+                           [class.disable-icon]="!navbarButtonsState.buttonsState.propertiesButton"
+                           (click)="toggleCheckNodeProperties()"></i>
+                    </ng-template>
+                    <ng-template #squareCheck>
+                        <i class="far fa-check-square"
+                           style="padding-left: .5em;"
+                           [tooltip]="checkNodeTooltip"
+                           containerClass="tooltip-check-properties"
+                           placement="bottom"
+                           [class.disable-icon]="!navbarButtonsState.buttonsState.propertiesButton"
+                           (click)="toggleCheckNodeProperties()"></i>
+                    </ng-template>
+                    <ng-template #checkNodeTooltip><span>Check node properties</span></ng-template>
+                </span>
             </button>
             <button class="btn btn-sm align-middle dark-button-style"
                     type="button"
@@ -109,7 +133,7 @@
             </button>-->
         </div>
 
-        <div *ngIf="templateParameter.elementPath != 'graficprmmodelling'">
+        <div *ngIf="backendService.configuration.elementPath != 'graficprmmodelling'">
             <div *wineryRepositoryFeatureToggle="configEnum.Splitting" class="btn-group button-group"
                  data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style"
@@ -168,27 +192,6 @@
                     Management Feature Enrichment
                 </button>
             </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.Placement" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style"
-                        type="button"
-                        id="placement"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.placeComponentsButton)"
-                        [disabled]="placingOngoing">
-                    {{placingOngoing ? 'Placing...' : 'Place Components'}}
-                </button>
-            </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.ManagementFeatureEnrichment" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style"
-                        type="button"
-                        id="enrichment"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.enrichmentButton)">
-                    Management Feature Enrichment
-                </button>
-            </div>
 
             <div *wineryRepositoryFeatureToggle="configEnum.FreezeAndDefrost" class="btn-group button-group"
                  data-toggle="buttons">
@@ -206,31 +209,6 @@
                 </button>
             </div>
 
-            <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style" id="refinePatterns"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refinePatternsButton)">
-                    Refine Patterns
-                </button>
-            </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.TopologyFragmentRefinementModel"
-                 class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style" id="refineTopology"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyButton)">
-                    Refine Topology
-                </button>
-            </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.TestRefinement" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button class="btn btn-sm align-middle dark-button-style" id="refineTopologyWithTests"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.refineTopologyWithTestsButton)">
-                    Refine Topology with Tests
-                </button>
-            </div>
             <div *wineryRepositoryFeatureToggle="configEnum.PatternRefinement" class="btn-group button-group"
                  data-toggle="buttons">
                 <button class="btn btn-sm align-middle dark-button-style" id="refinePatterns"
@@ -298,31 +276,6 @@
                 <button class="btn btn-sm align-middle dark-button-style" id="edmmExport"
                         (click)="exportCsar($event, 'edmm')">
                     Export EDMM
-                </button>
-            </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button id="assignDeploymentTechnology" class="btn btn-sm align-middle dark-button-style"
-                        tooltip="Assign which nodes should be deployed using a certain deployment technology"
-                        tooltipPlacement="bottom"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignDeploymentTechnologyButton)">
-                    Assign Deployment Technology
-                </button>
-            </div>
-            <div *wineryRepositoryFeatureToggle="configEnum.EdmmModeling" class="btn-group button-group"
-                 data-toggle="buttons">
-                <button id="manageParticipants" class="btn btn-sm align-middle dark-button-style"
-                        tooltip="Add or remove participants to the Topology" tooltipPlacement="bottom"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.manageParticipantsButton)">
-                    Manage Participants
-                </button>
-                <button id="assignParticipants" class="btn btn-sm align-middle dark-button-style"
-                        tooltip="Assign which nodes belong to which participant" tooltipPlacement="bottom"
-                        (click)="toggleButton($event)"
-                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignParticipantsButton)">
-                    Assign Participants
                 </button>
             </div>
 
@@ -400,14 +353,16 @@
                 <ul *dropdownMenu class="dropdown-menu" role="menu">
                     <!--<li role="menuitem"><a class="dropdown-item" href="#">Complete Topology</a></li>-->
                     <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
-                        <button style="cursor: pointer" #exportCsarButton target="_blank"
+                        <button style="cursor: pointer" #exportCsarButton
                                 tooltip="Hold CTRL key to export XML only."
-                                placement="left" class="dropdown-item" (click)="exportCsar($event)">Export CSAR
+                                placement="left" class="dropdown-item" (click)="exportCsar($event)">
+                            Export CSAR
                         </button>
                     </li>
                     <li role="menuitem" *wineryRepositoryShowOnFeature="configEnum.NFV">
-                        <button style="cursor: pointer" id="threatModeling" target="_blank"
-                                class="dropdown-item" (click)="toggleButton($event)">Threat Modeling
+                        <button style="cursor: pointer" id="threatModeling"
+                                class="dropdown-item" (click)="toggleButton($event)">
+                            Threat Modeling
                         </button>
                     </li>
                     <li role="menuitem" *wineryRepositoryHideOnFeature="'yaml'">
@@ -424,7 +379,7 @@
             </div>
         </div>
 
-        <div *ngIf="!readonly && templateParameter.elementPath == 'graficprmmodelling'" class="btn-group button-group"
+        <div *ngIf="!readonly && backendService.configuration.elementPath == 'graficprmmodelling'" class="btn-group button-group"
              dropdown>
             Only show selected Mapping Types:
             <select (change)="selectRelationshipType($event)"
@@ -439,9 +394,33 @@
             </select>
         </div>
 
-        <div *ngIf="!readonly && templateParameter.elementPath == 'graficprmmodelling'">
+        <div *ngIf="!readonly && backendService.configuration.elementPath == 'graficprmmodelling'">
             <p style="color:red;">Note: It's only possible to edit PRM Mappings here. Detector and Refinement Structure
                 must be defined separately </p>
         </div>
-    </form>
+    </div>
 </nav>
+
+<ng-template #confirmModal>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Information</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="this.modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="px-2">
+            <span>There are errors within the current configuration. Do you want to continue anyway?</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default"
+                (click)="this.modalRef.hide()">
+            No
+        </button>
+        <button type="button" class="btn btn-primary"
+                (click)="this.modalRef.hide(); this.saveTopologyTemplateToRepository()">
+            Yes
+        </button>
+    </div>
+</ng-template>

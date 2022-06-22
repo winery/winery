@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -1040,5 +1040,70 @@ public abstract class ModelUtilities {
                 }
             })
             .orElseGet(ArrayList::new);
+    }
+
+    /**
+     * Merge properties definitions.
+     * Only winery properties definitions are considered.
+     * The first element in the list is the lowest in the inheritance hierarchy.
+     */
+    public static <T extends TEntityType> List<PropertyDefinitionKV> mergePropertiesDefinitions(List<T> entityTypes) {
+        List<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
+
+        for (int i = 0; i < entityTypes.size(); i++) {
+            TEntityType entityType = entityTypes.get(i);
+            WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+
+            // Continue if current entity type does not have any properties definitions
+            if (winerysPropertiesDefinition == null) {
+                continue;
+            }
+
+            // Continue if current entity type does not have any properties definitions
+            List<PropertyDefinitionKV> winerysPropertiesDefinitions = winerysPropertiesDefinition.getPropertyDefinitions();
+            if (winerysPropertiesDefinitions == null) {
+                continue;
+            }
+
+            // Add property definition to list if not already added by a previous entity type
+            for (PropertyDefinitionKV entityTypePropertyDefinition : winerysPropertiesDefinitions) {
+                boolean exists = false;
+                for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
+                    if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
+                        if (i == 1) {
+                            propertyDefinition.setDerivedFromStatus("OVERRIDE");
+                        }
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    entityTypePropertyDefinition.setDerivedFromType(entityType.getQName());
+                    
+                    if (i == 0) {
+                        entityTypePropertyDefinition.setDerivedFromStatus("SELF");
+                    } else {
+                        entityTypePropertyDefinition.setDerivedFromStatus("INHERITED");
+                    }
+                    
+                    propertyDefinitions.add(entityTypePropertyDefinition);
+                }
+            }
+        }
+
+        return  propertyDefinitions;
+    }
+
+    /**
+     * Check if two lists are the same.
+     * Order does not matter. 
+     * Null is handled as empty list.
+     */
+    public static <T> boolean compareUnorderedNullableLists(List<T> first, List<T> second) {
+        if (first == null) first = new ArrayList<T>();
+        if (second == null) second = new ArrayList<T>();
+
+        return first.containsAll(second) && first.size() == second.size();
     }
 }

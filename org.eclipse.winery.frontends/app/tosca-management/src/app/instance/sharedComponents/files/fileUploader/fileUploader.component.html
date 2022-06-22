@@ -1,0 +1,95 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<label ng2FileDrop
+       [ngClass]="{'drop-zone-over': hasDropZoneOver}"
+       (fileOver)="fileOverBase($event)"
+       [uploader]="uploader"
+       class="well drop-zone">
+    Drag and drop your files here <br> or <br> Click here to open the file explorer
+    <input type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none"/>
+</label>
+
+<div style="text-align: center">
+    <button type="button" class="btn btn-upload btn-s"
+            (click)="uploadThemAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        <span class="glyphicon glyphicon-upload"></span> Upload all
+    </button>
+    <button type="button" class="btn btn-cancel btn-s" style="margin-left:30px;margin-right:30px"
+            (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+        <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+    </button>
+    <button type="button" class="btn btn-remove btn-s"
+            (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+        <span class="glyphicon glyphicon-trash"></span> Clear queue
+    </button>
+</div>
+<br>
+<div>
+    <span style="margin-left:10px"> {{ uploader?.queue?.length }} files in queue.</span>
+    <span style="float: right;margin-right:10px"> 
+        Upload progress:
+        {{ math.floor(uploader.progress / 100 * uploader?.queue?.length) || '0'}}/{{ uploader?.queue?.length }} 
+    </span>
+    <div class="progress" style="">
+        <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th width="50%">Name</th>
+        <th>Path</th>
+        <th>Size</th>
+        <th>Progress</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of uploader.queue">
+        <td><strong>{{item?.file?.name}}</strong></td>
+        <td *ngIf="item.isUploading || item.isUploaded; else current">{{item.formData.path || '\\'}}</td>
+        <ng-template #current>
+            <td>{{currentPath || '\\'}}</td>
+        </ng-template>
+        <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size / 1024 / 1024 | number:'.2' }} MB</td>
+        <td *ngIf="uploader.options.isHTML5">
+            <div class="progress" style="margin-bottom: 0;">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+            </div>
+        </td>
+        <td class="text-center">
+            <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+            <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+            <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+        </td>
+        <td nowrap>
+            <button type="button" class="btn btn-upload btn-xs"
+                    (click)="uploadSingle(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                <span class="glyphicon glyphicon-upload"></span> Upload
+            </button>
+            <button type="button" class="btn btn-cancel btn-xs"
+                    (click)="item.cancel()" [disabled]="!item.isUploading">
+                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+            </button>
+            <button type="button" class="btn btn-remove btn-xs"
+                    (click)="item.remove()">
+                <span class="glyphicon glyphicon-trash"></span> Remove
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>

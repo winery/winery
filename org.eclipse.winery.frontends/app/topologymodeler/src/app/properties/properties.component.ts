@@ -13,14 +13,14 @@
  *******************************************************************************/
 
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { PropertyDefinitionType } from '../models/enums';
 import { KeyValueItem } from '../../../../tosca-management/src/app/model/keyValueItem';
-import { TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
+import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
 
 @Component({
     selector: 'winery-properties',
@@ -32,11 +32,16 @@ export class PropertiesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() readonly: boolean;
     @Input() templateId: string;
     @Input() isNode: boolean;
+    @Input() entityType: EntityType;
+    @Input() nodeId: string;
 
     propertyDefinitionType: PropertyDefinitionType;
     templateProperties: any = {};
     templateType: string;
+    key: string;
+    nodeProperties: any;
 
+    dispatchSubject: Subject<any> = new Subject<any>();
     private subscriptions: Array<Subscription> = [];
     // flag to allow skipping an update when this instance is the instigator of said update
     //  this way we avoid recreating the input form during the editing process
