@@ -230,7 +230,7 @@ public class Splitting {
         TNodeType placeholderNodeType = new TNodeType();
         placeholderNodeType.setName(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
         placeholderNodeType.setId(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
-        placeholderNodeType.setTargetNamespace("http://www.example.org/tosca/placeholdertypes");
+        placeholderNodeType.setTargetNamespace("http://opentosca/multiparticipant/placeholdertypes");
 
         return placeholderNodeType;
     }

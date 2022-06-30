@@ -787,8 +787,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @POST()
     @Path("createparticipantsversion")
     @Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Response> createParticipantsVersion() {
+    public Response createParticipantsVersion() {
         IRepository repo = RepositoryFactory.getRepository();
+        ResourceResult result = new ResourceResult();
         // create list of responses because we create multiple resources at once
         List<Response> listOfResponses = new ArrayList<>();
 
@@ -808,6 +809,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 daSpecifiedTopology = DriverInjection.injectDriver(topologyTemplate);
             } catch (Exception e) {
                 e.printStackTrace();
+                result.setStatus(Status.BAD_REQUEST);
+                result.setMessage(e.getMessage());
+                return result.getResponse();
             }
         }
         //End Driver Injection
@@ -870,7 +874,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 }
             }
         }
-        return listOfResponses;
+        result.setStatus(Status.CREATED);
+        result.setMessage(listOfResponses);
+        return result.getResponse();
     }
 
     @POST()

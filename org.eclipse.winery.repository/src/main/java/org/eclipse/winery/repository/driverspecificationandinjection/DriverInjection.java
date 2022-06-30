@@ -30,7 +30,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -48,18 +47,24 @@ public class DriverInjection {
                 for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
                     Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplatesWithConcreteDA
                         = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);
-                    for (Pair<TRelationshipTemplate, TNodeTemplate> pair : nodeTemplatesWithConcreteDA) {
-                        TRelationshipTemplate relationshipTemplate = pair.getLeft();
-                        TNodeTemplate nodeTemplate = pair.getRight();
-                        TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplate);
+                    if (!nodeTemplatesWithConcreteDA.isEmpty()) {
+                        for (Pair<TRelationshipTemplate, TNodeTemplate> pair : nodeTemplatesWithConcreteDA) {
+                            TRelationshipTemplate relationshipTemplate = pair.getLeft();
+                            TNodeTemplate nodeTemplate = pair.getRight();
+                            TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplate);
 
-                        if (concreteDeploymentArtifact != null) {
-                            nodeTemplateWithAbstractDA.getDeploymentArtifacts().add(concreteDeploymentArtifact);
-                            setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
+                            if (concreteDeploymentArtifact != null) {
+                                nodeTemplateWithAbstractDA.getDeploymentArtifacts().add(concreteDeploymentArtifact);
+                                setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
+                            } else {
+                                throw new DriverInjectionException("For the Node Template" + nodeTemplateWithAbstractDA.getId() + " no suitable Driver can be found. Please add a respective Messaging Middleware to proceed.");
+                            }
                         }
+                        // concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
+                        nodeTemplateWithAbstractDA.getDeploymentArtifacts().remove(abstractDA);
+                    } else {
+                        throw new DriverInjectionException("For the Node Template" + nodeTemplateWithAbstractDA.getId() + " no suitable Driver can be found. Please add a respective Messaging Middleware to proceed.");
                     }
-                    // concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
-                    nodeTemplateWithAbstractDA.getDeploymentArtifacts().remove(abstractDA);
                 }
             }
         }

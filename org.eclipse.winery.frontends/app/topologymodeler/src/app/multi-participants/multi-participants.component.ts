@@ -97,6 +97,7 @@ export class MultiParticipantsComponent implements OnInit {
                 },
                 error => {
                     this.errorHandlerService.handleError(error);
+                    this.ngRedux.dispatch(this.actions.extractLDM());
                 }
             );
         }

@@ -84,25 +84,21 @@ public class DASpecification {
     public static Set<Pair<TRelationshipTemplate, TNodeTemplate>> getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode
     (TNodeTemplate nodeTemplate, TDeploymentArtifact deploymentArtifact, TTopologyTemplate topologyTemplate) throws DriverInjectionException {
 
-        try {
-            // key is the node template the nodeTemplate is directly connected to this is the indicator from which connection the concrete DA is coming from
-            // value is the node template which has a concrete DA attached to substitute the abstract DA of the nodeTemplate
-            Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplateWithConcreteDAAndDirectlyConnectedNode = new HashSet<>();
-            List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
+        // key is the node template the nodeTemplate is directly connected to this is the indicator from which connection the concrete DA is coming from
+        // / value is the node template which has a concrete DA attached to substitute the abstract DA of the nodeTemplate
+        Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplateWithConcreteDAAndDirectlyConnectedNode = new HashSet<>();
+        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
 
-            //concrete DAs could be find in the hostedOn stack or the connected stacks, but just in directly connected stacks
-            for (TRelationshipTemplate outgoingRelationship : outgoingRelationshipTemplates) {
-                TNodeTemplate targetNodeTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, outgoingRelationship);
-                //In each directly connected stack a node with matching concrete DA is looked up
-                TNodeTemplate nodesWithSuitableDA = getNodesWithSuitableConcreteDAs(targetNodeTemplate, deploymentArtifact, topologyTemplate);
-                if (nodesWithSuitableDA != null) {
-                    nodeTemplateWithConcreteDAAndDirectlyConnectedNode.add(Pair.of(outgoingRelationship, nodesWithSuitableDA));
-                }
+        //concrete DAs could be find in the hostedOn stack or the connected stacks, but just in directly connected stacks
+        for (TRelationshipTemplate outgoingRelationship : outgoingRelationshipTemplates) {
+            TNodeTemplate targetNodeTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, outgoingRelationship);
+            //In each directly connected stack a node with matching concrete DA is looked up
+            TNodeTemplate nodesWithSuitableDA = getNodesWithSuitableConcreteDAs(targetNodeTemplate, deploymentArtifact, topologyTemplate);
+            if (nodesWithSuitableDA != null) {
+                nodeTemplateWithConcreteDAAndDirectlyConnectedNode.add(Pair.of(outgoingRelationship, nodesWithSuitableDA));
             }
-            return nodeTemplateWithConcreteDAAndDirectlyConnectedNode;
-        } catch (Exception e) {
-            throw new DriverInjectionException("");
         }
+        return nodeTemplateWithConcreteDAAndDirectlyConnectedNode;
     }
 
     /**

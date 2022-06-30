@@ -38,8 +38,8 @@ public class OpenToscaBaseTypes {
     
     //region ********** messaging elements **********
     //TODO: Check if these Types are correct for final version
-    public static final QName publisherProxy = QName.valueOf("{http://opentosca.org/nodetypes}PublisherProxy");
-    public static final QName subscriberProxy = QName.valueOf("{http://opentosca.org/nodetypes}SubscriberProxy");
+    public static final QName publisherProxy = QName.valueOf("{http://opentosca.org/patternsolution/nodetypes}PublisherProxy");
+    public static final QName subscriberProxy = QName.valueOf("{http://opentosca.org/patternsolution/nodetypes}SubscriberProxy");
     public static final QName topic = QName.valueOf("{http://opentosca.org/nodetypes}Topic");
     //endregion
 
