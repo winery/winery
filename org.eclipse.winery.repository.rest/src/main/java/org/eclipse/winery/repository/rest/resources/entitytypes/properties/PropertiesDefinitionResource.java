@@ -229,10 +229,10 @@ public class PropertiesDefinitionResource {
             if (!definitions.isEmpty()) {
                 data.winerysPropertiesDefinition.setPropertyDefinitions(definitions);
                 this.getEntityType().setProperties(data.winerysPropertiesDefinition);
-                return RestUtils.persist(this.parentRes);
             } else {
-                return Response.noContent().build();
+                this.getEntityType().setProperties(null);
             }
+            return RestUtils.persist(this.parentRes);
         }
 
         // CASE: YAML

@@ -38,7 +38,6 @@ export class WineryPropertyDefinitionValidatorDirective implements Validator {
 
 
     validate(control: AbstractControl): ValidationErrors | null {
-        console.log(control);
         const value = control.value;
 
         // Assert required
