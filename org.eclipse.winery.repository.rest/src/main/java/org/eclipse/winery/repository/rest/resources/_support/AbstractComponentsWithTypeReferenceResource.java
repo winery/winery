@@ -56,10 +56,6 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
             final TExtensibleElements element = definitions.getElement();
             ((HasType) element).setType(jsonData.type);
 
-            // This would be better implemented using inheritance,
-            // but this would lead to a huge overhead in the implementation (checking for the creation result etc),
-            // thus, we do the quick hack here
-
             if (id instanceof EntityTemplateId) {
                 BackendUtils.initializeProperties(requestRepository, (TEntityTemplate) element);
             }
