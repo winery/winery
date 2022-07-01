@@ -57,13 +57,13 @@ public class DriverInjection {
                                 nodeTemplateWithAbstractDA.getDeploymentArtifacts().add(concreteDeploymentArtifact);
                                 setDriverProperty(relationshipTemplate, concreteDeploymentArtifact);
                             } else {
-                                throw new DriverInjectionException("For the Node Template" + nodeTemplateWithAbstractDA.getId() + " no suitable Driver can be found. Please add a respective Messaging Middleware to proceed.");
+                                throw new DriverInjectionException("For the Node Template " + nodeTemplateWithAbstractDA.getId() + " no suitable Driver can be found. Please add a respective Messaging Middleware to proceed.");
                             }
                         }
                         // concrete DAs from the delivering Node Template must not be deleted. They are uploaded by the OpenTOSCA Container but not used.
                         nodeTemplateWithAbstractDA.getDeploymentArtifacts().remove(abstractDA);
                     } else {
-                        throw new DriverInjectionException("For the Node Template" + nodeTemplateWithAbstractDA.getId() + " no suitable Driver can be found. Please add a respective Messaging Middleware to proceed.");
+                        throw new DriverInjectionException("For the Node Template " + nodeTemplateWithAbstractDA.getId() + " no suitable Driver can be found. Please add a respective Messaging Middleware to proceed.");
                     }
                 }
             }

@@ -32,6 +32,7 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -111,9 +112,8 @@ public class DASpecification {
             List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate)
                 .stream()
                 .filter(outgoingRelation -> {
-                    TRelationshipType.ValidTarget validTarget = getBasisRelationshipType(outgoingRelation.getType()).getValidTarget();
-                    return validTarget != null
-                        && validTarget.getTypeRef().getLocalPart().equalsIgnoreCase("Container");
+                    TRelationshipType relationshipType = getBasisRelationshipType(outgoingRelation.getType());
+                    return relationshipType.getQName().equals(ToscaBaseTypes.hostedOnRelationshipType);
                 })
                 .collect(Collectors.toList());
 

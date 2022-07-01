@@ -802,11 +802,14 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         List<TTag> tags = new ArrayList<>();
 
         //Try Driver Injection
-        TTopologyTemplate daSpecifiedTopology = topologyTemplate;
+        TTopologyTemplate daSpecifiedTopology = this.getTopology();
         if (!DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate).isEmpty() &&
             DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate) != null) {
             try {
                 daSpecifiedTopology = DriverInjection.injectDriver(topologyTemplate);
+                this.getServiceTemplate().setTopologyTemplate(daSpecifiedTopology);
+                topologyTemplate = this.getTopology();
+                RestUtils.persist(this);
             } catch (Exception e) {
                 e.printStackTrace();
                 result.setStatus(Status.BAD_REQUEST);
