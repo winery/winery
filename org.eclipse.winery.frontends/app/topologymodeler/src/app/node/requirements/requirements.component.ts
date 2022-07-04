@@ -56,8 +56,9 @@ export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
      */
     updateReqs(): void {
         if (this.currentNodeData) {
+            debugger
             if (this.currentNodeData.nodeTemplate.requirements) {
-                this.requirements = this.currentNodeData.nodeTemplate.requirements;
+                this.requirements = this.currentNodeData.nodeTemplate.requirements ? this.currentNodeData.nodeTemplate.requirements : [];
                 this.requirementsExist = true;
             }
         }
@@ -68,6 +69,7 @@ export class RequirementsComponent implements OnInit, OnChanges, OnDestroy {
      */
     ngOnChanges(changes: SimpleChanges) {
         if (changes.currentNodeData.currentValue.entityTypes) {
+            debugger
             this.entityTypes = changes.currentNodeData.currentValue.entityTypes;
             this.nodeTemplate = changes.currentNodeData.currentValue.nodeTemplate;
         }

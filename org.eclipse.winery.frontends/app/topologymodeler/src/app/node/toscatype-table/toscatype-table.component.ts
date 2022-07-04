@@ -66,6 +66,7 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        debugger
         if (changes['toscaTypeData']) {
             this.currentToscaTypeData = this.toscaTypeData;
         }
