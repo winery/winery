@@ -59,6 +59,9 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
             if (this.currentNodeData.nodeTemplate.capabilities) {
                 this.capabilities = this.currentNodeData.nodeTemplate.capabilities;
                 this.capabilitiesExist = true;
+            } else {
+                this.capabilities = [];
+                this.capabilitiesExist = false;
             }
         }
     }
@@ -74,7 +77,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     /**
-     * Propagates the click event to node.component, where the capabilities modal gets opened.
+     * Propagates the click event to node component, where the capabilities modal gets opened.
      * @param event the id of the capability that was clicked.
      */
     public toggleModal(event: ShowReqCapModalEventData) {
