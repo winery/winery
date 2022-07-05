@@ -24,7 +24,6 @@ import org.eclipse.winery.model.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +56,7 @@ class JsonBasedMultiNamespaceManagerTest extends RepositoryTest {
             Path path = repository.ref2AbsolutePath(BackendUtils.getRefOfJsonConfiguration(new NamespacesId()));
 
             String contents = new Scanner(path).useDelimiter("\\A").next();
-            
+
             if (repository.getId().equals("test")) {
                 assertTrue(contents.contains("\"namespace\" : \"firstNamespace\""));
             } else if (repository.getId().equals("test-dependency")) {
