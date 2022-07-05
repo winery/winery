@@ -88,9 +88,20 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
     @Override
     public void addAllPermanent(Collection<NamespaceProperties> properties) {
         properties.forEach(prop -> {
-            IRepository repository = RepositoryUtils.getRepositoryByNamespace(prop.getNamespace(), this.repository);
-            repository.getNamespaceManager().setNamespaceProperties(prop.getNamespace(), prop);
+            boolean mustBeAdded = true;
+            for (IRepository repo : this.repository.getRepositories()) {
+                if (repo.getId().equals(prop.getRepositoryId())) {
+                    repo.getNamespaceManager().setNamespaceProperties(prop.getNamespace(), prop);
+                    mustBeAdded = false;
+                }
+            }
+
+            if (mustBeAdded) {
+                // call getRepository to explicitly use the local (i.e., the workspace) repository
+                repository.getRepository().getNamespaceManager().setNamespaceProperties(prop.getNamespace(), prop);
+            }
         });
+
         this.repository.updateNamespaces();
     }
 
@@ -114,7 +125,10 @@ public class JsonBasedMultiNamespaceManager extends AbstractNamespaceManager {
     public Map<String, NamespaceProperties> getAllNamespaces() {
         Map<String, NamespaceProperties> result = new HashMap<>();
         for (IRepository repo : this.repository.getRepositories()) {
-            result.putAll(repo.getNamespaceManager().getAllNamespaces());
+            Map<String, NamespaceProperties> namespaces = repo.getNamespaceManager().getAllNamespaces();
+            namespaces.values().forEach(prop -> prop.setRepositoryId(repo.getId()));
+
+            result.putAll(namespaces);
         }
         return result;
     }

@@ -66,8 +66,8 @@ public class XmlRepository extends AbstractFileBasedRepository {
     /**
      * @param repositoryRoot root of the file-based repository
      */
-    public XmlRepository(Path repositoryRoot) {
-        super(repositoryRoot);
+    public XmlRepository(Path repositoryRoot, String id) {
+        super(repositoryRoot, id);
     }
 
     @Override
@@ -174,9 +174,9 @@ public class XmlRepository extends AbstractFileBasedRepository {
                         try {
                             id = constructor.newInstance(ns, xmlId);
                         } catch (InstantiationException
-                            | IllegalAccessException
-                            | IllegalArgumentException
-                            | InvocationTargetException e) {
+                                 | IllegalAccessException
+                                 | IllegalArgumentException
+                                 | InvocationTargetException e) {
                             LOGGER.debug("Internal error at invocation of id constructor", e);
                             // abort everything, return invalid result
                             return res;
