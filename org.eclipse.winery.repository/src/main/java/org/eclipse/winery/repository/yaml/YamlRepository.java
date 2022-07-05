@@ -90,8 +90,8 @@ public class YamlRepository extends AbstractFileBasedRepository {
 
     private static final Pattern namePattern = Pattern.compile("(.*)@(.*)@(.*)");
 
-    public YamlRepository(Path repositoryRoot) {
-        super(repositoryRoot);
+    public YamlRepository(Path repositoryRoot, String id) {
+        super(repositoryRoot, id);
     }
 
     /**
@@ -993,9 +993,9 @@ public class YamlRepository extends AbstractFileBasedRepository {
                                 try {
                                     id = constructor.newInstance(ns, xmlId);
                                 } catch (InstantiationException
-                                    | IllegalAccessException
-                                    | IllegalArgumentException
-                                    | InvocationTargetException e) {
+                                         | IllegalAccessException
+                                         | IllegalArgumentException
+                                         | InvocationTargetException e) {
                                     LOGGER.debug("Internal error at invocation of id constructor", e);
                                     // abort everything, return invalid result
                                     return res;

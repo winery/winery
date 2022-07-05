@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { TNodeTemplate } from '../../models/ttopology-template';
 import { NgRedux } from '@angular-redux/store';
@@ -30,7 +30,7 @@ import { ReqCapModalType, ShowReqCapModalEventData } from '../toscatype-table/sh
 /**
  * This Handles Information about the node capabilities
  */
-export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
+export class CapabilitiesComponent implements OnChanges, OnDestroy {
 
     readonly tableTypes = TableType;
 
@@ -101,9 +101,6 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         this.toggleModalHandler.emit(this.currentNodeData);
-    }
-
-    ngOnInit() {
     }
 
     /**

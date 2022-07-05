@@ -343,8 +343,14 @@ public class MultiRepository implements IWrappingRepository {
      * @param repositoryProperties the list of repositories to load
      */
     private void loadRepositoriesByList(List<RepositoryProperties> repositoryProperties) {
-        for (RepositoryProperties repository : repositoryProperties) {
-            createRepository(repository.getUrl(), repository.getBranch());
+        for (RepositoryProperties repositoryProps : repositoryProperties) {
+            if (repositoryProps.getId() == null || repositoryProps.getId().isEmpty()) {
+                repositoryProps.setId(
+                    repositoryProps.getName().replaceAll("\\s", "")
+                );
+            }
+
+            createRepository(repositoryProps);
         }
     }
 
@@ -364,17 +370,16 @@ public class MultiRepository implements IWrappingRepository {
      * MultiRepository. The subrepositories are GitbasedRepositories and are added to the list of repositories to the
      * MultiRepository. It the subrepositories have dependencies, they are initialized as MultiRepos
      *
-     * @param url    of the repository
-     * @param branch which should be cloned
+     * @param repo the repository properties
      */
-    private void createRepository(String url, String branch) {
+    private void createRepository(RepositoryProperties repo) {
         IRepositoryResolver resolver = null;
-        Optional<IRepositoryResolver> resolverOptional = RepositoryResolverFactory.getResolver(url, branch);
+        Optional<IRepositoryResolver> resolverOptional = RepositoryResolverFactory.getResolver(repo.getUrl(), repo.getBranch());
         if (resolverOptional.isPresent()) {
             resolver = resolverOptional.get();
         }
 
-        if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(url, this)) {
+        if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(repo.getUrl(), this)) {
             try {
                 String ownerDirectory = URLEncoder.encode(resolver.getRepositoryMaintainerUrl(), "UTF-8");
                 Path ownerRoot = this.repositoryRoot.resolve(ownerDirectory);
@@ -383,7 +388,7 @@ public class MultiRepository implements IWrappingRepository {
                 }
 
                 Path repositoryLocation = ownerRoot.resolve(resolver.getRepositoryName());
-                IRepository newSubRepository = resolver.createRepository(repositoryLocation.toFile());
+                IRepository newSubRepository = resolver.createRepository(repositoryLocation.toFile(), repo.getId());
                 this.addRepository(newSubRepository);
 
                 File configurationFile = newSubRepository.getRepositoryRoot()
@@ -628,7 +633,8 @@ public class MultiRepository implements IWrappingRepository {
     /**
      * This method registers an Object on the repositories {@link EventBus}
      *
-     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     * @param eventListener an objects that contains methods annotated with the
+     * @{@link com.google.common.eventbus.Subscribe}
      */
     public void registerForEvents(Object eventListener) {
         this.eventBus.register(eventListener);
@@ -637,7 +643,8 @@ public class MultiRepository implements IWrappingRepository {
     /**
      * This method unregisters an Object on the repositories {@link EventBus}
      *
-     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     * @param eventListener an objects that contains methods annotated with the
+     * @{@link com.google.common.eventbus.Subscribe}
      */
     public void unregisterForEvents(Object eventListener) {
         this.eventBus.register(eventListener);
@@ -647,5 +654,10 @@ public class MultiRepository implements IWrappingRepository {
     public void serialize(TDefinitions definitions, OutputStream target) throws IOException {
         RepositoryUtils.getRepositoryByNamespace(definitions.getTargetNamespace(), this)
             .serialize(definitions, target);
+    }
+
+    @Override
+    public String getId() {
+        return Constants.DEFAULT_REPO_NAME;
     }
 }

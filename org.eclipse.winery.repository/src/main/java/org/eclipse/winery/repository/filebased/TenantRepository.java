@@ -294,6 +294,11 @@ public class TenantRepository implements IWrappingRepository {
     }
 
     @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
     public IRepository getRepository() {
         String tenantName = TENANT.get();
         if (tenantName != null) {

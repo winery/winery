@@ -17,7 +17,8 @@ export class NamespaceProperties {
                 public prefix: string,
                 public readableName: string,
                 public patternCollection: boolean,
-                public secureCollection: boolean) {
+                public secureCollection: boolean,
+                public repositoryId: string) {
 
     }
 }
