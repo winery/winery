@@ -36,8 +36,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultiRepositoryManagerTest extends RepositoryTest{
-    
+public class MultiRepositoryManagerTest extends RepositoryTest {
 
     /**
      * Tests whenever a file is created for the repository list in the root folder.
@@ -63,7 +62,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     }
 
     /**
-     * Test whenever the initzialize method reconfigures the RepositoryFactory correctly.
+     * Test whenever the initialize method reconfigures the RepositoryFactory correctly.
      */
     @Test
     public void testMultiRepositoryCreation() {
@@ -99,7 +98,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     }
 
     /**
-     * This test ckecks whenever the repository list is correctly retrieved from the json file.
+     * This test checks whenever the repository list is correctly retrieved from the json file.
      */
     @Test
     public void testGetRepositoriesAsList() {
@@ -120,7 +119,7 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     @Test
     public void testGetRepositoriesAsListOnNonMultiRepository() {
         try {
-            //RepositoryFactory.reconfigure();
+            RepositoryFactory.reconfigure();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,8 +134,8 @@ public class MultiRepositoryManagerTest extends RepositoryTest{
     }
 
     /**
-     * Helper method to place a dummy repositories.json dependency file into the test directory.
-     * Also reconfigures the Factory to a MultiRepository.
+     * Helper method to place a dummy repositories.json dependency file into the test directory. Also reconfigures the
+     * Factory to a MultiRepository.
      */
     void writeDependencyFile() {
         File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile();
