@@ -29,6 +29,7 @@ public class FileBasedRepositoryConfiguration {
      * There are no required values for the configuration
      */
     public FileBasedRepositoryConfiguration() {
+        this(Environments.getInstance().getFilebasedRepositoryConfiguration());
     }
 
     public FileBasedRepositoryConfiguration(@NonNull Path repositoryPath) {

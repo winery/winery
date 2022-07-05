@@ -256,7 +256,7 @@ public class Splitting {
         placeholderNodeTemplate.setId(id.toString());
         placeholderNodeTemplate.setName(id.toString());
         placeholderNodeTemplate.setType(placeholderQName);
-        
+
         return placeholderNodeTemplate;
     }
 
@@ -282,7 +282,7 @@ public class Splitting {
                             relevantInterface = tInterface;
                         }
                     }
-                } else {
+                } else if (connectionInterfaces.size() == 1) {
                     relevantInterface = connectionInterfaces.get(0);
                 }
 
