@@ -662,14 +662,31 @@ public class BackendUtils {
         Objects.requireNonNull(entityTemplate.getType());
 
         final TEntityType entityType = repository.getTypeForTemplate(entityTemplate);
-        final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+        WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+
+        List<TEntityType> hierarchy = repository.getParentsAndChild(entityType);
+        
         if (winerysPropertiesDefinition == null) {
-            return;
+            for (TEntityType type : hierarchy) {
+                if (type.getWinerysPropertiesDefinition() != null) {
+                    winerysPropertiesDefinition = type.getWinerysPropertiesDefinition();
+                    break;
+                }
+            }
+            
+            if (winerysPropertiesDefinition == null) {
+                return;
+            }
         }
+        
+        // Merge properties definitions
+        List<PropertyDefinitionKV> propertiesDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
+        
         final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
-        for (PropertyDefinitionKV definitionKV : winerysPropertiesDefinition.getPropertyDefinitions()) {
-            emptyKVProperties.put(definitionKV.getKey(), "");
-        }
+        propertiesDefinitions.forEach(prop -> 
+            emptyKVProperties.put(prop.getKey(), prop.getDefaultValue() == null ? "" : prop.getDefaultValue())
+        );
+
         TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
         properties.setNamespace(winerysPropertiesDefinition.getNamespace());
         properties.setElementName(winerysPropertiesDefinition.getElementName());

@@ -81,20 +81,28 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     private final boolean isLocal;
     private final FileSystem fileSystem;
     private final FileSystemProvider provider;
+    
+    private final String id;
 
     /**
      * @param repositoryRoot Root to the repository
      */
-    public AbstractFileBasedRepository(Path repositoryRoot) {
+    public AbstractFileBasedRepository(Path repositoryRoot, String id) {
         Objects.requireNonNull(repositoryRoot);
 
         this.repositoryRoot = repositoryRoot;
 
         this.fileSystem = this.repositoryRoot.getFileSystem();
         this.provider = this.fileSystem.provider();
+        this.id = id;
 
         this.isLocal = this.repositoryRoot.getFileName().toString().equals(Constants.DEFAULT_LOCAL_REPO_NAME);
+        LOGGER.debug("{} initialized with id \"{}\"",  this.getClass().getSimpleName(), id);
         LOGGER.debug("Repository root: {}", this.repositoryRoot);
+    }
+
+    public AbstractFileBasedRepository(Path repositoryRoot) {
+        this(repositoryRoot, Constants.DEFAULT_LOCAL_REPO_NAME);
     }
 
     public void forceDelete(RepositoryFileReference ref) throws IOException {
@@ -633,4 +641,9 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     }
 
     public abstract <T extends DefinitionsChildId> SortedSet<T> getDefinitionsChildIds(Class<T> idClass, boolean omitDevelopmentVersions);
+    
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

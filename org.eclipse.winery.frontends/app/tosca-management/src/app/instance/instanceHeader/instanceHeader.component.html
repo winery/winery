@@ -46,7 +46,8 @@
                         <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR</a>
                     </li>
                     <li *ngIf="toscaComponent.toscaType === toscaTypes.ServiceTemplate">
-                        <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with Dependencies</a>
+                        <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with
+                            Dependencies</a>
                     </li>
                     <li *ngIf="accountabilityEnabled">
                         <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR</a>
@@ -59,6 +60,13 @@
                             <a (click)="showErrorReport()">Show TOSCA Light Error Report</a>
                         </ng-template>
                     </li>
+                    <ng-container *ngIf="toscaComponent.toscaType === toscaTypes.ServiceTemplate && researchObject">
+                        <li class="divider dropdown-divider"></li>
+                        <li>
+                            <a target="_blank" href="{{ toscaComponent.asRoar }}">ROAR (Research Object
+                                Archive)</a>
+                        </li>
+                    </ng-container>
                 </ul>
             </div>
         </ng-template>

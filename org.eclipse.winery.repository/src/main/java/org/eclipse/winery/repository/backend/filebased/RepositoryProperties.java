@@ -22,6 +22,8 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
     private String url;
     private String branch;
 
+    private String id;
+
     public RepositoryProperties() {
     }
 
@@ -61,6 +63,14 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
 
     public void setBranch(String branch) {
         this.branch = branch;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

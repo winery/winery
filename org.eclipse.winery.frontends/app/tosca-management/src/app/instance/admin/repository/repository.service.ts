@@ -22,11 +22,9 @@ import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicate
 @Injectable()
 export class RepositoryService {
 
-    path: string;
+    path = '/admin/repository';
 
-    constructor(private http: HttpClient,
-                private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+    constructor(private http: HttpClient) {
     }
 
     deleteRepository(repository: Repository): Observable<HttpResponse<string>> {

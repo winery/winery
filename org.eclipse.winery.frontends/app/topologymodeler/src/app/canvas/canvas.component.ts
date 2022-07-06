@@ -772,7 +772,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     deleteCapability() {
         const capabilities = {
             nodeId: this.currentModalData.id,
-            capability: this.currentModalData.capabilities.capability.filter((req) => req.id !== this.currentModalData.currentCapability.id)
+            capability: this.currentModalData.capabilities.filter((req) => req.id !== this.currentModalData.currentCapability.id)
         };
         this.ngRedux.dispatch(this.actions.setCapability(capabilities));
         this.resetCapabilities();
@@ -872,7 +872,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     deleteRequirement() {
         const requirements = {
             nodeId: this.currentModalData.id,
-            requirement: this.currentModalData.requirements.requirement.filter((req) => req.id !== this.currentModalData.currentRequirement.id)
+            requirement: this.currentModalData.requirements.filter((req) => req.id !== this.currentModalData.currentRequirement.id)
         };
         this.ngRedux.dispatch(this.actions.setRequirement(requirements));
         this.resetRequirements();

@@ -73,7 +73,7 @@ public class RepositoryResolverTest extends TestWithGitBackedRepository {
         Path resolverRepositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
 
         try {
-            GitBasedRepository resolverRepository = resolver.createRepository(resolverRepositoryPath.toFile());
+            GitBasedRepository resolverRepository = resolver.createRepository(resolverRepositoryPath.toFile(), "test-repository");
             assertEquals(59, resolverRepository.getNamespaceManager().getAllNamespaces().size());
 
             SortedSet<NodeTypeId> allNodeTypes = resolverRepository.getAllDefinitionsChildIds(NodeTypeId.class);

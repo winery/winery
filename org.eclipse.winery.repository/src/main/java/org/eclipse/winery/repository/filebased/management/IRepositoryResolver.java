@@ -33,5 +33,5 @@ public interface IRepositoryResolver {
 
     String getRepositoryName();
 
-    GitBasedRepository createRepository(File repositoryLocation) throws IOException, GitAPIException;
+    GitBasedRepository createRepository(File repositoryLocation, String id) throws IOException, GitAPIException;
 }

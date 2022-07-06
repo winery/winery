@@ -36,6 +36,7 @@ export class PropertiesDefinition {
     element: string = null;
     type: string = null;
     properties: YamlPropertyDefinition[] = null;
+    propertyDefinitionKVList?: PropertiesDefinitionKVElement[] = [];
 }
 
 export class WinerysPropertiesDefinition {
