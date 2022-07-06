@@ -35,11 +35,15 @@ export class ResearchObjectMetaDataComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.service.researchObjectMetadata) {
-            this.handleData();
-        } else {
-            this.getResearchObjectMetadata();
-        }
+        this.service.getResearchObjectMetadata()
+            .subscribe(
+                (data) => {
+                    this.handleData(data);
+                },
+                (error) => {
+                    this.handleError(error);
+                }
+            );
     }
 
     public itemsToList(value: Array<any> = []): Array<string> {
@@ -50,28 +54,19 @@ export class ResearchObjectMetaDataComponent implements OnInit {
         return valueList;
     }
 
-    getResearchObjectMetadata() {
-        this.service.getResearchObjectMetadata().subscribe(
-            data => this.handleData(),
-            error => {
-                this.notify.error(error.toString());
-                this.loading = false;
-            });
-    }
-
     saveResearchObjectMetadata() {
         this.data.subjects = { subject: this.itemsToList(this.selection) };
         this.service.saveResearchObjectMetadata(this.data).subscribe(
-            data => {
+            (data) => {
                 this.handleSuccess('Saved data');
             },
-            error => this.handleError(error)
+            (error) => this.handleError(error)
         );
     }
 
-    handleData() {
-        this.data = this.service.researchObjectMetadata;
-        if (!!this.data.subjects) {
+    handleData(data: ROMetadataApiData) {
+        this.data = data;
+        if (data.subjects) {
             this.selection = this.data.subjects.subject;
         }
         this.loading = false;
@@ -79,9 +74,11 @@ export class ResearchObjectMetaDataComponent implements OnInit {
 
     handleSuccess(message: string) {
         this.notify.success(message);
+        this.loading = false;
     }
 
     handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
+        this.loading = false;
     }
 }

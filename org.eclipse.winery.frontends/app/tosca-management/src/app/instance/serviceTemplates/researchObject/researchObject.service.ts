@@ -23,9 +23,6 @@ import { FileApiData } from '../../../model/fileApiData';
 @Injectable()
 export class ResearchObjectService {
 
-    researchObjectMetadata: ROMetadataApiData;
-    researchObjectPublication: ROPublicationApiData;
-    pathToElementsMap: Map<string, FileOrFolderElement[]>;
     baseUrl: string;
 
     constructor(private http: HttpClient) {
@@ -33,7 +30,6 @@ export class ResearchObjectService {
 
     getResearchObjectMetadata(): Observable<ROMetadataApiData> {
         const o = this.http.get<ROMetadataApiData>(this.baseUrl + 'metadata');
-        o.subscribe(data => this.researchObjectMetadata = data);
         return o;
     }
 
@@ -46,7 +42,6 @@ export class ResearchObjectService {
 
     getResearchObjectPublication(): Observable<ROPublicationApiData> {
         const o = this.http.get<ROPublicationApiData>(this.baseUrl + 'publication');
-        o.subscribe(data => this.researchObjectPublication = data);
         return o;
     }
 
@@ -59,16 +54,7 @@ export class ResearchObjectService {
 
     getDirsAndFiles(): Observable<Map<string, FileOrFolderElement[]>> {
         const o = this.http.get<any>(this.baseUrl + 'files');
-        o.subscribe(data => this.pathToElementsMap = this.createMap(data));
         return o;
-    }
-
-    createMap(data: any): Map<string, FileOrFolderElement[]> {
-        const map: Map<string, FileOrFolderElement[]> = new Map();
-        for (const path of Object.keys(data)) {
-            map.set(path, data[path]);
-        }
-        return map;
     }
 
     createDirectory(path: string): Observable<HttpResponse<string>> {

@@ -65,6 +65,8 @@ import org.eclipse.winery.repository.backend.selfcontainmentpackager.SelfContain
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.common.Util;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ResearchObjectDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ResearchObjectFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
@@ -184,6 +186,11 @@ public class CsarExporter {
             ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
             this.addSelfServiceMetaData(serviceTemplateId, refMap);
             this.addSelfServiceFiles(serviceTemplateId, refMap);
+
+            // if a ROAR is requested, add all research object related files
+            if (exportConfiguration.containsKey(CsarExportConfiguration.INCLUDE_ROAR_FILES.name())) {
+                this.addRoarFiles(serviceTemplateId, refMap);
+            }
         }
 
         this.addNamespacePrefixes(refMap);
@@ -553,6 +560,17 @@ public class CsarExporter {
             });
     }
 
+    private void addRoarFiles(ServiceTemplateId serviceTemplateId, Map<CsarContentProperties, CsarEntry> refMap) {
+        ResearchObjectDirectoryId roarDir = new ResearchObjectDirectoryId(serviceTemplateId);
+        ResearchObjectFilesDirectoryId roarFilesDirectoryId = new ResearchObjectFilesDirectoryId(roarDir);
+        repository.getContainedFiles(roarFilesDirectoryId)
+            .forEach(repositoryFileReference -> {
+                String file = IdNames.RESEARCH_OBJECT_FILES + "/" + BackendUtils.getFilenameAndSubDirectory(repositoryFileReference);
+                CsarContentProperties csarContentProperties = new CsarContentProperties(file);
+                refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(repository, repositoryFileReference));
+            });
+    }
+
     private String addManifest(DefinitionsChildId id, Map<CsarContentProperties, CsarEntry> refMap,
                                ZipOutputStream out, Map<String, Object> exportConfiguration) throws IOException {
         String entryDefinitionsReference = CsarExporter.getDefinitionsPathInsideCSAR(repository, id);
@@ -624,5 +642,10 @@ public class CsarExporter {
         DefinitionsChildId newServiceTemplateId = selfContainmentPackager.createSelfContainedVersion(entryId);
         exportConfiguration.put(CsarExportConfiguration.INCLUDE_DEPENDENCIES.name(), true);
         this.writeCsar(newServiceTemplateId, output, exportConfiguration);
+    }
+
+    public void writeRoarCsar(DefinitionsChildId entryId, OutputStream output, Map<String, Object> exportConfiguration) throws AccountabilityException, RepositoryCorruptException, IOException, ExecutionException, InterruptedException {
+        exportConfiguration.put(CsarExportConfiguration.INCLUDE_ROAR_FILES.name(), true);
+        this.writeCsar(entryId, output, exportConfiguration);
     }
 }

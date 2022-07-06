@@ -35,21 +35,15 @@ export class ResearchObjectPublicationComponent implements OnInit {
 
 
     ngOnInit() {
-        if (this.service.researchObjectPublication) {
-            this.handleData();
-            this.loading = false;
-        } else {
-            this.getResearchObjectPublication();
-        }
-    }
-
-    getResearchObjectPublication() {
-        this.service.getResearchObjectPublication().subscribe(
-            data => this.handleData(),
-            error => {
-                this.notify.error(error.toString());
-                this.loading = false;
-            });
+        this.service.getResearchObjectPublication()
+            .subscribe(
+                (data) => {
+                    this.handleData(data);
+                },
+                (error) => {
+                    this.handleError(error);
+                }
+            );
     }
 
     saveResearchObjectPublication() {
@@ -57,15 +51,17 @@ export class ResearchObjectPublicationComponent implements OnInit {
             this.data.idType = this.idType[0].text;
         }
         this.service.saveResearchObjectPublication(this.data).subscribe(
-            data => {
+            (data) => {
                 this.handleSuccess('Saved data');
             },
-            error => this.handleError(error)
+            (error) => {
+                this.handleError(error);
+            }
         );
     }
 
-    handleData() {
-        this.data = this.service.researchObjectPublication;
+    handleData(data: ROPublicationApiData) {
+        this.data = data;
         if (!!this.data.idType) {
             this.idType.push(this.data.idType);
         }
@@ -74,10 +70,12 @@ export class ResearchObjectPublicationComponent implements OnInit {
 
     handleSuccess(message: string) {
         this.notify.success(message);
+        this.loading = false;
     }
 
     handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
+        this.loading = false;
     }
 
 }
