@@ -247,6 +247,8 @@ public class RestUtils {
                     SelfContainmentPackager packager = new SelfContainmentPackager(RepositoryFactory.getRepository());
                     DefinitionsChildId selfContainedVersion = packager.createSelfContainedVersion(resource.getId());
                     exporter.writeSelfContainedCsar(RepositoryFactory.getRepository(), selfContainedVersion, output, exportConfiguration);
+                } else if (options.isAsRoar() && resource.getId() instanceof ServiceTemplateId) {
+                    exporter.writeRoarCsar(resource.getId(), output, exportConfiguration);
                 } else {
                     exporter.writeCsar(resource.getId(), output, exportConfiguration);
                 }

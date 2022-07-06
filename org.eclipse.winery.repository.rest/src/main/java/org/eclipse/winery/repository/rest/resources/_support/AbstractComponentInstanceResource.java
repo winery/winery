@@ -274,6 +274,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "addToProvenance") String addToProvenance,
         @QueryParam(value = "includeDependencies") String includeDependencies,
+        @QueryParam(value = "asRoar") String asRoar,
         @Context UriInfo uriInfo
     ) {
         if (!requestRepository.exists(this.id)) {
@@ -298,6 +299,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             CsarExportOptions options = new CsarExportOptions();
             options.setAddToProvenance(Objects.nonNull(addToProvenance));
             options.setIncludeDependencies(Objects.nonNull(includeDependencies));
+            options.setAsRoar(Objects.nonNull(asRoar));
             return RestUtils.getCsarOfSelectedResource(this, options);
         }
     }
@@ -334,12 +336,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         @QueryParam(value = "includeDependencies") String includeDependencies,
         @QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths,
         @QueryParam(value = "xml") String xml,
+        @QueryParam(value = "asRoar") String asRoar,
         @Context UriInfo uriInfo) {
         // in case there is an URL requested directly via the browser UI, the accept cannot be put at the link.
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
         if ((csar != null) || (yaml != null) || (xml != null) || (edmm != null)) {
-            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, includeDependencies, uriInfo);
+            return this.getDefinitionsAsResponse(csar, yaml, edmm, edmmUseAbsolutePaths, addToProvenance, includeDependencies, asRoar, uriInfo);
         }
         String repositoryUiUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryUiUrl");
         String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl"), repositoryUiUrl);
