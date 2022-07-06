@@ -15,11 +15,15 @@
 package org.eclipse.winery.model.adaptation.substitution.refinement.placeholder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
@@ -58,8 +62,31 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
     }
 
     private boolean isApplicable(PlaceholderSubstitutionCandidate candidate) {
-        
-        return false;
+        return candidate.getDetectorGraph().vertexSet().stream().allMatch(v -> {
+            try {
+                TNodeTemplate placeholder = getPlaceholder(v.getTemplate());
+                Set<String> placeholderPropertyNames = ModelUtilities.getPropertiesKV(placeholder).keySet();
+                Set<QName> placeholderCapabilityTypesQNames = new HashSet<>();
+                if (placeholder.getCapabilities() != null) {
+                    List<TCapability> capabilities = placeholder.getCapabilities();
+                    for (TCapability capability : capabilities) {
+                        placeholderCapabilityTypesQNames.add(capability.getType());
+                    }
+                }
+
+                TNodeTemplate correspondingNode = candidate.getServiceTemplateCandidate().getTopologyTemplate()
+                    .getNodeTemplate(candidate.getGraphMapping().getVertexCorrespondence(v, false).getTemplate().getId());
+                HostingStackCharacteristics hostingStackcharacteristics =
+                    getHostingStackCharacteristics(candidate.getServiceTemplateCandidate().getTopologyTemplate(), correspondingNode);
+                if (!hostingStackcharacteristics.getHostingStackCapabilityTypes().containsAll(placeholderCapabilityTypesQNames) ||
+                    !hostingStackcharacteristics.getHostingStackKVProperties().containsAll(placeholderPropertyNames)) {
+                    return false;
+                }
+            } catch (PlaceholderSubstitutionException e) {
+                e.printStackTrace();
+            }
+            return true;
+        });
     }
 
     public Map<String, String> applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
@@ -111,9 +138,8 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             .map(id -> RepositoryFactory.getRepository().getElement(id))
             .collect(Collectors.toList());
     }
-
-    private TNodeTemplate getPlaceholder(TNodeTemplate nodeTemplate) throws Exception {
-
+    
+    private TNodeTemplate getPlaceholder(TNodeTemplate nodeTemplate) throws PlaceholderSubstitutionException {
         List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topologyTemplate, nodeTemplate.getId());
         if (hostedOnSuccessors.size() == 1) {
             if (hostedOnSuccessors.get(0).getType().getNamespaceURI().equals("http://opentosca/multiparticipant/placeholdertypes")) {
@@ -122,7 +148,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
                 return getPlaceholder(hostedOnSuccessors.get(0));
             }
         } else {
-            throw new Exception("No Placeholder Component detected.");
+            throw new PlaceholderSubstitutionException("No Placeholder Component detected.");
         }
     }
 
@@ -136,7 +162,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             if (!propertiesKV.isEmpty()) {
                 hostingStackCharacteristics.addKVPropertyToProperties(propertiesKV.keySet());
             }
-            if (!successor.getCapabilities().isEmpty()) {
+            if (successor.getCapabilities() != null) {
                 List<TCapability> capabilities = successor.getCapabilities();
                 for (TCapability capability : capabilities) {
                     hostingStackCharacteristics.addCapability(capability.getType());

@@ -423,9 +423,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
                 WinerysPropertiesDefinition winerysPropertiesDefinition = sourceNodeType.getWinerysPropertiesDefinition();
                 // add properties definition
-                placeholderNodeType.setProperties(null);
-                if (winerysPropertiesDefinition != null) {
-                    winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitionKVList);
+                winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitionKVList);
+                if (!winerysPropertiesDefinition.getPropertyDefinitions().isEmpty()) {
+                    placeholderNodeType.setProperties(null);
                     placeholderNodeType.setProperties(winerysPropertiesDefinition);
                     String namespace = placeholderNodeType.getWinerysPropertiesDefinition().getNamespace();
                     NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
@@ -448,7 +448,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 // create capability of placeholder node template
                 TCapability capa = splitting.createPlaceholderCapability(topologyTemplate, capabilityType);
 
-                ModelUtilities.setPropertiesKV(placeholderNodeTemplate, placeholderNodeTemplateProperties);
+                if (!placeholderNodeTemplateProperties.isEmpty()) {
+                    ModelUtilities.setPropertiesKV(placeholderNodeTemplate, placeholderNodeTemplateProperties);
+                }
 
                 if (placeholderNodeTemplate.getCapabilities() == null) {
                     placeholderNodeTemplate.setCapabilities(new ArrayList<>());
@@ -458,7 +460,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 for (Map.Entry<QName, String> targetLocation : nodeTemplateWithOpenReq.getOtherAttributes().entrySet()) {
                     placeholderNodeTemplate.getOtherAttributes().put(targetLocation.getKey(), targetLocation.getValue());
                 }
-                
+
                 //Set new coordinates
                 int y = Integer.parseInt(placeholderNodeTemplate.getY()) + 200;
                 placeholderNodeTemplate.setY(Integer.toString(y));
@@ -692,7 +694,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         if (originTopologyTemplate == null) {
             return Response.notModified().build();
         }
-        
+
         List<TTag> tagsOfServiceTemplate = this.getServiceTemplate().getTags();
         List<OTParticipant> participants = originTopologyTemplate.getParticipants();
 

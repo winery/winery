@@ -26,14 +26,17 @@ public class HostingStackCharacteristics {
     private Set<String> hostingStackKVPropertyNames;
     private Set<QName> hostingStackCapabilityTypeQName;
 
-    public HostingStackCharacteristics(TNodeTemplate matchingNodeTemplate, Set<String> hostingStackKVProperties, Set<QName> hostingStackCapabilityTypesQName) {
+    public HostingStackCharacteristics(TNodeTemplate matchingNodeTemplate, Set<String> hostingStackKVPropertiesNames, Set<QName> hostingStackCapabilityTypesQName) {
         this.matchingNodeTemplate = matchingNodeTemplate;
-        this.hostingStackKVPropertyNames = hostingStackKVProperties;
+        this.hostingStackKVPropertyNames = hostingStackKVPropertiesNames;
         this.hostingStackCapabilityTypeQName = hostingStackCapabilityTypesQName;
     }
 
     public HostingStackCharacteristics(TNodeTemplate matchingNodeTemplate) {
         this.matchingNodeTemplate = matchingNodeTemplate;
+    }
+
+    public HostingStackCharacteristics() {
     }
 
     public TNodeTemplate getMatchingNodeTemplate() {
@@ -48,8 +51,8 @@ public class HostingStackCharacteristics {
         return hostingStackKVPropertyNames;
     }
 
-    public void setHostingStackKVProperties(Set<String> hostingStackKVProperties) {
-        this.hostingStackKVPropertyNames = hostingStackKVProperties;
+    public void setHostingStackKVProperties(Set<String> hostingStackKVPropertiesNames) {
+        this.hostingStackKVPropertyNames = hostingStackKVPropertiesNames;
     }
 
     public Set<QName> getHostingStackCapabilityTypes() {

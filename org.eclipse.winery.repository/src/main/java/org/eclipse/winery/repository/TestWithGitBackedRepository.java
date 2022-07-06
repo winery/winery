@@ -30,6 +30,7 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.FileUtils;
+import org.bouncycastle.util.test.Test;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -59,12 +60,20 @@ public abstract class TestWithGitBackedRepository {
      * @throws RuntimeException wraps an Exception
      */
     public TestWithGitBackedRepository() {
-        this(RepositoryConfigurationObject.RepositoryProvider.FILE);
+        this(RepositoryConfigurationObject.RepositoryProvider.FILE, "https://github.com/winery/test-repository");
+    }
+    public TestWithGitBackedRepository(String remoteUrl) {
+        this(RepositoryConfigurationObject.RepositoryProvider.FILE, remoteUrl);
+    }
+    
+    protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider) {
+        this(provider, "https://github.com/winery/test-repository");
     }
 
-    protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider) {
-        this.repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
-        String remoteUrl = "https://github.com/winery/test-repository.git";
+    protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider, String remoteUrl) {
+        String[] splitName = remoteUrl.split("/");
+        String repositoryName = splitName[splitName.length - 1];
+        this.repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve(repositoryName);
 
         try {
             LOGGER.debug("Testing with repository directory {}", repositoryPath);
