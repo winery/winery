@@ -40,7 +40,7 @@ class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
 
         PlaceholderSubstitution placeholderSubstitution = new PlaceholderSubstitution(
             new ServiceTemplateId("http://opentosca.org/divamethod/tests", "Test-PlaceholderSubstitution_gdm-w1-wip1-w1-wip1", false),
-            subgraphDetector, null, "substituted");
+            subgraphDetector, null);
 
         placeholderSubstitution.substitutePlaceholders();
     }

@@ -14,20 +14,20 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.placeholder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
-import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
-import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -44,19 +44,25 @@ import org.eclipse.winery.topologygraph.model.ToscaNode;
 import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 import org.jgrapht.GraphMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlaceholderSubstitution extends AbstractSubstitution {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderSubstitution.class);
+
     private ServiceTemplateId serviceTemplateId;
     private TTopologyTemplate topologyTemplate;
-    private RefinementChooser refinementChooser;
+    private SubstitutionChooser substitutionChooser;
     private String versionAppendix;
     private TTopologyTemplate subgraphDetector;
 
-    public PlaceholderSubstitution(ServiceTemplateId serviceTemplateId, TTopologyTemplate subgraphDetector, RefinementChooser refinementChooser, String versionAppendix) {
+    private ServiceTemplateId substitutionServiceTemplateId;
+
+    public PlaceholderSubstitution(ServiceTemplateId serviceTemplateId, TTopologyTemplate subgraphDetector, SubstitutionChooser substitutionChooser) {
         this.serviceTemplateId = serviceTemplateId;
-        this.refinementChooser = refinementChooser;
-        this.versionAppendix = versionAppendix;
+        this.substitutionChooser = substitutionChooser;
+        this.versionAppendix = "substituted";
         this.subgraphDetector = subgraphDetector;
         this.topologyTemplate = RepositoryFactory.getRepository().getElement(serviceTemplateId).getTopologyTemplate();
     }
@@ -65,7 +71,6 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         return candidate.getDetectorGraph().vertexSet().stream().allMatch(v -> {
             try {
                 TNodeTemplate placeholder = getPlaceholder(v.getTemplate());
-                //TODO Abganfen no Properties available
                 Set<QName> placeholderCapabilityTypesQNames = new HashSet<>();
                 Set<String> placeholderPropertyNames = new HashSet<>();
                 if (ModelUtilities.getPropertiesKV(placeholder) != null) {
@@ -94,46 +99,57 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         });
     }
 
-    public Map<String, String> applyRefinement(RefinementCandidate refinement, TTopologyTemplate topology) {
+    public Map<String, String> applySubstitution(PlaceholderSubstitutionCandidate substitution, TTopologyTemplate topology) {
         return null;
+    }
+
+    public ServiceTemplateId substituteServiceTemplate() {
+        substitutionServiceTemplateId = this.getSubstitutionServiceTemplateId(this.serviceTemplateId);
+        TServiceTemplate element = this.repository.getElement(substitutionServiceTemplateId);
+
+        this.substitutePlaceholders();
+        try {
+            this.repository.setElement(substitutionServiceTemplateId, element);
+        } catch (IOException e) {
+            LOGGER.error("Error while saving refined topology", e);
+        }
+
+        return substitutionServiceTemplateId;
     }
 
     public void substitutePlaceholders() {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
         int[] id = new int[1];
 
-        while (true) {
-            //Detector is the subgraph of application-specific components of the origin topology
-            ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(subgraphDetector);
+        //Detector is the subgraph of application-specific components of the origin topology
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(subgraphDetector);
 
-            List<TServiceTemplate> serviceTemplateCandidates = getServiceTemplateCandidates();
-            List<PlaceholderSubstitutionCandidate> matchingCandidates = new ArrayList<>();
-            serviceTemplateCandidates.forEach(st -> {
-                ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(st.getTopologyTemplate());
-                IToscaMatcher matcher = new ToscaPropertyMatcher();
-                Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
+        List<TServiceTemplate> serviceTemplateCandidates = getServiceTemplateCandidates();
+        List<PlaceholderSubstitutionCandidate> matchingCandidates = new ArrayList<>();
+        serviceTemplateCandidates.forEach(st -> {
+            ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(st.getTopologyTemplate());
+            IToscaMatcher matcher = new ToscaPropertyMatcher();
+            Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
 
-                matches.forEachRemaining(mapping -> {
-                    PlaceholderSubstitutionCandidate candidate = new PlaceholderSubstitutionCandidate(st, mapping, detectorGraph, id[0]++);
-                    if (isApplicable(candidate)) {
-                        matchingCandidates.add(candidate);
-                    }
-                });
+            matches.forEachRemaining(mapping -> {
+                PlaceholderSubstitutionCandidate candidate = new PlaceholderSubstitutionCandidate(st, mapping, detectorGraph, id[0]++);
+                if (isApplicable(candidate)) {
+                    matchingCandidates.add(candidate);
+                }
             });
+        });
 
-            if (matchingCandidates.size() == 0) {
-                break;
-            }
-
-            //TODO: Implement Refinement Chooser
-            //RefinementCandidate refinement = this.refinementChooser.chooseRefinement(serviceTemplateCandidates, this.refinementServiceTemplateId, topology);
-
-            //if (Objects.isNull(refinement)) {
-            //    break;
-            //}
-
-            //applyRefinement(refinement, topology);
+        if (matchingCandidates.size() == 0) {
+            return;
         }
+
+        PlaceholderSubstitutionCandidate substitution = this.substitutionChooser.chooseSubstitution(matchingCandidates, this.substitutionServiceTemplateId);
+
+        if (Objects.isNull(substitution)) {
+            return;
+        }
+
+        applySubstitution(substitution, this.topologyTemplate);
     }
 
     private List<TServiceTemplate> getServiceTemplateCandidates() {
