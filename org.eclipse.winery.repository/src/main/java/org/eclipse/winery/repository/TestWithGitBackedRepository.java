@@ -30,7 +30,6 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.FileUtils;
-import org.bouncycastle.util.test.Test;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -62,10 +61,11 @@ public abstract class TestWithGitBackedRepository {
     public TestWithGitBackedRepository() {
         this(RepositoryConfigurationObject.RepositoryProvider.FILE, "https://github.com/winery/test-repository");
     }
+
     public TestWithGitBackedRepository(String remoteUrl) {
         this(RepositoryConfigurationObject.RepositoryProvider.FILE, remoteUrl);
     }
-    
+
     protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider) {
         this(provider, "https://github.com/winery/test-repository");
     }
@@ -92,7 +92,12 @@ public abstract class TestWithGitBackedRepository {
                     .setDirectory(repositoryPath.toFile())
                     .call();
             } else {
-                Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
+                Repository gitRepo;
+                if (Files.exists(repositoryPath.resolve("repositories.json"))) {
+                    gitRepo = builder.setWorkTree(repositoryPath.resolve("workspace").toFile()).setMustExist(false).build();
+                } else {
+                    gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
+                }
                 this.git = new Git(gitRepo);
                 try {
                     this.git.fetch().call();

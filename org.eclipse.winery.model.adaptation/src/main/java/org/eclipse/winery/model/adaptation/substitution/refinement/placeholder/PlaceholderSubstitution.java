@@ -65,8 +65,13 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         return candidate.getDetectorGraph().vertexSet().stream().allMatch(v -> {
             try {
                 TNodeTemplate placeholder = getPlaceholder(v.getTemplate());
-                Set<String> placeholderPropertyNames = ModelUtilities.getPropertiesKV(placeholder).keySet();
+                //TODO Abganfen no Properties available
                 Set<QName> placeholderCapabilityTypesQNames = new HashSet<>();
+                Set<String> placeholderPropertyNames = new HashSet<>();
+                if (ModelUtilities.getPropertiesKV(placeholder) != null) {
+                    placeholderPropertyNames = ModelUtilities.getPropertiesKV(placeholder).keySet();
+                }
+
                 if (placeholder.getCapabilities() != null) {
                     List<TCapability> capabilities = placeholder.getCapabilities();
                     for (TCapability capability : capabilities) {
@@ -138,7 +143,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             .map(id -> RepositoryFactory.getRepository().getElement(id))
             .collect(Collectors.toList());
     }
-    
+
     private TNodeTemplate getPlaceholder(TNodeTemplate nodeTemplate) throws PlaceholderSubstitutionException {
         List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topologyTemplate, nodeTemplate.getId());
         if (hostedOnSuccessors.size() == 1) {
@@ -157,9 +162,9 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topologyTemplate, nodeTemplate);
         TNodeTemplate successor;
         while (!hostedOnSuccessors.isEmpty()) {
-            successor = hostedOnSuccessors.get(0);
+            successor = hostedOnSuccessors.remove(0);
             LinkedHashMap<String, String> propertiesKV = ModelUtilities.getPropertiesKV(successor);
-            if (!propertiesKV.isEmpty()) {
+            if (propertiesKV != null) {
                 hostingStackCharacteristics.addKVPropertyToProperties(propertiesKV.keySet());
             }
             if (successor.getCapabilities() != null) {
@@ -168,7 +173,6 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
                     hostingStackCharacteristics.addCapability(capability.getType());
                 }
             }
-            hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topologyTemplate, successor);
         }
         return hostingStackCharacteristics;
     }

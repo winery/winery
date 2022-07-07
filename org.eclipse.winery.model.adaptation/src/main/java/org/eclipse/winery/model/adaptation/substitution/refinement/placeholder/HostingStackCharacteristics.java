@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.placeholder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -23,8 +24,8 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 public class HostingStackCharacteristics {
 
     private TNodeTemplate matchingNodeTemplate;
-    private Set<String> hostingStackKVPropertyNames;
-    private Set<QName> hostingStackCapabilityTypeQName;
+    private Set<String> hostingStackKVPropertyNames = new HashSet<>();
+    private Set<QName> hostingStackCapabilityTypeQName = new HashSet<>();
 
     public HostingStackCharacteristics(TNodeTemplate matchingNodeTemplate, Set<String> hostingStackKVPropertiesNames, Set<QName> hostingStackCapabilityTypesQName) {
         this.matchingNodeTemplate = matchingNodeTemplate;
