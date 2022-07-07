@@ -30,7 +30,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <winery.version>3.0.0-SNAPSHOT</winery.version>
-        <spring.version>3.0.7.RELEASE</spring.version>
+        <spring.version>3.2.5.RELEASE</spring.version>
         <cxf.version>2.7.6</cxf.version>
     </properties>
 
