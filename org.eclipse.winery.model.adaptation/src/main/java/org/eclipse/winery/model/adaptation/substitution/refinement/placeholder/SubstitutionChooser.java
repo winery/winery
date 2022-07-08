@@ -22,5 +22,5 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public interface SubstitutionChooser {
     PlaceholderSubstitutionCandidate chooseSubstitution(List<PlaceholderSubstitutionCandidate> candidates,
-                                         ServiceTemplateId substitutionServiceTemplate);
+                                         ServiceTemplateId substitutionServiceTemplate, TTopologyTemplate topologyTemplate);
 }

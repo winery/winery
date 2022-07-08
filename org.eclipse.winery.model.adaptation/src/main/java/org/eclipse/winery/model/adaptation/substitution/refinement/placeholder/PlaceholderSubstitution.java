@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -57,16 +58,13 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
     private ServiceTemplateId serviceTemplateId;
     private TTopologyTemplate topologyTemplate;
     private SubstitutionChooser substitutionChooser;
-    private String versionAppendix;
-    private TTopologyTemplate subgraphDetector;
 
     private ServiceTemplateId substitutionServiceTemplateId;
 
-    public PlaceholderSubstitution(ServiceTemplateId serviceTemplateId, TTopologyTemplate subgraphDetector, SubstitutionChooser substitutionChooser) {
+    public PlaceholderSubstitution(ServiceTemplateId serviceTemplateId, SubstitutionChooser substitutionChooser) {
         this.serviceTemplateId = serviceTemplateId;
         this.substitutionChooser = substitutionChooser;
-        this.versionAppendix = "substituted";
-        this.subgraphDetector = subgraphDetector;
+        substitutionServiceTemplateId = this.getSubstitutionServiceTemplateId(this.serviceTemplateId);
         this.topologyTemplate = RepositoryFactory.getRepository().getElement(serviceTemplateId).getTopologyTemplate();
     }
 
@@ -145,11 +143,10 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             });
     }
 
-    public ServiceTemplateId substituteServiceTemplate() {
-        substitutionServiceTemplateId = this.getSubstitutionServiceTemplateId(this.serviceTemplateId);
+    public ServiceTemplateId substituteServiceTemplate(TTopologyTemplate subGraphDetector) {
         TServiceTemplate element = this.repository.getElement(substitutionServiceTemplateId);
 
-        this.substitutePlaceholders();
+        this.substitutePlaceholders(subGraphDetector);
         element.setTopologyTemplate(topologyTemplate);
         try {
             this.repository.setElement(substitutionServiceTemplateId, element);
@@ -160,22 +157,22 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         return substitutionServiceTemplateId;
     }
 
-    public void substitutePlaceholders() {
+    public void substitutePlaceholders(TTopologyTemplate subGraphDetector) {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
         int[] id = new int[1];
 
         //Detector is the subgraph of application-specific components of the origin topology
-        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(subgraphDetector);
+        ToscaGraph detectorGraph = ToscaTransformer.createTOSCAGraph(subGraphDetector);
 
-        List<TServiceTemplate> serviceTemplateCandidates = getServiceTemplateCandidates();
+        Map<QName, TServiceTemplate> serviceTemplateCandidates = getServiceTemplateCandidates();
         List<PlaceholderSubstitutionCandidate> matchingCandidates = new ArrayList<>();
-        serviceTemplateCandidates.forEach(st -> {
+        serviceTemplateCandidates.forEach((qName, st) -> {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(st.getTopologyTemplate());
             IToscaMatcher matcher = new ToscaPropertyMatcher();
             Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
 
             matches.forEachRemaining(mapping -> {
-                PlaceholderSubstitutionCandidate candidate = new PlaceholderSubstitutionCandidate(st, mapping, detectorGraph, id[0]++);
+                PlaceholderSubstitutionCandidate candidate = new PlaceholderSubstitutionCandidate(qName, st, mapping, detectorGraph, id[0]++);
                 if (isApplicable(candidate)) {
                     matchingCandidates.add(candidate);
                 }
@@ -186,7 +183,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             return;
         }
 
-        PlaceholderSubstitutionCandidate substitution = this.substitutionChooser.chooseSubstitution(matchingCandidates, this.substitutionServiceTemplateId);
+        PlaceholderSubstitutionCandidate substitution = this.substitutionChooser.chooseSubstitution(matchingCandidates, this.substitutionServiceTemplateId, this.topologyTemplate);
 
         if (Objects.isNull(substitution)) {
             return;
@@ -195,13 +192,13 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         applySubstitution(substitution);
     }
 
-    private List<TServiceTemplate> getServiceTemplateCandidates() {
-        return RepositoryFactory.getRepository().getAllDefinitionsChildIds(ServiceTemplateId.class)
+    private Map<QName, TServiceTemplate> getServiceTemplateCandidates() {
+        Map<QName, TServiceTemplate> serviceTemplates = repository.getQNameToElementMapping(ServiceTemplateId.class);
+        return serviceTemplates.entrySet()
             .stream()
-            .filter(id -> !id.equals(this.serviceTemplateId))
-            .filter(id -> !id.equals(this.substitutionServiceTemplateId))
-            .map(id -> RepositoryFactory.getRepository().getElement(id))
-            .collect(Collectors.toList());
+            .filter(entry -> !entry.getKey().equals(this.serviceTemplateId.getQName()))
+            .filter(entry -> !entry.getKey().equals(this.substitutionServiceTemplateId.getQName()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private TNodeTemplate getPlaceholder(TNodeTemplate nodeTemplate) throws PlaceholderSubstitutionException {

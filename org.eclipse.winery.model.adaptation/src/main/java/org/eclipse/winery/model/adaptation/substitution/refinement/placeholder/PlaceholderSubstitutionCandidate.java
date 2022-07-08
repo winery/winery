@@ -17,7 +17,8 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.placeholder;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
@@ -29,6 +30,8 @@ import org.jgrapht.GraphMapping;
 
 public class PlaceholderSubstitutionCandidate {
 
+    private final QName serviceTemplateQName;
+    @JsonIgnore
     private final TServiceTemplate serviceTemplateCandidate;
     @JsonIgnore
     private final GraphMapping<ToscaNode, ToscaEdge> graphMapping;
@@ -36,8 +39,9 @@ public class PlaceholderSubstitutionCandidate {
     private final ToscaGraph detectorGraph;
     private final int id;
 
-    public PlaceholderSubstitutionCandidate(TServiceTemplate serviceTemplateCandidate, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
+    public PlaceholderSubstitutionCandidate(QName serviceTemplateQName, TServiceTemplate serviceTemplateCandidate, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
                                             ToscaGraph detectorGraph, int id) {
+        this.serviceTemplateQName = serviceTemplateQName;
         this.serviceTemplateCandidate = Objects.requireNonNull(serviceTemplateCandidate);
         this.graphMapping = Objects.requireNonNull(graphMapping);
         this.detectorGraph = Objects.requireNonNull(detectorGraph);
@@ -63,6 +67,10 @@ public class PlaceholderSubstitutionCandidate {
         return id;
     }
 
+    public QName getServiceTemplateQName() {
+        return serviceTemplateQName;
+    }
+
     public ArrayList<String> getNodeIdsOfMatchingNodesInCandidate() {
         ArrayList<String> ids = new ArrayList<>();
 
@@ -72,5 +80,4 @@ public class PlaceholderSubstitutionCandidate {
 
         return ids;
     }
-    
 }

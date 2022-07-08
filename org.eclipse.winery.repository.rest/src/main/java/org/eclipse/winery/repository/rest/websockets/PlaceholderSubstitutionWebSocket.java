@@ -31,13 +31,12 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.S
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.resources.apiData.PlaceholderSubstitutionElementApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.RefinementElementApiData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ServerEndpoint(value = "/substituteplaceholder")
+@ServerEndpoint(value = "/substitutePlaceholder")
 public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implements SubstitutionChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderSubstitutionWebSocket.class);
@@ -47,12 +46,12 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
     private ServiceTemplateId substitutionServiceTemplateId;
 
     @Override
-    public PlaceholderSubstitutionCandidate chooseSubstitution(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId substitutionServiceTemplateId) {
+    public PlaceholderSubstitutionCandidate chooseSubstitution(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId substitutionServiceTemplateId, TTopologyTemplate currentTopology) {
         this.substitutionServiceTemplateId = substitutionServiceTemplateId;
         try {
             this.future = new CompletableFuture<>();
 
-            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId);
+            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology);
             this.sendAsync(element);
 
             int id = future.get();
@@ -80,22 +79,19 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
     public void onMessage(String message, Session session) throws IOException {
         PlaceholderSubstitutionWebSocket.PlaceholderSubstitutionWebSocketApiData data =
             JacksonProvider.mapper.readValue(message, PlaceholderSubstitutionWebSocket.PlaceholderSubstitutionWebSocketApiData.class);
-        this.placeholderSubstitution = new PlaceholderSubstitution(new ServiceTemplateId(data.serviceTemplate), data.subgraphDetector, this);
-        
+        if (this.placeholderSubstitution == null) {
+            this.placeholderSubstitution = new PlaceholderSubstitution(new ServiceTemplateId(data.serviceTemplate), this);
+        }
         switch (data.task) {
             case START:
                 if (!running) {
                     Thread thread = new Thread(() -> {
                         PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData();
-                        element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate();
+                        element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(data.subgraphDetector);
                         try {
                             this.sendAsync(element);
-                            this.session.close();
-                            this.session = null;
                         } catch (JsonProcessingException e) {
                             LOGGER.error("Error while sending placeholder substitution result", e);
-                        } catch (IOException e) {
-                            LOGGER.error("Error while closing the session", e);
                         }
                         running = false;
                     });
@@ -104,11 +100,11 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                 }
                 break;
             case REFINE_WITH:
-                this.future.complete(data.substituteWith);
+                this.future.complete(data.refineWith);
                 break;
             case STOP:
                 this.future.complete(-1);
-                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId));
+                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null));
                 this.onClose(this.session);
                 break;
         }
@@ -118,7 +114,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
         public PlaceholderSubstitutionWebSocket.Tasks task;
         public QName serviceTemplate;
         public TTopologyTemplate subgraphDetector;
-        public int substituteWith;
+        public int refineWith;
     }
 
     public enum Tasks {

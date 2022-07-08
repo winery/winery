@@ -42,10 +42,10 @@ class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
         TTopologyTemplate subgraphDetector = this.repository.getElement(serviceTemplateIdDetector).getTopologyTemplate();
 
         PlaceholderSubstitution placeholderSubstitution = new PlaceholderSubstitution(
-            new ServiceTemplateId("http://opentosca.org/divamethod/tests", "Test-PlaceholderSubstitution_gdm-w1-wip1-w1-wip1", false),
-            subgraphDetector, (candidates, substitutionServiceTemplate) -> candidates.get(0));
+            new ServiceTemplateId("http://opentosca.org/divamethod/tests", "Test-PlaceholderSubstitution_gdm-w1-wip1-w1-wip1", false), 
+            (candidates, substitutionServiceTemplate) -> candidates.get(0));
 
-        ServiceTemplateId id = placeholderSubstitution.substituteServiceTemplate();
+        ServiceTemplateId id = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);
         assertEquals(9, topologyTemplate.getNodeTemplates().size());

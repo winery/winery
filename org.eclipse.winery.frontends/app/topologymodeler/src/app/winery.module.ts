@@ -85,7 +85,7 @@ import { LiveModelingSidebarModule } from './live-modeling/live-modeling-sidebar
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarModule } from './navbar/navbar.module';
 import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
-import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstitution/placeholderSubstitution.service';
+import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderSubstitution/placeholderSubstitutionWebSocket.service';
 
 @NgModule({
     declarations: [
@@ -178,7 +178,7 @@ import { PlaceholderSubstitutionService } from './sidebars/placeholderSubstituti
         OverlayService,
         TopologyService,
         LoggingService,
-        PlaceholderSubstitutionService
+        PlaceholderSubstitutionWebSocketService
     ],
     bootstrap: [WineryComponent]
 })

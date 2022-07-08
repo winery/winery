@@ -25,12 +25,14 @@ public class PlaceholderSubstitutionElementApiData {
 
     public List<PlaceholderSubstitutionCandidate> substitutionCandidates;
     public ServiceTemplateId serviceTemplateContainingSubstitution;
+    public TTopologyTemplate currentTopology;
 
     public PlaceholderSubstitutionElementApiData() {
     }
 
-    public PlaceholderSubstitutionElementApiData(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId serviceTemplateContainingSubstitution) {
+    public PlaceholderSubstitutionElementApiData(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId serviceTemplateContainingSubstitution, TTopologyTemplate currentTopology) {
         this.substitutionCandidates = candidates;
         this.serviceTemplateContainingSubstitution = serviceTemplateContainingSubstitution;
+        this.currentTopology = currentTopology;
     }
 }
