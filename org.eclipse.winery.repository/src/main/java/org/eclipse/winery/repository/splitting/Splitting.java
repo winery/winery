@@ -509,7 +509,7 @@ public class Splitting {
                             TNodeTemplate sourceNodeTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplateCopy, incomingRelationship);
                             if (((ModelUtilities.getTargetLabel(sourceNodeTemplate).get()
                                 .equalsIgnoreCase(ModelUtilities.getTargetLabel(duplicatedNode).get())
-                                && getBasisRelationshipType(incomingRelationship.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container"))
+                                && getBaseRelationshipType(incomingRelationship.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container"))
                                 || !predecessors.contains(sourceNodeTemplate))) {
 
                                 List<TRelationshipTemplate> reassignRelationship = new ArrayList<>();
@@ -1360,11 +1360,11 @@ public class Splitting {
      * @param nodeTemplate for which all successors should be found
      * @return list of successors (node templates)
      */
-    protected List<TNodeTemplate> getHostedOnSuccessorsOfNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+    protected static List<TNodeTemplate> getHostedOnSuccessorsOfNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
         List<TNodeTemplate> successorNodeTemplates = new ArrayList<>();
         for (TRelationshipTemplate relationshipTemplate : ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate)) {
-            if (getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget() != null &&
-                getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
+            if (getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget() != null &&
+                getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
                 successorNodeTemplates.add(ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, relationshipTemplate));
             }
         }
@@ -1378,13 +1378,13 @@ public class Splitting {
      * @param nodeTemplate for which all predecessors should be found
      * @return list of predecessors
      */
-    protected List<TNodeTemplate> getHostedOnPredecessorsOfNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+    protected static List<TNodeTemplate> getHostedOnPredecessorsOfNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
         List<TNodeTemplate> predecessorNodeTemplates = new ArrayList<>();
         predecessorNodeTemplates.clear();
         List<TRelationshipTemplate> incomingRelationships = ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, nodeTemplate);
         for (TRelationshipTemplate relationshipTemplate : incomingRelationships) {
-            if (getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget() != null &&
-                getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
+            if (getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget() != null &&
+                getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
                 predecessorNodeTemplates.add(ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, relationshipTemplate));
             }
         }
@@ -1497,7 +1497,7 @@ public class Splitting {
         return requirementType.getRequiredCapabilityType();
     }
 
-    public TRelationshipType getBasisRelationshipType(QName relationshipTypeQName) {
+    public static TRelationshipType getBaseRelationshipType(QName relationshipTypeQName) {
         RelationshipTypeId parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
         TRelationshipType parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId);
         TRelationshipType basisRelationshipType = parentRelationshipType;

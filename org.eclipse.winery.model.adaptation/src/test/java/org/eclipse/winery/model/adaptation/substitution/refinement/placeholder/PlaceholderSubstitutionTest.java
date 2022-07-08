@@ -24,6 +24,9 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
 
     public PlaceholderSubstitutionTest() {
@@ -40,8 +43,12 @@ class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
 
         PlaceholderSubstitution placeholderSubstitution = new PlaceholderSubstitution(
             new ServiceTemplateId("http://opentosca.org/divamethod/tests", "Test-PlaceholderSubstitution_gdm-w1-wip1-w1-wip1", false),
-            subgraphDetector, null);
+            subgraphDetector, (candidates, substitutionServiceTemplate) -> candidates.get(0));
 
-        placeholderSubstitution.substitutePlaceholders();
+        ServiceTemplateId id = placeholderSubstitution.substituteServiceTemplate();
+        TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+        assertNotNull(topologyTemplate);
+        assertEquals(9, topologyTemplate.getNodeTemplates().size());
+        assertEquals(9, topologyTemplate.getRelationshipTemplates().size());
     }
 }

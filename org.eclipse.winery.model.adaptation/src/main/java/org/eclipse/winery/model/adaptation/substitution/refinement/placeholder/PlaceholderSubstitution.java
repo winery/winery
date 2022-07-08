@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,10 +31,13 @@ import org.eclipse.winery.model.adaptation.substitution.AbstractSubstitution;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaPropertyMatcher;
@@ -99,8 +102,47 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         });
     }
 
-    public Map<String, String> applySubstitution(PlaceholderSubstitutionCandidate substitution, TTopologyTemplate topology) {
-        return null;
+    public void applySubstitution(PlaceholderSubstitutionCandidate substitution) {
+        TTopologyTemplate substitutionTemplate = substitution.getServiceTemplateCandidate().getTopologyTemplate();
+        Set<TNodeTemplate> hostedOnSuccessors = new HashSet<>();
+        for (String id : substitution.getNodeIdsOfMatchingNodesInCandidate()) {
+            hostedOnSuccessors.addAll(ModelUtilities.getHostedOnSuccessors(substitutionTemplate, id));
+        }
+        Set<TRelationshipTemplate> hostedOnRelations = new HashSet<>();
+        for (TNodeTemplate successor : hostedOnSuccessors) {
+            //Get all outgoing hostedOn Relationships
+            hostedOnRelations.addAll(ModelUtilities.getOutgoingRelationshipTemplates(substitutionTemplate, successor).stream()
+                .filter(r -> Splitting.getBaseRelationshipType(r.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                .collect(Collectors.toSet()));
+        }
+
+        //Add nodes and relationships
+        hostedOnSuccessors.forEach(n -> this.topologyTemplate.addNodeTemplate(n));
+        hostedOnRelations.forEach(r -> this.topologyTemplate.addRelationshipTemplate(r));
+
+        substitution.getDetectorGraph().vertexSet()
+            .forEach(v -> {
+                try {
+                    TNodeTemplate placeholder = getPlaceholder(v.getTemplate());
+                    TRelationshipTemplate incomingHostedOnRelation = ModelUtilities.getIncomingRelationshipTemplates(this.topologyTemplate, placeholder)
+                        .stream()
+                        .filter(r -> Splitting.getBaseRelationshipType(r.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                        .findFirst().get();
+
+                    TNodeTemplate correspondingNode = substitution.getServiceTemplateCandidate().getTopologyTemplate()
+                        .getNodeTemplate(substitution.getGraphMapping().getVertexCorrespondence(v, false).getTemplate().getId());
+                    TRelationshipTemplate outgoingRelationship = ModelUtilities.getOutgoingRelationshipTemplates(substitutionTemplate, correspondingNode)
+                        .stream()
+                        .filter(r -> Splitting.getBaseRelationshipType(r.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                        .findFirst().get();
+                    TNodeTemplate directHostedOnSuccessor = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(substitutionTemplate, outgoingRelationship);
+
+                    incomingHostedOnRelation.setTargetNodeTemplate(directHostedOnSuccessor);
+                    this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(placeholder);
+                } catch (PlaceholderSubstitutionException e) {
+                    e.printStackTrace();
+                }
+            });
     }
 
     public ServiceTemplateId substituteServiceTemplate() {
@@ -108,6 +150,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         TServiceTemplate element = this.repository.getElement(substitutionServiceTemplateId);
 
         this.substitutePlaceholders();
+        element.setTopologyTemplate(topologyTemplate);
         try {
             this.repository.setElement(substitutionServiceTemplateId, element);
         } catch (IOException e) {
@@ -149,27 +192,31 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             return;
         }
 
-        applySubstitution(substitution, this.topologyTemplate);
+        applySubstitution(substitution);
     }
 
     private List<TServiceTemplate> getServiceTemplateCandidates() {
         return RepositoryFactory.getRepository().getAllDefinitionsChildIds(ServiceTemplateId.class)
             .stream()
             .filter(id -> !id.equals(this.serviceTemplateId))
+            .filter(id -> !id.equals(this.substitutionServiceTemplateId))
             .map(id -> RepositoryFactory.getRepository().getElement(id))
             .collect(Collectors.toList());
     }
 
     private TNodeTemplate getPlaceholder(TNodeTemplate nodeTemplate) throws PlaceholderSubstitutionException {
-        List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topologyTemplate, nodeTemplate.getId());
-        if (hostedOnSuccessors.size() == 1) {
-            if (hostedOnSuccessors.get(0).getType().getNamespaceURI().equals("http://opentosca/multiparticipant/placeholdertypes")) {
-                return hostedOnSuccessors.get(0);
-            } else {
-                return getPlaceholder(hostedOnSuccessors.get(0));
-            }
+        TNodeTemplate lastHostedOnSuccessor;
+        Optional<TRelationshipTemplate> hostedOn;
+
+        List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
+        hostedOn = outgoingRelationshipTemplates.stream()
+            .filter(relation -> Splitting.getBaseRelationshipType(relation.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType))
+            .findFirst();
+        if (hostedOn.isPresent()) {
+            lastHostedOnSuccessor = ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.get().getTargetElement().getRef());
+            return getPlaceholder(lastHostedOnSuccessor);
         } else {
-            throw new PlaceholderSubstitutionException("No Placeholder Component detected.");
+            return nodeTemplate;
         }
     }
 
