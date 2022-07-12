@@ -172,7 +172,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
 
             matches.forEachRemaining(mapping -> {
-                PlaceholderSubstitutionCandidate candidate = new PlaceholderSubstitutionCandidate(qName, st, mapping, detectorGraph, id[0]++);
+                PlaceholderSubstitutionCandidate candidate = new PlaceholderSubstitutionCandidate(qName.getNamespaceURI(), qName.getLocalPart(), st, mapping, detectorGraph, id[0]++);
                 if (isApplicable(candidate)) {
                     matchingCandidates.add(candidate);
                 }

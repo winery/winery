@@ -30,7 +30,8 @@ import org.jgrapht.GraphMapping;
 
 public class PlaceholderSubstitutionCandidate {
 
-    private final QName serviceTemplateQName;
+    private final String serviceTemplateNS;
+    private final String serviceTemplateName;
     @JsonIgnore
     private final TServiceTemplate serviceTemplateCandidate;
     @JsonIgnore
@@ -39,9 +40,10 @@ public class PlaceholderSubstitutionCandidate {
     private final ToscaGraph detectorGraph;
     private final int id;
 
-    public PlaceholderSubstitutionCandidate(QName serviceTemplateQName, TServiceTemplate serviceTemplateCandidate, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
+    public PlaceholderSubstitutionCandidate(String serviceTemplateNS, String serviceTemplateName, TServiceTemplate serviceTemplateCandidate, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
                                             ToscaGraph detectorGraph, int id) {
-        this.serviceTemplateQName = serviceTemplateQName;
+        this.serviceTemplateNS = serviceTemplateNS;
+        this.serviceTemplateName = serviceTemplateName;
         this.serviceTemplateCandidate = Objects.requireNonNull(serviceTemplateCandidate);
         this.graphMapping = Objects.requireNonNull(graphMapping);
         this.detectorGraph = Objects.requireNonNull(detectorGraph);
@@ -67,8 +69,12 @@ public class PlaceholderSubstitutionCandidate {
         return id;
     }
 
-    public QName getServiceTemplateQName() {
-        return serviceTemplateQName;
+    public String getServiceTemplateNS() {
+        return serviceTemplateNS;
+    }
+
+    public String getServiceTemplateName() {
+        return serviceTemplateName;
     }
 
     public ArrayList<String> getNodeIdsOfMatchingNodesInCandidate() {

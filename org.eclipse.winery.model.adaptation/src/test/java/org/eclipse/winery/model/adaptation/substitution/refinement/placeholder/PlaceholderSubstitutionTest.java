@@ -19,7 +19,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
@@ -41,9 +40,11 @@ class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
         ServiceTemplateId serviceTemplateIdDetector = new ServiceTemplateId(serviceTemplateQNameDetector);
         TTopologyTemplate subgraphDetector = this.repository.getElement(serviceTemplateIdDetector).getTopologyTemplate();
 
-        PlaceholderSubstitution placeholderSubstitution = new PlaceholderSubstitution(
-            new ServiceTemplateId("http://opentosca.org/divamethod/tests", "Test-PlaceholderSubstitution_gdm-w1-wip1-w1-wip1", false), 
-            (candidates, substitutionServiceTemplate) -> candidates.get(0));
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://opentosca.org/divamethod/tests", "Test-PlaceholderSubstitution_gdm-w1-wip1-w1-wip1", false);
+        //TTopologyTemplate topologyTemplateWithPlaceholders = this.repository.getElement(serviceTemplateId).getTopologyTemplate();
+
+        PlaceholderSubstitution placeholderSubstitution = new PlaceholderSubstitution(serviceTemplateId,
+            (candidates, substitutionServiceTemplate, topologyTemplate) -> candidates.get(0));
 
         ServiceTemplateId id = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();

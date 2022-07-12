@@ -15,10 +15,13 @@
 package org.eclipse.winery.repository.rest.websockets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
+import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import javax.ws.rs.NotFoundException;
@@ -29,7 +32,11 @@ import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.P
 import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.PlaceholderSubstitutionCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.SubstitutionChooser;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.PlaceholderSubstitutionElementApiData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -76,18 +83,22 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
     }
 
     @Override
+    @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         PlaceholderSubstitutionWebSocket.PlaceholderSubstitutionWebSocketApiData data =
             JacksonProvider.mapper.readValue(message, PlaceholderSubstitutionWebSocket.PlaceholderSubstitutionWebSocketApiData.class);
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId(data.serviceTemplate);
         if (this.placeholderSubstitution == null) {
-            this.placeholderSubstitution = new PlaceholderSubstitution(new ServiceTemplateId(data.serviceTemplate), this);
+            this.placeholderSubstitution = new PlaceholderSubstitution(serviceTemplateId, this);
         }
         switch (data.task) {
             case START:
                 if (!running) {
                     Thread thread = new Thread(() -> {
+                        TTopologyTemplate topologyWithPlaceholder = RepositoryFactory.getRepository().getElement(serviceTemplateId).getTopologyTemplate();
                         PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData();
-                        element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(data.subgraphDetector);
+                        TTopologyTemplate subgraphDetector = this.getSubgraphDetector(topologyWithPlaceholder, data.selectedNodeTemplateIds);
+                        element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
                         try {
                             this.sendAsync(element);
                         } catch (JsonProcessingException e) {
@@ -113,7 +124,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
     public static class PlaceholderSubstitutionWebSocketApiData {
         public PlaceholderSubstitutionWebSocket.Tasks task;
         public QName serviceTemplate;
-        public TTopologyTemplate subgraphDetector;
+        public ArrayList<String> selectedNodeTemplateIds;
         public int refineWith;
     }
 
@@ -121,5 +132,18 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
         START,
         REFINE_WITH,
         STOP
+    }
+
+    private TTopologyTemplate getSubgraphDetector(TTopologyTemplate topologyTemplate, ArrayList<String> nodeTemplateIDs) {
+        ArrayList<TNodeTemplate> listOfSelectedNodeTemplate = new ArrayList<>();
+        nodeTemplateIDs.stream()
+            .forEach(id -> listOfSelectedNodeTemplate.add(topologyTemplate.getNodeTemplate(id)));
+        List<TRelationshipTemplate> relationsBetweenNodes = topologyTemplate.getRelationshipTemplates().stream().filter(rt ->
+            listOfSelectedNodeTemplate.contains(ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, rt.getSourceElement().getRef()))
+                && listOfSelectedNodeTemplate.contains(ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, rt.getTargetElement().getRef()))).collect(Collectors.toList());
+
+        return new TTopologyTemplate.Builder()
+            .addNodeTemplates(listOfSelectedNodeTemplate)
+            .addRelationshipTemplates(relationsBetweenNodes).build();
     }
 }

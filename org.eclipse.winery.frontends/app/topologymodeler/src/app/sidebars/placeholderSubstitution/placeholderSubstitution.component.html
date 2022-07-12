@@ -14,46 +14,57 @@
 
 <div id="PlaceholderSubstitutionView">
     <div class="placeholderSubstitutionContainer">
-        <div class="informationContainer" *ngIf="!refinementIsRunning; else showIsRunning">
-            <div *ngIf="refinementIsDone; else showStart">
-                <h5>{{refinementType === 'patternDetection' ? 'Detection' : 'Refinement'}} successful!</h5>
+        <h3>Placeholder Substitution</h3>
+        <br><br>
+        <div class="informationContainer" *ngIf="!substitutionIsRunning; else showIsRunning">
+            <div *ngIf="substitutionIsDone; else showStart">
+                <h5>Placeholder substitution successful!</h5>
             </div>
             <ng-template #showStart>
-                <button class="btn btn-primary" (click)="startRefinement($event)">
-                    Start {{refinementType === 'patternDetection' ? 'Detection' : 'Refinement'}}
+                <div [hidden]="selectedNodeTemplateIds && selectedNodeTemplateIds.length >0">
+                    Please select the application-specific components for which a corresponding service template should
+                    be fond to replace their placeholder components.<br>
+                    <b>NOTE: Use the drag-function to select the node templates.</b>
+                    <br>
+                </div>
+                <div [hidden]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
+                    For the placeholder substitution the following nodes have been selected:<br>
+                    <ul>
+                        <li *ngFor="let nodeId of selectedNodeTemplateIds">
+                            {{ nodeId }}
+                            <br>
+                        </li>
+                    </ul>
+                </div>
+                <br><br>
+                <button class="btn btn-primary" (click)="startSubstitution($event)"
+                        [disabled]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
+                    Start placeholder substitution
                 </button>
             </ng-template>
         </div>
         <ng-template #showIsRunning>
-            <div class="loader" *ngIf="refinementIsLoading; else showContent"></div>
+            <div class="loader" *ngIf="substitutionIsLoading; else showContent"></div>
             <ng-template #showContent>
                 <ul>
-                    <li *ngFor="let candidate of prmCandidates" (mouseover)="onHoverOver(candidate)"
-                        (mouseleave)="hoverOut()">
-                        {{ candidate.refinementModel.name }}
+                    <li *ngFor="let candidate of substitutionCandidates">
+                        {{ "{" + candidate.serviceTemplateNS + "}" + candidate.serviceTemplateName }}
                         <br>
                         <div class="btn-group">
-                            <button *ngIf="refinementType !== 'patternDetection'; else detectionButton"
-                                    class="btn btn-sm btn-info"
-                                    (click)="openModeler($event, candidate.refinementModel.name, 
-                                    candidate.refinementModel.targetNamespace, 'refinementstructure')">
-                                Show Refinement Structure
+                            <button
+                                class="btn btn-sm btn-info"
+                                (click)="openModeler($event, candidate.serviceTemplateName, 
+                                    candidate.serviceTemplateNS)">
+                                Show Service Template
                             </button>
-                            <ng-template #detectionButton>
-                                <button class="btn btn-sm btn-info"
-                                        (click)="openModeler($event, candidate.refinementModel.name, 
-                                        candidate.refinementModel.targetNamespace, 'detector')">
-                                    Show Detector
-                                </button>
-                            </ng-template>
                             <br>
-                            <button class="btn btn-sm btn-primary" (click)="prmChosen($event, candidate)">
+                            <button class="btn btn-sm btn-primary" (click)="substitutionChosen($event, candidate)">
                                 Choose
                             </button>
                         </div>
                     </li>
                 </ul>
-                <button class="btn btn-sm btn-danger" *ngIf="showStopButton()" (click)="stopRefinement()">
+                <button class="btn btn-sm btn-danger" (click)="stopSubstitution()">
                     Stop
                 </button>
             </ng-template>

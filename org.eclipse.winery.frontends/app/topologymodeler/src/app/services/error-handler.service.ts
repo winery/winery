@@ -27,7 +27,6 @@ export class ErrorHandlerService {
      * @param error    the error
      */
     handleError(error: HttpErrorResponse) {
-        debugger;
         const errorMessage = error.error ? error.error : error.message ? error.message : '';
         if (error.error instanceof ErrorEvent) {
             this.alert.error('Status: '

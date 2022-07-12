@@ -14,7 +14,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { BackendService } from '../../services/backend.service';
 import { Observable } from 'rxjs/Rx';
-import { TTopologyTemplate } from '../../models/ttopology-template';
 
 export enum RefinementTasks {
     START = 'START',
@@ -27,7 +26,7 @@ export interface RefinementWebSocketData {
     task: RefinementTasks;
     refineWith?: number;
     serviceTemplate?: string;
-    subgraphDetector?: TTopologyTemplate;
+    selectedNodeTemplateIds?: string[];
 }
 
 export abstract class AbstractRefinementWebSocketService<T> {
@@ -45,14 +44,14 @@ export abstract class AbstractRefinementWebSocketService<T> {
         }
     }
 
-    protected startRefinementSocket(endpoint: string, subgraphDetector?: TTopologyTemplate): Observable<T> {
+    protected startRefinementSocket(endpoint: string, subgraphDetector?: string[]): Observable<T> {
         const start: RefinementWebSocketData = {
             task: RefinementTasks.START,
             serviceTemplate: this.backendService.configuration.definitionsElement.qName
         };
 
         if (subgraphDetector) {
-            start.subgraphDetector = subgraphDetector;
+            start.selectedNodeTemplateIds = subgraphDetector;
         }
         
         if (!this.socket) {
@@ -68,6 +67,7 @@ export abstract class AbstractRefinementWebSocketService<T> {
             this.socket.send(JSON.stringify(start));
         }
 
+        debugger;
         return this.observable;
     }
 

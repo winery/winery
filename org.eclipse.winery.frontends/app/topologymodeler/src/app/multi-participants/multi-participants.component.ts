@@ -8,7 +8,6 @@ import { MultiParticipantsService } from '../services/multi-participants.service
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { backendBaseURL } from '../../../../tosca-management/src/app/configuration';
-import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { BackendService } from '../services/backend.service';
 import { ErrorHandlerService } from '../services/error-handler.service';
 
@@ -60,22 +59,6 @@ export class MultiParticipantsComponent implements OnInit {
                             window.open(this.wineryConfigurationService.configuration.endpoints.topologymodeler + this.editorConfiguration);
                         }
                     );
-                },
-                error => {
-                    this.errorHandlerService.handleError(error);
-                }
-            );
-        } else if (currentButtonsState.buttonsState.generatePlaceholderSubs) {
-            this.multiParticipantsService.postSubstituteVersion().subscribe(
-                placeholderSubstitution => {
-                    this.ngRedux.dispatch(this.actions.generatePlaceholderSubs());
-                    const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
-                        + '&uiURL=' + encodeURIComponent(backendBaseURL)
-                        + '&ns=' + placeholderSubstitution.namespace
-                        + '&id=' + placeholderSubstitution.localname
-                        + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
-                    this.alert.success('Successfully substituted placeholder for topology');
-                    window.open(this.wineryConfigurationService.configuration.endpoints.topologymodeler + editorConfig);
                 },
                 error => {
                     this.errorHandlerService.handleError(error);

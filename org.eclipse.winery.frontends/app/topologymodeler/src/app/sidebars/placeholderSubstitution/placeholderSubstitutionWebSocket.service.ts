@@ -32,7 +32,8 @@ export interface SubstitutionElement {
 }
 
 export interface PlaceholderSubstitutionCandidate {
-    serviceTemplateQName: string;
+    serviceTemplateNS: string;
+    serviceTemplateName: string;
     id: number;
 }
 
@@ -43,8 +44,8 @@ export class PlaceholderSubstitutionWebSocketService extends AbstractRefinementW
         super(bs);
     }
 
-    startPlaceholderSubstitution(subGraphDetector: TTopologyTemplate) {
-        return this.startRefinementSocket('/substitutePlaceholder', subGraphDetector);
+    startPlaceholderSubstitution(selectedNodeTemplateIds: string[]) {
+        return this.startRefinementSocket('/substitutePlaceholder', selectedNodeTemplateIds);
     }
 
 
