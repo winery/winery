@@ -19,30 +19,33 @@
         <div class="informationContainer" *ngIf="!substitutionIsRunning; else showIsRunning">
             <div *ngIf="substitutionIsDone; else showStart">
                 <h5>Placeholder substitution successful!</h5>
-            </div>
-            <ng-template #showStart>
-                <div [hidden]="selectedNodeTemplateIds && selectedNodeTemplateIds.length >0">
-                    Please select the application-specific components for which a corresponding service template should
-                    be fond to replace their placeholder components.<br>
-                    <b>NOTE: Use the drag-function to select the node templates.</b>
-                    <br>
-                </div>
-                <div [hidden]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
-                    For the placeholder substitution the following nodes have been selected:<br>
-                    <ul>
-                        <li *ngFor="let nodeId of selectedNodeTemplateIds">
-                            {{ nodeId }}
-                            <br>
-                        </li>
-                    </ul>
-                </div>
-                <br><br>
-                <button class="btn btn-primary" (click)="startSubstitution($event)"
-                        [disabled]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
-                    Start placeholder substitution
+                <button class="btn btn-primary" (click)="restartSubstitution($event)">
+                    Next substitution
                 </button>
-            </ng-template>
+            </div>
         </div>
+        <ng-template #showStart>
+            <div [hidden]="selectedNodeTemplateIds && selectedNodeTemplateIds.length >0">
+                Please select the application-specific components for which a corresponding service template should
+                be fond to replace their placeholder components.<br>
+                <b>NOTE: Use the drag-function to select the node templates.</b>
+                <br>
+            </div>
+            <div [hidden]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
+                For the placeholder substitution the following nodes have been selected:<br>
+                <ul>
+                    <li *ngFor="let nodeId of selectedNodeTemplateIds">
+                        {{ nodeId }}
+                        <br>
+                    </li>
+                </ul>
+            </div>
+            <br><br>
+            <button class="btn btn-primary" (click)="startSubstitution($event)"
+                    [disabled]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
+                Start placeholder substitution
+            </button>
+        </ng-template>
         <ng-template #showIsRunning>
             <div class="loader" *ngIf="substitutionIsLoading; else showContent"></div>
             <ng-template #showContent>

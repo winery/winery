@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implements SubstitutionChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderSubstitutionWebSocket.class);
+    private static int status = 1;
     private CompletableFuture<Integer> future;
     private boolean running = false;
     private PlaceholderSubstitution placeholderSubstitution;
@@ -58,7 +59,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
         try {
             this.future = new CompletableFuture<>();
 
-            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology);
+            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology, 2);
             this.sendAsync(element);
 
             int id = future.get();
@@ -87,24 +88,27 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
     public void onMessage(String message, Session session) throws IOException {
         PlaceholderSubstitutionWebSocket.PlaceholderSubstitutionWebSocketApiData data =
             JacksonProvider.mapper.readValue(message, PlaceholderSubstitutionWebSocket.PlaceholderSubstitutionWebSocketApiData.class);
-        ServiceTemplateId serviceTemplateId = new ServiceTemplateId(data.serviceTemplate);
         if (this.placeholderSubstitution == null) {
-            this.placeholderSubstitution = new PlaceholderSubstitution(serviceTemplateId, this);
+            this.placeholderSubstitution = new PlaceholderSubstitution(new ServiceTemplateId(data.serviceTemplate), this);
         }
         switch (data.task) {
             case START:
                 if (!running) {
                     Thread thread = new Thread(() -> {
-                        TTopologyTemplate topologyWithPlaceholder = RepositoryFactory.getRepository().getElement(serviceTemplateId).getTopologyTemplate();
+                        TTopologyTemplate topologyWithPlaceholder = RepositoryFactory.getRepository().getElement(new ServiceTemplateId(data.serviceTemplate)).getTopologyTemplate();
                         PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData();
                         TTopologyTemplate subgraphDetector = this.getSubgraphDetector(topologyWithPlaceholder, data.selectedNodeTemplateIds);
                         element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
+                        element.currentTopology = RepositoryFactory.getRepository().getElement(element.serviceTemplateContainingSubstitution).getTopologyTemplate();
+                        status = 3;
+                        element.status = status;
                         try {
+                            running = false;
                             this.sendAsync(element);
+                            status = 1;
                         } catch (JsonProcessingException e) {
                             LOGGER.error("Error while sending placeholder substitution result", e);
                         }
-                        running = false;
                     });
                     this.running = true;
                     thread.start();
@@ -115,7 +119,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                 break;
             case STOP:
                 this.future.complete(-1);
-                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null));
+                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null, 4));
                 this.onClose(this.session);
                 break;
         }

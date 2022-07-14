@@ -66,8 +66,7 @@ export abstract class AbstractRefinementWebSocketService<T> {
         } else {
             this.socket.send(JSON.stringify(start));
         }
-
-        debugger;
+        
         return this.observable;
     }
 

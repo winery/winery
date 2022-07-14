@@ -74,6 +74,14 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         this.webSocketService.cancel();
     }
 
+    restartSubstitution(event: MouseEvent): void {
+        event.stopPropagation();
+        this.substitutionIsDone = false;
+        //this.substitutionIsRunning = false;
+        //this.substitutionIsLoading = false;
+        this.selectedNodeTemplateIds.splice(0, this.selectedNodeTemplateIds.length)
+    }
+
     substitutionChosen(event: MouseEvent, candidate: PlaceholderSubstitutionCandidate) {
         event.stopPropagation();
         this.webSocketService.substituteWith(candidate);
@@ -85,11 +93,12 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     }
 
     private handleWebSocketData(value: SubstitutionElement) {
+        debugger;
         if (value) {
             this.substitutionIsLoading = false;
             this.substitutionCandidates = value.substitutionCandidates;
 
-            if (!this.substitutionCandidates) {
+            if (!this.substitutionCandidates && value.status == 3) {
                 this.substitutionIsDone = true;
                 this.substitutionIsRunning = false;
             }

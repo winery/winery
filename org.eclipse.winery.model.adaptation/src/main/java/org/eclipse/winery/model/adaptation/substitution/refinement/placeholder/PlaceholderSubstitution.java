@@ -54,6 +54,8 @@ import org.slf4j.LoggerFactory;
 public class PlaceholderSubstitution extends AbstractSubstitution {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderSubstitution.class);
+    private static int newRelationshipIdCounter = 100;
+    private static int IdCounter = 1;
 
     private ServiceTemplateId serviceTemplateId;
     private TTopologyTemplate topologyTemplate;
@@ -115,8 +117,14 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         }
 
         //Add nodes and relationships
-        hostedOnSuccessors.forEach(n -> this.topologyTemplate.addNodeTemplate(n));
-        hostedOnRelations.forEach(r -> this.topologyTemplate.addRelationshipTemplate(r));
+        hostedOnSuccessors.forEach(n -> {
+            n.setId(n.getId() + IdCounter++);
+            this.topologyTemplate.addNodeTemplate(n);
+        });
+        hostedOnRelations.forEach(r -> {
+            r.setId(r.getId() + newRelationshipIdCounter++);
+            this.topologyTemplate.addRelationshipTemplate(r);
+        });
 
         substitution.getDetectorGraph().vertexSet()
             .forEach(v -> {

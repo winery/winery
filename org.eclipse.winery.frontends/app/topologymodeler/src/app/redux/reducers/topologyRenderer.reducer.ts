@@ -142,6 +142,7 @@ export const TopologyRendererReducer =
                         refineTopologyButton: false,
                         refineTopologyWithTestsButton: false,
                         detectPatternsButton: false,
+                        generatePlaceholderSubs: false,
                     },
                     activeResearchPlugin: undefined
                 };
