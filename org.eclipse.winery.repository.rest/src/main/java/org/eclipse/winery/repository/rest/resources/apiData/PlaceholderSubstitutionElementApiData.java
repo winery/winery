@@ -16,7 +16,6 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import java.util.List;
 
-import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.PlaceholderSubstitutionCandidate;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -26,15 +25,13 @@ public class PlaceholderSubstitutionElementApiData {
     public List<PlaceholderSubstitutionCandidate> substitutionCandidates;
     public ServiceTemplateId serviceTemplateContainingSubstitution;
     public TTopologyTemplate currentTopology;
-    public int status;
 
     public PlaceholderSubstitutionElementApiData() {
     }
 
-    public PlaceholderSubstitutionElementApiData(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId serviceTemplateContainingSubstitution, TTopologyTemplate currentTopology, int status) {
+    public PlaceholderSubstitutionElementApiData(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId serviceTemplateContainingSubstitution, TTopologyTemplate currentTopology) {
         this.substitutionCandidates = candidates;
         this.serviceTemplateContainingSubstitution = serviceTemplateContainingSubstitution;
         this.currentTopology = currentTopology;
-        this.status = status;
     }
 }

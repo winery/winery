@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implements SubstitutionChooser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlaceholderSubstitutionWebSocket.class);
-    private static int status = 1;
     private CompletableFuture<Integer> future;
     private boolean running = false;
     private PlaceholderSubstitution placeholderSubstitution;
@@ -59,7 +58,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
         try {
             this.future = new CompletableFuture<>();
 
-            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology, 2);
+            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology);
             this.sendAsync(element);
 
             int id = future.get();
@@ -100,12 +99,10 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                         TTopologyTemplate subgraphDetector = this.getSubgraphDetector(topologyWithPlaceholder, data.selectedNodeTemplateIds);
                         element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
                         element.currentTopology = RepositoryFactory.getRepository().getElement(element.serviceTemplateContainingSubstitution).getTopologyTemplate();
-                        status = 3;
-                        element.status = status;
+                        ;
                         try {
                             running = false;
                             this.sendAsync(element);
-                            status = 1;
                         } catch (JsonProcessingException e) {
                             LOGGER.error("Error while sending placeholder substitution result", e);
                         }
@@ -119,7 +116,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                 break;
             case STOP:
                 this.future.complete(-1);
-                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null, 4));
+                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null));
                 this.onClose(this.session);
                 break;
         }

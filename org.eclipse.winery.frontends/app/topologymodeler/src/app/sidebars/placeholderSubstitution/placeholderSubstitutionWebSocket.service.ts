@@ -29,8 +29,6 @@ export interface SubstitutionElement {
         };
     };
     currentTopology: TTopologyTemplate;
-    // 1- started, 2 - candidates, 3 - refinement applied
-    status: number;
 }
 
 export interface PlaceholderSubstitutionCandidate {

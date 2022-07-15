@@ -24,6 +24,8 @@ import { WineryRepositoryConfigurationService } from '../../../../../tosca-manag
 import { BackendService } from '../../services/backend.service';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
+import { Observable } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'winery-placeholder-substitution',
@@ -41,6 +43,8 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     selectedNodeTemplateIds: string[];
 
     private entityTypes: EntityTypesModel;
+    
+    private substitutionElement: Subscription;
 
 
     constructor(private ngRedux: NgRedux<IWineryState>,
@@ -61,17 +65,21 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         this.substitutionIsDone = false;
         this.substitutionIsRunning = true;
         this.substitutionIsLoading = true;
-        this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds)
-            .subscribe(
+        let substitutionElementObservable = this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds);
+        
+        if(!this.substitutionElement) {
+            this.substitutionElement = substitutionElementObservable.subscribe(
                 value => this.handleWebSocketData(value),
                 error => this.handleError(error),
                 () => this.handleWebSocketComplete()
             );
+        }
 
     }
 
     stopSubstitution(): void {
         this.webSocketService.cancel();
+        this.substitutionElement = null;
     }
 
     restartSubstitution(event: MouseEvent): void {
@@ -90,15 +98,15 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this.webSocketService.cancel();
+        this.substitutionElement = null;
     }
 
     private handleWebSocketData(value: SubstitutionElement) {
-        debugger;
         if (value) {
             this.substitutionIsLoading = false;
             this.substitutionCandidates = value.substitutionCandidates;
 
-            if (!this.substitutionCandidates && value.status == 3) {
+            if (!this.substitutionCandidates) {
                 this.substitutionIsDone = true;
                 this.substitutionIsRunning = false;
             }
