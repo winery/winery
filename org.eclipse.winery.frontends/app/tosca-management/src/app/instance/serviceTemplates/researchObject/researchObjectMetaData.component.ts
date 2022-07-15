@@ -25,10 +25,10 @@ export class ResearchObjectMetaDataComponent implements OnInit {
 
     data: ROMetadataApiData;
     loading = true;
-    private items: Array<string> = ['Agricultural Sciences', 'Arts and Humanities', 'Astronomy and Astrophysics', 'Business and Management',
+    private subjects: Array<string> = ['Agricultural Sciences', 'Arts and Humanities', 'Astronomy and Astrophysics', 'Business and Management',
         'Chemistry', 'Computer and Information Science', 'Earth and Environmental Sciences', 'Engineering', 'Law',
-        'Mathematical Sciences', 'Medicine', 'Health and Life Sciences', 'Physics', 'Social Sciences', 'Other'];
-    private selection: string[] = [];
+        'Mathematical Sciences', 'Medicine, Health and Life Sciences', 'Physics', 'Social Sciences', 'Other'];
+    private selection: { id: string, text: string }[] = [];
 
     constructor(private service: ResearchObjectService,
                 private notify: WineryNotificationService) {
@@ -46,16 +46,16 @@ export class ResearchObjectMetaDataComponent implements OnInit {
             );
     }
 
-    public itemsToList(value: Array<any> = []): Array<string> {
+    public itemsToList(): Array<string> {
         const valueList: Array<string> = [];
-        for (const entry of value) {
+        for (const entry of this.selection) {
             valueList.push(entry.text);
         }
         return valueList;
     }
 
     saveResearchObjectMetadata() {
-        this.data.subjects = { subject: this.itemsToList(this.selection) };
+        this.data.subjects = { subject: this.itemsToList() };
         this.service.saveResearchObjectMetadata(this.data).subscribe(
             (data) => {
                 this.handleSuccess('Saved data');
@@ -67,7 +67,9 @@ export class ResearchObjectMetaDataComponent implements OnInit {
     handleData(data: ROMetadataApiData) {
         this.data = data;
         if (data.subjects) {
-            this.selection = this.data.subjects.subject;
+            for (const entry of data.subjects.subject) {
+                this.selection.push({ id: entry, text: entry });
+            }
         }
         this.loading = false;
     }

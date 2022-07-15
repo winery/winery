@@ -53,6 +53,9 @@ ENV CHE_URL "che.localhost"
 ENV CHE_URL_PROTOCOL "http"
 ENV GITHUB_CLIENT_ID ""
 ENV GITHUB_CLIENT_SECRET ""
+ENV DARUS_HOSTNAME "demodarus.izus.uni-stuttgart.de"
+ENV DARUS_API_TOKEN ""
+ENV DARUS_DATAVERSE "spielwiese"
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \

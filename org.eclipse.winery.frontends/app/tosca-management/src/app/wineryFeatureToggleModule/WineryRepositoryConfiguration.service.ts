@@ -58,6 +58,11 @@ export interface WineryConfiguration {
         tokenType: string;
         username: string;
     };
+    darus: {
+        server: string;
+        apiToken: string;
+        dataverse: string;
+    };
 }
 
 export interface WineryRepositoryConfiguration {

@@ -29,8 +29,7 @@ export class ResearchObjectService {
     }
 
     getResearchObjectMetadata(): Observable<ROMetadataApiData> {
-        const o = this.http.get<ROMetadataApiData>(this.baseUrl + 'metadata');
-        return o;
+        return this.http.get<ROMetadataApiData>(this.baseUrl + 'metadata');
     }
 
     saveResearchObjectMetadata(data: ROMetadataApiData): Observable<HttpResponse<string>> {
@@ -41,8 +40,7 @@ export class ResearchObjectService {
     }
 
     getResearchObjectPublication(): Observable<ROPublicationApiData> {
-        const o = this.http.get<ROPublicationApiData>(this.baseUrl + 'publication');
-        return o;
+        return this.http.get<ROPublicationApiData>(this.baseUrl + 'publication');
     }
 
     saveResearchObjectPublication(data: ROPublicationApiData): Observable<HttpResponse<string>> {
@@ -53,8 +51,7 @@ export class ResearchObjectService {
     }
 
     getDirsAndFiles(): Observable<Map<string, FileOrFolderElement[]>> {
-        const o = this.http.get<any>(this.baseUrl + 'files');
-        return o;
+        return this.http.get<any>(this.baseUrl + 'files');
     }
 
     createDirectory(path: string): Observable<HttpResponse<string>> {
@@ -80,7 +77,7 @@ export class ResearchObjectService {
     }
 
     setBaseUrl(url: string) {
-        this.baseUrl = url;
+        this.baseUrl = url + '/researchobject/';
     }
 
 }

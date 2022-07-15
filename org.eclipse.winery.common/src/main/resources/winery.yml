@@ -25,6 +25,10 @@ ui:
     repositoryApiUrl: http://localhost:8080/winery
     repositoryUiUrl: http://localhost:4200/#
     edmmTransformationTool: http://localhost:5000/plugins/check-model-support
+  darus:
+    server: https://demodarus.izus.uni-stuttgart.de
+    apiToken: token
+    dataverse: spielwiese
 repository:
   provider: file
   repositoryRoot: ""
