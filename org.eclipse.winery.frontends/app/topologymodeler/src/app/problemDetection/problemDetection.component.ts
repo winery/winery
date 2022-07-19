@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ProblemDetectionService } from './problemDetection.service';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
@@ -27,6 +27,8 @@ import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { EntityTypesModel } from '../models/entityTypesModel';
+import { debug } from 'util';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'winery-problem-detection',
@@ -36,14 +38,20 @@ import { EntityTypesModel } from '../models/entityTypesModel';
     ],
     styleUrls: ['problemDetection.component.css']
 })
-export class ProblemDetectionComponent {
-
+export class ProblemDetectionComponent implements OnDestroy{
+    
+    
+    
     loading = false;
+    applied = false;
     problemFindings: ProblemFindings[];
     selectedFinding: ProblemOccurrence;
     possibleSolutions: SolutionInputData[];
     selectedSolution: SolutionInputData;
     entityTypes: EntityTypesModel;
+    private subscriptions: Subscription[] = [];
+    
+    
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
@@ -52,15 +60,22 @@ export class ProblemDetectionComponent {
                 private alert: ToastrService,
                 private configurationService: WineryRepositoryConfigurationService,
                 private backendService: BackendService) {
-        this.ngRedux.select(state => state.topologyRendererState)
-            .subscribe(currentButtonsState => this.checkButtonsState(currentButtonsState));
-        this.ngRedux.select(state => state.wineryState.entityTypes)
+        this.subscriptions.push(this.ngRedux.select(state => state.topologyRendererState)
+            .subscribe(currentButtonsState => this.checkButtonsState(currentButtonsState)));
+        this.subscriptions.push(this.ngRedux.select(state => state.wineryState.entityTypes)
             .subscribe(data => {
                 if (data) {
                     this.entityTypes = data;
                 }
-            });
+            }));
     }
+
+    ngOnDestroy(): void {
+        debugger;
+        this.subscriptions.forEach(s => s.unsubscribe());
+        this.subscriptions = null;
+    }
+
 
     selectFinding(problem: ProblemEntity, finding: ComponentFinding[]) {
         this.selectedFinding = {
@@ -106,12 +121,13 @@ export class ProblemDetectionComponent {
     }
 
     applySolution() {
+        debugger;
+        this.loading = true;
         this.problemDetectionService.applySolution(this.selectedSolution)
             .subscribe(
                 data => this.solutionApplied(data),
                 error => this.handleError(error)
             );
-        this.loading = true;
     }
 
     private checkButtonsState(currentButtonsState: TopologyRendererState) {
@@ -141,7 +157,12 @@ export class ProblemDetectionComponent {
     }
 
     private solutionApplied(data: TTopologyTemplate) {
-        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.entityTypes, this.configurationService.isYaml());
+        debugger;
+        this.applied = true;
         this.loading = false;
+        this.possibleSolutions = null;
+        TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.entityTypes, this.configurationService.isYaml());
     }
+    
+    
 }

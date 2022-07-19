@@ -1007,6 +1007,18 @@ public abstract class ModelUtilities {
                 .build()
         );
     }
+    
+    public static void addRequirement(TNodeTemplate node, QName requirementType, String name) {
+        List<TRequirement> requirements = node.getRequirements();
+        if (Objects.isNull(requirements)) {
+            requirements = new ArrayList<>();
+            node.setRequirements(requirements);
+        }
+        
+        requirements.add(
+            new TRequirement.Builder(name, requirementType).build()
+        );
+    }
 
     public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
         return Objects.nonNull(node.getPolicies()) &&

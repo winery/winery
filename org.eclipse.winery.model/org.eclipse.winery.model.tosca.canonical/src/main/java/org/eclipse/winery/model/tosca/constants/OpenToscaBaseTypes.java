@@ -38,9 +38,13 @@ public class OpenToscaBaseTypes {
     
     //region ********** messaging elements **********
     //TODO: Check if these Types are correct for final version
-    public static final QName publisherProxy = QName.valueOf("{http://opentosca.org/patternsolution/nodetypes}PublisherProxy");
-    public static final QName subscriberProxy = QName.valueOf("{http://opentosca.org/patternsolution/nodetypes}SubscriberProxy");
+    public static final QName publisherProxy = QName.valueOf("{http://opentosca.org/patternsolutions/nodetypes}PublisherProxy");
+    public static final QName subscriberProxy = QName.valueOf("{http://opentosca.org/patternsolutions/nodetypes}SubscriberProxy");
     public static final QName topic = QName.valueOf("{http://opentosca.org/nodetypes}Topic");
+    public static final QName topicReqType = QName.valueOf("{http://opentosca.org/requirementtypes}MessageBroker");
+    public static final QName proxyReqType = QName.valueOf("{http://opentosca.org/requirementtypes}Java11Runtime");
+    public static final QName abstractJava11DriverTemplate = QName.valueOf("{http://opentosca.org/driverinjection/artifacttemplates}Abstract-Java11Driver");
+    public static final QName topicConnectsTo = QName.valueOf("{http://opentosca.org/driverinjection/relationshiptypes}ConnectsToTopic");
     //endregion
 
     // region ********** freeze and defrost **********

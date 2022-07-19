@@ -86,6 +86,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarModule } from './navbar/navbar.module';
 import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
 import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderSubstitution/placeholderSubstitutionWebSocket.service';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { MatListModule } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -145,7 +147,9 @@ import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderS
         AngularResizedEventModule,
         ModalModule.forRoot(),
         LiveModelingSidebarModule,
-        NavbarModule
+        NavbarModule,
+        CdkAccordionModule,
+        MatListModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },

@@ -270,7 +270,7 @@ public class Splitting {
             List<TInterface> incomingNodeTypeInterfaces = incomingNodeType.getInterfaces();
             RelationshipTypeId incomingRelationshipTypeId = new RelationshipTypeId(incomingRelationshipTemplate.getType());
 
-            if (!incomingNodeTypeInterfaces.isEmpty()) {
+            if (incomingNodeTypeInterfaces != null && !incomingNodeTypeInterfaces.isEmpty()) {
                 TInterface relevantInterface = null;
                 List<TInterface> connectionInterfaces = incomingNodeTypeInterfaces.stream().filter(tInterface -> tInterface.getIdFromIdOrNameField().contains("connection")).collect(Collectors.toList());
                 if (connectionInterfaces.size() > 1) {
@@ -311,7 +311,7 @@ public class Splitting {
         boolean uniqueID = false;
         id = "0";
         while (!uniqueID) {
-            if (!ids.contains("cap" + newCapabilityCounter)) {
+            if (!ids.contains("cap_" + newCapabilityCounter)) {
                 id = "cap_" + newCapabilityCounter;
                 newCapabilityCounter++;
                 uniqueID = true;

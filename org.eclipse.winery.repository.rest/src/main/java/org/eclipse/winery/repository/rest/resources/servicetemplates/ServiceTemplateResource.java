@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -422,9 +423,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 QName placeholderQName = new QName(placeholderNodeType.getTargetNamespace(), placeholderNodeType.getName());
 
                 WinerysPropertiesDefinition winerysPropertiesDefinition = sourceNodeType.getWinerysPropertiesDefinition();
+                if (Objects.isNull(winerysPropertiesDefinition)) {
+                    winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+                }
                 // add properties definition
                 winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitionKVList);
                 if (!winerysPropertiesDefinition.getPropertyDefinitions().isEmpty()) {
+
                     placeholderNodeType.setProperties(null);
                     placeholderNodeType.setProperties(winerysPropertiesDefinition);
                     String namespace = placeholderNodeType.getWinerysPropertiesDefinition().getNamespace();

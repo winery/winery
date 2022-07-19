@@ -17,6 +17,65 @@
 <div id="ProblemDetectionView" *ngIf="!loading && problemFindings">
     <div class="detectionContainer" style="margin-top: 1em; margin-left: 1em; margin-right: 1em" *ngIf="problemFindings.length > 0">
         <a style="font-weight: bold">Detected Problems</a>
+        <cdk-accordion>
+            <cdk-accordion-item
+                *ngFor="let problem of problemFindings; let index = index;"
+                #accordionItem="cdkAccordionItem"
+                class="example-accordion-item"
+                role="button"
+                tabindex="0"
+                [attr.id]="'accordion-header-' + index"
+                [attr.aria-expanded]="accordionItem.expanded"
+                [attr.aria-controls]="'accordion-body-' + index">
+                <div class="example-accordion-item-header" (click)="accordionItem.toggle()">
+                    {{problem?.problem}}
+                    <span class="example-accordion-item-description">
+        Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+      </span>
+                </div>
+                <div class="example-accordion-item-body"
+                    role="region"
+                    [style.display]="accordionItem.expanded ? '' : 'none'"
+                    [attr.id]="'accordion-body-' + index"
+                    [attr.aria-labelledby]="'accordion-header-' + index">
+                    <ul class="problemfinding">
+                        <li *ngFor="let finding of problem.findings" class="nav-item">
+                            <button [class.selected]="finding === selectedFinding?.occurrence"
+                                 (mouseover)="onHoverOver(finding)"
+                                 (mouseleave)="hoverOut()" (click)="selectFinding(problem, finding)">
+                            <span *ngFor="let entry of finding">
+                            {{entry.componentId}},
+                        </span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </cdk-accordion-item>
+        </cdk-accordion>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                    <button type="button" class="btn btn-sm btn-primary"
+                            style="margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
+                            [disabled]="!selectedFinding" (click)="solve()">Solve
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger"
+                            style="margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
+                            (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="noProblemContainer" *ngIf="problemFindings.length == 0 ">
+        <a style="font-weight: bold">No problems are detected in the model.</a>
+    </div>
+</div>
+
+<!--<div id="ProblemDetectionView" *ngIf="!loading && problemFindings">
+    <div class="detectionContainer" style="margin-top: 1em; margin-left: 1em; margin-right: 1em" *ngIf="problemFindings.length > 0">
+        <a style="font-weight: bold">Detected Problems</a>
         <accordion>
             <accordion-group style="margin-top: 1em; margin-left: 1em; margin-right: 1em" [isOpen]="i === 0"
                              heading="{{problem?.problem}}" panelClass="panel-info"
@@ -54,13 +113,50 @@
     <div class="noProblemContainer" *ngIf="problemFindings.length == 0 ">
         <a style="font-weight: bold">No problems are detected in the model.</a>
     </div>
-</div>
+</div>-->
+
+
 
 <div id="SolutionSelectionView" *ngIf="!loading && possibleSolutions">
+    <div class="solutionsContainer" *ngIf="possibleSolutions.length > 0">
+        <mat-list>
+            <h3 mat-subheader>Possible Solutions</h3>
+            <mat-divider></mat-divider>
+            <mat-list-item  *ngFor="let solution of possibleSolutions; last as last" (click)="selectSolution(solution)" [class.selected]="solution === selectedSolution">
+                <h4 style="font-weight: bolder" mat-line>{{solution.name}}</h4>
+                <p mat-line>{{solution.description}}</p>
+                <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+            </mat-list-item>
+        </mat-list>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                    <button type="button" class="btn btn-sm btn-primary"
+                            style="margin-top: 1em; margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
+                            [disabled]="!selectedSolution" (click)="applySolution()">Apply
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger"
+                            style="margin-top: 1em; margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
+                            (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="noSolutionContainer" *ngIf="possibleSolutions.length == 0 ">
+        <a style="font-weight: bold">No matching solution available.</a>
+    </div>
+</div>
+<div class="AppliedFinished" *ngIf="applied">
+    <a style="font-weight: bold">Solution successfully applied.</a>
+</div>
+
+<!--<div id="SolutionSelectionView" *ngIf="!loading && possibleSolutions">
     <div class="solutionsContainer" style="margin-top: 1em; margin-left: 1em; margin-right: 1em" *ngIf="possibleSolutions.length > 0">
         <a style="font-weight: bold">Possible Solutions</a>
-        <ul style="font-size: x-small; list-style-type:none; margin-top: 1em; margin-bottom: 1em">
-            <li *ngFor="let solution of possibleSolutions" (click)="selectSolution(solution)">
+        <ul>
+            <li class="solution" *ngFor="let solution of possibleSolutions" (click)="selectSolution(solution)">
                 <a style="font-weight: bolder">{{solution.name}}</a><br>
                 <a style="font-weight: bold">More details:</a><br>
                 {{solution.description}}
@@ -86,5 +182,7 @@
         <a style="font-weight: bold">No matching solution available.</a>
     </div>
 </div>
-
+<div class="AppliedFinished" *ngIf="applied">
+    <a style="font-weight: bold">Solution successfully applied.</a>
+</div>-->
 

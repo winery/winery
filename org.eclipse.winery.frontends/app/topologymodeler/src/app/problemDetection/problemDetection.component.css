@@ -25,6 +25,73 @@ ul {
 
 }
 
+.problemfinding {
+    margin: 0 0 2em 0;
+    list-style-type: none;
+    padding: 0;
+    width: 15em;
+}
+
+.problemfinding li {
+    display: flex;
+}
+
+.problemfinding button {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+    left: 0;
+    background-color: #EEE;
+    margin: .3em;
+    padding: 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: stretch;
+    height: 1.8em;
+}
+
+.problemfinding button:hover {
+    color: #2c3a41;
+    background-color: #e6e6e6;
+    left: .1em;
+}
+
+.problemfinding button:active {
+    background-color: #525252;
+    color: #fafafa;
+}
+
+.problemfinding button.selected {
+    background-color: black;
+    color: white;
+}
+
+.problemfinding button.selected:hover {
+    background-color: #505050;
+    color: white;
+}
+
+.problemfinding button.selected:active {
+    background-color: black;
+    color: white;
+}
+
+.problemfinding .badge {
+    display: inline-block;
+    font-size: small;
+    color: white;
+    padding: 0.8em 0.7em 0 0.7em;
+    background-color: #405061;
+    line-height: 1em;
+    margin-right: .8em;
+    border-radius: 4px 0 0 4px;
+}
+
+.problemfinding .name {
+    align-self: center;
+}
+
+
 .nav-item {
     list-style-type: none;
     /*background-color: #424242;*/
@@ -55,3 +122,58 @@ ul {
     background-color: #f6f5f4;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25), 0 3px 3px rgba(0, 0, 0, 0.22);
 }
+
+.example-accordion {
+    display: block;
+    max-width: 500px;
+}
+
+.example-accordion-item {
+    display: block;
+    border: solid 1px #ccc;
+}
+
+.example-accordion-item + .example-accordion-item {
+    border-top: none;
+}
+
+.example-accordion-item-header {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+}
+
+.example-accordion-item-description {
+    font-size: 1.0em;
+    color: #bfbfbf;
+}
+
+.example-accordion-item-header,
+.example-accordion-item-body {
+    padding: 30px;
+}
+
+.example-accordion-item-header:hover {
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.example-accordion-item:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.example-accordion-item:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+
+.mat-list-item {
+    height: auto !important; /** experiment with height **/
+}
+
+.mat-list-item.selected{
+    color: blue;
+}
+
