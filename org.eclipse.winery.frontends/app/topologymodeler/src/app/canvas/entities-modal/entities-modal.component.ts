@@ -428,6 +428,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
      * Saves a policy to the nodeTemplate model and gets pushed into the Redux state of the application
      */
     savePoliciesToModel(policyToBeSavedToRedux: TPolicy): void {
+        debugger
         const actionObject = {
             nodeId: this.currentNodeData.id,
             newPolicy: policyToBeSavedToRedux

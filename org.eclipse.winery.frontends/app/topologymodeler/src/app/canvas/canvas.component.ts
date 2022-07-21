@@ -1298,8 +1298,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             let relationSource = newRelationship.sourceElement.ref;
             let relationTarget = newRelationship.targetElement.ref;
 
-            if (newRelationship.policies && newRelationship.policies.policy) {
-                const list: TPolicy[] = newRelationship.policies.policy;
+            if (newRelationship.policies) {
+                const list: TPolicy[] = newRelationship.policies;
                 labelString += '<br>';
                 for (const value of list) {
                     const visual = this.entityTypes.policyTypeVisuals.find(
@@ -2578,7 +2578,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             if (relationshipTemplate) {
                 if (rel.policies !== relationshipTemplate.policies) {
                     const oldCon = this.newJsPlumbInstance.getAllConnections().find((jSPlumbConnection) => jSPlumbConnection.id === relationshipTemplate.id);
-                    if (relationshipTemplate.policies && relationshipTemplate.policies.policy) {
+                    if (relationshipTemplate.policies) {
                         let labelString = (!relationshipTemplate.state ? '' : relationshipTemplate.state + '<br>')
                             + relationshipTemplate.name;
                         if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
