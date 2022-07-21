@@ -38,17 +38,15 @@
                     [style.display]="accordionItem.expanded ? '' : 'none'"
                     [attr.id]="'accordion-body-' + index"
                     [attr.aria-labelledby]="'accordion-header-' + index">
-                    <ul class="problemfinding">
-                        <li *ngFor="let finding of problem.findings" class="nav-item">
-                            <button [class.selected]="finding === selectedFinding?.occurrence"
-                                 (mouseover)="onHoverOver(finding)"
-                                 (mouseleave)="hoverOut()" (click)="selectFinding(problem, finding)">
-                            <span *ngFor="let entry of finding">
-                            {{entry.componentId}},
-                        </span>
-                            </button>
-                        </li>
-                    </ul>
+                    <mat-list>
+                        <mat-list-item  *ngFor="let finding of problem.findings; last as last" 
+                                        (mouseover)="onHoverOver(finding)"
+                                        (mouseleave)="hoverOut()" (click)="selectFinding(problem, finding)" 
+                                        [class.selected]="finding === selectedFinding?.occurrence" >
+                            <span style="white-space:nowrap" *ngFor="let entry of finding; last as lastentry">{{entry.componentId}} <ng-container *ngIf="!lastentry">,</ng-container></span>
+                            <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+                        </mat-list-item>
+                    </mat-list>
                 </div>
             </cdk-accordion-item>
         </cdk-accordion>

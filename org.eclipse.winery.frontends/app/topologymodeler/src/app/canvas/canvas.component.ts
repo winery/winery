@@ -1298,8 +1298,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             let relationSource = newRelationship.sourceElement.ref;
             let relationTarget = newRelationship.targetElement.ref;
 
-            if (newRelationship.policies && newRelationship.policies.policy) {
-                const list: TPolicy[] = newRelationship.policies.policy;
+            if (newRelationship.policies) {
+                const list: TPolicy[] = newRelationship.policies;
                 labelString += '<br>';
                 for (const value of list) {
                     const visual = this.entityTypes.policyTypeVisuals.find(
@@ -1909,7 +1909,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 source: currentRel.sourceElement.ref,
                 target: currentRel.targetElement.ref
             }));
-            conn.addType('marked');
+            //conn.addType('marked');
         }
     }
 
@@ -2574,19 +2574,21 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param currentRelationships
      */
     private addPolicyIcon(currentRelationships: Array<TRelationshipTemplate>) {
+        debugger;
         this.allRelationshipTemplates.some((rel) => {
             const relationshipTemplate = currentRelationships.find((el) => el.id === rel.id);
             if (relationshipTemplate) {
                 if (rel.policies !== relationshipTemplate.policies) {
-                    const oldCon = this.newJsPlumbInstance.getAllConnections().find((jSPlumbConnection) => jSPlumbConnection.id === relationshipTemplate.id);
-                    if (relationshipTemplate.policies && relationshipTemplate.policies.policy) {
+                    const allConnections = this.newJsPlumbInstance.getAllConnections();
+                    const oldCon = allConnections.find((jSPlumbConnection) => jSPlumbConnection.id === relationshipTemplate.id);
+                    if (relationshipTemplate.policies) {
                         let labelString = (!relationshipTemplate.state ? '' : relationshipTemplate.state + '<br>')
                             + relationshipTemplate.name;
                         if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
                             // Workaround to support old topology templates with the real name
                             labelString = relationshipTemplate.type.substring(relationshipTemplate.type.indexOf('}') + 1);
                         }
-                        const list: TPolicy[] = relationshipTemplate.policies.policy;
+                        const list: TPolicy[] = relationshipTemplate.policies;
                         labelString += '<br>';
                         for (const value of list) {
                             const visual = this.entityTypes.policyTypeVisuals.find(
@@ -2635,9 +2637,11 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             // and delete the old one
                             this.newJsPlumbInstance.deleteConnection(oldCon);
                         }
+                    } else {
+                        this.onClickJsPlumbConnection(oldCon);
                     }
                     this.allRelationshipTemplates[this.allRelationshipTemplates.indexOf(rel)] = relationshipTemplate;
-                    this.onClickJsPlumbConnection(oldCon);
+                    
                     return true;
                 }
             }

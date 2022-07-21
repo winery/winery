@@ -437,7 +437,6 @@ export const WineryReducer =
                     .map(n => n.id).indexOf(newRelPolicy.nodeId);
                 const relationshipPolicyTemplate = lastState.currentJsonTopology.relationshipTemplates
                     .find(relationshipTemplate => relationshipTemplate.id === newRelPolicy.nodeId);
-                const policyExistCheck = relationshipPolicyTemplate.policies && relationshipPolicyTemplate.policies.policy;
 
                 return <WineryState>{
                     ...lastState,
@@ -446,16 +445,16 @@ export const WineryReducer =
                         relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates
                             .map(relationshipTemplate => relationshipTemplate.id === newRelPolicy.nodeId ?
                                 relationshipTemplate.generateNewRelTemplateWithUpdatedAttribute('policies',
-                                    policyExistCheck ? {
-                                        policy: [
+                                    relationshipPolicyTemplate.policies ?
+                                        [
                                             ...lastState.currentJsonTopology.relationshipTemplates[indexOfRelationshipPolicy].policies,
                                             relPolicy
                                         ]
-                                    } : {
-                                        policy: [
+                                    : 
+                                        [
                                             relPolicy
                                         ]
-                                    }) : relationshipTemplate
+                                    ) : relationshipTemplate
                             )
                     }
                 };
@@ -474,28 +473,51 @@ export const WineryReducer =
                     }
                 };
             case WineryActions.DELETE_POLICY:
+                debugger;
                 const deletedPolicy: any = (<DeletePolicyAction>action).nodePolicy.deletedPolicy;
-                const indexOfNodeWithDeletedPolicy = lastState.currentJsonTopology.nodeTemplates
-                    .map((n) => n.id)
-                    .indexOf((<DeletePolicyAction>action).nodePolicy.nodeId);
+                let indexOfNodeWithDeletedPolicy: number = -1;
+                if(lastState.currentJsonTopology.nodeTemplates.map(n => n.id).includes((<DeletePolicyAction>action).nodePolicy.nodeId)){
+                    indexOfNodeWithDeletedPolicy = lastState.currentJsonTopology.nodeTemplates
+                        .map((n) => n.id)
+                        .indexOf((<DeletePolicyAction>action).nodePolicy.nodeId);
 
-                return <WineryState>{
-                    ...lastState,
-                    currentJsonTopology: {
-                        ...lastState.currentJsonTopology,
-                        nodeTemplates: lastState.currentJsonTopology.nodeTemplates
-                            .map((nodeTemplate) => nodeTemplate.id === (<DeletePolicyAction>action).nodePolicy.nodeId ?
-                                nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('policies',
-                                    {
-                                        policy: [
+                    return <WineryState>{
+                        ...lastState,
+                        currentJsonTopology: {
+                            ...lastState.currentJsonTopology,
+                            nodeTemplates: lastState.currentJsonTopology.nodeTemplates
+                                .map((nodeTemplate) => nodeTemplate.id === (<DeletePolicyAction>action).nodePolicy.nodeId ?
+                                    nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('policies',
+                                        [
                                             ...lastState.currentJsonTopology.nodeTemplates[indexOfNodeWithDeletedPolicy]
                                                 .policies
                                                 .filter(da => da.name !== deletedPolicy)
                                         ]
-                                    }) : nodeTemplate
-                            )
-                    }
-                };
+                                    ) : nodeTemplate
+                                )
+                        }
+                    };
+                } else {
+                    indexOfNodeWithDeletedPolicy = lastState.currentJsonTopology.relationshipTemplates
+                        .map((r) => r.id)
+                        .indexOf((<DeletePolicyAction>action).nodePolicy.nodeId);
+                    return <WineryState>{
+                        ...lastState,
+                        currentJsonTopology: {
+                            ...lastState.currentJsonTopology,
+                            relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates
+                                .map((relationshipTemplate) => relationshipTemplate.id === (<DeletePolicyAction>action).nodePolicy.nodeId ?
+                                    relationshipTemplate.generateNewRelTemplateWithUpdatedAttribute('policies',
+                                        [
+                                            ...lastState.currentJsonTopology.relationshipTemplates[indexOfNodeWithDeletedPolicy]
+                                                .policies
+                                                .filter(da => da.name !== deletedPolicy)
+                                        ]
+                                    ) : relationshipTemplate
+                                )
+                        }
+                    };
+                }
             case WineryActions.CHANGE_NODE_NAME:
                 const newNodeName: any = (<SidebarChangeNodeName>action).nodeNames;
 
