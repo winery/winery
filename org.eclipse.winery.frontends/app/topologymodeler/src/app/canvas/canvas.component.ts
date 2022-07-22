@@ -1286,32 +1286,9 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     paintRelationship(newRelationship: TRelationshipTemplate) {
         const allJsPlumbRelationships = this.newJsPlumbInstance.getAllConnections();
         if (!allJsPlumbRelationships.some((rel) => rel.id === newRelationship.id)) {
-            let labelString = (!newRelationship.state ? '' : newRelationship.state + '<br>')
-                // why not use name -> save the type's id into the name (without management version)
-                + newRelationship.name;
-
-            if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
-                // Workaround to support old topology templates with the real name
-                labelString = newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
-            }
-
+            const labelString = this.generateRelationshipLabel(newRelationship);
             let relationSource = newRelationship.sourceElement.ref;
             let relationTarget = newRelationship.targetElement.ref;
-
-            if (newRelationship.policies) {
-                const list: TPolicy[] = newRelationship.policies;
-                labelString += '<br>';
-                for (const value of list) {
-                    const visual = this.entityTypes.policyTypeVisuals.find(
-                        policyTypeVisual => policyTypeVisual.typeId === value.policyType
-                    );
-
-                    if (visual && visual.imageUrl) {
-                        labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
-                            ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" alt="Policy icon" />';
-                    }
-                }
-            }
 
             // check if source reference is not a node template
             {
@@ -1339,40 +1316,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 }
             }
 
-            const border = !newRelationship.state
-                ? '#fafafa' : VersionUtils.getElementColorByDiffState(newRelationship.state);
-            const me = this;
-            const conn = this.newJsPlumbInstance.connect({
-                source: relationSource,
-                target: relationTarget,
-                overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
-                    ['Label', {
-                        label: labelString,
-                        id: labelString,
-                        events: {
-                            click: () => {
-                                setTimeout(() => me.onClickJsPlumbConnection(conn), 1);
-                            }
-                        },
-                        labelStyle: {
-                            font: '11px Roboto, sans-serif',
-                            color: '#212121',
-                            fill: '#efefef',
-                            borderStyle: border,
-                            borderWidth: 1,
-                            padding: '3px'
-                        }
-                    }]
-                ],
-            });
+            const conn = this.createNewJsPlumbConnection(relationSource, relationTarget, newRelationship);
             this.handleRelSideBar(conn, newRelationship);
-
-            if (newRelationship.state) {
-                setTimeout(() => {
-                    conn.addType(newRelationship.state.toString().toLowerCase());
-                    this.revalidateContainer();
-                }, 1);
-            }
         }
     }
 
@@ -1527,6 +1472,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.ngRedux.dispatch(this.actions.sendPaletteOpened(false));
         this.hideSidebar();
         this.clearSelectedNodes();
+        this.unmarkConnections();
         this.nodeComponentChildren.forEach((node) => node.makeSelectionVisible = false);
         this.gridTemplate.pageX = $event.pageX;
         this.gridTemplate.pageY = $event.pageY;
@@ -1909,7 +1855,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 source: currentRel.sourceElement.ref,
                 target: currentRel.targetElement.ref
             }));
-            //conn.addType('marked');
+            conn.addType('marked');
         }
     }
 
@@ -2574,79 +2520,67 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param currentRelationships
      */
     private addPolicyIcon(currentRelationships: Array<TRelationshipTemplate>) {
-        debugger;
         this.allRelationshipTemplates.some((rel) => {
             const relationshipTemplate = currentRelationships.find((el) => el.id === rel.id);
             if (relationshipTemplate) {
                 if (rel.policies !== relationshipTemplate.policies) {
                     const allConnections = this.newJsPlumbInstance.getAllConnections();
-                    const oldCon = allConnections.find((jSPlumbConnection) => jSPlumbConnection.id === relationshipTemplate.id);
+                    let conn = allConnections.find((jSPlumbConnection) => jSPlumbConnection.id === relationshipTemplate.id);
                     if (relationshipTemplate.policies) {
-                        let labelString = (!relationshipTemplate.state ? '' : relationshipTemplate.state + '<br>')
-                            + relationshipTemplate.name;
-                        if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
-                            // Workaround to support old topology templates with the real name
-                            labelString = relationshipTemplate.type.substring(relationshipTemplate.type.indexOf('}') + 1);
-                        }
-                        const list: TPolicy[] = relationshipTemplate.policies;
-                        labelString += '<br>';
-                        for (const value of list) {
-                            const visual = this.entityTypes.policyTypeVisuals.find(
-                                policyTypeVisual => policyTypeVisual.typeId === value.policyType
-                            );
-                            if (visual && visual.imageUrl) {
-                                labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
-                                    ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" alt="Icon" />';
-                            }
-                        }
                         const relationshipType = this.entityTypes.relationshipTypes.filter((rT) => rT.qName === relationshipTemplate.type)[0];
 
-                        if (oldCon) {
-                            const border = !relationshipTemplate.state
-                                ? '#fafafa' : VersionUtils.getElementColorByDiffState(relationshipTemplate.state);
-                            const me = this;
+                        if (conn) {
                             // create new JsPlumb instance with updated attributes
-                            const newCon = this.newJsPlumbInstance.connect({
-                                source: oldCon.source,
-                                target: oldCon.target,
-                                paintStyle: {
-                                    stroke: relationshipType.color,
-                                    strokeWidth: 2
-                                },
-                                hoverPaintStyle: { stroke: relationshipType.color, strokeWidth: 5 },
-                                overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
-                                    ['Label', {
-                                        label: labelString,
-                                        id: 'label',
-                                        events: {
-                                            click: function () {
-                                                setTimeout(() => me.onClickJsPlumbConnection(newCon), 1);
-                                            }
-                                        },
-                                        labelStyle: {
-                                            font: '11px Roboto, sans-serif',
-                                            color: '#212121',
-                                            fill: '#efefef',
-                                            borderStyle: border,
-                                            borderWidth: 1,
-                                            padding: '3px'
-                                        }
-                                    }]
-                                ],
-                            });
                             // and delete the old one
-                            this.newJsPlumbInstance.deleteConnection(oldCon);
+                            const source = conn.source;
+                            const target = conn.target;
+                            this.newJsPlumbInstance.deleteConnection(conn);
+
+                            conn = this.createNewJsPlumbConnection(source, target, relationshipTemplate);
+                            this.handleRelSideBar(conn, relationshipTemplate);
                         }
-                    } else {
-                        this.onClickJsPlumbConnection(oldCon);
                     }
                     this.allRelationshipTemplates[this.allRelationshipTemplates.indexOf(rel)] = relationshipTemplate;
-                    
+                    this.onClickJsPlumbConnection(conn);
+                    this.revalidateContainer();
+
                     return true;
                 }
             }
         });
-        this.revalidateContainer();
+    }
+
+    private createNewJsPlumbConnection(source, target, relationshipTemplate: TRelationshipTemplate) {
+        const border = !relationshipTemplate.state
+            ? '#fafafa' : VersionUtils.getElementColorByDiffState(relationshipTemplate.state);
+        const labelString = this.generateRelationshipLabel(relationshipTemplate);
+        const conn = this.newJsPlumbInstance.connect({
+            source: source,
+            target: target,
+            overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
+                ['Label', {
+                    label: labelString,
+                    id: relationshipTemplate.id + '_jsPlumbId',
+                    labelStyle: {
+                        font: '11px Roboto, sans-serif',
+                        color: '#212121',
+                        fill: '#efefef',
+                        borderStyle: border,
+                        borderWidth: 1,
+                        padding: '3px'
+                    }
+                }]
+            ],
+        });
+
+        if (relationshipTemplate.state) {
+            setTimeout(() => {
+                conn.addType(relationshipTemplate.state.toString().toLowerCase());
+                this.revalidateContainer();
+            }, 1);
+        }
+
+        return conn;
     }
 
     private typeToHref(typeQName: QName, refType: string): string {
@@ -2701,6 +2635,33 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.ngRedux.dispatch(this.actions.setCapability(newCapabilityData));
         this.resetCapabilities();
         this.capabilitiesModal.hide();
+    }
+
+    private generateRelationshipLabel(newRelationship: TRelationshipTemplate) {
+        let labelString = (!newRelationship.state ? '' : newRelationship.state + '<br>')
+            // why not use name -> save the type's id into the name (without management version)
+            + newRelationship.name;
+
+        if (labelString.startsWith(this.backendService.configuration.relationshipPrefix)) {
+            // Workaround to support old topology templates with the real name
+            labelString = newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
+        }
+
+        if (newRelationship.policies) {
+            const list: TPolicy[] = newRelationship.policies;
+            labelString += '<br>';
+            for (const value of list) {
+                const visual = this.entityTypes.policyTypeVisuals.find(
+                    policyTypeVisual => policyTypeVisual.typeId === value.policyType
+                );
+
+                if (visual && visual.imageUrl) {
+                    labelString += '<img style="display: block; margin-left: auto; margin-right: auto; margin-top: 5px;' +
+                        ' max-width: 40px; max-height: 40px;" src="' + visual.imageUrl + '" alt="Policy icon" />';
+                }
+            }
+        }
+        return labelString;
     }
 
 }

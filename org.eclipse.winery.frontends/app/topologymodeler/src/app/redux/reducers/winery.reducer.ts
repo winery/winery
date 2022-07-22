@@ -473,7 +473,6 @@ export const WineryReducer =
                     }
                 };
             case WineryActions.DELETE_POLICY:
-                debugger;
                 const deletedPolicy: any = (<DeletePolicyAction>action).nodePolicy.deletedPolicy;
                 let indexOfNodeWithDeletedPolicy: number = -1;
                 if(lastState.currentJsonTopology.nodeTemplates.map(n => n.id).includes((<DeletePolicyAction>action).nodePolicy.nodeId)){
