@@ -24,6 +24,10 @@ ui:
     eclipseChe: {{ .Env.CHE_URL_PROTOCOL }}://{{ .Env.CHE_URL }}
     tops: http://{{ .Env.TOPS_HOSTNAME }}:{{ .Env.TOPS_PORT }}
     deploymentNormalizationAssistant: http://{{ .Env.DNA_HOSTNAME }}:{{ .Env.DNA_PORT }}/{{ .Env.DNA_CONTEXT }}
+  darus:
+    server: https://{{ .Env.DARUS_HOSTNAME }}
+    apiToken: {{ .Env.DARUS_API_TOKEN }}
+    dataverse: {{ .Env.DARUS_DATAVERSE }}
 repository:
   provider: {{ .Env.WINERY_REPOSITORY_PROVIDER }}
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}
