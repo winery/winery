@@ -16,11 +16,10 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.placeholder;
 
 import java.util.List;
 
-import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public interface SubstitutionChooser {
     PlaceholderSubstitutionCandidate chooseSubstitution(List<PlaceholderSubstitutionCandidate> candidates,
-                                         ServiceTemplateId substitutionServiceTemplate, TTopologyTemplate topologyTemplate);
+                                                        ServiceTemplateId substitutionServiceTemplate, TTopologyTemplate topologyTemplate);
 }

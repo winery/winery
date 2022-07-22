@@ -17,8 +17,6 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.placeholder;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
