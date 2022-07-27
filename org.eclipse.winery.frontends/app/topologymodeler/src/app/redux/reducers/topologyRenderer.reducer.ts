@@ -14,7 +14,7 @@
 
 import { Action } from 'redux';
 import {
-    HighlightNodesAction, ShowSelectedMappingAction, TopologyRendererActions
+    HighlightNodesAction, SelectedNodesAction, ShowSelectedMappingAction, TopologyRendererActions
 } from '../actions/topologyRenderer.actions';
 
 export enum ResearchPlugin {
@@ -73,6 +73,7 @@ export interface TopologyRendererState {
     };
     activeResearchPlugin: ResearchPlugin;
     nodesToSelect?: string[];
+    selectedNodes?: string[];
 
     mappingType?: string;
 }
@@ -422,6 +423,17 @@ export const TopologyRendererReducer =
                     };
                 } else {
                     delete lastState.nodesToSelect;
+                }
+                break;
+            case TopologyRendererActions.SET_SELECTEDNODES:
+                const nodes = <SelectedNodesAction>action;
+                if(nodes.selectedNodes) {
+                    return {
+                        ... lastState,
+                        selectedNodes: nodes.selectedNodes
+                    };
+                } else {
+                    delete lastState.selectedNodes;
                 }
                 break;
             case TopologyRendererActions.DETERMINE_STATEFUL_COMPONENTS:

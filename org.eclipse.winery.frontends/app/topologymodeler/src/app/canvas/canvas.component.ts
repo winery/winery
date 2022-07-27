@@ -1131,6 +1131,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.ngRedux.dispatch(this.topologyRendererActions.substituteTopology());
                 this.backendService.substituteTopology();
             } else if (this.topologyRendererState.nodesToSelect) {
+                debugger;
                 this.clearSelectedNodes();
                 this.topologyRendererState.nodesToSelect
                     .forEach((value) => this.enhanceDragSelection(value));
@@ -1542,6 +1543,7 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.ngRedux.dispatch(this.actions.sendPaletteOpened(false));
             }
         }
+        this.ngRedux.dispatch(this.topologyRendererActions.setSelectedNodes(this.selectedNodes.map(node => node.id)));
     }
 
     /**

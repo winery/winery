@@ -24,7 +24,6 @@ import { WineryRepositoryConfigurationService } from '../../../../../tosca-manag
 import { BackendService } from '../../services/backend.service';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
-import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -40,10 +39,10 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     substitutionIsLoading: boolean;
     substitutionIsDone: boolean;
     substitutionCandidates: PlaceholderSubstitutionCandidate[];
-    selectedNodeTemplateIds: string[];
+    selectedNodeTemplateIds: string[] = [];
 
     private entityTypes: EntityTypesModel;
-    
+
     private substitutionElement: Subscription;
 
 
@@ -52,11 +51,11 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
                 private wineryActions: WineryActions,
                 private webSocketService: PlaceholderSubstitutionWebSocketService,
                 private configurationService: WineryRepositoryConfigurationService,
-                private backendService: BackendService
+                private backendService: BackendService,
     ) {
         this.ngRedux.select(state => state.wineryState.entityTypes)
             .subscribe(types => this.entityTypes = types);
-        this.ngRedux.select(state => state.topologyRendererState.nodesToSelect)
+        this.ngRedux.select(state => state.topologyRendererState.selectedNodes)
             .subscribe(nodeIds => this.selectedNodeTemplateIds = nodeIds);
     }
 
@@ -66,8 +65,8 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         this.substitutionIsRunning = true;
         this.substitutionIsLoading = true;
         let substitutionElementObservable = this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds);
-        
-        if(!this.substitutionElement) {
+
+        if (!this.substitutionElement) {
             this.substitutionElement = substitutionElementObservable.subscribe(
                 value => this.handleWebSocketData(value),
                 error => this.handleError(error),
@@ -87,7 +86,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         this.substitutionIsDone = false;
         //this.substitutionIsRunning = false;
         //this.substitutionIsLoading = false;
-        this.selectedNodeTemplateIds.splice(0, this.selectedNodeTemplateIds.length)
+        this.selectedNodeTemplateIds.splice(0, this.selectedNodeTemplateIds.length);
     }
 
     substitutionChosen(event: MouseEvent, candidate: PlaceholderSubstitutionCandidate) {
