@@ -1542,7 +1542,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 this.ngRedux.dispatch(this.actions.sendPaletteOpened(false));
             }
         }
-        this.ngRedux.dispatch(this.topologyRendererActions.highlightNodes(this.selectedNodes.map(node => node.id)));
     }
 
     /**
