@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,12 +12,19 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WineryLicenseComponent } from './wineryLicense.component';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { BsDropdownModule } from 'ngx-bootstrap';
+import {
+    MatButtonModule, MatFormFieldModule, MatInputModule, MatListModule, MatProgressBarModule,
+    MatSelectModule, MatStepperModule
+} from '@angular/material';
+import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
+import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
+
 
 @NgModule({
     imports: [
@@ -25,7 +32,16 @@ import { BsDropdownModule } from 'ngx-bootstrap';
         FormsModule,
         BrowserModule,
         WineryPipesModule,
-        BsDropdownModule.forRoot()
+        ReactiveFormsModule,
+        MatStepperModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        WineryModalModule,
+        WineryLoaderModule,
+        MatProgressBarModule,
+        MatSelectModule,
+        MatListModule,
     ],
     exports: [
         WineryLicenseComponent

@@ -136,13 +136,13 @@
             <p> Does the ROAR contain personal data according to Art. 4 GDPR ? </p>
         </winery-modal-body>
         <winery-modal-footer [showDefaultButtons]="false">
-            <mat-dialog-actions style="display: flex">
+            <div style="display: flex">
                 <ng-container *ngFor="let option of privacyOptions;let i=index">
                     <button class="btn btn-info"
                             (click)="uploadRoarToDarus(option)">{{option}}</button>
                     <span style="flex: 1 1 auto" *ngIf="i!=privacyOptions.length-1"></span>
                 </ng-container>
-            </mat-dialog-actions>
+            </div>
         </winery-modal-footer>
     </ng-container>
     <ng-container *ngIf="uploadingRoar">
@@ -161,13 +161,13 @@
                               *ngIf="!uploadingRoarFinished && !uploadRoarError"></mat-progress-bar>
         </winery-modal-body>
         <winery-modal-footer *ngIf="uploadingRoarFinished || uploadRoarError" [showDefaultButtons]="false">
-            <mat-dialog-actions style="display: flex">
+            <div style="display: flex">
                 <button class="btn btn-info" *ngIf="uploadingRoarFinished"
                         (click)="closeRoarUploadConfirmationModel(true)">Open in New Tab
                 </button>
                 <span style="flex: 1 1 auto"></span>
                 <button class="btn btn-default" (click)="closeRoarUploadConfirmationModel(false)">OK</button>
-            </mat-dialog-actions>
+            </div>
         </winery-modal-footer>
     </ng-container>
 </ng-template>

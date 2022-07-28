@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,10 +26,53 @@
     border-color: #569e3d;
 }
 
-.license-label {
-    font-size: 13px;
-    font-weight: bold;
-    line-height: 20px;
-    color: #333;
-    white-space: nowrap;
+.select {
+    width: 300px;
+    font-size: 15px;
+}
+
+.select-label {
+    color: black;
+    margin-left: 10px;
+}
+
+.btn-left {
+    margin-top: -15px;
+    margin-bottom: -10px;
+    gap: 10px;
+    display: flex;
+}
+
+.dropdown {
+    border: solid 1px #9b9b9b;
+    padding: 10px;
+}
+
+.btn-right {
+    gap: 10px;
+    display: flex;
+    align-self: center;
+    margin-left: auto;
+    margin-bottom: 15px;
+}
+
+textarea {
+    height: 500px;
+    resize: none;
+    font-family: monospace;
+    width: 100%;
+    line-height: 150%;
+}
+
+.inputFields {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+input {
+    padding: 12px;
+    border: solid 1px #E5E5E5;
+    font: normal 12px/100% Verdana, Tahoma, sans-serif;
+    width: 100%;
 }
