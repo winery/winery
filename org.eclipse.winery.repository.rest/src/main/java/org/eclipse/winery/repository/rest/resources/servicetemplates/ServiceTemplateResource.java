@@ -782,6 +782,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                tags.clear();
             }
         }
         result.setStatus(Status.CREATED);
