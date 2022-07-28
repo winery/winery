@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -58,8 +59,8 @@ public class ProviderRepository {
 
         return getAllTopologyFragmentsForLocation(targetLocation).stream()
             .filter(tf ->
-                tf.getNodeTemplates().stream()
-                    .filter(nt -> nt.getCapabilities() != null)
+                getNodesWithOpenCapabilities(tf) != null)
+            .filter(tf -> getNodesWithOpenCapabilities(tf).stream()
                     .anyMatch(nt -> nt.getCapabilities().stream()
                         .anyMatch(cap -> cap.getType().equals(requiredCapabilityType))
                     )
@@ -195,6 +196,15 @@ public class ProviderRepository {
             }
         }
         return topologyFragments;
+    }
+
+    private List<TNodeTemplate> getNodesWithOpenCapabilities(TTopologyTemplate topologyTemplate) {
+
+        return topologyTemplate.getNodeTemplates().stream()
+            .filter(nt -> nt.getCapabilities() != null && !nt.getCapabilities().isEmpty())
+            .filter(nt -> ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, nt).isEmpty())
+            .collect(Collectors.toList());
+        
     }
 
     private List<TEntityTemplate> breadthFirstSearch(TNodeTemplate nodeTemplate, TTopologyTemplate topologyTemplate) {

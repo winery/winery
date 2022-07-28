@@ -68,10 +68,12 @@ import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
+import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
 import org.eclipse.winery.repository.rest.resources.apiData.AvailableFeaturesApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.NewVersionListElement;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertyDiffList;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.UpdateInfo;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
@@ -237,7 +239,7 @@ public class TopologyTemplateResource {
     }
 
     @Path("split/")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @POST
     public Response split(@Context UriInfo uriInfo) {
         Splitting splitting = new Splitting();
@@ -248,7 +250,11 @@ public class TopologyTemplateResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
         }
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(splitServiceTemplateId));
-        return Response.created(url).build();
+        ResourceResult result = new ResourceResult();
+        result.setStatus(Response.Status.CREATED);
+        result.setMessage(new QNameApiData(splitServiceTemplateId));
+        
+        return result.getResponse();
     }
 
     @Path("match/")

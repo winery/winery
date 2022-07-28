@@ -5,11 +5,13 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { ErrorHandlerService } from './error-handler.service';
+import { QNameApiData } from '../../../../tosca-management/src/app/model/qNameApiData';
 
 @Injectable()
 export class SplitMatchTopologyService {
 
-    constructor(private alert: ToastrService) {
+    constructor(private alert: ToastrService,
+                private backendService: BackendService) {
     }
 
     /**
@@ -23,11 +25,7 @@ export class SplitMatchTopologyService {
 
         backendService.splitTopology().subscribe(res => {
                 ngRedux.dispatch(topologyRendererActions.splitTopology());
-                if (res.ok) {
-                    const url = res.headers.get('location');
-                    this.alert.success('', 'Successfully split.');
-                    window.open(url, '_blank');
-                }
+                this.openModelerFor(res.localname,res.namespace, false);
             },
             error => {
                 errorHandler.handleError(error);
@@ -55,5 +53,18 @@ export class SplitMatchTopologyService {
                 errorHandler.handleError(error);
                 ngRedux.dispatch(topologyRendererActions.matchTopology());
             });
+    }
+
+    private openModelerFor(id: string, ns: string, readonly: boolean) {
+        let editorConfig = '?repositoryURL=' + encodeURIComponent(this.backendService.configuration.repositoryURL)
+            + '&uiURL=' + encodeURIComponent(this.backendService.configuration.uiURL)
+            + '&ns=' + encodeURIComponent(ns)
+            + '&id=' + id
+            + '&parentPath=' + this.backendService.configuration.parentPath
+            + '&elementPath=' + this.backendService.configuration.elementPath;
+        if (readonly) {
+            editorConfig += '&isReadonly=true';
+        }
+        window.open(editorConfig, '_blank');
     }
 }

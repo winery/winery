@@ -46,6 +46,7 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -499,8 +500,6 @@ public class Splitting {
                         ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);
 
                         for (TRelationshipTemplate incomingRelationship : incomingRelationships) {
-                            Object sourceElementIncommingRel = incomingRelationship.getSourceElement().getRef();
-
                             /*
                              * incoming hostedOn relationships from predecessors with the same label and not hostedOn
                              * relationships (e.g. conntectsTo) are assigned to the duplicated node.
@@ -509,7 +508,7 @@ public class Splitting {
                             TNodeTemplate sourceNodeTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplateCopy, incomingRelationship);
                             if (((ModelUtilities.getTargetLabel(sourceNodeTemplate).get()
                                 .equalsIgnoreCase(ModelUtilities.getTargetLabel(duplicatedNode).get())
-                                && getBaseRelationshipType(incomingRelationship.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container"))
+                                && getBaseRelationshipType(incomingRelationship.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType))
                                 || !predecessors.contains(sourceNodeTemplate))) {
 
                                 List<TRelationshipTemplate> reassignRelationship = new ArrayList<>();
@@ -1363,8 +1362,7 @@ public class Splitting {
     protected static List<TNodeTemplate> getHostedOnSuccessorsOfNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
         List<TNodeTemplate> successorNodeTemplates = new ArrayList<>();
         for (TRelationshipTemplate relationshipTemplate : ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate)) {
-            if (getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget() != null &&
-                getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
+            if (getBaseRelationshipType(relationshipTemplate.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType)) {
                 successorNodeTemplates.add(ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, relationshipTemplate));
             }
         }
@@ -1383,8 +1381,7 @@ public class Splitting {
         predecessorNodeTemplates.clear();
         List<TRelationshipTemplate> incomingRelationships = ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, nodeTemplate);
         for (TRelationshipTemplate relationshipTemplate : incomingRelationships) {
-            if (getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget() != null &&
-                getBaseRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
+            if (getBaseRelationshipType(relationshipTemplate.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType)) {
                 predecessorNodeTemplates.add(ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, relationshipTemplate));
             }
         }
