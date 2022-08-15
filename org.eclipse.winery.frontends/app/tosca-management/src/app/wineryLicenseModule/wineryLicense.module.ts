@@ -19,7 +19,8 @@ import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import {
-    MatButtonModule, MatFormFieldModule, MatInputModule, MatListModule, MatProgressBarModule,
+    MatButtonModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule,
+    MatProgressBarModule,
     MatSelectModule, MatStepperModule
 } from '@angular/material';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
@@ -42,6 +43,8 @@ import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
         MatProgressBarModule,
         MatSelectModule,
         MatListModule,
+        MatExpansionModule,
+        MatIconModule,
     ],
     exports: [
         WineryLicenseComponent

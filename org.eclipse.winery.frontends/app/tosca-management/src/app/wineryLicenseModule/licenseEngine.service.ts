@@ -20,7 +20,7 @@ import { mergeMap, tap, filter, takeUntil } from 'rxjs/operators';
 import {
     WineryRepositoryConfigurationService
 } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
-import { Software, Status } from './LicenseEngineApiData';
+import { License, Software, Status } from './LicenseEngineApiData';
 
 @Injectable()
 export class LicenseEngineService {
@@ -85,6 +85,13 @@ export class LicenseEngineService {
     getSourceCodeLicense(): Observable<Software> {
         const headers = new HttpHeaders({ 'Accept': 'application/json' });
         return this.http.get<Software>(this.licenseEngineUrl + '/software/' + this.software.id, {
+            headers: headers
+        });
+    }
+
+    getLicenseInformation(license: string): Observable<License> {
+        const headers = new HttpHeaders({ 'Accept': 'application/json' });
+        return this.http.get<License>(this.licenseEngineUrl + '/licenses/' + license, {
             headers: headers
         });
     }

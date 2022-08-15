@@ -28,6 +28,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { LicenseEngineService } from './licenseEngine.service';
+import { License } from './LicenseEngineApiData';
 
 @Component({
     templateUrl: 'wineryLicense.component.html',
@@ -51,7 +52,7 @@ export class WineryLicenseComponent implements OnInit {
     licenseType = '';
     options: string[] = [];
     selectedOptions: string[] = [];
-    compatibleLicenses: string[] = [];
+    compatibleLicenses: License[] = [];
 
     toscaType: ToscaTypes;
     licenseEngine: boolean;
@@ -170,14 +171,34 @@ export class WineryLicenseComponent implements OnInit {
     }
 
     onSubmitCheckCompatibility() {
+        this.loadingbar = true;
+        this.compatibleLicenses = [];
         this.leService.getCompatibleLicenses().subscribe((licenses) => {
-                this.compatibleLicenses = licenses;
-                this.stepper.selected.completed = true;
-                this.stepper.next();
+                if (licenses.length > 0) {
+                    this.getLicenseInformation(licenses);
+                } else {
+                    this.compatibleLicenses = null;
+                }
             },
             (error) => {
-                this.currentLicenseText = error.error.message;
+                this.handleError(error);
             });
+    }
+
+    getLicenseInformation(cLicenses: string[]) {
+        const observables = [];
+        for (const cLicense of cLicenses) {
+            observables.push(this.leService.getLicenseInformation(cLicense).pipe(
+                map(
+                    (license) => {
+                        this.compatibleLicenses.push(license);
+                    })
+            ));
+        }
+        forkJoin(observables).subscribe(() => {
+            this.stepper.selected.completed = true;
+            this.stepper.next();
+        });
     }
 
     saveConfirm() {
@@ -233,6 +254,10 @@ export class WineryLicenseComponent implements OnInit {
             this.leService.resetLicenseData();
             this.loadingbar = false;
         }
+    }
+
+    back() {
+        this.loadingbar = false;
     }
 
     cancelEdit() {

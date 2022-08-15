@@ -119,25 +119,53 @@
                         <br>
                         <mat-label style="font-size: 15px">{{foundLicenses}}</mat-label>
                         <br><br>
+                        <div *ngIf="loadingbar">
+                            <mat-progress-bar mode="indeterminate"
+                                              *ngIf="compatibleLicenses?.length === 0"></mat-progress-bar>
+                            <mat-progress-bar mode="determinate" value="50" color="warn"
+                                              *ngIf="!compatibleLicenses"></mat-progress-bar>
+                            <div style="float: right" *ngIf="!compatibleLicenses">Unable to find a compatible license!
+                            </div>
+                            <br>
+                        </div>
                         <div>
-                            <button class="btn btn-primary" matStepperPrevious>Back</button>
+                            <button class="btn btn-primary" matStepperPrevious (click)="back()">Back</button>
                             <button style="margin-left: 12px" class="btn btn-primary"
-                                    (click)="onSubmitCheckCompatibility()">Next
+                                    (click)="onSubmitCheckCompatibility()" [disabled]="loadingbar">Next
                             </button>
                         </div>
                     </form>
                 </mat-step>
                 <mat-step>
                     <ng-template matStepLabel>Select License</ng-template>
-                    <div>
-                        <mat-action-list>
-                            <mat-list-item *ngFor="let compatibleLicense of compatibleLicenses">
-                                <button mat-list-item
-                                        (click)="selectLicense(compatibleLicense)"> {{compatibleLicense}} </button>
-                            </mat-list-item>
-                        </mat-action-list>
-                        <button class="btn btn-primary" (click)="stepper.reset()">Reset</button>
-                    </div>
+                    <br>
+                    <mat-expansion-panel *ngFor="let license of compatibleLicenses" style="margin-bottom: 10px;">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title style="justify-content: center">
+                                {{license.name}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <p><u>Notes</u></p>
+                        <p style="margin-left: 15px">{{license.notes ? license.notes : "None"}}</p>
+                        <br>
+                        <u>Further information</u>
+                        <mat-nav-list>
+                            <a mat-list-item href="{{link}}" target="_blank"
+                               *ngFor="let link of license.furtherInformation" style="font-size: 13px"> {{ link }}
+                                <span style="margin-left: 10px;"><mat-icon
+                                    style="font-size: 20px;">open_in_new</mat-icon></span>
+                            </a>
+                        </mat-nav-list>
+                        <mat-action-row>
+                            <button mat-stroked-button color="primary" (click)="selectLicense(license.id)">
+                                <b>Select {{ license.id }}</b>
+                            </button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+                    <br>
+                    <button class="btn btn-primary" matStepperPrevious (click)="back()">Back</button>
+                    <button class="btn btn-primary" (click)="stepper.reset(); reset()" style="margin-left: 12px">Reset
+                    </button>
                 </mat-step>
             </mat-horizontal-stepper>
         </div>
