@@ -37,7 +37,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ExistsService } from './services/exists.service';
 import { EntitiesModalService } from './canvas/entities-modal/entities-modal.service';
 import { ImportTopologyService } from './services/import-topology.service';
-import { SplitMatchTopologyService } from './services/split-match-topology.service';
+import { SplitMatchTopologyService } from './sidebars/splitting-matching/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
@@ -88,6 +88,7 @@ import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitu
 import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderSubstitution/placeholderSubstitutionWebSocket.service';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { MatListModule } from '@angular/material';
+import { SplitMatchTopologyComponent } from './sidebars/splitting-matching/split-match-topology.component';
 
 @NgModule({
     declarations: [
@@ -109,6 +110,7 @@ import { MatListModule } from '@angular/material';
         ResearchPluginsComponent,
         EdmmReplacementRulesComponent,
         PlaceholderSubstitutionComponent,
+        SplitMatchTopologyComponent
     ],
     exports: [WineryComponent],
     imports: [

@@ -41,7 +41,7 @@ import { ModalVariant, ModalVariantAndState } from './entities-modal/modal-model
 import { align, LiveModelingStates, PropertyDefinitionType, toggleModalType } from '../models/enums';
 import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
-import { SplitMatchTopologyService } from '../services/split-match-topology.service';
+import { SplitMatchTopologyService } from '../sidebars/splitting-matching/split-match-topology.service';
 import { PlaceComponentsService } from '../services/placement.service';
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 import { ErrorHandlerService } from '../services/error-handler.service';
@@ -1125,13 +1125,10 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                             );
                     }
                 );
-            } else if (this.topologyRendererState.buttonsState.matchTopologyButton) {
-                this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             } else if (this.topologyRendererState.buttonsState.substituteTopologyButton) {
                 this.ngRedux.dispatch(this.topologyRendererActions.substituteTopology());
                 this.backendService.substituteTopology();
             } else if (this.topologyRendererState.nodesToSelect) {
-                debugger;
                 this.clearSelectedNodes();
                 this.topologyRendererState.nodesToSelect
                     .forEach((value) => this.enhanceDragSelection(value));

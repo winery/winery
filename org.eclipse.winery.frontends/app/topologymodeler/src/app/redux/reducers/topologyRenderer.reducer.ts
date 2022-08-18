@@ -26,7 +26,8 @@ export enum ResearchPlugin {
     MNG_PARTICIPANTS = 'MNG_PARTICIPANTS',
     MULTI_PARTICIPANTS = 'MULTI_PARTICIPANTS',
     INSTANCE_MODEL_REFINEMENT = 'INSTANCE_MODEL_REFINEMENT',
-    PLACEHOLDER_SUBSTITUTION = 'PLACEHOLDER_SUBSTITUTION'
+    PLACEHOLDER_SUBSTITUTION = 'PLACEHOLDER_SUBSTITUTION',
+    SPLIT_MATCH = 'SPLIT_MATCH'
 }
 
 export interface TopologyRendererState {
@@ -144,6 +145,7 @@ export const TopologyRendererReducer =
                         refineTopologyWithTestsButton: false,
                         detectPatternsButton: false,
                         generatePlaceholderSubs: false,
+                        matchTopologyButton: false,
                     },
                     activeResearchPlugin: undefined
                 };
@@ -333,7 +335,8 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
-                    }
+                    },
+                    activeResearchPlugin: !lastState.buttonsState.matchTopologyButton ? ResearchPlugin.SPLIT_MATCH: undefined,
                 };
             case TopologyRendererActions.DETECT_PROBLEMS:
                 return {

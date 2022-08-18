@@ -1,0 +1,74 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="loader" *ngIf="loading"></div>
+
+<div id="InjectionOptions" *ngIf="!loading && injectionOptionsApiData?.hostInjections">
+    Test
+    <div class="detectionContainer" style="margin-top: 1em; margin-left: 1em; margin-right: 1em"
+         *ngIf="injectionOptionsApiData?.hostInjections">
+        <a style="font-weight: bold">Select one injection option for each node template:</a>
+        <cdk-accordion>
+            <cdk-accordion-item
+                *ngFor="let entry of hostOptions; let index = index;"
+                #accordionItem2="cdkAccordionItem"
+                class="example-accordion-item"
+                role="button"
+                tabindex="0"
+                [attr.id]="'accordion-header-' + index"
+                [attr.aria-expanded]="accordionItem2.expanded"
+                [attr.aria-controls]="'accordion-body-' + index">
+                <div class="example-accordion-item-header" (click)="accordionItem2.toggle()">
+                    {{entry.nodeID}}
+                    <span class="example-accordion-item-description">
+        Click to {{ accordionItem2.expanded ? 'close' : 'open' }}
+      </span>
+                </div>
+                <div class="example-accordion-item-body"
+                     role="region"
+                     [style.display]="accordionItem2.expanded ? '' : 'none'"
+                     [attr.id]="'accordion-body-' + index"
+                     [attr.aria-labelledby]="'accordion-header-' + index">
+                    <mat-list>
+                        <mat-list-item *ngFor="let option of entry.injectionOptions; last as last"
+                                       (mouseover)="onHoverOver(option, entry.nodeID)"
+                                       (mouseleave)="hoverOut()" (click)="selectReplacementFragment(entry.nodeID, option)"
+                                       [class.selected]="option === hostInjectionSelectionMap?.get(entry.nodeID)">
+                            <span style="white-space:nowrap">{{option | localname}}</span>
+                            <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </cdk-accordion-item>
+        </cdk-accordion>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="btn-group" style="width: 100%; margin-top: 1em;">
+                    <button type="button" class="btn btn-sm btn-primary"
+                            style="margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
+                            [disabled]="!hostInjectionSelectionMap" (click)="applyMatching()">Apply
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger"
+                            style="margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
+                            (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="noProblemContainer" *ngIf="injectionOptionsApiData.hostInjections.size == 0 ">
+        <a style="font-weight: bold">No matching options are available.</a>
+    </div>
+</div>

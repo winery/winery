@@ -16,9 +16,11 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -90,8 +92,9 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceContainingATopology;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
-import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceData;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectionSelectionData;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceOptions;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.NodeInjectionOptions;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.edmm.EdmmResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
@@ -317,9 +320,9 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public Response getInjectorOptions() {
         Splitting splitting = new Splitting();
         TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
-        Map<String, List<TTopologyTemplate>> hostMatchingOptions;
-        Map<String, List<TTopologyTemplate>> connectionMatchingOptions;
-        InjectorReplaceOptions injectionReplaceOptions = new InjectorReplaceOptions();
+        Map<String, List<TServiceTemplate>> hostMatchingOptions;
+        Map<String, List<TServiceTemplate>> connectionMatchingOptions;
+        InjectorReplaceOptions injectorReplaceOptions = new InjectorReplaceOptions();
 
         try {
 
@@ -341,10 +344,33 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             } else {
                 connectionMatchingOptions = null;
             }
-
-            injectionReplaceOptions.setTopologyTemplate(topologyTemplate);
-            injectionReplaceOptions.setHostInjectionOptions(hostMatchingOptions);
-            injectionReplaceOptions.setConnectionInjectionOptions(connectionMatchingOptions);
+            List<NodeInjectionOptions> hostInjectionOptions = new ArrayList<>();
+            if (hostMatchingOptions != null) {
+                hostMatchingOptions.forEach((key, value) -> {
+                    NodeInjectionOptions options = new NodeInjectionOptions();
+                    options.setNodeID(key);
+                    value
+                        .forEach(st -> {
+                            QName stQName = new QName(st.getTargetNamespace(), st.getId());
+                            options.addInjectionOption(stQName);
+                        });
+                    hostInjectionOptions.add(options);
+                });
+            }
+            List<NodeInjectionOptions> connectionInjectionOptions = new ArrayList<>();
+            if (connectionMatchingOptions != null) {
+                connectionMatchingOptions.forEach((key, value) -> {
+                    NodeInjectionOptions options = new NodeInjectionOptions();
+                    options.setNodeID(key);
+                    value.forEach(st -> {
+                        QName stQName = new QName(st.getTargetNamespace(), st.getId());
+                        options.addInjectionOption(stQName);
+                    });
+                    connectionInjectionOptions.add(options);
+                });
+            }
+            injectorReplaceOptions.setHostInjectionOptions(hostInjectionOptions);
+            injectorReplaceOptions.setConnectionInjectionOptions(connectionInjectionOptions);
 
             if (hostMatchingOptions == null && connectionMatchingOptions == null) {
                 return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("No need for matching").build();
@@ -353,7 +379,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             LOGGER.error("Could not match", e);
             return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-        return Response.ok().entity(injectionReplaceOptions).build();
+        return Response.ok().entity(injectorReplaceOptions).build();
     }
 
     @POST
@@ -500,11 +526,22 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     @Path("injector/replace")
     @Consumes( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
     @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-    public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws
+    public Response injectNodeTemplates(InjectionSelectionData injectionSelectionData, @Context UriInfo uriInfo) throws
         Exception {
 
-        if (injectorReplaceData.hostInjections != null) {
-            Collection<TTopologyTemplate> hostInjectorTopologyTemplates = injectorReplaceData.hostInjections.values();
+        Map<String, TTopologyTemplate> hostInjectionSelections = new HashMap<>();
+        Map<String, TTopologyTemplate> connectionInjectionSelections = new HashMap<>();
+
+        if (injectionSelectionData.hostInjections != null) {
+            hostInjectionSelections = injectionSelectionData.hostInjections.stream()
+                .map(entry -> {
+                    ServiceTemplateId id = new ServiceTemplateId(entry.getInjection());
+                    TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(id);
+                    Map.Entry<String, TTopologyTemplate> newEntry = new AbstractMap.SimpleEntry(entry.getNodeID(), serviceTemplate.getTopologyTemplate());
+                    return newEntry;
+                }).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+
+            Collection<TTopologyTemplate> hostInjectorTopologyTemplates = hostInjectionSelections.values();
             hostInjectorTopologyTemplates.forEach(t -> {
                 try {
                     ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
@@ -513,8 +550,15 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 }
             });
         }
-        if (injectorReplaceData.connectionInjections != null) {
-            Collection<TTopologyTemplate> connectionInjectorTopologyTemplates = injectorReplaceData.connectionInjections.values();
+        if (injectionSelectionData.connectionInjections != null) {
+            connectionInjectionSelections = injectionSelectionData.connectionInjections.stream()
+                .map(entry -> {
+                    ServiceTemplateId id = new ServiceTemplateId(entry.getInjection());
+                    TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(id);
+                    Map.Entry<String, TTopologyTemplate> newEntry = new AbstractMap.SimpleEntry(entry.getNodeID(), serviceTemplate.getTopologyTemplate());
+                    return newEntry;
+                }).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+            Collection<TTopologyTemplate> connectionInjectorTopologyTemplates = connectionInjectionSelections.values();
             connectionInjectorTopologyTemplates.forEach(t -> {
                 try {
                     ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
@@ -539,15 +583,15 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         // End Output check
 
         if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
-            matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.hostInjections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
+            matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), hostInjectionSelections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
 
             if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-                matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(matchedHostsTopologyTemplate, injectorReplaceData.connectionInjections);
+                matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(matchedHostsTopologyTemplate, connectionInjectionSelections);
             } else {
                 matchedConnectedTopologyTemplate = matchedHostsTopologyTemplate;
             }
         } else if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-            matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.connectionInjections);
+            matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), connectionInjectionSelections);
         } else {
             throw new SplittingException("No open Requirements which can be matched");
         }
@@ -561,17 +605,31 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         }
         //End additional functionality Driver Injection
 
-        this.getServiceTemplate().setTopologyTemplate(daSpecifiedTopology);
-
+        ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
+            id.getNamespace().getDecoded(),
+            VersionSupport.getNewComponentVersionId(id, "matched"),
+            false);
+        IRepository repository = RepositoryFactory.getRepository();
+        repository.forceDelete(matchedServiceTemplateId);
+        repository.flagAsExisting(matchedServiceTemplateId);
+        TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
+        matchedServiceTemplate.setName(matchedServiceTemplateId.getXmlId().getDecoded());
+        matchedServiceTemplate.setId(matchedServiceTemplate.getName());
+        matchedServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
+        matchedServiceTemplate.setTopologyTemplate(daSpecifiedTopology);
+        matchedServiceTemplate.setTags(this.getServiceTemplate().getTags());
         LOGGER.debug("Persisting...");
-        RestUtils.persist(this);
+        repository.setElement(matchedServiceTemplateId, matchedServiceTemplate);
         LOGGER.debug("Persisted.");
 
         //No renaming of the Service Template allowed because of the plans
 
         URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(id));
-        LOGGER.debug("URI of the old and new service template {}", url.toString());
-        return Response.created(url).build();
+        ResourceResult result = new ResourceResult();
+        result.setStatus(Response.Status.CREATED);
+        result.setMessage(new QNameApiData(matchedServiceTemplateId));
+
+        return result.getResponse();
     }
 
     @Path("constraintchecking")
@@ -657,13 +715,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
         Splitting splitting = new Splitting();
 
-        Map<String, List<TTopologyTemplate>> resultList = splitting.getHostingInjectionOptions(BackendUtils.clone(newServiceTemplate.getTopologyTemplate()));
-        for (Map.Entry<String, List<TTopologyTemplate>> entry : resultList.entrySet()) {
+        Map<String, List<TServiceTemplate>> resultList = splitting.getHostingInjectionOptions(BackendUtils.clone(newServiceTemplate.getTopologyTemplate()));
+        for (Map.Entry<String, List<TServiceTemplate>> entry : resultList.entrySet()) {
             Optional<String> nodeOwners = ModelUtilities.getParticipant(newServiceTemplate.getTopologyTemplate().getNodeTemplate(entry.getKey()));
             if (nodeOwners.isPresent() && nodeOwners.get().contains(finalParticipantId)) {
                 if (nodeTemplatesWithNewHost.contains(entry.getKey()) && !resultList.get(entry.getKey()).isEmpty()) {
                     Map<String, TTopologyTemplate> choiceTopologyTemplate = new LinkedHashMap<>();
-                    choiceTopologyTemplate.put(entry.getKey(), entry.getValue().get(0));
+                    choiceTopologyTemplate.put(entry.getKey(), entry.getValue().get(0).getTopologyTemplate());
                     splitting.injectNodeTemplates(newServiceTemplate.getTopologyTemplate(), choiceTopologyTemplate, InjectRemoval.REMOVE_REPLACED);
                     for (TNodeTemplate injectNodeTemplate : choiceTopologyTemplate.get(entry.getKey()).getNodeTemplates()) {
                         injectNodeTemplate.getOtherAttributes().put(QNAME_PARTICIPANT, finalParticipantId);

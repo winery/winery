@@ -43,7 +43,7 @@ export class MultiParticipantsComponent implements OnInit {
         if (currentButtonsState.buttonsState.generateGDM) {
             this.multiParticipantsService.postNewVersion().subscribe(
                 newVersion => {
-                    this.alert.success('Successfully created placeholders for tolopgy template');
+                    this.alert.success('Successfully created placeholders forFtopology template');
                     this.ngRedux.dispatch(this.actions.generatePlaceholder());
                     const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
                         + '&uiURL=' + encodeURIComponent(backendBaseURL)

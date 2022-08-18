@@ -257,6 +257,25 @@ public class TopologyTemplateResource {
         return result.getResponse();
     }
 
+    @Path("splitmatch/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @POST
+    public Response splitMatch(@Context UriInfo uriInfo) {
+        Splitting splitting = new Splitting();
+        ServiceTemplateId splitServiceTemplateId;
+        try {
+            splitServiceTemplateId = splitting.splitAndMatchTopologyOfServiceTemplate((ServiceTemplateId) this.parent.getId());
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
+        }
+        URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(splitServiceTemplateId));
+        ResourceResult result = new ResourceResult();
+        result.setStatus(Response.Status.CREATED);
+        result.setMessage(new QNameApiData(splitServiceTemplateId));
+
+        return result.getResponse();
+    }
+
     @Path("match/")
     @Produces(MediaType.TEXT_PLAIN)
     @POST

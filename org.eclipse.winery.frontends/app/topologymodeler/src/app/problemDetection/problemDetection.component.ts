@@ -71,7 +71,6 @@ export class ProblemDetectionComponent implements OnDestroy{
     }
 
     ngOnDestroy(): void {
-        debugger;
         this.subscriptions.forEach(s => s.unsubscribe());
         this.subscriptions = null;
     }
@@ -121,7 +120,6 @@ export class ProblemDetectionComponent implements OnDestroy{
     }
 
     applySolution() {
-        debugger;
         this.loading = true;
         this.problemDetectionService.applySolution(this.selectedSolution)
             .subscribe(
@@ -157,7 +155,6 @@ export class ProblemDetectionComponent implements OnDestroy{
     }
 
     private solutionApplied(data: TTopologyTemplate) {
-        debugger;
         this.applied = true;
         this.loading = false;
         this.possibleSolutions = null;
