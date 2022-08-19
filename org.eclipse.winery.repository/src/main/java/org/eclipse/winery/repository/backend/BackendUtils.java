@@ -120,6 +120,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
@@ -502,6 +503,19 @@ public class BackendUtils {
     }
 
     /**
+     * @param serviceTemplate which should be cloned
+     * @return Copy od serviceTemplate
+     */
+    public static TServiceTemplate clone(TServiceTemplate serviceTemplate) {
+        TServiceTemplate serviceTemplateClone = new TServiceTemplate();
+        TTopologyTemplate topologyTemplateClone = clone(serviceTemplate.getTopologyTemplate());
+        serviceTemplateClone.setTopologyTemplate(topologyTemplateClone);
+        List<TTag> tags = serviceTemplate.getTags();
+        serviceTemplateClone.setTags(tags);
+        return serviceTemplateClone;
+    }
+    
+    /**
      * @param topologyTemplate which should be cloned
      * @return Copy od topologyTemplate
      */
@@ -553,6 +567,10 @@ public class BackendUtils {
         String provider = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_PROVIDER);
         if (Objects.nonNull(provider)) {
             nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_PROVIDER, provider);
+        }
+        String participant = nodeTemplate.getOtherAttributes().get(ModelUtilities.QNAME_PARTICIPANT);
+        if (Objects.nonNull(participant)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.QNAME_PARTICIPANT, participant);
         }
 
         return nodeTemplateClone;

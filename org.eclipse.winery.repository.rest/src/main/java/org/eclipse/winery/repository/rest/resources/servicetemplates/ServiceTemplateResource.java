@@ -327,7 +327,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         try {
 
             Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
-                splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate().getTopologyTemplate());
+                splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate());
             // Output check
             for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
                 System.out.println("open Requirement: " + req.getId());
@@ -335,12 +335,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
             }
 
             if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
-                hostMatchingOptions = splitting.getHostingMatchingOptionsWithDefaultLabeling(topologyTemplate);
+                hostMatchingOptions = splitting.getHostingMatchingOptionsWithDefaultLabeling(this.getServiceTemplate());
             } else {
                 hostMatchingOptions = null;
             }
             if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-                connectionMatchingOptions = splitting.getConnectionInjectionOptions(topologyTemplate);
+                connectionMatchingOptions = splitting.getConnectionInjectionOptions(this.getServiceTemplate());
             } else {
                 connectionMatchingOptions = null;
             }
@@ -574,7 +574,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
         //Test Method findOpenRequirements
         Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
-            splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate().getTopologyTemplate());
+            splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate());
         // Output check
         for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
             System.out.println("open Requirement: " + req.getId());
@@ -715,7 +715,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
 
         Splitting splitting = new Splitting();
 
-        Map<String, List<TServiceTemplate>> resultList = splitting.getHostingInjectionOptions(BackendUtils.clone(newServiceTemplate.getTopologyTemplate()));
+        Map<String, List<TServiceTemplate>> resultList = splitting.getHostingInjectionOptions(BackendUtils.clone(newServiceTemplate));
         for (Map.Entry<String, List<TServiceTemplate>> entry : resultList.entrySet()) {
             Optional<String> nodeOwners = ModelUtilities.getParticipant(newServiceTemplate.getTopologyTemplate().getNodeTemplate(entry.getKey()));
             if (nodeOwners.isPresent() && nodeOwners.get().contains(finalParticipantId)) {

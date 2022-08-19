@@ -138,7 +138,7 @@ public class PlacementUtils {
             placementServiceTemplate.setId(placementServiceTemplate.getName());
 
             // resolve open requirements until the topology is completed
-            while (topology != null && !splitting.getOpenRequirements(topology).isEmpty()) {
+            while (topology != null && !splitting.getOpenRequirements(placementServiceTemplate).isEmpty()) {
                 // add a target label to the topology based on the provider and location assignment
                 assignNodesToTargetLabels(topology);
                 placementServiceTemplate.setTopologyTemplate(topology);

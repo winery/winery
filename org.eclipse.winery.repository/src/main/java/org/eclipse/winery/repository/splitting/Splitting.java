@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -99,7 +99,8 @@ public class Splitting {
         splitServiceTemplate.setName(splitServiceTemplateId.getXmlId().getDecoded());
         splitServiceTemplate.setId(splitServiceTemplate.getName());
         splitServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
-        TTopologyTemplate splitTopologyTemplate = split(serviceTemplate.getTopologyTemplate());
+        splitServiceTemplate.setTags(serviceTemplate.getTags());
+        TTopologyTemplate splitTopologyTemplate = split(serviceTemplate).getTopologyTemplate();
         splitServiceTemplate.setTopologyTemplate(splitTopologyTemplate);
 
         LOGGER.debug("Persisting...");
@@ -126,7 +127,7 @@ public class Splitting {
         matchedServiceTemplate.setName(matchedServiceTemplateId.getXmlId().getDecoded());
         matchedServiceTemplate.setId(matchedServiceTemplate.getName());
         matchedServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
-        TTopologyTemplate matchedTopologyTemplate = hostMatchingWithDefaultHostSelection(repository.getElement(splitServiceTemplateId).getTopologyTemplate());
+        TTopologyTemplate matchedTopologyTemplate = hostMatchingWithDefaultHostSelection(repository.getElement(splitServiceTemplateId));
         matchedServiceTemplate.setTopologyTemplate(matchedTopologyTemplate);
         LOGGER.debug("Persisting...");
         repository.setElement(matchedServiceTemplateId, matchedServiceTemplate);
@@ -157,7 +158,7 @@ public class Splitting {
             "Endpoint" which means a connectsTo injection is required
         */
         Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
-            getOpenRequirementsAndMatchingBasisCapabilityTypeNames(topologyTemplate);
+            getOpenRequirementsAndMatchingBasisCapabilityTypeNames(serviceTemplate);
         // Output check
         LOGGER.debug("Matching for ServiceTemplate with ID: {}", id.getQName());
         for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
@@ -165,48 +166,47 @@ public class Splitting {
             LOGGER.debug("Matching basis type: {}", requirementsAndMatchingBasisCapabilityTypes.get(req));
         }
 
-        TTopologyTemplate matchedConnectedTopologyTemplate;
-        if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
-            // set default target labels if they are not yet set
-            if (!hasTargetLabels(topologyTemplate)) {
-                LOGGER.debug("Target labels are not set for all NodeTemplates. Using default target labels.");
-                topologyTemplate.getNodeTemplates().forEach(t -> ModelUtilities.setTargetLabel(t, "*"));
-            }
-            TTopologyTemplate matchedHostsTopologyTemplate = hostMatchingWithDefaultHostSelection(topologyTemplate);
-
-            if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-                matchedConnectedTopologyTemplate = connectionMatchingWithDefaultConnectorSelection(matchedHostsTopologyTemplate);
-            } else {
-                matchedConnectedTopologyTemplate = matchedHostsTopologyTemplate;
-            }
-        } else if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-            matchedConnectedTopologyTemplate = connectionMatchingWithDefaultConnectorSelection(topologyTemplate);
-        } else {
-            throw new SplittingException("No open Requirements which can be matched");
-        }
-
-        TTopologyTemplate daSpecifiedTopology = matchedConnectedTopologyTemplate;
-
-        //Start additional functionality Driver Injection
-        if (!DASpecification.getNodeTemplatesWithAbstractDAs(matchedConnectedTopologyTemplate).isEmpty() &&
-            DASpecification.getNodeTemplatesWithAbstractDAs(matchedConnectedTopologyTemplate) != null) {
-            daSpecifiedTopology = DriverInjection.injectDriver(matchedConnectedTopologyTemplate);
-        }
-        //End additional functionality Driver Injection
-
         // create wrapper service template
         ServiceTemplateId matchedServiceTemplateId = new ServiceTemplateId(
             id.getNamespace().getDecoded(),
             VersionSupport.getNewComponentVersionId(id, "matched"),
             false);
-
         RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
         RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
-        TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
+        TServiceTemplate matchedServiceTemplate = BackendUtils.clone(serviceTemplate);
         matchedServiceTemplate.setName(matchedServiceTemplateId.getXmlId().getDecoded());
         matchedServiceTemplate.setId(matchedServiceTemplate.getName());
         matchedServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
+        matchedServiceTemplate.setTags(serviceTemplate.getTags());
+        TTopologyTemplate matchedConnectedTopologyTemplate;
+        if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
+            // set default target labels if they are not yet set
+            if (!checkTopologyTargetLabeling(serviceTemplate)) {
+                LOGGER.debug("Target labels are not set for all NodeTemplates. Using default target labels.");
+                topologyTemplate.getNodeTemplates().forEach(t -> ModelUtilities.setTargetLabel(t, "*"));
+            }
+
+            matchedServiceTemplate.setTopologyTemplate(hostMatchingWithDefaultHostSelection(matchedServiceTemplate));
+
+            if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+                matchedServiceTemplate.setTopologyTemplate(connectionMatchingWithDefaultConnectorSelection(matchedServiceTemplate));
+            }
+        } else if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+            matchedServiceTemplate.setTopologyTemplate(connectionMatchingWithDefaultConnectorSelection(matchedServiceTemplate));
+        } else {
+            throw new SplittingException("No open Requirements which can be matched");
+        }
+
+        TTopologyTemplate daSpecifiedTopology = matchedServiceTemplate.getTopologyTemplate();
+
+        //Start additional functionality Driver Injection
+        if (!DASpecification.getNodeTemplatesWithAbstractDAs(daSpecifiedTopology).isEmpty() &&
+            DASpecification.getNodeTemplatesWithAbstractDAs(daSpecifiedTopology) != null) {
+            daSpecifiedTopology = DriverInjection.injectDriver(daSpecifiedTopology);
+        }
+        //End additional functionality Driver Injection
+
         matchedServiceTemplate.setTopologyTemplate(daSpecifiedTopology);
         LOGGER.debug("Persisting...");
         repository.setElement(matchedServiceTemplateId, matchedServiceTemplate);
@@ -356,7 +356,7 @@ public class Splitting {
         }
         composedServiceTemplate = repository.getElement(composedServiceTemplateId);
         composedTopologyTemplate = composedServiceTemplate.getTopologyTemplate();
-        List<TRequirement> openRequirements = getOpenRequirements(composedTopologyTemplate);
+        List<TRequirement> openRequirements = getOpenRequirements(composedServiceTemplate);
         for (TRequirement requirement : openRequirements) {
             QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
 
@@ -392,7 +392,7 @@ public class Splitting {
         TServiceTemplate serviceTemplate = repository.getElement(serviceTemplateId);
         TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
 
-        List<TRequirement> openRequirements = getOpenRequirements(topologyTemplate);
+        List<TRequirement> openRequirements = getOpenRequirements(serviceTemplate);
 
         for (TRequirement requirement : openRequirements) {
             QName requiredCapTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
@@ -425,11 +425,11 @@ public class Splitting {
      * @param topologyTemplate the topology template which should be checked
      * @return true if the topology template is valid and false if it is not
      */
-    public boolean checkValidTopology(TTopologyTemplate topologyTemplate) {
-        Map<TNodeTemplate, Set<TNodeTemplate>> transitiveAndDirectSuccessors = computeTransitiveClosure(topologyTemplate);
+    public boolean checkValidTopology(TServiceTemplate serviceTemplate) {
+        Map<TNodeTemplate, Set<TNodeTemplate>> transitiveAndDirectSuccessors = computeTransitiveClosure(serviceTemplate.getTopologyTemplate());
 
         //check if the highest level node templates have target labels assigned
-        for (TNodeTemplate node : getNodeTemplatesWithoutIncomingHostedOnRelationships(topologyTemplate)) {
+        for (TNodeTemplate node : getNodeTemplatesWithoutIncomingHostedOnRelationships(serviceTemplate)) {
             if (!ModelUtilities.getTargetLabel(node).isPresent()) {
                 return false;
             }
@@ -454,26 +454,27 @@ public class Splitting {
      * at which target the nodes should be deployed. The result is a topology template containing for each target the
      * required nodes. Duplicates nodes which host nodes with different target labels.
      *
-     * @param topologyTemplate the topology template which should be split
+     * @param serviceTemplate the topology template which should be split
      * @return split topologyTemplate
      */
-    public TTopologyTemplate split(TTopologyTemplate topologyTemplate) throws SplittingException {
-        if (!checkValidTopology(topologyTemplate)) {
+    public TServiceTemplate split(TServiceTemplate serviceTemplate) throws SplittingException {
+        if (!checkValidTopology(serviceTemplate)) {
             throw new SplittingException("Topology is not valid");
         }
 
         // Copy for incremental removal of the processed nodes
-        TTopologyTemplate topologyTemplateCopy = BackendUtils.clone(topologyTemplate);
+        TServiceTemplate serviceTemplateCopy = BackendUtils.clone(serviceTemplate);
+        serviceTemplateCopy.setTags(serviceTemplate.getTags());
 
         HashSet<TNodeTemplate> nodeTemplatesWhichPredecessorsHasNoPredecessors
-            = new HashSet<>(getNodeTemplatesWhichPredecessorsHasNoPredecessors(topologyTemplateCopy));
+            = new HashSet<>(getNodeTemplatesWhichPredecessorsHasNoPredecessors(serviceTemplateCopy));
 
         // Consider each node which hostedOn-predecessor nodes have no further hostedOn-predecessors
         while (!nodeTemplatesWhichPredecessorsHasNoPredecessors.isEmpty()) {
 
             for (TNodeTemplate currentNode : nodeTemplatesWhichPredecessorsHasNoPredecessors) {
 
-                List<TNodeTemplate> predecessors = getHostedOnPredecessorsOfNodeTemplate(topologyTemplateCopy, currentNode);
+                List<TNodeTemplate> predecessors = getHostedOnPredecessorsOfNodeTemplate(serviceTemplateCopy.getTopologyTemplate(), currentNode);
                 Set<String> predecessorsTargetLabel = new HashSet<>();
 
                 for (TNodeTemplate predecessor : predecessors) {
@@ -493,17 +494,17 @@ public class Splitting {
                 } else {
 
                     List<TRelationshipTemplate> incomingRelationships
-                        = ModelUtilities.getIncomingRelationshipTemplates(topologyTemplateCopy, currentNode);
+                        = ModelUtilities.getIncomingRelationshipTemplates(serviceTemplateCopy.getTopologyTemplate(), currentNode);
                     List<TRelationshipTemplate> outgoingRelationships
-                        = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplateCopy, currentNode);
+                        = ModelUtilities.getOutgoingRelationshipTemplates(serviceTemplateCopy.getTopologyTemplate(), currentNode);
 
                     // Otherwise, duplicate the considered node for each target label
                     for (String targetLabel : predecessorsTargetLabel) {
                         TNodeTemplate duplicatedNode = BackendUtils.clone(currentNode);
                         duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
                         duplicatedNode.setName(Util.makeNCName(currentNode.getName()));
-                        topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
-                        topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
+                        serviceTemplate.getTopologyTemplate().addNodeTemplate(duplicatedNode);
+                        serviceTemplateCopy.getTopologyTemplate().addNodeTemplate(duplicatedNode);
                         ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);
 
                         for (TRelationshipTemplate incomingRelationship : incomingRelationships) {
@@ -512,7 +513,7 @@ public class Splitting {
                              * relationships (e.g. conntectsTo) are assigned to the duplicated node.
                              * The origin relationships are duplicated
                              */
-                            TNodeTemplate sourceNodeTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplateCopy, incomingRelationship);
+                            TNodeTemplate sourceNodeTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(serviceTemplateCopy.getTopologyTemplate(), incomingRelationship);
                             if (((ModelUtilities.getTargetLabel(sourceNodeTemplate).get()
                                 .equalsIgnoreCase(ModelUtilities.getTargetLabel(duplicatedNode).get())
                                 && getBaseRelationshipType(incomingRelationship.getType()).getQName().equals(ToscaBaseTypes.hostedOnRelationshipType))
@@ -523,8 +524,8 @@ public class Splitting {
                                 //Reassign incoming relationships
                                 List<TRelationshipTemplate> reassignedRelationship
                                     = reassignIncomingRelationships(reassignRelationship, duplicatedNode);
-                                topologyTemplate.getNodeTemplateOrRelationshipTemplate().addAll(reassignedRelationship);
-                                topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().addAll(reassignedRelationship);
+                                serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().addAll(reassignedRelationship);
+                                serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().addAll(reassignedRelationship);
                             }
                         }
 
@@ -534,45 +535,45 @@ public class Splitting {
                          */
                         List<TRelationshipTemplate> newOutgoingRelationships
                             = reassignOutgoingRelationships(outgoingRelationships, duplicatedNode);
-                        topologyTemplate.getNodeTemplateOrRelationshipTemplate().addAll(newOutgoingRelationships);
-                        topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().addAll(newOutgoingRelationships);
+                        serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().addAll(newOutgoingRelationships);
+                        serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().addAll(newOutgoingRelationships);
                     }
 
                     // Remove the original node and its relations from the origin topology template and the copy
-                    topologyTemplate.getNodeTemplateOrRelationshipTemplate().remove(currentNode);
-                    topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(outgoingRelationships);
-                    topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(incomingRelationships);
-                    topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().remove(currentNode);
-                    topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().removeAll(outgoingRelationships);
-                    topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().removeAll(incomingRelationships);
+                    serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().remove(currentNode);
+                    serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(outgoingRelationships);
+                    serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(incomingRelationships);
+                    serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().remove(currentNode);
+                    serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(outgoingRelationships);
+                    serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(incomingRelationships);
                 }
 
                 // Remove the hostedOn-predecessors of the considered node and their relations in the working copy
-                topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().removeAll(predecessors);
+                serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(predecessors);
                 List<TRelationshipTemplate> removingRelationships =
-                    topologyTemplateCopy.getRelationshipTemplates().stream()
-                        .filter(rt -> predecessors.contains(ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplateCopy, rt))
-                            || predecessors.contains(ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplateCopy, rt)))
+                    serviceTemplateCopy.getTopologyTemplate().getRelationshipTemplates().stream()
+                        .filter(rt -> predecessors.contains(ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(serviceTemplateCopy.getTopologyTemplate(), rt))
+                            || predecessors.contains(ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(serviceTemplateCopy.getTopologyTemplate(), rt)))
                         .collect(Collectors.toList());
 
-                topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().removeAll(removingRelationships);
+                serviceTemplateCopy.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(removingRelationships);
             }
             nodeTemplatesWhichPredecessorsHasNoPredecessors.clear();
-            nodeTemplatesWhichPredecessorsHasNoPredecessors.addAll(getNodeTemplatesWhichPredecessorsHasNoPredecessors(topologyTemplateCopy));
+            nodeTemplatesWhichPredecessorsHasNoPredecessors.addAll(getNodeTemplatesWhichPredecessorsHasNoPredecessors(serviceTemplateCopy));
         }
 
-        return topologyTemplate;
+        return serviceTemplate;
     }
 
     /**
      * This method returns the possible hosts for each lowest level node. Before a suitable node is found nodes may be
      * removed.
      *
-     * @param topologyTemplate which should be mapped to the cloud provider according to the attached target labels -
-     *                         target labels have to be attached to each node
+     * @param serviceTemplate which should be mapped to the cloud provider according to the attached target labels -
+     *                        target labels have to be attached to each node
      * @return map with a list of possible hosts for each lowest level node
      */
-    public Map<String, List<TServiceTemplate>> getHostingInjectionOptions(TTopologyTemplate topologyTemplate) throws
+    public Map<String, List<TServiceTemplate>> getHostingInjectionOptions(TServiceTemplate serviceTemplate) throws
         SplittingException {
         ProviderRepository repository = new ProviderRepository();
         Map<String, List<TServiceTemplate>> injectionOptions = new HashMap<>();
@@ -580,12 +581,12 @@ public class Splitting {
         List<TNodeTemplate> nodesForWhichHostsFound = new ArrayList<>();
         nodesForWhichHostsFound.clear();
 
-        List<TNodeTemplate> needHostNodeTemplateCandidates = getNodeTemplatesWithoutOutgoingHostedOnRelationships(topologyTemplate);
+        List<TNodeTemplate> needHostNodeTemplateCandidates = getNodeTemplatesWithoutOutgoingHostedOnRelationships(serviceTemplate);
         List<TNodeTemplate> nodesToCheck = new ArrayList<>();
 
         //Find lowest level nodes with open requirements which means they can be hosted by an other component
         for (TNodeTemplate nodeTemplateCandidate : needHostNodeTemplateCandidates) {
-            if (hasNodeOpenRequirement(topologyTemplate, nodeTemplateCandidate)) {
+            if (hasNodeOpenRequirement(serviceTemplate, nodeTemplateCandidate)) {
                 if (nodeTemplateCandidate.getRequirements() != null && nodeTemplateCandidate.getRequirements().stream()
                     .anyMatch(req -> getBasisCapabilityType(getRequiredCapabilityTypeQNameOfRequirement(req)).getName().equalsIgnoreCase("Container"))) {
                     nodesToCheck.add(nodeTemplateCandidate);
@@ -631,11 +632,11 @@ public class Splitting {
          * Only the lowest components which are not in the matching list and which have still hostedOn-predecessors
          * are candidates which can be replaced by an other node
          */
-        List<TNodeTemplate> replacementNodeTemplateCandidates = getReplacementNodeTemplateCandidatesForMatching(topologyTemplate, nodesForWhichHostsFound);
+        List<TNodeTemplate> replacementNodeTemplateCandidates = getReplacementNodeTemplateCandidatesForMatching(serviceTemplate, nodesForWhichHostsFound);
 
         while (!replacementNodeTemplateCandidates.isEmpty()) {
             for (TNodeTemplate replacementCandidate : replacementNodeTemplateCandidates) {
-                List<TNodeTemplate> predecessorsOfReplacementCandidate = getHostedOnPredecessorsOfNodeTemplate(topologyTemplate, replacementCandidate);
+                List<TNodeTemplate> predecessorsOfReplacementCandidate = getHostedOnPredecessorsOfNodeTemplate(serviceTemplate.getTopologyTemplate(), replacementCandidate);
                 Optional<String> label = ModelUtilities.getTargetLabel(replacementCandidate);
                 if (!label.isPresent()) {
                     LOGGER.error("No target label present");
@@ -667,23 +668,23 @@ public class Splitting {
                 }
             }
             // Delete all replacement candidates and their relationships.
-            topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(replacementNodeTemplateCandidates);
-            List<TRelationshipTemplate> removingIncomingRelationships = ModelUtilities.getAllRelationshipTemplates(topologyTemplate)
+            serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(replacementNodeTemplateCandidates);
+            List<TRelationshipTemplate> removingIncomingRelationships = ModelUtilities.getAllRelationshipTemplates(serviceTemplate.getTopologyTemplate())
                 .stream()
                 .filter(ir -> replacementNodeTemplateCandidates.contains(ir.getTargetElement().getRef()))
                 .collect(Collectors.toList());
 
-            topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(removingIncomingRelationships);
-            List<TRelationshipTemplate> removingOutgoingRelationships = ModelUtilities.getAllRelationshipTemplates(topologyTemplate)
+            serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(removingIncomingRelationships);
+            List<TRelationshipTemplate> removingOutgoingRelationships = ModelUtilities.getAllRelationshipTemplates(serviceTemplate.getTopologyTemplate())
                 .stream()
                 .filter(ir -> replacementNodeTemplateCandidates.contains(ir.getSourceElement().getRef()))
                 .collect(Collectors.toList());
 
-            topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(removingIncomingRelationships);
-            topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(removingOutgoingRelationships);
+            serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(removingIncomingRelationships);
+            serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().removeAll(removingOutgoingRelationships);
             //The former predecessors now are either matched by a new host or they are new replacement candidates
             replacementNodeTemplateCandidates.clear();
-            replacementNodeTemplateCandidates.addAll(getReplacementNodeTemplateCandidatesForMatching(topologyTemplate, nodesForWhichHostsFound));
+            replacementNodeTemplateCandidates.addAll(getReplacementNodeTemplateCandidatesForMatching(serviceTemplate, nodesForWhichHostsFound));
         }
 
         /*
@@ -691,9 +692,9 @@ public class Splitting {
          * cloud provider node is found to host them.
          * The application-specific nodes must not be replacement candidates!
          */
-        List<TNodeTemplate> checkListAllNodesMatched = topologyTemplate.getNodeTemplates().stream()
-            .filter(z -> getNodeTemplatesWithoutOutgoingHostedOnRelationships(topologyTemplate).contains(z))
-            .filter(node -> hasNodeOpenRequirement(topologyTemplate, node))
+        List<TNodeTemplate> checkListAllNodesMatched = serviceTemplate.getTopologyTemplate().getNodeTemplates().stream()
+            .filter(z -> getNodeTemplatesWithoutOutgoingHostedOnRelationships(serviceTemplate).contains(z))
+            .filter(node -> hasNodeOpenRequirement(serviceTemplate, node))
             .filter(y -> !nodesForWhichHostsFound.contains(y))
             .collect(Collectors.toList());
 
@@ -710,58 +711,65 @@ public class Splitting {
     /**
      * Check if the given NodeTemplate has an open requirement.
      *
-     * @param topology the topology containing the NodeTemplate
-     * @param node     the NodeTemplate to check
+     * @param serviceTemplate the topology containing the NodeTemplate
+     * @param node            the NodeTemplate to check
      * @return <code>true</code> if an open requirement is found, <code>false</code> otherwise
      */
-    private boolean hasNodeOpenRequirement(TTopologyTemplate topology, TNodeTemplate node) {
+    private boolean hasNodeOpenRequirement(TServiceTemplate serviceTemplate, TNodeTemplate node) {
         if (Objects.isNull(node.getRequirements())) {
             return false;
         }
-        List<TRequirement> openRequirements = getOpenRequirements(topology);
+        List<TRequirement> openRequirements = getOpenRequirements(serviceTemplate);
         return node.getRequirements().stream().anyMatch(openRequirements::contains);
     }
 
     /**
-     * @param topologyTemplate which has to be labeled with the default label '*' which includes all available provider
-     *                         repositories and then it is searched for matching options
+     * @param serviceTemplate which has to be labeled with the default label '*' which includes all available provider
+     *                        repositories and then it is searched for matching options
      * @return map with the host options for each lowest node of the topology
      */
-    public Map<String, List<TServiceTemplate>> getHostingMatchingOptionsWithDefaultLabeling(TTopologyTemplate
-                                                                                                topologyTemplate) throws SplittingException {
-        if (!checkTopologyTargetLabeling(topologyTemplate)) {
-            topologyTemplate.getNodeTemplates().forEach(t -> ModelUtilities.setTargetLabel(t, "*"));
+    public Map<String, List<TServiceTemplate>> getHostingMatchingOptionsWithDefaultLabeling(TServiceTemplate
+                                                                                                serviceTemplate) throws SplittingException {
+        if (!checkTopologyTargetLabeling(serviceTemplate)) {
+            serviceTemplate.getTopologyTemplate().getNodeTemplates().forEach(t -> ModelUtilities.setTargetLabel(t, "*"));
         }
-        return getHostingInjectionOptions(topologyTemplate);
+        return getHostingInjectionOptions(serviceTemplate);
     }
 
-    private boolean checkTopologyTargetLabeling(TTopologyTemplate topologyTemplate) {
-        return topologyTemplate.getNodeTemplates().stream().allMatch(nt -> ModelUtilities.getTargetLabel(nt).isPresent());
+    private boolean checkTopologyTargetLabeling(TServiceTemplate serviceTemplate) {
+
+        List<TNodeTemplate> nodeTemplates = new ArrayList<>();
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates().stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
+                .filter(nt -> ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)))
+                .collect(Collectors.toList());
+        }
+        return nodeTemplates.stream().allMatch(nt -> ModelUtilities.getTargetLabel(nt).isPresent());
     }
 
     /**
      * Selects default the first entry of the list of possible hosts for each node, which requires a new host
      *
-     * @param topologyTemplate which need new hosts added
+     * @param serviceTemplate which need new hosts added
      * @return topologyTemplate with randomly chosen hosts
      */
-    public TTopologyTemplate hostMatchingWithDefaultHostSelection(TTopologyTemplate topologyTemplate) throws
+    public TTopologyTemplate hostMatchingWithDefaultHostSelection(TServiceTemplate serviceTemplate) throws
         SplittingException {
-        TTopologyTemplate newTopologyTemplate = BackendUtils.clone(topologyTemplate);
-        Map<String, List<TServiceTemplate>> matchingOptions = getHostingInjectionOptions(newTopologyTemplate);
+        TServiceTemplate newServiceTemplate = BackendUtils.clone(serviceTemplate);
+        Map<String, List<TServiceTemplate>> matchingOptions = getHostingInjectionOptions(newServiceTemplate);
         Map<String, TTopologyTemplate> defaultHostSelection = new HashMap<>();
         matchingOptions.entrySet().forEach(entry -> defaultHostSelection.put(entry.getKey(), entry.getValue().get(0).getTopologyTemplate()));
 
-        return injectNodeTemplates(topologyTemplate, defaultHostSelection, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
+        return injectNodeTemplates(serviceTemplate.getTopologyTemplate(), defaultHostSelection, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
     }
 
-    public TTopologyTemplate connectionMatchingWithDefaultConnectorSelection(TTopologyTemplate topologyTemplate) throws
+    public TTopologyTemplate connectionMatchingWithDefaultConnectorSelection(TServiceTemplate serviceTemplate) throws
         SplittingException {
-        Map<String, List<TServiceTemplate>> connectionInjectionOptions = getConnectionInjectionOptions(topologyTemplate);
+        Map<String, List<TServiceTemplate>> connectionInjectionOptions = getConnectionInjectionOptions(serviceTemplate);
         Map<String, TTopologyTemplate> defaultConnectorSelection = new HashMap<>();
         connectionInjectionOptions.entrySet().forEach(entry -> defaultConnectorSelection.put(entry.getKey(), entry.getValue().get(0).getTopologyTemplate()));
 
-        return injectConnectionNodeTemplates(topologyTemplate, defaultConnectorSelection);
+        return injectConnectionNodeTemplates(serviceTemplate.getTopologyTemplate(), defaultConnectorSelection);
     }
 
     public String calculateChoreographyTag(List<TNodeTemplate> nodeTemplateList, String participantName) {
@@ -999,11 +1007,11 @@ public class Splitting {
     /**
      *
      */
-    public Map<String, List<TServiceTemplate>> getConnectionInjectionOptions(TTopologyTemplate topologyTemplate) throws
+    public Map<String, List<TServiceTemplate>> getConnectionInjectionOptions(TServiceTemplate serviceTemplate) throws
         SplittingException {
         ProviderRepository providerRepository = new ProviderRepository();
         Map<String, List<TServiceTemplate>> connectionInjectionOptions = new HashMap<>();
-        List<TNodeTemplate> nodeTemplates = ModelUtilities.getAllNodeTemplates(topologyTemplate);
+        List<TNodeTemplate> nodeTemplates = ModelUtilities.getAllNodeTemplates(serviceTemplate.getTopologyTemplate());
         List<TNodeTemplate> nodeTemplatesWithConnectionRequirement = nodeTemplates.stream()
             .filter(nt -> nt.getRequirements() != null)
             .filter(nt -> nt.getRequirements().stream()
@@ -1014,7 +1022,7 @@ public class Splitting {
             for (TNodeTemplate nodeWithOpenConnectionRequirement : nodeTemplatesWithConnectionRequirement) {
                 List<TRequirement> requirements = nodeWithOpenConnectionRequirement.getRequirements().stream()
                     .filter(req -> getBasisCapabilityType(getRequiredCapabilityTypeQNameOfRequirement(req)).getName().equalsIgnoreCase("Endpoint"))
-                    .filter(req -> getOpenRequirementsAndMatchingBasisCapabilityTypeNames(topologyTemplate).keySet().contains(req))
+                    .filter(req -> getOpenRequirementsAndMatchingBasisCapabilityTypeNames(serviceTemplate).keySet().contains(req))
                     .collect(Collectors.toList());
 
                 for (TRequirement openRequirement : requirements) {
@@ -1308,18 +1316,18 @@ public class Splitting {
      * Find all lowest level nodes which are not application-specific nodes which are not contained in the
      * matchingNodeTemplates list
      *
-     * @param topologyTemplate      topology template
+     * @param serviceTemplate       topology template
      * @param matchingNodeTemplates lowest level nodes contained in this list are not considered as candidates
      * @return list of all node templates which are candidates for replacement
      */
-    protected List<TNodeTemplate> getReplacementNodeTemplateCandidatesForMatching(TTopologyTemplate
-                                                                                      topologyTemplate, List<TNodeTemplate> matchingNodeTemplates) {
+    protected List<TNodeTemplate> getReplacementNodeTemplateCandidatesForMatching(TServiceTemplate
+                                                                                      serviceTemplate, List<TNodeTemplate> matchingNodeTemplates) {
 
-        return ModelUtilities.getAllNodeTemplates(topologyTemplate)
+        return ModelUtilities.getAllNodeTemplates(serviceTemplate.getTopologyTemplate())
             .stream()
             .filter(y -> !matchingNodeTemplates.contains(y))
-            .filter(y -> !getNodeTemplatesWithoutIncomingHostedOnRelationships(topologyTemplate).contains(y))
-            .filter(z -> getNodeTemplatesWithoutOutgoingHostedOnRelationships(topologyTemplate).contains(z))
+            .filter(y -> !getNodeTemplatesWithoutIncomingHostedOnRelationships(serviceTemplate).contains(y))
+            .filter(z -> getNodeTemplatesWithoutOutgoingHostedOnRelationships(serviceTemplate).contains(z))
             .collect(Collectors.toList());
     }
 
@@ -1328,13 +1336,20 @@ public class Splitting {
      *
      * @return list of node templates
      */
-    protected List<TNodeTemplate> getNodeTemplatesWithoutIncomingHostedOnRelationships(TTopologyTemplate
-                                                                                           topologyTemplate) {
+    protected List<TNodeTemplate> getNodeTemplatesWithoutIncomingHostedOnRelationships(TServiceTemplate
+                                                                                           serviceTemplate) {
 
-        return ModelUtilities.getAllNodeTemplates(topologyTemplate)
+        List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates()
             .stream()
-            .filter(nt -> getHostedOnPredecessorsOfNodeTemplate(topologyTemplate, nt).isEmpty())
+            .filter(nt -> getHostedOnPredecessorsOfNodeTemplate(serviceTemplate.getTopologyTemplate(), nt).isEmpty())
             .collect(Collectors.toList());
+
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            return nodeTemplates.stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
+                .filter(nt -> ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)))
+                .collect(Collectors.toList());
+        }
+        return nodeTemplates;
     }
 
     /**
@@ -1342,12 +1357,20 @@ public class Splitting {
      *
      * @return list of node templates
      */
-    protected List<TNodeTemplate> getNodeTemplatesWithoutOutgoingHostedOnRelationships(TTopologyTemplate
-                                                                                           topologyTemplate) {
-
-        return topologyTemplate.getNodeTemplates().stream()
-            .filter(nt -> getHostedOnSuccessorsOfNodeTemplate(topologyTemplate, nt).isEmpty())
+    protected List<TNodeTemplate> getNodeTemplatesWithoutOutgoingHostedOnRelationships(TServiceTemplate
+                                                                                           serviceTemplate) {
+        List<TNodeTemplate> participantNodes = new ArrayList<>();
+        List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates().stream()
+            .filter(nt -> getHostedOnSuccessorsOfNodeTemplate(serviceTemplate.getTopologyTemplate(), nt).isEmpty())
             .collect(Collectors.toList());
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            
+            participantNodes = nodeTemplates.stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
+                .filter(nt -> ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)))
+                .collect(Collectors.toList());
+            return participantNodes;
+        }
+        return nodeTemplates;
     }
 
     /**
@@ -1355,19 +1378,24 @@ public class Splitting {
      *
      * @return list of nodes
      */
-    protected List<TNodeTemplate> getNodeTemplatesWhichPredecessorsHasNoPredecessors(TTopologyTemplate
-                                                                                         topologyTemplate) {
-        List<TNodeTemplate> nodeTemplates = ModelUtilities.getAllNodeTemplates(topologyTemplate);
+    protected List<TNodeTemplate> getNodeTemplatesWhichPredecessorsHasNoPredecessors(TServiceTemplate
+                                                                                         serviceTemplate) {
+        List<TNodeTemplate> nodeTemplates = new ArrayList<>();
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates().stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
+                .filter(nt -> ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate).equalsIgnoreCase(ModelUtilities.getParticipant(nt).get()))
+                .collect(Collectors.toList());
+        }
 
         List<TNodeTemplate> predecessorsOfpredecessors = new ArrayList<>();
         predecessorsOfpredecessors.clear();
         List<TNodeTemplate> candidates = new ArrayList<>();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
-            List<TNodeTemplate> allPredecessors = getHostedOnPredecessorsOfNodeTemplate(topologyTemplate, nodeTemplate);
+            List<TNodeTemplate> allPredecessors = getHostedOnPredecessorsOfNodeTemplate(serviceTemplate.getTopologyTemplate(), nodeTemplate);
             if (!allPredecessors.isEmpty()) {
                 predecessorsOfpredecessors.clear();
                 for (TNodeTemplate predecessor : allPredecessors) {
-                    predecessorsOfpredecessors.addAll(getHostedOnPredecessorsOfNodeTemplate(topologyTemplate, predecessor));
+                    predecessorsOfpredecessors.addAll(getHostedOnPredecessorsOfNodeTemplate(serviceTemplate.getTopologyTemplate(), predecessor));
                 }
                 if (predecessorsOfpredecessors.isEmpty()) {
                     candidates.add(nodeTemplate);
@@ -1454,10 +1482,10 @@ public class Splitting {
         }
     }
 
-    public Map<TRequirement, String> getOpenRequirementsAndMatchingBasisCapabilityTypeNames(TTopologyTemplate
-                                                                                                topologyTemplate) {
+    public Map<TRequirement, String> getOpenRequirementsAndMatchingBasisCapabilityTypeNames(TServiceTemplate
+                                                                                                serviceTemplate) {
         Map<TRequirement, String> openRequirementsAndMatchingBaseCapability = new HashMap<>();
-        List<TRequirement> openRequirements = getOpenRequirements(topologyTemplate);
+        List<TRequirement> openRequirements = getOpenRequirements(serviceTemplate);
         for (TRequirement requirement : openRequirements) {
             QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
             TCapabilityType matchingBasisCapabilityType = getBasisCapabilityType(requiredCapabilityTypeQName);
@@ -1469,13 +1497,20 @@ public class Splitting {
     /**
      *
      */
-    public List<TRequirement> getOpenRequirements(TTopologyTemplate topologyTemplate) {
+    public List<TRequirement> getOpenRequirements(TServiceTemplate serviceTemplate) {
         List<TRequirement> openRequirements = new ArrayList<>();
-        List<TNodeTemplate> nodeTemplates = topologyTemplate.getNodeTemplates();
+        List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
+
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            nodeTemplates.stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
+                .filter(nt -> ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)))
+                .collect(Collectors.toList());
+        }
 
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
             if (nodeTemplate.getRequirements() != null) {
-                List<TNodeTemplate> successorsOfNodeTemplate = extractSuccessorsOfNode(topologyTemplate, nodeTemplates, nodeTemplate);
+                List<TNodeTemplate> successorsOfNodeTemplate =
+                    extractSuccessorsOfNode(serviceTemplate.getTopologyTemplate(), nodeTemplates, nodeTemplate);
                 for (TRequirement requirement : nodeTemplate.getRequirements()) {
                     QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
 
