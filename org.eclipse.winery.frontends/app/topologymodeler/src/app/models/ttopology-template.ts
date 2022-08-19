@@ -109,7 +109,6 @@ export class TNodeTemplate extends AbstractTEntity {
      * @return nodeTemplate: a new node template with the updated value
      */
     generateNewNodeTemplateWithUpdatedAttribute(updatedAttribute: string, updatedValue: any): TNodeTemplate {
-        debugger;
         const nodeTemplate = new TNodeTemplate(this.properties, this.id, this.type, this.name, this.minInstances, this.maxInstances,
             this.visuals, this.documentation, this.any, this.otherAttributes, this.x, this.y, this.capabilities,
             this.requirements, this.deploymentArtifacts, this.policies, this.artifacts, this.instanceState, this.valid, this.working, this._state);

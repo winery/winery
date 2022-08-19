@@ -824,9 +824,9 @@ public class Splitting {
             LOGGER.debug("New host NodeTemplate: {}", newHostNodeTemplate.getId());
 
             //Check if the chosen replace node is already in the matching
-            if (topologyTemplate.getNodeTemplates().stream()
+            if (matching.stream()
                 .anyMatch(nt -> equalsWithDifferentId(nt, newHostNodeTemplate))) {
-                newMatchingNodeTemplate = topologyTemplate.getNodeTemplates().stream()
+                newMatchingNodeTemplate = matching.stream()
                     .filter(nt -> equalsWithDifferentId(nt, newHostNodeTemplate)).findAny().get();
             } else {
                 newMatchingNodeTemplate = newHostNodeTemplate;
@@ -1604,13 +1604,36 @@ public class Splitting {
                 return false;
             }
         }
+        if (Objects.nonNull(node1.getRequirements()) && Objects.nonNull(node2.getRequirements())
+            && Objects.nonNull(node1.getCapabilities())
+            && Objects.nonNull(node2.getCapabilities())) {
+            List<String> reqTypeNamesNode1 = new ArrayList<>();
+            node1.getRequirements().stream().forEach(req -> reqTypeNamesNode1.add(req.getType().toString()));
+            List<String> reqTypeNamesNode2 = new ArrayList<>();
+            node2.getRequirements().stream().forEach(req -> reqTypeNamesNode2.add(req.getType().toString()));
+
+            List<String> capTypeNamesNode1 = new ArrayList<>();
+            node1.getCapabilities().stream().forEach(cap -> capTypeNamesNode1.add(cap.getType().toString()));
+            List<String> capTypeNamesNode2 = new ArrayList<>();
+            node2.getCapabilities().stream().forEach(cap -> capTypeNamesNode2.add(cap.getType().toString()));
+            if (!capTypeNamesNode1.equals(capTypeNamesNode2) || !reqTypeNamesNode1.equals(reqTypeNamesNode2)) {
+                return false;
+            }
+        }
+
+        if (Objects.nonNull(node1.getPolicies()) && Objects.nonNull(node2.getPolicies())) {
+            List<String> policyTypesNode1 = new ArrayList<>();
+            node1.getPolicies().stream().forEach(policy -> policyTypesNode1.add(policy.getPolicyType().toString()));
+            List<String> policyTypesNode2 = new ArrayList<>();
+            node2.getPolicies().stream().forEach(policy -> policyTypesNode2.add(policy.getPolicyType().toString()));
+            if (!policyTypesNode1.equals(policyTypesNode2)) {
+                return false;
+            }
+        }
 
         // check if the NodeTemplates are equal (except Id which is replaced while matching)
         return Objects.equals(node1.getPropertyConstraints(), node2.getPropertyConstraints()) &&
             Objects.equals(node1.getType(), node2.getType()) &&
-            Objects.equals(node1.getRequirements(), node2.getRequirements()) &&
-            Objects.equals(node1.getCapabilities(), node2.getCapabilities()) &&
-            Objects.equals(node1.getPolicies(), node2.getPolicies()) &&
             Objects.equals(node1.getDeploymentArtifacts(), node2.getDeploymentArtifacts()) &&
             Objects.equals(node1.getName(), node2.getName()) &&
             Objects.equals(node1.getMinInstances(), node2.getMinInstances()) &&

@@ -108,7 +108,6 @@ export class SplitMatchTopologyComponent implements OnDestroy {
     }
 
     applyMatching() {
-        debugger;
         this.loading = true;
         if (this.selectedFragments == null) {
             this.selectedFragments = new InjectorReplaceData(new Array(), new Array());
@@ -142,7 +141,6 @@ export class SplitMatchTopologyComponent implements OnDestroy {
     }
 
     private showInjectionOptions(injectionOptions: InjectorReplaceOptions) {
-        debugger;
         this.injectionOptionsApiData = injectionOptions;
         //this.hostInjectionOptionsMap = new Map<string, TTopologyTemplate[]>();
         this.hostOptions = new Array();
