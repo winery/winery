@@ -29,6 +29,7 @@ export interface SubstitutionElement {
         };
     };
     currentTopology: TTopologyTemplate;
+    errorMessage?: string;
 }
 
 export interface PlaceholderSubstitutionCandidate {

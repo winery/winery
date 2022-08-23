@@ -18,7 +18,12 @@
         <br><br>
         <div class="informationContainer" *ngIf="!substitutionIsRunning; else showIsRunning">
             <div *ngIf="substitutionIsDone; else showStart">
-                <h5>Placeholder substitution successful!</h5>
+                <div *ngIf="serverErrorOccurs">
+                    <h5>Error occurred</h5>
+                </div>
+                <div *ngIf="substitutionIsDone && !serverErrorOccurs">
+                    <h5>Placeholder substitution successful!</h5>
+                </div>
                 <button class="btn btn-primary" (click)="restartSubstitution($event)">
                     Next substitution
                 </button>

@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import javax.websocket.CloseReason;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
@@ -30,10 +31,12 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.json.JacksonProvider;
 import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.PlaceholderSubstitution;
 import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.PlaceholderSubstitutionCandidate;
+import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.PlaceholderSubstitutionException;
 import org.eclipse.winery.model.adaptation.substitution.refinement.placeholder.SubstitutionChooser;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -58,7 +61,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
         try {
             this.future = new CompletableFuture<>();
 
-            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology);
+            PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData(candidates, substitutionServiceTemplateId, currentTopology, null);
             this.sendAsync(element);
 
             int id = future.get();
@@ -94,9 +97,21 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
             case START:
                 if (!running) {
                     Thread thread = new Thread(() -> {
-                        TTopologyTemplate topologyWithPlaceholder = RepositoryFactory.getRepository().getElement(new ServiceTemplateId(data.serviceTemplate)).getTopologyTemplate();
+                        TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(new ServiceTemplateId(data.serviceTemplate));
                         PlaceholderSubstitutionElementApiData element = new PlaceholderSubstitutionElementApiData();
-                        TTopologyTemplate subgraphDetector = this.getSubgraphDetector(topologyWithPlaceholder, data.selectedNodeTemplateIds);
+                        TTopologyTemplate subgraphDetector = null;
+                        try {
+                            subgraphDetector = this.getSubgraphDetector(serviceTemplate, data.selectedNodeTemplateIds);
+                        } catch (PlaceholderSubstitutionException e) {
+                            try {
+                                PlaceholderSubstitutionElementApiData error = new PlaceholderSubstitutionElementApiData(null, null, null, e.getMessage());
+                                LOGGER.error(e.getMessage());
+                                running = false;
+                                this.sendAsync(error);
+                            } catch (JsonProcessingException jsonProcessingException) {
+                                jsonProcessingException.printStackTrace();
+                            }
+                        }
                         element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
                         element.currentTopology = RepositoryFactory.getRepository().getElement(element.serviceTemplateContainingSubstitution).getTopologyTemplate();
                         ;
@@ -116,7 +131,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                 break;
             case STOP:
                 this.future.complete(-1);
-                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null));
+                this.sendAsync(new PlaceholderSubstitutionElementApiData(null, this.substitutionServiceTemplateId, null, null));
                 this.onClose(this.session);
                 break;
         }
@@ -135,13 +150,23 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
         STOP
     }
 
-    private TTopologyTemplate getSubgraphDetector(TTopologyTemplate topologyTemplate, ArrayList<String> nodeTemplateIDs) {
+    private TTopologyTemplate getSubgraphDetector(TServiceTemplate serviceTemplate, ArrayList<String> nodeTemplateIDs) throws PlaceholderSubstitutionException {
         ArrayList<TNodeTemplate> listOfSelectedNodeTemplate = new ArrayList<>();
         nodeTemplateIDs.stream()
-            .forEach(id -> listOfSelectedNodeTemplate.add(topologyTemplate.getNodeTemplate(id)));
-        List<TRelationshipTemplate> relationsBetweenNodes = topologyTemplate.getRelationshipTemplates().stream().filter(rt ->
-            listOfSelectedNodeTemplate.contains(ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, rt.getSourceElement().getRef()))
-                && listOfSelectedNodeTemplate.contains(ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, rt.getTargetElement().getRef()))).collect(Collectors.toList());
+            .forEach(id -> listOfSelectedNodeTemplate.add(serviceTemplate.getTopologyTemplate().getNodeTemplate(id)));
+
+        //participant-aware placeholder selection - only nodes with the placeholder owning the service template are considered
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            boolean wrongParticipantSelection = listOfSelectedNodeTemplate.stream().anyMatch(nt -> ModelUtilities.getParticipant(nt).isPresent() && 
+                !ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)));
+            if (wrongParticipantSelection) {
+                throw new PlaceholderSubstitutionException("Substitution cannot be executed: Nodes which are owned by other participants have been selected");
+            }
+        }
+
+        List<TRelationshipTemplate> relationsBetweenNodes = serviceTemplate.getTopologyTemplate().getRelationshipTemplates().stream().filter(rt ->
+            listOfSelectedNodeTemplate.contains(ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(serviceTemplate.getTopologyTemplate(), rt.getSourceElement().getRef()))
+                && listOfSelectedNodeTemplate.contains(ModelUtilities.getNodeTemplateFromRelationshipSourceOrTarget(serviceTemplate.getTopologyTemplate(), rt.getTargetElement().getRef()))).collect(Collectors.toList());
 
         return new TTopologyTemplate.Builder()
             .addNodeTemplates(listOfSelectedNodeTemplate)

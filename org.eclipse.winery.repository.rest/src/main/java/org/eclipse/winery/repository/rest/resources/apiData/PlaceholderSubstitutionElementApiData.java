@@ -25,13 +25,15 @@ public class PlaceholderSubstitutionElementApiData {
     public List<PlaceholderSubstitutionCandidate> substitutionCandidates;
     public ServiceTemplateId serviceTemplateContainingSubstitution;
     public TTopologyTemplate currentTopology;
+    public String errorMessage;
 
     public PlaceholderSubstitutionElementApiData() {
     }
 
-    public PlaceholderSubstitutionElementApiData(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId serviceTemplateContainingSubstitution, TTopologyTemplate currentTopology) {
+    public PlaceholderSubstitutionElementApiData(List<PlaceholderSubstitutionCandidate> candidates, ServiceTemplateId serviceTemplateContainingSubstitution, TTopologyTemplate currentTopology, String errorMessage) {
         this.substitutionCandidates = candidates;
         this.serviceTemplateContainingSubstitution = serviceTemplateContainingSubstitution;
         this.currentTopology = currentTopology;
+        this.errorMessage = errorMessage;
     }
 }

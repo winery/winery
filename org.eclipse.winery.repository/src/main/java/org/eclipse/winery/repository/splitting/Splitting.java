@@ -46,6 +46,7 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.version.VersionSupport;
@@ -234,7 +235,7 @@ public class Splitting {
         TNodeType placeholderNodeType = new TNodeType();
         placeholderNodeType.setName(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
         placeholderNodeType.setId(nameOfNodeTemplateGettingPlaceholder + "_placeholder");
-        placeholderNodeType.setTargetNamespace("http://opentosca/multiparticipant/placeholdertypes");
+        placeholderNodeType.setTargetNamespace(OpenToscaBaseTypes.placeholderTypeNamespace);
 
         return placeholderNodeType;
     }

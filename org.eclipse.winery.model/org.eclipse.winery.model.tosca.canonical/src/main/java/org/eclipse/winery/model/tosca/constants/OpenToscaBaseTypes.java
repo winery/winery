@@ -46,6 +46,10 @@ public class OpenToscaBaseTypes {
     public static final QName abstractJava11DriverTemplate = QName.valueOf("{http://opentosca.org/driverinjection/artifacttemplates}Abstract-Java11Driver");
     public static final QName topicConnectsTo = QName.valueOf("{http://opentosca.org/driverinjection/relationshiptypes}ConnectsToTopic");
     //endregion
+    
+    //region ********** multiparticipant-placeholder **********
+    public static final String placeholderTypeNamespace = "http://opentosca/multiparticipant/placeholdertypes";
+    //endregion
 
     // region ********** freeze and defrost **********
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");

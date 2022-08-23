@@ -604,6 +604,13 @@ public abstract class ModelUtilities {
     public static Optional<String> getParticipant(TNodeTemplate nodeTemplate) {
         return getOtherAttributeValue(nodeTemplate, QNAME_PARTICIPANT);
     }
+    
+    public static void setParticipant(TNodeTemplate nodeTemplate, String participant) {
+        Objects.requireNonNull(nodeTemplate);
+        Objects.requireNonNull(participant);
+        Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
+        otherAttributes.put(QNAME_PARTICIPANT, participant);
+    }
 
     public static List<TNodeTemplate> getNodeTemplatesOfParticipant(String participantName, List<TNodeTemplate> nodeTemplates) {
 

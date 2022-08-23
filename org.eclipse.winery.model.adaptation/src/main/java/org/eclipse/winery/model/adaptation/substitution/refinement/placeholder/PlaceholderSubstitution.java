@@ -35,9 +35,11 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.WineryVersionUtils;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -87,6 +89,11 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
                     }
                 }
 
+                if (candidate.getServiceTemplateCandidate().getTopologyTemplate().getNodeTemplates().stream()
+                    .anyMatch(nt -> nt.getType().getNamespaceURI().equals(OpenToscaBaseTypes.placeholderTypeNamespace))) {
+                    return false;
+                }
+
                 TNodeTemplate correspondingNode = candidate.getServiceTemplateCandidate().getTopologyTemplate()
                     .getNodeTemplate(candidate.getGraphMapping().getVertexCorrespondence(v, false).getTemplate().getId());
                 HostingStackCharacteristics hostingStackcharacteristics =
@@ -116,9 +123,14 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
                 .collect(Collectors.toSet()));
         }
 
+        TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(serviceTemplateId);
+
         //Add nodes and relationships
         hostedOnSuccessors.forEach(n -> {
             n.setId(n.getId() + IdCounter++);
+            if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+                ModelUtilities.setParticipant(n, ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate));
+            }
             this.topologyTemplate.addNodeTemplate(n);
         });
         hostedOnRelations.forEach(r -> {
@@ -202,10 +214,15 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
 
     private Map<QName, TServiceTemplate> getServiceTemplateCandidates() {
         Map<QName, TServiceTemplate> serviceTemplates = repository.getQNameToElementMapping(ServiceTemplateId.class);
+        Set<ServiceTemplateId> versionsOfConsideredServiceTemplate = (Set<ServiceTemplateId>) WineryVersionUtils.getOtherVersionDefinitionsFromDefinition(serviceTemplateId, repository);
+        Set<QName> versionQNames = new HashSet<>();
+        versionsOfConsideredServiceTemplate.stream().forEach(st -> versionQNames.add(st.getQName()));
+
         return serviceTemplates.entrySet()
             .stream()
             .filter(entry -> !entry.getKey().equals(this.serviceTemplateId.getQName()))
             .filter(entry -> !entry.getKey().equals(this.substitutionServiceTemplateId.getQName()))
+            .filter(entry -> !versionQNames.contains(entry.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 

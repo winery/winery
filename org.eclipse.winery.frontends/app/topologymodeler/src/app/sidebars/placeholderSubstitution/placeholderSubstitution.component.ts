@@ -25,6 +25,7 @@ import { BackendService } from '../../services/backend.service';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'winery-placeholder-substitution',
@@ -38,6 +39,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     substitutionIsRunning: boolean;
     substitutionIsLoading: boolean;
     substitutionIsDone: boolean;
+    serverErrorOccurs : boolean;
     substitutionCandidates: PlaceholderSubstitutionCandidate[];
     selectedNodeTemplateIds: string[] = [];
 
@@ -52,6 +54,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
                 private webSocketService: PlaceholderSubstitutionWebSocketService,
                 private configurationService: WineryRepositoryConfigurationService,
                 private backendService: BackendService,
+                private alert: ToastrService,
     ) {
         this.ngRedux.select(state => state.wineryState.entityTypes)
             .subscribe(types => this.entityTypes = types);
@@ -60,13 +63,16 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     }
 
     startSubstitution(event: MouseEvent) {
+        debugger;
         event.stopPropagation();
+        this.serverErrorOccurs = false;
         this.substitutionIsDone = false;
         this.substitutionIsRunning = true;
         this.substitutionIsLoading = true;
         let substitutionElementObservable = this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds);
 
         if (!this.substitutionElement) {
+            debugger;
             this.substitutionElement = substitutionElementObservable.subscribe(
                 value => this.handleWebSocketData(value),
                 error => this.handleError(error),
@@ -101,6 +107,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     }
 
     private handleWebSocketData(value: SubstitutionElement) {
+        debugger;
         if (value) {
             this.substitutionIsLoading = false;
             this.substitutionCandidates = value.substitutionCandidates;
@@ -113,11 +120,18 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
             if (value.currentTopology) {
                 TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.currentTopology,
                     this.entityTypes, this.configurationService.isYaml());
-            } else {
+            } else if (!value.errorMessage) {
                 this.openModelerFor(value.serviceTemplateContainingSubstitution.xmlId.decoded,
                     value.serviceTemplateContainingSubstitution.namespace.decoded,
                     false
                 );
+            }
+            if (value.errorMessage) {
+                debugger;
+                this.serverErrorOccurs = true;
+                this.alert.error(value.errorMessage);
+                this.substitutionIsRunning = false;
+
             }
         }
     }
