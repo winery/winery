@@ -183,7 +183,7 @@ public class Splitting {
         TTopologyTemplate matchedConnectedTopologyTemplate;
         if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
             // set default target labels if they are not yet set
-            if (!checkTopologyTargetLabeling(serviceTemplate)) {
+            if (!checkApplicationSpecificComponentTargetLabeling(serviceTemplate)) {
                 LOGGER.debug("Target labels are not set for all NodeTemplates. Using default target labels.");
                 topologyTemplate.getNodeTemplates().forEach(t -> ModelUtilities.setTargetLabel(t, "*"));
             }
@@ -428,6 +428,13 @@ public class Splitting {
      */
     public boolean checkValidTopology(TServiceTemplate serviceTemplate) {
         Map<TNodeTemplate, Set<TNodeTemplate>> transitiveAndDirectSuccessors = computeTransitiveClosure(serviceTemplate.getTopologyTemplate());
+
+        if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
+            List<TNodeTemplate> appSpecificComponentsOfOtherParticipants = serviceTemplate.getTopologyTemplate().getNodeTemplates();
+            appSpecificComponentsOfOtherParticipants.removeIf(nt -> ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate).equalsIgnoreCase(ModelUtilities.getParticipant(nt).get()));
+
+            transitiveAndDirectSuccessors.remove(appSpecificComponentsOfOtherParticipants);
+        }
 
         //check if the highest level node templates have target labels assigned
         for (TNodeTemplate node : getNodeTemplatesWithoutIncomingHostedOnRelationships(serviceTemplate)) {
@@ -731,20 +738,39 @@ public class Splitting {
      */
     public Map<String, List<TServiceTemplate>> getHostingMatchingOptionsWithDefaultLabeling(TServiceTemplate
                                                                                                 serviceTemplate) throws SplittingException {
-        if (!checkTopologyTargetLabeling(serviceTemplate)) {
+        if (!checkApplicationSpecificComponentTargetLabeling(serviceTemplate)) {
             serviceTemplate.getTopologyTemplate().getNodeTemplates().forEach(t -> ModelUtilities.setTargetLabel(t, "*"));
+        } else if (checkValidTopology(serviceTemplate)) {
+            Map<TNodeTemplate, Set<TNodeTemplate>> transitiveAndDirectSuccessors = computeTransitiveClosure(serviceTemplate.getTopologyTemplate());
+            List<TNodeTemplate> appSpecificComponents = getNodeTemplatesWithoutIncomingHostedOnRelationships(serviceTemplate);
+
+            List<TNodeTemplate> NodesOfOtherParticipants = serviceTemplate.getTopologyTemplate().getNodeTemplates();
+            NodesOfOtherParticipants.removeIf(nt -> ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate).equalsIgnoreCase(ModelUtilities.getParticipant(nt).get()));
+
+            transitiveAndDirectSuccessors.remove(NodesOfOtherParticipants);
+            //target label must be set for all hostedOn- Successors of app-specific Components
+            for (TNodeTemplate appSpecificComponent : appSpecificComponents) {
+                for (TNodeTemplate successor : transitiveAndDirectSuccessors.get(appSpecificComponent)) {
+                    if (!ModelUtilities.getTargetLabel(successor).isPresent() && ModelUtilities.getTargetLabel(appSpecificComponent).isPresent()) {
+                        ModelUtilities.setTargetLabel(successor, ModelUtilities.getTargetLabel(appSpecificComponent).get());
+                    }
+                }
+            }
+        } else {
+            throw new SplittingException("Topology is not valid");
         }
         return getHostingInjectionOptions(serviceTemplate);
     }
 
-    private boolean checkTopologyTargetLabeling(TServiceTemplate serviceTemplate) {
+    private boolean checkApplicationSpecificComponentTargetLabeling(TServiceTemplate serviceTemplate) {
 
-        List<TNodeTemplate> nodeTemplates = new ArrayList<>();
+        List<TNodeTemplate> nodeTemplates = getNodeTemplatesWithoutIncomingHostedOnRelationships(serviceTemplate);
         if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
-            nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates().stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
+            nodeTemplates = nodeTemplates.stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
                 .filter(nt -> ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)))
                 .collect(Collectors.toList());
         }
+
         return nodeTemplates.stream().allMatch(nt -> ModelUtilities.getTargetLabel(nt).isPresent());
     }
 
@@ -1365,7 +1391,7 @@ public class Splitting {
             .filter(nt -> getHostedOnSuccessorsOfNodeTemplate(serviceTemplate.getTopologyTemplate(), nt).isEmpty())
             .collect(Collectors.toList());
         if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
-            
+
             participantNodes = nodeTemplates.stream().filter(nt -> ModelUtilities.getParticipant(nt).isPresent())
                 .filter(nt -> ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)))
                 .collect(Collectors.toList());
@@ -1487,12 +1513,14 @@ public class Splitting {
                                                                                                 serviceTemplate) {
         Map<TRequirement, String> openRequirementsAndMatchingBaseCapability = new HashMap<>();
         List<TRequirement> openRequirements = getOpenRequirements(serviceTemplate);
-        for (TRequirement requirement : openRequirements) {
-            QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
-            TCapabilityType matchingBasisCapabilityType = getBasisCapabilityType(requiredCapabilityTypeQName);
-            openRequirementsAndMatchingBaseCapability.put(requirement, matchingBasisCapabilityType.getName());
-        }
-        return openRequirementsAndMatchingBaseCapability;
+        if (openRequirements != null && !openRequirements.isEmpty()) {
+            for (TRequirement requirement : openRequirements) {
+                QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(requirement);
+                TCapabilityType matchingBasisCapabilityType = getBasisCapabilityType(requiredCapabilityTypeQName);
+                openRequirementsAndMatchingBaseCapability.put(requirement, matchingBasisCapabilityType.getName());
+            }
+            return openRequirementsAndMatchingBaseCapability;
+        } else return null;
     }
 
     /**

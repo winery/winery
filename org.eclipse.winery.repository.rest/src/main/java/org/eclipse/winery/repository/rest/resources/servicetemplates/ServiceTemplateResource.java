@@ -320,30 +320,36 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     public Response getInjectorOptions() {
         Splitting splitting = new Splitting();
         TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
-        Map<String, List<TServiceTemplate>> hostMatchingOptions;
-        Map<String, List<TServiceTemplate>> connectionMatchingOptions;
+        Map<String, List<TServiceTemplate>> hostMatchingOptions = new HashMap<>();
+        Map<String, List<TServiceTemplate>> connectionMatchingOptions = new HashMap<>();
         InjectorReplaceOptions injectorReplaceOptions = new InjectorReplaceOptions();
 
         try {
-
-            Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
-                splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate());
-            // Output check
-            for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
-                System.out.println("open Requirement: " + req.getId());
-                System.out.println("matchingBasisType: " + requirementsAndMatchingBasisCapabilityTypes.get(req));
-            }
-
-            if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
+            if (splitting.checkValidTopology(this.getServiceTemplate())) {
                 hostMatchingOptions = splitting.getHostingMatchingOptionsWithDefaultLabeling(this.getServiceTemplate());
             } else {
-                hostMatchingOptions = null;
+                Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
+                    splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate());
+                // Output check
+                if (requirementsAndMatchingBasisCapabilityTypes != null) {
+                    for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
+                        System.out.println("open Requirement: " + req.getId());
+                        System.out.println("matchingBasisType: " + requirementsAndMatchingBasisCapabilityTypes.get(req));
+                    }
+
+                    if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
+                        hostMatchingOptions = splitting.getHostingMatchingOptionsWithDefaultLabeling(this.getServiceTemplate());
+                    } else {
+                        hostMatchingOptions = null;
+                    }
+                    if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+                        connectionMatchingOptions = splitting.getConnectionInjectionOptions(this.getServiceTemplate());
+                    } else {
+                        connectionMatchingOptions = null;
+                    }
+                }
             }
-            if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-                connectionMatchingOptions = splitting.getConnectionInjectionOptions(this.getServiceTemplate());
-            } else {
-                connectionMatchingOptions = null;
-            }
+
             List<NodeInjectionOptions> hostInjectionOptions = new ArrayList<>();
             if (hostMatchingOptions != null) {
                 hostMatchingOptions.forEach((key, value) -> {
@@ -571,26 +577,17 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         Splitting splitting = new Splitting();
         TTopologyTemplate matchedHostsTopologyTemplate;
         TTopologyTemplate matchedConnectedTopologyTemplate;
+        
 
-        //Test Method findOpenRequirements
-        Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
-            splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate());
-        // Output check
-        for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
-            System.out.println("open Requirement: " + req.getId());
-            System.out.println("matchingbasisType: " + requirementsAndMatchingBasisCapabilityTypes.get(req));
-        }
-        // End Output check
-
-        if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
+        if (hostInjectionSelections != null && !hostInjectionSelections.isEmpty()) {
             matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), hostInjectionSelections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
 
-            if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+            if (connectionInjectionSelections != null && !connectionInjectionSelections.isEmpty()) {
                 matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(matchedHostsTopologyTemplate, connectionInjectionSelections);
             } else {
                 matchedConnectedTopologyTemplate = matchedHostsTopologyTemplate;
             }
-        } else if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+        } else if (connectionInjectionSelections != null && !connectionInjectionSelections.isEmpty()) {
             matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), connectionInjectionSelections);
         } else {
             throw new SplittingException("No open Requirements which can be matched");
