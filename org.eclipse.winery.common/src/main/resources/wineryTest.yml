@@ -20,3 +20,11 @@ accountability:
   ethereum-authorization-smart-contract-address: authorizationsmartcontracttestaddress
   swarm-gateway-url: swarmgatewaytesturl
   ethereum-credentials-file-name: ""
+deploymentArtifactRefinements:
+  quantumTranslator:
+    url: http://localhost:7896
+    canRefine:
+      - "{http://test.example.org}qiskit"
+      - "{http://test.example.org}rigetti"
+    description: |
+      POST to { "file": "http://localhost:8080/winery/ns/at/files/file.py", "inputs": { "quantumHardwareProvider": "IBM", "inputLanguage": "qiskit"}

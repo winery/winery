@@ -14,7 +14,9 @@
 
 package org.eclipse.winery.common.configuration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -24,7 +26,7 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
 
     private final String key = "deploymentArtifactRefinements";
 
-    private List<DARefinementService> services;
+    private HashMap<String, DARefinementService> refinementServices;
 
     public DARefinementConfigurationObject(YAMLConfiguration configuration) {
         this.update(configuration);
@@ -32,7 +34,7 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
 
     @Override
     void save() {
-        this.configuration.setProperty(this.key, this.services);
+        this.configuration.setProperty(this.key, this.refinementServices);
         Environment.getInstance().save();
     }
 
@@ -40,7 +42,26 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
     void update(YAMLConfiguration updatedConfiguration) {
         this.configuration = updatedConfiguration;
 
-        this.services = this.configuration.getList(DARefinementService.class, this.key);
+        this.refinementServices = new HashMap<>();
+        this.configuration.getKeys(key).forEachRemaining(yamlKey -> {
+            String endpoint = yamlKey.replace(this.key + ".", "").split("\\.")[0];
+
+            DARefinementService daRefinementService = refinementServices.get(endpoint);
+            if (daRefinementService == null) {
+                daRefinementService = new DARefinementService();
+                this.refinementServices.put(endpoint, daRefinementService);
+            }
+
+            if (yamlKey.endsWith("url")) {
+                daRefinementService.url = this.configuration.getString(yamlKey);
+            } else if (yamlKey.endsWith("description")) {
+                daRefinementService.description = this.configuration.getString(yamlKey);
+            } else if (yamlKey.endsWith("canRefine")) {
+                daRefinementService.canRefine = this.configuration.getList(String.class, yamlKey)
+                    .stream().map(QName::valueOf)
+                    .collect(Collectors.toList());
+            }
+        });
     }
 
     @Override
@@ -50,6 +71,11 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
 
     public static class DARefinementService {
         public List<QName> canRefine;
-        public String endpoint;
+        public String url;
+        public String description;
+    }
+
+    public HashMap<String, DARefinementService> getRefinementServices() {
+        return refinementServices;
     }
 }

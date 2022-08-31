@@ -15,6 +15,9 @@
 package org.eclipse.winery.common.configuration;
 
 import java.io.IOException;
+import java.util.HashMap;
+
+import javax.xml.namespace.QName;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.junit.jupiter.api.AfterAll;
@@ -25,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -97,6 +101,25 @@ public class EnvironmentsTest {
         assertEquals("provenancesmartcontracttestaddress", accountabilityConfig.getEthereumProvenanceSmartContractAddress());
         assertEquals("authorizationsmartcontracttestaddress", accountabilityConfig.getEthereumAuthorizationSmartContractAddress());
         assertEquals("swarmgatewaytesturl", accountabilityConfig.getSwarmGatewayUrl());
+    }
+
+    @Test
+    public void testGetDaRefinementConfigurations() {
+        DARefinementConfigurationObject daRefinement = Environments.getInstance().getDaRefinementConfigurationObject();
+        assertNotNull(daRefinement);
+
+        HashMap<String, DARefinementConfigurationObject.DARefinementService> refinementServices = daRefinement.getRefinementServices();
+        assertNotNull(refinementServices);
+        DARefinementConfigurationObject.DARefinementService quantumTranslator = refinementServices.get("quantumTranslator");
+        assertNotNull(quantumTranslator);
+
+        assertEquals("http://localhost:7896", quantumTranslator.url);
+        assertTrue(quantumTranslator.canRefine.contains(QName.valueOf("{http://test.example.org}qiskit")));
+        assertTrue(quantumTranslator.canRefine.contains(QName.valueOf("{http://test.example.org}rigetti")));
+        assertEquals(
+            "POST to { \"file\": \"http://localhost:8080/winery/ns/at/files/file.py\", \"inputs\": { \"quantumHardwareProvider\": \"IBM\", \"inputLanguage\": \"qiskit\"}\n",
+            quantumTranslator.description
+        );
     }
 
     /**
