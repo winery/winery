@@ -15,9 +15,7 @@
 package org.eclipse.winery.common.configuration;
 
 import java.io.IOException;
-import java.util.HashMap;
-
-import javax.xml.namespace.QName;
+import java.util.Map;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.junit.jupiter.api.AfterAll;
@@ -108,7 +106,7 @@ public class EnvironmentsTest {
         DARefinementConfigurationObject daRefinement = Environments.getInstance().getDaRefinementConfigurationObject();
         assertNotNull(daRefinement);
 
-        HashMap<String, DARefinementConfigurationObject.DARefinementService> refinementServices = daRefinement.getRefinementServices();
+        Map<String, DARefinementConfigurationObject.DARefinementService> refinementServices = daRefinement.getRefinementServices();
         assertNotNull(refinementServices);
         DARefinementConfigurationObject.DARefinementService quantumTranslator = refinementServices.get("quantumQiskitTranslator");
         assertNotNull(quantumTranslator);

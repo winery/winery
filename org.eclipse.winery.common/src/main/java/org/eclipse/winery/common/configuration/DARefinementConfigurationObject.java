@@ -16,6 +16,7 @@ package org.eclipse.winery.common.configuration;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 
@@ -23,7 +24,15 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
 
     private final String key = "deploymentArtifactRefinements";
 
-    private HashMap<String, DARefinementService> refinementServices;
+    private Map<String, DARefinementService> refinementServices;
+
+    @SuppressWarnings("unused")
+    DARefinementConfigurationObject() {
+        if (Environment.getInstance().checkConfigurationForUpdate()) {
+            Environment.getInstance().getConfigFromFile();
+        }
+        this.configuration = Environment.getInstance().getConfiguration();
+    }
 
     public DARefinementConfigurationObject(YAMLConfiguration configuration) {
         this.update(configuration);
@@ -68,14 +77,18 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
         // there are no defaults
     }
 
+    public Map<String, DARefinementService> getRefinementServices() {
+        return refinementServices;
+    }
+
+    public void setRefinementServices(Map<String, DARefinementService> refinementServices) {
+        this.refinementServices = refinementServices;
+    }
+
     public static class DARefinementService {
         public TransformationCapabilities canRefine = new TransformationCapabilities();
         public String url;
         public String description;
-    }
-
-    public HashMap<String, DARefinementService> getRefinementServices() {
-        return refinementServices;
     }
 
     public static class TransformationCapabilities {
