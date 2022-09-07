@@ -16,9 +16,6 @@ package org.eclipse.winery.common.configuration;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 
@@ -56,10 +53,12 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
                 daRefinementService.url = this.configuration.getString(yamlKey);
             } else if (yamlKey.endsWith("description")) {
                 daRefinementService.description = this.configuration.getString(yamlKey);
-            } else if (yamlKey.endsWith("canRefine")) {
-                daRefinementService.canRefine = this.configuration.getList(String.class, yamlKey)
-                    .stream().map(QName::valueOf)
-                    .collect(Collectors.toList());
+            } else if (yamlKey.contains("canRefine")) {
+                if (yamlKey.endsWith("from")) {
+                    daRefinementService.canRefine.from = this.configuration.getList(String.class, yamlKey);
+                } else if (yamlKey.contains("to")) {
+                    daRefinementService.canRefine.to = this.configuration.getList(String.class, yamlKey);
+                }
             }
         });
     }
@@ -70,12 +69,17 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
     }
 
     public static class DARefinementService {
-        public List<QName> canRefine;
+        public TransformationCapabilities canRefine = new TransformationCapabilities();
         public String url;
         public String description;
     }
 
     public HashMap<String, DARefinementService> getRefinementServices() {
         return refinementServices;
+    }
+
+    public static class TransformationCapabilities {
+        public List<String> from;
+        public List<String> to;
     }
 }

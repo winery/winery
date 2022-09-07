@@ -110,14 +110,15 @@ public class EnvironmentsTest {
 
         HashMap<String, DARefinementConfigurationObject.DARefinementService> refinementServices = daRefinement.getRefinementServices();
         assertNotNull(refinementServices);
-        DARefinementConfigurationObject.DARefinementService quantumTranslator = refinementServices.get("quantumTranslator");
+        DARefinementConfigurationObject.DARefinementService quantumTranslator = refinementServices.get("quantumQiskitTranslator");
         assertNotNull(quantumTranslator);
 
-        assertEquals("http://localhost:7896", quantumTranslator.url);
-        assertTrue(quantumTranslator.canRefine.contains(QName.valueOf("{http://test.example.org}qiskit")));
-        assertTrue(quantumTranslator.canRefine.contains(QName.valueOf("{http://test.example.org}rigetti")));
+        assertEquals("http://localhost:7896/qiskit", quantumTranslator.url);
+        assertTrue(quantumTranslator.canRefine.from.contains("qiskit"));
+        assertTrue(quantumTranslator.canRefine.to.contains("pyquil"));
+        assertTrue(quantumTranslator.canRefine.to.contains("qiskit"));
         assertEquals(
-            "POST to { \"file\": \"http://localhost:8080/winery/ns/at/files/file.py\", \"inputs\": { \"quantumHardwareProvider\": \"IBM\", \"inputLanguage\": \"qiskit\"}\n",
+            "POST to { \"file\": \"http://localhost:8080/winery/ns/at/files/file.py\", \"inputFormat\": \"qiskit\", \"outputLanguage\": \"pyquil\"}\n",
             quantumTranslator.description
         );
     }

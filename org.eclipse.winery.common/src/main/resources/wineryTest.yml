@@ -21,10 +21,13 @@ accountability:
   swarm-gateway-url: swarmgatewaytesturl
   ethereum-credentials-file-name: ""
 deploymentArtifactRefinements:
-  quantumTranslator:
-    url: http://localhost:7896
+  quantumQiskitTranslator:
+    url: http://localhost:7896/qiskit
     canRefine:
-      - "{http://test.example.org}qiskit"
-      - "{http://test.example.org}rigetti"
+      from:
+        - qiskit
+      to:
+        - qiskit
+        - pyquil
     description: |
-      POST to { "file": "http://localhost:8080/winery/ns/at/files/file.py", "inputs": { "quantumHardwareProvider": "IBM", "inputLanguage": "qiskit"}
+      POST to { "file": "http://localhost:8080/winery/ns/at/files/file.py", "inputFormat": "qiskit", "outputLanguage": "pyquil"}
