@@ -14,23 +14,30 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.configuration.DARefinementConfigurationObject;
+import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.model.adaptation.substitution.refinement.AbstractRefinement;
 import org.eclipse.winery.model.adaptation.substitution.refinement.DefaultRefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementChooser;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementUtils;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
@@ -49,12 +56,21 @@ import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaPrmPropertyMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jgrapht.GraphMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +171,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null)
                     vertex.getTemplate().getPolicies().forEach(detectorPolicy ->
                         matchingNode.getPolicies()
-                            .removeIf(matchingPolicy -> 
+                            .removeIf(matchingPolicy ->
                                 matchingPolicy.getPolicyType().equals(detectorPolicy.getPolicyType())
                             )
                     );
@@ -183,6 +199,8 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                                    TTopologyTemplate topology, Map<String, String> idMapping) {
         List<OTDeploymentArtifactMapping> deploymentArtifactMappings = ((OTTopologyFragmentRefinementModel) refinement.getRefinementModel()).getDeploymentArtifactMappings();
 
+        DARefinementConfigurationObject daServices = Environments.getInstance().getDaRefinementConfigurationObject();
+
         return matchingNode.getDeploymentArtifacts() == null
             || matchingNode.getDeploymentArtifacts().isEmpty()
             || (
@@ -196,17 +214,19 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                 if (idMapping != null) {
                                     TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementElement().getId()));
                                     if (addedNode != null) {
+                                        TDeploymentArtifact artifactToAdd = this.translateDeploymentArtifact(mapping, deploymentArtifact);
+
                                         List<TDeploymentArtifact> existingDAs = addedNode.getDeploymentArtifacts();
                                         if (existingDAs == null) {
                                             existingDAs = new ArrayList<>();
                                             addedNode.setDeploymentArtifacts(existingDAs);
                                         } else if (
                                             existingDAs.stream()
-                                                .anyMatch(da -> da.getName().equals(deploymentArtifact.getName()))
+                                                .anyMatch(da -> da.getName().equals(artifactToAdd.getName()))
                                         ) {
-                                            deploymentArtifact.setName(deploymentArtifact.getName() + UUID.randomUUID());
+                                            artifactToAdd.setName(artifactToAdd.getName() + UUID.randomUUID());
                                         }
-                                        existingDAs.add(deploymentArtifact);
+                                        existingDAs.add(artifactToAdd);
                                     } else {
                                         LOGGER.error("Error while adding Deployment Artifacts! Node was not added to the topology!");
                                     }
@@ -217,6 +237,65 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                         })
                 )
         );
+    }
+
+    private TDeploymentArtifact translateDeploymentArtifact(OTDeploymentArtifactMapping mapping, TDeploymentArtifact deploymentArtifact) {
+        DARefinementConfigurationObject daTranslationServices = Environments.getInstance().getDaRefinementConfigurationObject();
+
+        if (daTranslationServices != null && daTranslationServices.getRefinementServices() != null) {
+            Optional<Map.Entry<String, DARefinementConfigurationObject.DARefinementService>> applicableService =
+                daTranslationServices.getRefinementServices().entrySet().stream()
+                    .filter(entry -> {
+                        DARefinementConfigurationObject.DARefinementService service = entry.getValue();
+
+                        if (service.canRefine.from.contains(mapping.getArtifactType().getLocalPart())
+                            && service.canRefine.to.contains(mapping.getTargetArtifactType().getLocalPart())) {
+                            LOGGER.debug("Service '{}' can refine Artifact Type '{}' to '{}'!",
+                                entry.getValue(), mapping.getArtifactType(), mapping.getTargetArtifactType());
+                            return true;
+                        }
+                        return false;
+                    }).findFirst();
+
+            if (applicableService.isPresent()) {
+                Map.Entry<String, DARefinementConfigurationObject.DARefinementService> serviceEntry = applicableService.get();
+                LOGGER.info("Using service '{}' to translate artifact '{}'", serviceEntry.getKey(), deploymentArtifact.getArtifactRef());
+                DARefinementConfigurationObject.DARefinementService service = serviceEntry.getValue();
+
+                try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                    MultipartEntityBuilder multipartBuilder = MultipartEntityBuilder.create();
+
+                    ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(new ArtifactTemplateId(deploymentArtifact.getArtifactRef()));
+                    PipedOutputStream output = new PipedOutputStream();
+                    this.repository.getZippedContents(filesDirectoryId, output);
+                    // https://stackoverflow.com/questions/5778658/how-to-convert-outputstream-to-inputstream
+                    multipartBuilder.addBinaryBody("file", new PipedInputStream(output),
+                        ContentType.APPLICATION_OCTET_STREAM, "files.zip");
+
+                    multipartBuilder.addTextBody("inputFormat", mapping.getArtifactType().getLocalPart());
+                    multipartBuilder.addTextBody("outputFormat", mapping.getTargetArtifactType().getLocalPart());
+
+                    HttpPost httpPost = new HttpPost(service.url);
+                    httpPost.setEntity(multipartBuilder.build());
+                    try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                        HttpEntity entity = response.getEntity();
+
+                        // TODO: now crate a new Artifact Template, unzip the contents to the files of this new ATemp,
+                        //  and create a new DA with the new QName as DA-Ref... 
+                    } catch (IOException e) {
+                        LOGGER.error("Could not refine DA...!", e);
+                        LOGGER.warn("Defaulting to already contained DA!");
+                    }
+                } catch (IOException e) {
+                    LOGGER.error("Could not refine DA...!", e);
+                    LOGGER.warn("Defaulting to already contained DA!");
+                } catch (WineryRepositoryException e) {
+                    LOGGER.error("Error while zipping the files in the artifact!", e);
+                }
+            }
+        }
+
+        return deploymentArtifact;
     }
 
     public void applyPropertyMappings(RefinementCandidate refinement, String detectorNodeId, TEntityTemplate matchingEntity,
