@@ -124,12 +124,40 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         }
 
         TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(serviceTemplateId);
+        //Collect Caps, Reqs and Policies of current topology to ensure unique Ids
+        List<String> capabilityIds = new ArrayList<>();
+        List<String> requirementIds = new ArrayList<>();
+        List<String> policyNames = new ArrayList<>();
+
+        for (TNodeTemplate node : this.topologyTemplate.getNodeTemplates()) {
+            if (node.getCapabilities() != null) {
+                node.getCapabilities().forEach(cap -> capabilityIds.add(cap.getId()));
+            }
+            if (node.getRequirements() != null) {
+                node.getRequirements().forEach(req -> requirementIds.add(req.getId()));
+            }
+            if (node.getPolicies() != null) {
+                node.getPolicies().forEach(policy -> policyNames.add(policy.getName()));
+            }
+        }
 
         //Add nodes and relationships
         hostedOnSuccessors.forEach(n -> {
             n.setId(n.getId() + IdCounter++);
             if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
                 ModelUtilities.setParticipant(n, ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate));
+            }
+            //Ensure unique Ids for capabilities
+            if (n.getCapabilities() != null) {
+                n.getCapabilities().forEach(cap -> cap.setId(getUniqueId(capabilityIds, cap.getId())));
+            }
+            //Ensure unique Ids for requirements
+            if (n.getRequirements() != null) {
+                n.getRequirements().forEach(req -> req.setId(getUniqueId(requirementIds, req.getId())));
+            }
+            //Ensure unique names for policies
+            if (n.getPolicies() != null) {
+                n.getPolicies().forEach(policy -> policy.setId(getUniqueId(policyNames, policy.getName())));
             }
             this.topologyTemplate.addNodeTemplate(n);
         });
@@ -260,5 +288,19 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             }
         }
         return hostingStackCharacteristics;
+    }
+
+    private String getUniqueId(List<String> existingIds, String newElementId) {
+        int IdCounter = 1;
+        boolean uniqueID = false;
+        while (!uniqueID) {
+            if (!existingIds.contains(newElementId)) {
+                uniqueID = true;
+            } else {
+                newElementId = newElementId + "_" + IdCounter;
+                IdCounter++;
+            }
+        }
+        return newElementId;
     }
 }
