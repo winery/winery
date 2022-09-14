@@ -21,6 +21,7 @@ import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
@@ -37,8 +38,9 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
 
     @Override
     protected boolean insertProxy(TNodeTemplate sourceNode, TNodeTemplate targetNode, TRelationshipTemplate oldConnection, TTopologyTemplate topology) {
-        topology.getNodeTemplateOrRelationshipTemplate().remove(oldConnection);
-
+        
+        List<TPolicy> oldConnectionPolicies = oldConnection.getPolicies();
+        
         TNodeTemplate sourceNodeProxy = new TNodeTemplate();
         sourceNodeProxy.setType(OpenToscaBaseTypes.publisherProxy);
         sourceNodeProxy.setName(OpenToscaBaseTypes.publisherProxy.getLocalPart());
@@ -85,22 +87,30 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
 
         setNewCoordinates(targetNodeProxy, targetNode, 300, 0);
 
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNode, sourceNodeProxy,
+        TRelationshipTemplate newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNode, sourceNodeProxy,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxy, topicNode,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxy, topicNode,
             OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, topicNode,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, topicNode,
             OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, targetNode,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, targetNode,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxyReturn, sourceNode,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxyReturn, sourceNode,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxyReturn, topicNode2,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxyReturn, topicNode2,
             OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxyReturn, topicNode2,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxyReturn, topicNode2,
             OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNode, targetNodeProxyReturn,
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
+        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNode, targetNodeProxyReturn,
             ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
+        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
 
         //Add Requirements to the inserted Node Templates
         ModelUtilities.addRequirement(topicNode, OpenToscaBaseTypes.topicReqType, this.getUniqueReqID(topology));
@@ -148,6 +158,8 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
             .Builder(this.getUniqueDAID(targetNodeProxyReturn, "Driver"), artifactTemplate.getType())
             .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
         targetNodeProxyReturn.setDeploymentArtifacts(targetNodeProxyReturnDAs);
+        
+        topology.getNodeTemplateOrRelationshipTemplate().remove(oldConnection);
 
         return true;
     }
