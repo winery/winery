@@ -14,7 +14,9 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipInputStream;
 
 import javax.xml.namespace.QName;
 
@@ -60,6 +61,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
@@ -68,8 +70,10 @@ import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -288,25 +292,36 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                         httpPost.setEntity(multipartBuilder.build());
                         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                             HttpEntity entity = response.getEntity();
+                            String fileName = IOUtils.toString(entity.getContent());
 
-                            ArtifactTemplateId translatedArtifactId = new ArtifactTemplateId(
-                                artifactTemplateId.getNamespace().getDecoded(),
-                                VersionSupport.getNewComponentVersionId(artifactTemplateId, mapping.getTargetArtifactType().getLocalPart()),
-                                false
-                            );
-                            this.repository.setElement(
-                                translatedArtifactId,
-                                new TArtifactTemplate.Builder(translatedArtifactId.getXmlId().getDecoded(), mapping.getTargetArtifactType())
-                                    .build()
-                            );
+                            String location = response.getFirstHeader("Location").getValue();
+                            try (CloseableHttpResponse fileResponse = httpClient.execute(new HttpGet(location))) {
+                                ArtifactTemplateId translatedArtifactId = new ArtifactTemplateId(
+                                    artifactTemplateId.getNamespace().getDecoded(),
+                                    VersionSupport.getNewComponentVersionId(artifactTemplateId, mapping.getTargetArtifactType().getLocalPart()),
+                                    false
+                                );
+                                this.repository.setElement(
+                                    translatedArtifactId,
+                                    new TArtifactTemplate.Builder(translatedArtifactId.getXmlId().getDecoded(), mapping.getTargetArtifactType())
+                                        .build()
+                                );
 
-                            try (ZipInputStream zipInput = new ZipInputStream(entity.getContent())) {
+                                ArtifactTemplateFilesDirectoryId filesId = new ArtifactTemplateFilesDirectoryId(translatedArtifactId);
+                                InputStream contentStream = fileResponse.getEntity().getContent();
+                                repository.putContentToFile(
+                                    new RepositoryFileReference(filesId, fileName),
+                                    contentStream,
+                                    BackendUtils.getMimeType(new BufferedInputStream(contentStream), fileName)
+                                );
+
+                                BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
+                                return new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
+                                    .setArtifactRef(translatedArtifactId.getQName())
+                                    .build();
+                            } catch (IOException e) {
+                                LOGGER.error("Error while downloading file!", e);
                             }
-
-                            BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
-                            return new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
-                                .setArtifactRef(translatedArtifactId.getQName())
-                                .build();
                         } catch (IOException e) {
                             LOGGER.error("Could not refine DA...!", e);
                             LOGGER.warn("Defaulting to already contained DA!");

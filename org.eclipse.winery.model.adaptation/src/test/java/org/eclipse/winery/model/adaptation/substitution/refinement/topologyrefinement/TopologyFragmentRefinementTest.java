@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,11 +30,14 @@ import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aMultipart;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -78,7 +83,19 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
         // region ********* mock server setup **********
         stubFor(post("/endpoint")
             .willReturn(aResponse()
-                .withBodyFile("test.zip")
+                .withHeader("Location", mockServer.getHttpBaseUrl() + "/endpoint/transformationResult?fileId=myFileId")
+                .withStatus(201)
+                .withBody(
+                    "test.zip"
+                )
+            )
+        );
+        
+        stubFor(get("/endpoint/transformationResult?fileId=myFileId")
+            .willReturn(aResponse()
+                .withBody(
+                    IOUtils.toByteArray(ClassLoader.getSystemClassLoader().getResource("__files/test.zip").toURI())
+                )
             )
         );
         // endregion
@@ -102,6 +119,8 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
 
             )
         );
+        
+        verify(getRequestedFor(urlEqualTo("/endpoint/transformationResult?fileId=myFileId")));
         // endregion
 
         assertNotNull(transformationResult);
