@@ -30,7 +30,9 @@ import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState
 import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
 import { urlElement } from '../../models/enums';
 import { TArtifact, TTopologyTemplate } from '../../models/ttopology-template';
-import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { Subscription } from 'rxjs';
 import { QName } from '../../../../../shared/src/app/model/qName';
 
@@ -428,7 +430,6 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
      * Saves a policy to the nodeTemplate model and gets pushed into the Redux state of the application
      */
     savePoliciesToModel(policyToBeSavedToRedux: TPolicy): void {
-        debugger
         const actionObject = {
             nodeId: this.currentNodeData.id,
             newPolicy: policyToBeSavedToRedux
