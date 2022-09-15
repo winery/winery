@@ -27,7 +27,7 @@ public class DARefinementConfigurationObject extends AbstractConfigurationObject
     private Map<String, DARefinementService> refinementServices;
 
     @SuppressWarnings("unused")
-    DARefinementConfigurationObject() {
+    public DARefinementConfigurationObject() {
         if (Environment.getInstance().checkConfigurationForUpdate()) {
             Environment.getInstance().getConfigFromFile();
         }

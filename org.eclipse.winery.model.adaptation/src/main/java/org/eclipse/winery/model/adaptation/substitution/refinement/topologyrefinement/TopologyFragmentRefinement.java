@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.namespace.QName;
 
@@ -42,6 +43,7 @@ import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
 import org.eclipse.winery.model.tosca.HasId;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -55,7 +57,9 @@ import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.version.VersionSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
@@ -214,7 +218,10 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                 if (idMapping != null) {
                                     TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementElement().getId()));
                                     if (addedNode != null) {
-                                        TDeploymentArtifact artifactToAdd = this.translateDeploymentArtifact(mapping, deploymentArtifact);
+                                        TDeploymentArtifact artifactToAdd = this.translateDeploymentArtifact(
+                                            mapping, deploymentArtifact,
+                                            Environments.getInstance().getDaRefinementConfigurationObject()
+                                        );
 
                                         List<TDeploymentArtifact> existingDAs = addedNode.getDeploymentArtifacts();
                                         if (existingDAs == null) {
@@ -239,9 +246,8 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
         );
     }
 
-    private TDeploymentArtifact translateDeploymentArtifact(OTDeploymentArtifactMapping mapping, TDeploymentArtifact deploymentArtifact) {
-        DARefinementConfigurationObject daTranslationServices = Environments.getInstance().getDaRefinementConfigurationObject();
-
+    TDeploymentArtifact translateDeploymentArtifact(OTDeploymentArtifactMapping mapping, TDeploymentArtifact deploymentArtifact,
+                                                    DARefinementConfigurationObject daTranslationServices) {
         if (daTranslationServices != null && daTranslationServices.getRefinementServices() != null) {
             Optional<Map.Entry<String, DARefinementConfigurationObject.DARefinementService>> applicableService =
                 daTranslationServices.getRefinementServices().entrySet().stream()
@@ -259,32 +265,52 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
             if (applicableService.isPresent()) {
                 Map.Entry<String, DARefinementConfigurationObject.DARefinementService> serviceEntry = applicableService.get();
-                LOGGER.info("Using service '{}' to translate artifact '{}'", serviceEntry.getKey(), deploymentArtifact.getArtifactRef());
+
+                QName artifact = deploymentArtifact.getArtifactRef();
+                LOGGER.info("Using service '{}' to translate artifact '{}'", serviceEntry.getKey(), artifact);
                 DARefinementConfigurationObject.DARefinementService service = serviceEntry.getValue();
 
                 try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
                     MultipartEntityBuilder multipartBuilder = MultipartEntityBuilder.create();
 
-                    ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(new ArtifactTemplateId(deploymentArtifact.getArtifactRef()));
-                    PipedOutputStream output = new PipedOutputStream();
-                    this.repository.getZippedContents(filesDirectoryId, output);
-                    // https://stackoverflow.com/questions/5778658/how-to-convert-outputstream-to-inputstream
-                    multipartBuilder.addBinaryBody("file", new PipedInputStream(output),
-                        ContentType.APPLICATION_OCTET_STREAM, "files.zip");
+                    ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(artifact);
+                    ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
+                    try (PipedInputStream inputStream = new PipedInputStream(); PipedOutputStream output = new PipedOutputStream(inputStream);) {
+                        this.repository.getZippedContents(filesDirectoryId, output);
+                        // https://stackoverflow.com/questions/5778658/how-to-convert-outputstream-to-inputstream
+                        multipartBuilder.addBinaryBody("file", inputStream,
+                            ContentType.APPLICATION_OCTET_STREAM, "files.zip");
 
-                    multipartBuilder.addTextBody("inputFormat", mapping.getArtifactType().getLocalPart());
-                    multipartBuilder.addTextBody("outputFormat", mapping.getTargetArtifactType().getLocalPart());
+                        multipartBuilder.addTextBody("inputFormat", mapping.getArtifactType().getLocalPart());
+                        multipartBuilder.addTextBody("outputFormat", mapping.getTargetArtifactType().getLocalPart());
 
-                    HttpPost httpPost = new HttpPost(service.url);
-                    httpPost.setEntity(multipartBuilder.build());
-                    try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                        HttpEntity entity = response.getEntity();
+                        HttpPost httpPost = new HttpPost(service.url);
+                        httpPost.setEntity(multipartBuilder.build());
+                        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                            HttpEntity entity = response.getEntity();
 
-                        // TODO: now crate a new Artifact Template, unzip the contents to the files of this new ATemp,
-                        //  and create a new DA with the new QName as DA-Ref... 
-                    } catch (IOException e) {
-                        LOGGER.error("Could not refine DA...!", e);
-                        LOGGER.warn("Defaulting to already contained DA!");
+                            ArtifactTemplateId translatedArtifactId = new ArtifactTemplateId(
+                                artifactTemplateId.getNamespace().getDecoded(),
+                                VersionSupport.getNewComponentVersionId(artifactTemplateId, mapping.getTargetArtifactType().getLocalPart()),
+                                false
+                            );
+                            this.repository.setElement(
+                                translatedArtifactId,
+                                new TArtifactTemplate.Builder(translatedArtifactId.getXmlId().getDecoded(), mapping.getTargetArtifactType())
+                                    .build()
+                            );
+
+                            try (ZipInputStream zipInput = new ZipInputStream(entity.getContent())) {
+                            }
+
+                            BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
+                            return new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
+                                .setArtifactRef(translatedArtifactId.getQName())
+                                .build();
+                        } catch (IOException e) {
+                            LOGGER.error("Could not refine DA...!", e);
+                            LOGGER.warn("Defaulting to already contained DA!");
+                        }
                     }
                 } catch (IOException e) {
                     LOGGER.error("Could not refine DA...!", e);
