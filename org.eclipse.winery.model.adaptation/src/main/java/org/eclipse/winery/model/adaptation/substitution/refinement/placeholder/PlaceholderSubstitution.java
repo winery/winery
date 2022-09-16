@@ -191,7 +191,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
             });
     }
 
-    public ServiceTemplateId substituteServiceTemplate(TTopologyTemplate subGraphDetector) {
+    public ServiceTemplateId substituteServiceTemplate(TTopologyTemplate subGraphDetector) throws PlaceholderSubstitutionException {
         TServiceTemplate element = this.repository.getElement(substitutionServiceTemplateId);
 
         this.substitutePlaceholders(subGraphDetector);
@@ -205,7 +205,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         return substitutionServiceTemplateId;
     }
 
-    public void substitutePlaceholders(TTopologyTemplate subGraphDetector) {
+    public void substitutePlaceholders(TTopologyTemplate subGraphDetector) throws PlaceholderSubstitutionException {
         ToscaIsomorphismMatcher isomorphismMatcher = new ToscaIsomorphismMatcher();
         int[] id = new int[1];
 
@@ -228,7 +228,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
         });
 
         if (matchingCandidates.size() == 0) {
-            return;
+            throw new PlaceholderSubstitutionException("Substitution cannot be executed: No suitable substitution candidate can be found");
         }
 
         PlaceholderSubstitutionCandidate substitution = this.substitutionChooser.chooseSubstitution(matchingCandidates, this.substitutionServiceTemplateId, this.topologyTemplate);

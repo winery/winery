@@ -63,7 +63,6 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     }
 
     startSubstitution(event: MouseEvent) {
-        debugger;
         event.stopPropagation();
         this.serverErrorOccurs = false;
         this.substitutionIsDone = false;
@@ -72,7 +71,6 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         let substitutionElementObservable = this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds);
 
         if (!this.substitutionElement) {
-            debugger;
             this.substitutionElement = substitutionElementObservable.subscribe(
                 value => this.handleWebSocketData(value),
                 error => this.handleError(error),
@@ -90,6 +88,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     restartSubstitution(event: MouseEvent): void {
         event.stopPropagation();
         this.substitutionIsDone = false;
+        this.serverErrorOccurs = false;
         //this.substitutionIsRunning = false;
         //this.substitutionIsLoading = false;
         this.selectedNodeTemplateIds.splice(0, this.selectedNodeTemplateIds.length);
@@ -107,7 +106,6 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     }
 
     private handleWebSocketData(value: SubstitutionElement) {
-        debugger;
         if (value) {
             this.substitutionIsLoading = false;
             this.substitutionCandidates = value.substitutionCandidates;
@@ -127,7 +125,6 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
                 );
             }
             if (value.errorMessage) {
-                debugger;
                 this.serverErrorOccurs = true;
                 this.alert.error(value.errorMessage);
                 this.substitutionIsRunning = false;

@@ -46,7 +46,12 @@ class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
         PlaceholderSubstitution placeholderSubstitution = new PlaceholderSubstitution(serviceTemplateId,
             (candidates, substitutionServiceTemplate, topologyTemplate) -> candidates.get(0));
 
-        ServiceTemplateId id = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
+        ServiceTemplateId id = null;
+        try {
+            id = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
+        } catch (PlaceholderSubstitutionException e) {
+            e.printStackTrace();
+        }
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);
         assertEquals(9, topologyTemplate.getNodeTemplates().size());

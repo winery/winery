@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import javax.websocket.CloseReason;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
@@ -102,6 +101,8 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                         TTopologyTemplate subgraphDetector = null;
                         try {
                             subgraphDetector = this.getSubgraphDetector(serviceTemplate, data.selectedNodeTemplateIds);
+                            element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
+                            element.currentTopology = RepositoryFactory.getRepository().getElement(element.serviceTemplateContainingSubstitution).getTopologyTemplate();
                         } catch (PlaceholderSubstitutionException e) {
                             try {
                                 PlaceholderSubstitutionElementApiData error = new PlaceholderSubstitutionElementApiData(null, null, null, e.getMessage());
@@ -112,9 +113,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
                                 jsonProcessingException.printStackTrace();
                             }
                         }
-                        element.serviceTemplateContainingSubstitution = placeholderSubstitution.substituteServiceTemplate(subgraphDetector);
-                        element.currentTopology = RepositoryFactory.getRepository().getElement(element.serviceTemplateContainingSubstitution).getTopologyTemplate();
-                        ;
+
                         try {
                             running = false;
                             this.sendAsync(element);
@@ -157,7 +156,7 @@ public class PlaceholderSubstitutionWebSocket extends AbstractWebSocket implemen
 
         //participant-aware placeholder selection - only nodes with the placeholder owning the service template are considered
         if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
-            boolean wrongParticipantSelection = listOfSelectedNodeTemplate.stream().anyMatch(nt -> ModelUtilities.getParticipant(nt).isPresent() && 
+            boolean wrongParticipantSelection = listOfSelectedNodeTemplate.stream().anyMatch(nt -> ModelUtilities.getParticipant(nt).isPresent() &&
                 !ModelUtilities.getParticipant(nt).get().equalsIgnoreCase(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate)));
             if (wrongParticipantSelection) {
                 throw new PlaceholderSubstitutionException("Substitution cannot be executed: Nodes which are owned by other participants have been selected");
