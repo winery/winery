@@ -131,7 +131,7 @@ public class ResearchObjectArchiveUploader {
                 httpPost.setHeader("X-Dataverse-key", apiToken);
                 MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                builder.addBinaryBody("file", is, ContentType.create("multipart/form-data"), filename);
+                builder.addBinaryBody("file", is, ContentType.create("application/roar"), filename);
                 HttpEntity entity = builder.build();
                 httpPost.setEntity(entity);
                 CloseableHttpResponse response = httpClient.execute(httpPost);
