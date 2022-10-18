@@ -14,7 +14,6 @@
 package org.eclipse.winery.repository.rest.resources._support;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -146,11 +145,14 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
     }
 
     public boolean hasCyclicDependency() {
-        TEntityType element = (TEntityType) this.getElement();
-        try {
-            ArrayList<TEntityType> parentsAndChild = requestRepository.getParentsAndChild(element);
-        } catch (RuntimeException e) {
-            return true;
+        // Currently, the hierarchy retrieval is only implemented for EntityTypes.
+        if (this.getElement() instanceof TEntityType) {
+            TEntityType element = (TEntityType) this.getElement();
+            try {
+                requestRepository.getParentsAndChild(element);
+            } catch (RuntimeException e) {
+                return true;
+            }
         }
 
         return false;
