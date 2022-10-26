@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.10.1</version>
+            <version>${com.fasterxml.jackson}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -429,12 +429,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>org.eclipse.winery.repository.rest*</excludePackageNames>
-                </configuration>
             </plugin>
             <plugin>
                 <!-- Spring Boot Maven Plugin

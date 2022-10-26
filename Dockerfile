@@ -1,5 +1,5 @@
-FROM maven:3-c-17 as builder
-RUN apt-get update -qq && apt-get install -qqy python build-essential
+FROM maven:3-openjdk-17 as builder
+#RUN apt-get update -qq && apt-get install -qqy python build-essential
 COPY . /tmp/winery
 WORKDIR /tmp/winery
 RUN mvn package -DskipTests=true -Dcheckstyle.skip=true -Dmaven.javadoc.skip=true -B
