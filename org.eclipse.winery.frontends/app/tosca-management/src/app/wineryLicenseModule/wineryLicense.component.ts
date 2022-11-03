@@ -82,6 +82,7 @@ export class WineryLicenseComponent implements OnInit {
                     (data) => {
                         this.currentLicenseText = data;
                         this.initialLicenseText = data;
+                        this.loading = false;
                     }),
                 catchError(() => {
                     this.handleMissingLicense();
@@ -98,12 +99,15 @@ export class WineryLicenseComponent implements OnInit {
                 secondCtrl: ['', Validators.required]
             });
 
-            // when license engine is used, get licenses from there
+            // when license engine is used and is running, get licenses from there
             observables.push(this.leService.getAllLicenses().pipe(
                 map(
                     (licenses) => {
                         this.options = licenses;
-                    })
+                    }),
+                catchError(() => {
+                    return Observable.of(null);
+                })
             ));
         } else {
             // else, get licenses from the local files
