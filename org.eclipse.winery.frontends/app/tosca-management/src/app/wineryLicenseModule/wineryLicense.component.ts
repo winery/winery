@@ -310,7 +310,7 @@ export class WineryLicenseComponent implements OnInit {
     select(query: string): string[] {
         const result: string[] = [];
         for (const license of this.options) {
-            if (license.toLowerCase().startsWith(query)) {
+            if (license.toLowerCase().startsWith(query.toLowerCase())) {
                 result.push(license);
             }
         }
