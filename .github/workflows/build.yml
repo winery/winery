@@ -19,8 +19,25 @@ jobs:
     steps:
       - id: skip_check
         uses: fkirc/skip-duplicate-actions@master
-  
+
   java11:
+    needs: pre_job
+    if: |
+      needs.pre_job.outputs.should_skip != 'true'
+      || needs.pre_job.outputs.docker_run_required == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 11
+          cache: 'maven'
+      - name: Build with Maven
+        run: mvn -Pjava -B package
+  
+  java17:
     needs: pre_job
     if: |
       needs.pre_job.outputs.should_skip != 'true'
@@ -35,7 +52,7 @@ jobs:
             echo "Log output should be shortend. Use .ifValidationFails()!";
             exit 1;
           fi
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
@@ -82,7 +99,7 @@ jobs:
           path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
 
   dockerBuild:
-    needs: [ java11, frontend ]
+    needs: [ java17, frontend ]
     runs-on: ubuntu-latest
     if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
     steps:
