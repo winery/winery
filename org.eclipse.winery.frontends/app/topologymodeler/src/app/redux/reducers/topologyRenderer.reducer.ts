@@ -336,7 +336,7 @@ export const TopologyRendererReducer =
                         ...lastState.buttonsState,
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
                     },
-                    activeResearchPlugin: !lastState.buttonsState.matchTopologyButton ? ResearchPlugin.SPLIT_MATCH: undefined,
+                    activeResearchPlugin: !lastState.buttonsState.matchTopologyButton ? ResearchPlugin.SPLIT_MATCH : undefined,
                 };
             case TopologyRendererActions.DETECT_PROBLEMS:
                 return {
@@ -430,9 +430,9 @@ export const TopologyRendererReducer =
                 break;
             case TopologyRendererActions.SET_SELECTEDNODES:
                 const nodes = <SelectedNodesAction>action;
-                if(nodes.selectedNodes) {
+                if (nodes.selectedNodes) {
                     return {
-                        ... lastState,
+                        ...lastState,
                         selectedNodes: nodes.selectedNodes
                     };
                 } else {

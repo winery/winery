@@ -17,13 +17,13 @@ import {
     AddEntityTypesAction, AssignDeploymentTechnologyAction, AssignParticipantAction, ChangeYamlPoliciesAction,
     DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction,
     DeleteRelationshipAction, DeleteYamlArtifactAction, HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances,
-    SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction, SendPaletteOpenedAction,
-    SetCapabilityAction, SetDeploymentArtifactAction, SetNodeVisuals, SetPolicyAction, SetPropertyAction,
-    SetRequirementAction, SetTargetLocation, SetYamlArtifactAction, SidebarChangeNodeName, SidebarMaxInstanceChanges,
-    SidebarMinInstanceChanges, SidebarStateAction, UpdateGroupDefinitionAction, UpdateNodeCoordinatesAction,
-    UpdateParticipantsAction, UpdateRelationshipNameAction, WineryActions, SendLiveModelingSidebarOpenedAction,
-    SetLastSavedJsonTopologyAction, SetNodeInstanceStateAction, SetNodePropertyValidityAction, SetNodeWorkingAction,
-    SetUnsavedChangesAction
+    SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction, SendLiveModelingSidebarOpenedAction,
+    SendPaletteOpenedAction, SetCapabilityAction, SetDeploymentArtifactAction, SetLastSavedJsonTopologyAction,
+    SetNodeInstanceStateAction, SetNodePropertyValidityAction, SetNodeVisuals, SetNodeWorkingAction, SetPolicyAction,
+    SetPropertyAction, SetRequirementAction, SetTargetLocation, SetUnsavedChangesAction, SetYamlArtifactAction,
+    SidebarChangeNodeName, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarStateAction,
+    UpdateGroupDefinitionAction, UpdateNodeCoordinatesAction, UpdateParticipantsAction, UpdateRelationshipNameAction,
+    WineryActions
 } from '../actions/winery.actions';
 import { TArtifact, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
@@ -450,11 +450,11 @@ export const WineryReducer =
                                             ...lastState.currentJsonTopology.relationshipTemplates[indexOfRelationshipPolicy].policies,
                                             relPolicy
                                         ]
-                                    : 
+                                        :
                                         [
                                             relPolicy
                                         ]
-                                    ) : relationshipTemplate
+                                ) : relationshipTemplate
                             )
                     }
                 };
@@ -475,7 +475,7 @@ export const WineryReducer =
             case WineryActions.DELETE_POLICY:
                 const deletedPolicy: any = (<DeletePolicyAction>action).nodePolicy.deletedPolicy;
                 let indexOfNodeWithDeletedPolicy: number = -1;
-                if(lastState.currentJsonTopology.nodeTemplates.map(n => n.id).includes((<DeletePolicyAction>action).nodePolicy.nodeId)){
+                if (lastState.currentJsonTopology.nodeTemplates.map(n => n.id).includes((<DeletePolicyAction>action).nodePolicy.nodeId)) {
                     indexOfNodeWithDeletedPolicy = lastState.currentJsonTopology.nodeTemplates
                         .map((n) => n.id)
                         .indexOf((<DeletePolicyAction>action).nodePolicy.nodeId);

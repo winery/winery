@@ -39,7 +39,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     substitutionIsRunning: boolean;
     substitutionIsLoading: boolean;
     substitutionIsDone: boolean;
-    serverErrorOccurs : boolean;
+    serverErrorOccurs: boolean;
     substitutionCandidates: PlaceholderSubstitutionCandidate[];
     selectedNodeTemplateIds: string[] = [];
 
@@ -68,7 +68,7 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         this.substitutionIsDone = false;
         this.substitutionIsRunning = true;
         this.substitutionIsLoading = true;
-        let substitutionElementObservable = this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds);
+        const substitutionElementObservable = this.webSocketService.startPlaceholderSubstitution(this.selectedNodeTemplateIds);
 
         if (!this.substitutionElement) {
             this.substitutionElement = substitutionElementObservable.subscribe(
@@ -89,8 +89,6 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         event.stopPropagation();
         this.substitutionIsDone = false;
         this.serverErrorOccurs = false;
-        //this.substitutionIsRunning = false;
-        //this.substitutionIsLoading = false;
         this.selectedNodeTemplateIds.splice(0, this.selectedNodeTemplateIds.length);
     }
 
@@ -103,6 +101,11 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
     ngOnDestroy(): void {
         this.webSocketService.cancel();
         this.substitutionElement = null;
+    }
+
+    openModeler(event: MouseEvent, name: string, targetNamespace: string) {
+        event.stopPropagation();
+        this.openModelerFor(name, targetNamespace, true);
     }
 
     private handleWebSocketData(value: SubstitutionElement) {
@@ -141,11 +144,6 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
         this.substitutionIsDone = true;
         this.substitutionIsLoading = false;
         this.substitutionIsRunning = false;
-    }
-
-    openModeler(event: MouseEvent, name: string, targetNamespace: string) {
-        event.stopPropagation();
-        this.openModelerFor(name, targetNamespace, true);
     }
 
     private openModelerFor(id: string, ns: string, readonly: boolean) {

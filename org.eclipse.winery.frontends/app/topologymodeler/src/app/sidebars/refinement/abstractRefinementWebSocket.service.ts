@@ -53,7 +53,7 @@ export abstract class AbstractRefinementWebSocketService<T> {
         if (subgraphDetector) {
             start.selectedNodeTemplateIds = subgraphDetector;
         }
-        
+
         if (!this.socket) {
             this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + endpoint);
             this.listener = new BehaviorSubject<T>(null);
@@ -66,7 +66,7 @@ export abstract class AbstractRefinementWebSocketService<T> {
         } else {
             this.socket.send(JSON.stringify(start));
         }
-        
+
         return this.observable;
     }
 

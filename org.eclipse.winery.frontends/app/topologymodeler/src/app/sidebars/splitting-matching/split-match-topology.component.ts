@@ -31,7 +31,7 @@ import { QNameApiData } from '../../../../../tosca-management/src/app/model/qNam
 
 
 @Component({
-    selector: 'split-match-topology',
+    selector: 'winery-split-match-topology',
     templateUrl: 'split-match-topology.component.html',
     providers: [
         SplitMatchTopologyService
@@ -84,7 +84,7 @@ export class SplitMatchTopologyComponent implements OnDestroy {
 
         }
         if (this.hostInjectionSelectionMap.get(nodeTemplateId) &&
-            this.hostInjectionSelectionMap.get(nodeTemplateId) == replacementFragment) {
+            this.hostInjectionSelectionMap.get(nodeTemplateId) === replacementFragment) {
             this.hostInjectionSelectionMap.delete(nodeTemplateId);
         } else {
             this.hostInjectionSelectionMap.set(nodeTemplateId, replacementFragment);
@@ -114,15 +114,12 @@ export class SplitMatchTopologyComponent implements OnDestroy {
         }
 
         this.hostInjectionSelectionMap.forEach((value: string, key: string) => {
-            let selection = new InjectionSelection();
+            const selection = new InjectionSelection();
             selection.nodeID = key;
             selection.injection = value;
             this.selectedFragments.hostInjections.push(selection);
         });
 
-        //for (let entry of Array.from(this.selectedFragments.hostInjections.entries())) {
-        //  this.completionSelection['hostInjections'][entry[0]] = entry[1];
-        //}
         this.splitMatchTopologyService.inject(this.selectedFragments).subscribe(
             res => this.solutionApplied(res),
             error => this.handleError(error)
@@ -142,19 +139,11 @@ export class SplitMatchTopologyComponent implements OnDestroy {
 
     private showInjectionOptions(injectionOptions: InjectorReplaceOptions) {
         this.injectionOptionsApiData = injectionOptions;
-        //this.hostInjectionOptionsMap = new Map<string, TTopologyTemplate[]>();
         this.hostOptions = new Array();
-        for (let entry of this.injectionOptionsApiData.hostInjections) {
+        for (const entry of this.injectionOptionsApiData.hostInjections) {
             this.hostOptions.push(entry);
         }
-        //for (let entry of Object.keys(this.injectionOptionsApiData.hostInjections)) {
-        //  this.hostInjectionOptionsMap.set(entry, injectionOptions.hostInjections[entry]);
-        //let option: InjectionOption;
-        //option = new InjectionOption();
-        //option.nodeTemplateId = entry;
-        //option.options = injectionOptions.hostInjections[entry];
-        //this.hostOptions.push(option);
-        //}
+        
         this.loading = false;
     }
 

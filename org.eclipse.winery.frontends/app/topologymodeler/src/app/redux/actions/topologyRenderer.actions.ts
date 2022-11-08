@@ -257,10 +257,11 @@ export class TopologyRendererActions {
     detectPatterns(): Action {
         return { type: TopologyRendererActions.DETECT_PATTERNS };
     }
-    
+
     setSelectedNodes(selectedNodesList: string[]): SelectedNodesAction {
         return {
             selectedNodes: selectedNodesList,
-            type: TopologyRendererActions.SET_SELECTEDNODES };
+            type: TopologyRendererActions.SET_SELECTEDNODES
+        };
     }
 }
