@@ -112,8 +112,8 @@ export class TNodeTemplate extends AbstractTEntity {
         const nodeTemplate = new TNodeTemplate(this.properties, this.id, this.type, this.name, this.minInstances, this.maxInstances,
             this.visuals, this.documentation, this.any, this.otherAttributes, this.x, this.y, this.capabilities,
             this.requirements, this.deploymentArtifacts, this.policies, this.artifacts, this.instanceState, this.valid, this.working, this._state);
-        
-        const namespace = '{'+ TOSCA_WINERY_EXTENSIONS_NAMESPACE + '}';
+
+        const namespace = '{' + TOSCA_WINERY_EXTENSIONS_NAMESPACE + '}';
         if (updatedAttribute === 'coordinates') {
             nodeTemplate.x = updatedValue.x;
             nodeTemplate.y = updatedValue.y;
