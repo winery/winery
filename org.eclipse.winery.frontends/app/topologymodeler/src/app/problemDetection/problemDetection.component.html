@@ -36,7 +36,7 @@
                 </div>
                 <div class="example-accordion-item-body"
                      role="region"
-                     
+
                      [attr.id]="'accordion-body-' + index"
                      [attr.aria-labelledby]="'accordion-header-' + index">
                     <mat-list>
@@ -74,49 +74,6 @@
     </div>
 </div>
 
-<!--<div id="ProblemDetectionView" *ngIf="!loading && problemFindings">
-    <div class="detectionContainer" style="margin-top: 1em; margin-left: 1em; margin-right: 1em" *ngIf="problemFindings.length > 0">
-        <a style="font-weight: bold">Detected Problems</a>
-        <accordion>
-            <accordion-group style="margin-top: 1em; margin-left: 1em; margin-right: 1em" [isOpen]="i === 0"
-                             heading="{{problem?.problem}}" panelClass="panel-info"
-                             *ngFor="let problem of problemFindings; let i = index;">
-                Findings:
-                <ul class="palette-ul">
-                    <li *ngFor="let finding of problem.findings" class="nav-item">
-                        <div class="btn btn-light btn-sm btn-block"
-                             (mouseover)="onHoverOver(finding)"
-                             (mouseleave)="hoverOut()" (click)="selectFinding(problem, finding)">
-                            <span *ngFor="let entry of finding">
-                            {{entry.componentId}},
-                        </span>
-                        </div>
-                    </li>
-                </ul>
-            </accordion-group>
-        </accordion>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="btn-group" style="width: 100%; margin-top: 1em;">
-                    <button type="button" class="btn btn-sm btn-primary"
-                            style="margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
-                            [disabled]="!selectedFinding" (click)="solve()">Solve
-                    </button>
-                    <button type="button" class="btn btn-sm btn-danger"
-                            style="margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
-                            (click)="cancel()">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="noProblemContainer" *ngIf="problemFindings.length == 0 ">
-        <a style="font-weight: bold">No problems are detected in the model.</a>
-    </div>
-</div>-->
-
-
 <div id="SolutionSelectionView" *ngIf="!loading && possibleSolutions">
     <div class="solutionsContainer" *ngIf="possibleSolutions.length > 0">
         <mat-list>
@@ -152,38 +109,3 @@
 <div class="AppliedFinished" *ngIf="applied">
     <a style="font-weight: bold">Solution successfully applied.</a>
 </div>
-
-<!--<div id="SolutionSelectionView" *ngIf="!loading && possibleSolutions">
-    <div class="solutionsContainer" style="margin-top: 1em; margin-left: 1em; margin-right: 1em" *ngIf="possibleSolutions.length > 0">
-        <a style="font-weight: bold">Possible Solutions</a>
-        <ul>
-            <li class="solution" *ngFor="let solution of possibleSolutions" (click)="selectSolution(solution)">
-                <a style="font-weight: bolder">{{solution.name}}</a><br>
-                <a style="font-weight: bold">More details:</a><br>
-                {{solution.description}}
-            </li>
-        </ul>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="btn-group" style="width: 100%; margin-top: 1em;">
-                    <button type="button" class="btn btn-sm btn-primary"
-                            style="margin-top: 1em; margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
-                            [disabled]="!selectedSolution" (click)="applySolution()">Apply
-                    </button>
-                    <button type="button" class="btn btn-sm btn-danger"
-                            style="margin-top: 1em; margin-left: 1em; margin-bottom: 1em; margin-right: 1em"
-                            (click)="cancel()">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="noSolutionContainer" *ngIf="possibleSolutions.length == 0 ">
-        <a style="font-weight: bold">No matching solution available.</a>
-    </div>
-</div>
-<div class="AppliedFinished" *ngIf="applied">
-    <a style="font-weight: bold">Solution successfully applied.</a>
-</div>-->
-

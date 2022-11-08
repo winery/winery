@@ -32,11 +32,9 @@ import org.eclipse.winery.model.tosca.extensions.OTParticipant;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.ParameterDefinition;
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -137,8 +135,8 @@ public class TTopologyTemplate extends TExtensibleElements {
 
     public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-                nodeTemplates.stream().map(TEntityTemplate.class::cast),
-                this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
+            nodeTemplates.stream().map(TEntityTemplate.class::cast),
+            this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
             .collect(Collectors.toList());
     }
 
@@ -168,8 +166,8 @@ public class TTopologyTemplate extends TExtensibleElements {
 
     public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-                this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
-                relationshipTemplates.stream().map(TEntityTemplate.class::cast))
+            this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
+            relationshipTemplates.stream().map(TEntityTemplate.class::cast))
             .collect(Collectors.toList());
     }
 

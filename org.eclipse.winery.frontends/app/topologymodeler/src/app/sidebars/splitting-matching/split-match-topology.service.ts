@@ -88,7 +88,6 @@ export class SplitMatchTopologyService {
             + '/'
             + encodeURIComponent(this.backendService.configuration.id)
             + '/injector/options';
-        //const matchUrl = this.backendService.configuration.elementPath + '/match';
         return this.http.get<InjectorReplaceOptions>(matchUrl, { headers: headers }
         );
     }

@@ -27,7 +27,6 @@ import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { EntityTypesModel } from '../models/entityTypesModel';
-import { debug } from 'util';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -38,10 +37,9 @@ import { Subscription } from 'rxjs/Subscription';
     ],
     styleUrls: ['problemDetection.component.css']
 })
-export class ProblemDetectionComponent implements OnDestroy{
-    
-    
-    
+export class ProblemDetectionComponent implements OnDestroy {
+
+
     loading = false;
     applied = false;
     problemFindings: ProblemFindings[];
@@ -50,8 +48,7 @@ export class ProblemDetectionComponent implements OnDestroy{
     selectedSolution: SolutionInputData;
     entityTypes: EntityTypesModel;
     private subscriptions: Subscription[] = [];
-    
-    
+
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
@@ -160,6 +157,6 @@ export class ProblemDetectionComponent implements OnDestroy{
         this.possibleSolutions = null;
         TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.entityTypes, this.configurationService.isYaml());
     }
-    
-    
+
+
 }

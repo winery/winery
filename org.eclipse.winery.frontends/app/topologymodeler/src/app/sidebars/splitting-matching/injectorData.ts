@@ -1,7 +1,3 @@
-import { TTopologyTemplate } from '../../models/ttopology-template';
-import { QName } from '../../../../../shared/src/app/model/qName';
-import { Optional } from '@angular/core';
-
 /*******************************************************************************
  * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
@@ -17,7 +13,7 @@ import { Optional } from '@angular/core';
  *******************************************************************************/
 
 export class InjectorReplaceData {
-    
+
     hostInjections?: InjectionSelection[];
     connectionInjections?: InjectionSelection[];
 
@@ -25,9 +21,8 @@ export class InjectorReplaceData {
         this.hostInjections = hostInjections;
         this.connectionInjections = connectionInjections;
     }
-    
-    
-    
+
+
 }
 
 export class InjectionSelection {
