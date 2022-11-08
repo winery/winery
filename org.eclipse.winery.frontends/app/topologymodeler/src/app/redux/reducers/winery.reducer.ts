@@ -474,7 +474,7 @@ export const WineryReducer =
                 };
             case WineryActions.DELETE_POLICY:
                 const deletedPolicy: any = (<DeletePolicyAction>action).nodePolicy.deletedPolicy;
-                let indexOfNodeWithDeletedPolicy: number = -1;
+                let indexOfNodeWithDeletedPolicy = -1;
                 if (lastState.currentJsonTopology.nodeTemplates.map(n => n.id).includes((<DeletePolicyAction>action).nodePolicy.nodeId)) {
                     indexOfNodeWithDeletedPolicy = lastState.currentJsonTopology.nodeTemplates
                         .map((n) => n.id)

@@ -143,7 +143,6 @@ export class SplitMatchTopologyComponent implements OnDestroy {
         for (const entry of this.injectionOptionsApiData.hostInjections) {
             this.hostOptions.push(entry);
         }
-        
         this.loading = false;
     }
 
