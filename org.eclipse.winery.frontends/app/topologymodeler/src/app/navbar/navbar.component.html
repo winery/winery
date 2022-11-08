@@ -76,7 +76,7 @@
                     (click)="toggleButton($event)"
                     [style.background-color]="getStyle(navbarButtonsState.buttonsState.propertiesButton)">
                 Properties
-                <span *wineryRepositoryFeatureToggle="configEnum.PropertyCheck" >
+                <span *wineryRepositoryFeatureToggle="configEnum.PropertyCheck">
                     <ng-template
                         *ngIf="navbarButtonsState.buttonsState.checkNodePropertiesButton; then squareCheck else square"></ng-template>
                     <ng-template #square>
@@ -277,6 +277,14 @@
                         (click)="exportCsar($event, 'edmm')">
                     Export EDMM
                 </button>
+                <button id="assignDeploymentTechnology" class="btn btn-sm align-middle dark-button-style"
+                        tooltip="Assign which nodes should be deployed using a certain deployment technology"
+                        tooltipPlacement="bottom"
+                        (click)="toggleButton($event)"
+                        [style.background-color]="getStyle(navbarButtonsState.buttonsState.assignDeploymentTechnologyButton)">
+                    Assign Deployment Technology
+                </button>
+
             </div>
 
             <div *wineryRepositoryFeatureToggle="configEnum.Radon" class="btn-group button-group"
@@ -379,7 +387,8 @@
             </div>
         </div>
 
-        <div *ngIf="!readonly && backendService.configuration.elementPath == 'graficprmmodelling'" class="btn-group button-group"
+        <div *ngIf="!readonly && backendService.configuration.elementPath == 'graficprmmodelling'"
+             class="btn-group button-group"
              dropdown>
             Only show selected Mapping Types:
             <select (change)="selectRelationshipType($event)"
