@@ -32,7 +32,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-public class EdmmUtils {
+public abstract class EdmmUtils {
 
     public static Map<String, Object> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
         ToscaLightChecker toscaLightChecker = getToscaLightChecker();
@@ -53,8 +53,8 @@ public class EdmmUtils {
 
         Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, EdmmType> typeMap = EdmmManager.forRepository(repository).getTypeMap();
-        Map<QName, EdmmType> oneToOneMap = EdmmManager.forRepository(repository).getOneToOneMap();
+        Map<QName, EdmmType> typeMap = EdmmManager.forRepository(repository).getToscaTypeMap();
+        Map<QName, EdmmType> oneToOneMap = EdmmManager.forRepository(repository).getToscaOneToOneMap();
 
         return new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
     }
@@ -69,5 +69,13 @@ public class EdmmUtils {
             .stream()
             .filter(entry -> toscaLightChecker.isToscaLightCompliant(entry.getValue()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public static String normalizeQName(QName qName) {
+        return qName.toString()
+            .replace("{", "")
+            .replace("}", "__")
+            .replace("/", "")
+            .replace(':', '_');
     }
 }

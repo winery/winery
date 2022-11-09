@@ -1,0 +1,67 @@
+---
+version: edm_1_0
+components:
+  test_ubuntu_w1-wip1_0:
+    type: http_opentosca.orgexampleapplicationsnodetypes__test_ubuntu_w1-wip1
+    properties:
+      name: test_ubuntu_w1-wip1
+  MySQL_DBMS:
+    relations:
+      - hosted_on: test_ubuntu_w1-wip1_0
+    type: mysql_dbms
+    properties:
+      port: '3306'
+      root_password: petclinic
+      name: dbms
+      version: '8'
+  MySQL_Database:
+    relations:
+      - hosted_on: MySQL_DBMS
+    type: mysql_database
+    properties:
+      password: petclinic
+      name: db
+      schema_name: petclinic
+      user: pc
+relation_types:
+  depends_on:
+    extends: null
+  hosted_on:
+    extends: depends_on
+component_types:
+  compute:
+    extends: base
+  database:
+    extends: base
+    properties:
+      password:
+        type: string
+      schema_name:
+        type: string
+      user:
+        type: string
+  http_opentosca.orgexampleapplicationsnodetypes__test_ubuntu_w1-wip1:
+    extends: compute
+    properties:
+      ip-address:
+        type: string
+  dbms:
+    extends: software_component
+    properties:
+      port:
+        type: integer
+      root_password:
+        type: string
+  software_component:
+    extends: base
+  mysql_dbms:
+    extends: dbms
+    properties:
+      port:
+        type: integer
+      root_password:
+        type: string
+      version:
+        type: string
+  mysql_database:
+    extends: database

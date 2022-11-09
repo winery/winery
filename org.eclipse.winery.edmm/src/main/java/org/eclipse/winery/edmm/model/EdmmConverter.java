@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.Environments;
+import org.eclipse.winery.edmm.EdmmUtils;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -279,7 +280,7 @@ public class EdmmConverter {
             entityGraph.addEntity(new MappingEntity(parentEntityId, entityGraph));
         }
 
-        EntityId typeEntityId = parentEntityId.extend(this.normalizeQName(toscaType.getQName()));
+        EntityId typeEntityId = parentEntityId.extend(EdmmUtils.normalizeQName(toscaType.getQName()));
         EdmmType edmmType = oneToOneMappings.get(toscaType.getQName());
 
         if (edmmType != null) {
@@ -402,13 +403,5 @@ public class EdmmConverter {
             }
         }
         return null;
-    }
-
-    private String normalizeQName(QName qName) {
-        return qName.toString()
-            .replace("{", "")
-            .replace("}", "__")
-            .replace("/", "")
-            .replace(':', '_');
     }
 }
