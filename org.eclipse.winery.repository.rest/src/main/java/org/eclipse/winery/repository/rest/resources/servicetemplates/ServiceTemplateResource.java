@@ -577,7 +577,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         Splitting splitting = new Splitting();
         TTopologyTemplate matchedHostsTopologyTemplate;
         TTopologyTemplate matchedConnectedTopologyTemplate;
-        
 
         if (hostInjectionSelections != null && !hostInjectionSelections.isEmpty()) {
             matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), hostInjectionSelections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);
