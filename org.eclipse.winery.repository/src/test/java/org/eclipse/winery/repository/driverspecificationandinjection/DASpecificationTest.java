@@ -41,6 +41,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
     @Test
     public void getArtifactTypeOfDA() throws Exception {
+        setRevisionTo("origin/plain");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);
@@ -61,6 +62,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
     @Test
     public void getNodeTemplatesWithAbstractDAs() throws Exception {
+        setRevisionTo("origin/plain");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);
@@ -75,6 +77,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
     @Test
     public void getArtifactTypeHierarchy() throws Exception {
+        setRevisionTo("origin/plain");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);
@@ -94,6 +97,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
     @Test
     public void getNodesWithSuitableConcreteDAs() throws Exception {
+        setRevisionTo("origin/plain");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);
@@ -113,6 +117,7 @@ public class DASpecificationTest extends TestWithGitBackedRepository {
 
     @Test
     public void getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode() throws Exception {
+        setRevisionTo("origin/plain");
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         assertNotNull(topologyTemplate);

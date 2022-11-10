@@ -27,16 +27,16 @@ import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.targetallocation.Criteria;
 import org.eclipse.winery.repository.targetallocation.util.TopologyWrapper;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //TODO Functionality must be removed from winery - not used
-@Ignore
+@Disabled
 public class MinHostsTest extends TestWithGitBackedRepository {
 
     @BeforeEach
