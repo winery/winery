@@ -21,11 +21,13 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Disabled
 class PlaceholderSubstitutionTest extends TestWithGitBackedRepository {
 
     public PlaceholderSubstitutionTest() {
