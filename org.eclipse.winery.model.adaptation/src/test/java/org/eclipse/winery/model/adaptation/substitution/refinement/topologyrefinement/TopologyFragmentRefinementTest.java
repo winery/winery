@@ -83,13 +83,6 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
         // region ********* mock server setup **********
         stubFor(post("/endpoint")
             .willReturn(aResponse()
-                .withHeader("Location", mockServer.getHttpBaseUrl() + "/endpoint/transformationResult?fileId=myFileId")
-                .withStatus(201)
-            )
-        );
-        
-        stubFor(get("/endpoint/transformationResult?fileId=myFileId")
-            .willReturn(aResponse()
                 .withHeader("Content-Disposition", "inline; filename=test.zip")
                 .withBody(
                     IOUtils.toByteArray(ClassLoader.getSystemClassLoader().getResource("__files/test.zip").toURI())
@@ -117,8 +110,6 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
 
             )
         );
-        
-        verify(getRequestedFor(urlEqualTo("/endpoint/transformationResult?fileId=myFileId")));
         // endregion
 
         assertNotNull(transformationResult);
