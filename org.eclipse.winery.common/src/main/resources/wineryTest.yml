@@ -30,4 +30,4 @@ deploymentArtifactRefinements:
         - qiskit
         - pyquil
     description: |
-      POST to { "file": "http://localhost:8080/winery/ns/at/files/file.py", "inputFormat": "qiskit", "outputLanguage": "pyquil"}
+      POST to { "file": "http://localhost:8080/winery/ns/at/files/file.py", "inputFormat": "qiskit", "outputFormat": "pyquil"}

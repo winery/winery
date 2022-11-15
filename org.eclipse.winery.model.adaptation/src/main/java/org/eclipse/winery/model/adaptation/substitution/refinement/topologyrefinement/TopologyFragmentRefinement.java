@@ -70,7 +70,6 @@ import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaGraph;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -292,9 +291,14 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                         httpPost.setEntity(multipartBuilder.build());
                         try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                             HttpEntity entity = response.getEntity();
-                            String fileName = IOUtils.toString(entity.getContent());
+
+                            if (response.getFirstHeader("Location") == null) {
+                                LOGGER.error("Location of translated file was not set!");
+                                return deploymentArtifact;
+                            }
 
                             String location = response.getFirstHeader("Location").getValue();
+
                             try (CloseableHttpResponse fileResponse = httpClient.execute(new HttpGet(location))) {
                                 ArtifactTemplateId translatedArtifactId = new ArtifactTemplateId(
                                     artifactTemplateId.getNamespace().getDecoded(),
@@ -306,6 +310,18 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                                     new TArtifactTemplate.Builder(translatedArtifactId.getXmlId().getDecoded(), mapping.getTargetArtifactType())
                                         .build()
                                 );
+
+                                String fileName = "translated";
+                                if (fileResponse.getFirstHeader("Content-Disposition") != null) {
+                                    String value = fileResponse.getFirstHeader("Content-Disposition").getValue();
+                                    if (value != null) {
+                                        for (String contentDisposition : value.split(" ")) {
+                                            if (contentDisposition.startsWith("filename=")) {
+                                                fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+                                            }
+                                        }
+                                    }
+                                }
 
                                 ArtifactTemplateFilesDirectoryId filesId = new ArtifactTemplateFilesDirectoryId(translatedArtifactId);
                                 InputStream contentStream = fileResponse.getEntity().getContent();
