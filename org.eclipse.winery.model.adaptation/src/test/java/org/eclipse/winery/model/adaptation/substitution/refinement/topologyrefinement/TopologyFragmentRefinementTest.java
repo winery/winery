@@ -14,8 +14,8 @@
 
 package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefinement;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,26 +23,27 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.DARefinementConfigurationObject;
+import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.commons.configuration2.YAMLConfiguration;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aMultipart;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -84,9 +85,8 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
         stubFor(post("/endpoint")
             .willReturn(aResponse()
                 .withHeader("Content-Disposition", "inline; filename=test.zip")
-                .withBody(
-                    IOUtils.toByteArray(ClassLoader.getSystemClassLoader().getResource("__files/test.zip").toURI())
-                )
+                .withHeader("Content-Type", "application/zip")
+                .withBodyFile("test.zip")
             )
         );
         // endregion
@@ -114,5 +114,12 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
 
         assertNotNull(transformationResult);
         assertNotEquals(testDa, transformationResult);
+
+        ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(new ArtifactTemplateId(transformationResult.getArtifactRef()));
+        RepositoryFileReference repositoryFileReference = new RepositoryFileReference(filesDirectoryId, "test.zip");
+        assertEquals(
+            Files.size(Paths.get(ClassLoader.getSystemClassLoader().getResource("__files/test.zip").toURI())), // 128 bytes
+            repository.getSize(repositoryFileReference)
+        );
     }
 }

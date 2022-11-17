@@ -202,6 +202,22 @@ public interface IRepository extends IWineryRepositoryCommon {
      */
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
 
+    /**
+     * Puts the given content to the given file. Replaces existing content.
+     * :warning: This method must only be used for streams that cannot be reset which seems to be the case for streams
+     * that are sending a file as a response from an HTTP request.
+     * <p>
+     * If the parent of the reference does not exist, it is created.
+     * <p>
+     * This method should not be used to write Definitions, calling it with the well-known Media Type
+     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a
+     * warning. For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * @param ref         the reference to the file
+     * @param inputStream the content to put into the file
+     * @throws IOException if something goes wrong
+     */
+    void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException;
+
     Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException;
 
     Path move(RepositoryFileReference refSource, RepositoryFileReference refTarget) throws IOException;

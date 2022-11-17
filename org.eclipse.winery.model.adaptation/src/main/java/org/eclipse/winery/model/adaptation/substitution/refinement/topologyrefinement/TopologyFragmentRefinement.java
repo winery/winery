@@ -16,7 +16,6 @@ package org.eclipse.winery.model.adaptation.substitution.refinement.topologyrefi
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
@@ -312,17 +311,22 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                             }
 
                             ArtifactTemplateFilesDirectoryId filesId = new ArtifactTemplateFilesDirectoryId(translatedArtifactId);
-                            InputStream contentStream = response.getEntity().getContent();
-                            repository.putContentToFile(
-                                new RepositoryFileReference(filesId, fileName),
-                                contentStream,
-                                BackendUtils.getMimeType(new BufferedInputStream(contentStream), fileName)
-                            );
+                            if (response.getEntity() != null) {
+                                try (BufferedInputStream contentStream = new BufferedInputStream(response.getEntity().getContent())) {
+                                    repository.putContentToFile(
+                                        new RepositoryFileReference(filesId, fileName),
+                                        contentStream
+                                    );
 
-                            BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
-                            return new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
-                                .setArtifactRef(translatedArtifactId.getQName())
-                                .build();
+                                    BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
+
+                                    return new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
+                                        .setArtifactRef(translatedArtifactId.getQName())
+                                        .build();
+                                }
+                            } else {
+                                LOGGER.error("Service did not respond with a translated file!");
+                            }
                         } catch (IOException e) {
                             LOGGER.error("Could not refine DA...!", e);
                             LOGGER.warn("Defaulting to already contained DA!");
@@ -336,6 +340,8 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                 }
             }
         }
+
+        LOGGER.warn("Using existing DA...");
 
         return deploymentArtifact;
     }
