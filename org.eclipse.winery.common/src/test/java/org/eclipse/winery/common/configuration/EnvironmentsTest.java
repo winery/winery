@@ -116,7 +116,7 @@ public class EnvironmentsTest {
         assertTrue(quantumTranslator.canRefine.to.contains("pyquil"));
         assertTrue(quantumTranslator.canRefine.to.contains("qiskit"));
         assertEquals(
-            "POST to { \"file\": \"http://localhost:8080/winery/ns/at/files/file.py\", \"inputFormat\": \"qiskit\", \"outputFormat\": \"pyquil\"}\n",
+            "This service is able to transform a generic qiskit quantum algorithm to a pyQuil alogorithm for execution on a Rigetti machine.\n",
             quantumTranslator.description
         );
     }
