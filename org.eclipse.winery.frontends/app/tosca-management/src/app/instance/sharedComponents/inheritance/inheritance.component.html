@@ -41,6 +41,10 @@
         </select>
     </div>
 
+    <div *ngIf="inheritanceApiData.cyclicInheritance" class="alert alert-danger">
+        There is a cyclic inheritance definition!
+    </div>
+
     <label class="control-label">Derived From</label>
     <ng-select #derivedFromSelector
                [disabled]="!sharedData?.currentVersion?.editable"

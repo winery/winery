@@ -43,8 +43,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Models a component instance with name, derived from, abstract, and final Tags are provided by
- * AbstractComponentInstanceResource <p> This class mirrors AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinalConfigurationBacked.
- * We did not include interfaces as the getters are currently only called at the jsp.
+ * AbstractComponentInstanceResource <p> This class mirrors
+ * AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinalConfigurationBacked. We did not include interfaces
+ * as the getters are currently only called at the jsp.
  */
 public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal extends AbstractComponentInstanceResource {
 
@@ -104,7 +105,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
         boolean tBoolean;
         try {
             method = this.getElement().getClass().getMethod(methodName);
-            tBoolean = (boolean)method.invoke(this.getElement());
+            tBoolean = (boolean) method.invoke(this.getElement());
         } catch (Exception e) {
             AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not get boolean " + methodName, e);
             throw new IllegalStateException(e);
@@ -141,5 +142,19 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
         element.setFinal(json.isFinal.equalsIgnoreCase("yes"));
 
         return RestUtils.persist(this);
+    }
+
+    public boolean hasCyclicDependency() {
+        // Currently, the hierarchy retrieval is only implemented for EntityTypes.
+        if (this.getElement() instanceof TEntityType) {
+            TEntityType element = (TEntityType) this.getElement();
+            try {
+                requestRepository.getParentsAndChild(element);
+            } catch (RuntimeException e) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -120,6 +120,11 @@ public class XmlRepository extends AbstractFileBasedRepository {
         }
     }
 
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        Path targetPath = this.ref2AbsolutePath(ref);
+        writeInputStreamToPath(targetPath, inputStream);
+    }
+
     @Override
     public void putDefinition(RepositoryFileReference ref, org.eclipse.winery.model.tosca.TDefinitions content) throws IOException {
         FromCanonical converter = new FromCanonical();

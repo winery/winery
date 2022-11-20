@@ -1,5 +1,6 @@
 {
     "isAbstract": "no",
     "isFinal": "no",
-    "derivedFrom": "(none)"
+    "derivedFrom": "(none)",
+    "cyclicInheritance": false
 }

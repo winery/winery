@@ -1036,6 +1036,7 @@ public class FromCanonical {
     private XOTDeploymentArtifactMapping convert(OTDeploymentArtifactMapping canonical) {
         XOTDeploymentArtifactMapping.Builder builder = new XOTDeploymentArtifactMapping.Builder(canonical.getId());
         builder.setArtifactType(canonical.getArtifactType());
+        builder.setTargetArtifactType(canonical.getTargetArtifactType());
         fillOTPrmMappingProperties(builder, canonical);
         return builder.build();
     }

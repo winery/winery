@@ -21,6 +21,7 @@ public class InheritanceResourceApiData {
     public String isAbstract;
     public String isFinal;
     public String derivedFrom;
+    public boolean cyclicInheritance;
 
     public InheritanceResourceApiData() {
     }
@@ -29,9 +30,10 @@ public class InheritanceResourceApiData {
         this.isAbstract = res.getTBoolean("getAbstract");
         this.isFinal = res.getTBoolean("getFinal");
         this.derivedFrom = res.getDerivedFrom() == null ? "(none)" : res.getDerivedFrom();
+        this.cyclicInheritance = res.hasCyclicDependency();
     }
 
     public String toString() {
-        return "InheritanceResourceJson: { isAbstract: " + this.isAbstract + ", isFinal: " + this.isFinal + ", derivedFrom: " + this.derivedFrom + " }";
+        return "InheritanceResourceJson: { isAbstract: " + this.isAbstract + ", isFinal: " + this.isFinal + ", derivedFrom: " + this.derivedFrom + ", cyclicInheritance: " + this.cyclicInheritance + " }";
     }
 }

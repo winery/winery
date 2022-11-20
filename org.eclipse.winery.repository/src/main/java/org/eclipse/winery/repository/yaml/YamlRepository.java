@@ -638,6 +638,12 @@ public class YamlRepository extends AbstractFileBasedRepository {
     }
 
     @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        Path targetPath = this.ref2AbsolutePath(ref);
+        writeInputStreamToPath(targetPath, inputStream);
+    }
+
+    @Override
     public void putDefinition(RepositoryFileReference ref, TDefinitions content) {
         try {
             YTServiceTemplate yaml = convertToYamlModel(ref, content);

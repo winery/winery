@@ -385,8 +385,8 @@ public class ToCanonical {
         if (xml.getImplementationArtifacts() != null) {
             builder.addImplementationArtifacts(
                 xml.getImplementationArtifacts().stream()
-                .map(this::convert)
-                .collect(Collectors.toList())
+                    .map(this::convert)
+                    .collect(Collectors.toList())
             );
         }
         builder.setTargetNamespace(xml.getTargetNamespace());
@@ -1113,6 +1113,7 @@ public class ToCanonical {
     private OTDeploymentArtifactMapping convert(XOTDeploymentArtifactMapping xml) {
         OTDeploymentArtifactMapping.Builder builder = new OTDeploymentArtifactMapping.Builder(xml.getId());
         builder.setArtifactType(xml.getArtifactType());
+        builder.setTargetArtifactType(xml.getTargetArtifactType());
         fillOTPrmMappingProperties(builder, xml);
         return builder.build();
     }

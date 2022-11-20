@@ -84,6 +84,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.no
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
+import org.eclipse.winery.repository.rest.resources.researchObject.ResearchObjectArchiveUploader;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.tags.TagsResource;
 import org.eclipse.winery.repository.yaml.export.YamlExporter;
@@ -324,6 +325,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             throw new UnsupportedOperationException();
         }
         return Response.noContent().build();
+    }
+
+    @POST
+    @Path("publishROAR")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishROAR(Map<String, String> map) {
+        return ResearchObjectArchiveUploader.publishROAR(this, requestRepository, map.get("privacyOption"));
     }
 
     @GET

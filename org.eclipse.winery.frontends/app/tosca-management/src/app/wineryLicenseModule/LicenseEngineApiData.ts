@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,21 +11,29 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { RefinementMappings } from '../RefinementMappings';
+export interface Software {
+    id: string;
+    name: string;
+    url: string;
+    branch: string;
+    status: Status;
+    files: number;
+    licensesEffective: Array<string>;
+    filesExcluded: number;
+    licensesAll: Array<string>;
+}
 
-export class DeploymentArtifactMapping extends RefinementMappings {
+export enum Status {
+    QUEUED = 'QUEUED',
+    UPLOADING = 'UPLOADING',
+    ANALYZING = 'ANALYZING',
+    FINISHED = 'FINISHED',
+    FAILED = 'FAILED',
+}
 
-    public static readonly idPrefix = 'artifactMap';
-
-    public artifactType: string;
-    public targetArtifactType: string;
-
-    constructor(id: number) {
-        super(id);
-    }
-
-    idPrefix(): string {
-        return DeploymentArtifactMapping.idPrefix;
-    }
-
+export interface License {
+    id: string;
+    name: string;
+    notes: string;
+    furtherInformation: Array<string>;
 }

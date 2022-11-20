@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,12 +23,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.model.researchobject.ResearchObject;
 import org.eclipse.winery.repository.JAXBSupport;
-
 import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.datatypes.ids.elements.ResearchObjectDirectoryId;
 
@@ -49,7 +51,7 @@ public class ResearchObjectUtils {
         return Paths.get(repository.getRepositoryRoot().toString(), BackendUtils.getPathInsideRepo(files_ref));
     }
 
-    private static ResearchObject getResearchObject(IRepository repository, ResearchObjectDirectoryId id) {
+    public static ResearchObject getResearchObject(IRepository repository, ResearchObjectDirectoryId id) {
         RepositoryFileReference data_xml_ref = getMetaDataXmlRef(id);
         if (repository.exists(data_xml_ref)) {
             Unmarshaller u = JAXBSupport.createUnmarshaller();
@@ -73,10 +75,10 @@ public class ResearchObjectUtils {
         return metadata;
     }
 
-    public static String putResearchObjectMetadata(ResearchObject.Metadata metadata, IRepository repository, ResearchObjectDirectoryId id) {
+    public static InputStream putResearchObjectMetadata(ResearchObject.Metadata metadata, IRepository repository, ResearchObjectDirectoryId id) {
         ResearchObject ro = getResearchObject(repository, id);
         ro.setMetadata(metadata);
-        return BackendUtils.getXMLAsString(ro, repository);
+        return getAsInputStream(ro, repository);
     }
 
     public static ResearchObject.Publication getResearchObjectPublication(IRepository repository, ResearchObjectDirectoryId id) {
@@ -87,10 +89,24 @@ public class ResearchObjectUtils {
         return publication;
     }
 
-    public static String putResearchObjectPublication(ResearchObject.Publication publication, IRepository repository, ResearchObjectDirectoryId id) {
+    public static InputStream putResearchObjectPublication(ResearchObject.Publication publication, IRepository repository, ResearchObjectDirectoryId id) {
         ResearchObject ro = getResearchObject(repository, id);
         ro.setPublication(publication);
-        return BackendUtils.getXMLAsString(ro, repository);
+        return getAsInputStream(ro, repository);
+    }
+
+    private static InputStream getAsInputStream(ResearchObject ro, IRepository repository) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Marshaller m = JAXBSupport.createMarshaller(true, repository.getNamespaceManager().asPrefixMapper());
+            m.marshal(ro, out);
+            byte[] data = out.toByteArray();
+            try (ByteArrayInputStream in = new ByteArrayInputStream(data)) {
+                return in;
+            }
+        } catch (IOException | JAXBException e) {
+            LOGGER.error("Could not read " + ro.getMetadata().getTitle(), e);
+            throw new IllegalStateException(e);
+        }
     }
 
     public static String correctPath(String pathString) {

@@ -18,6 +18,7 @@ ui:
     patternDetection: true
     liveModeling: true
     propertyCheck: true
+    licenseEngine: false
   endpoints:
     container: http://localhost:1337
     workflowmodeler: http://localhost:9527
@@ -25,6 +26,11 @@ ui:
     repositoryApiUrl: http://localhost:8080/winery
     repositoryUiUrl: http://localhost:4200/#
     edmmTransformationTool: http://localhost:5000/plugins/check-model-support
+    licenseEngine: http://localhost:7000/api/v1
+  darus:
+    server: https://demodarus.izus.uni-stuttgart.de
+    apiToken: token
+    dataverse: spielwiese
 repository:
   provider: file
   repositoryRoot: ""
