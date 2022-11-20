@@ -20,3 +20,14 @@ accountability:
   ethereum-authorization-smart-contract-address: authorizationsmartcontracttestaddress
   swarm-gateway-url: swarmgatewaytesturl
   ethereum-credentials-file-name: ""
+deploymentArtifactRefinements:
+  quantumQiskitTranslator:
+    url: http://localhost:7896/qiskit
+    canRefine:
+      from:
+        - qiskit
+      to:
+        - qiskit
+        - pyquil
+    description: |
+      This service is able to transform a generic qiskit quantum algorithm to a pyQuil alogorithm for execution on a Rigetti machine.
