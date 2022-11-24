@@ -215,6 +215,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                         .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNode.getId()))
                         .anyMatch(mapping -> {
                             if (ModelUtilities.isOfType(mapping.getArtifactType(), deploymentArtifact.getArtifactType(), this.artifactTypes)) {
+                                // only do the actual transformation in the transformation step, not the "is-applicable" step
                                 if (idMapping != null) {
                                     TNodeTemplate addedNode = topology.getNodeTemplate(idMapping.get(mapping.getRefinementElement().getId()));
                                     if (addedNode != null) {
@@ -286,46 +287,63 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
                         HttpPost httpPost = new HttpPost(service.url);
                         httpPost.setEntity(multipartBuilder.build());
-                        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                            ArtifactTemplateId translatedArtifactId = new ArtifactTemplateId(
-                                artifactTemplateId.getNamespace().getDecoded(),
-                                VersionSupport.getNewComponentVersionId(artifactTemplateId, mapping.getTargetArtifactType().getLocalPart()),
-                                false
-                            );
-                            this.repository.setElement(
-                                translatedArtifactId,
-                                new TArtifactTemplate.Builder(translatedArtifactId.getXmlId().getDecoded(), mapping.getTargetArtifactType())
-                                    .build()
-                            );
+                        LOGGER.info("Sending request: {}", httpPost);
 
-                            String fileName = "translated";
-                            if (response.getFirstHeader("Content-Disposition") != null) {
-                                String value = response.getFirstHeader("Content-Disposition").getValue();
-                                if (value != null) {
-                                    for (String contentDisposition : value.split(" ")) {
-                                        if (contentDisposition.startsWith("filename=") && contentDisposition.length() > "filename=".length() + 1) {
-                                            fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+                        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                            int statusCode = response.getStatusLine().getStatusCode();
+                            if (statusCode >= 200 && statusCode < 300) {
+                                ArtifactTemplateId translatedArtifactId = new ArtifactTemplateId(
+                                    artifactTemplateId.getNamespace().getDecoded(),
+                                    VersionSupport.getNewComponentVersionId(artifactTemplateId, mapping.getTargetArtifactType().getLocalPart()),
+                                    false
+                                );
+                                this.repository.setElement(
+                                    translatedArtifactId,
+                                    new TArtifactTemplate.Builder(translatedArtifactId.getXmlId().getDecoded(), mapping.getTargetArtifactType())
+                                        .setName(translatedArtifactId.getXmlId().getDecoded())
+                                        .build()
+                                );
+                                LOGGER.info("Created new Artifact Template with QName \"{}\"", translatedArtifactId.getQName());
+
+                                String fileName = "translated";
+                                if (response.getFirstHeader("Content-Disposition") != null) {
+                                    String value = response.getFirstHeader("Content-Disposition").getValue();
+                                    if (value != null) {
+                                        for (String contentDisposition : value.split(" ")) {
+                                            if (contentDisposition.startsWith("filename=") && contentDisposition.length() > "filename=".length() + 1) {
+                                                fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            ArtifactTemplateFilesDirectoryId filesId = new ArtifactTemplateFilesDirectoryId(translatedArtifactId);
-                            if (response.getEntity() != null) {
-                                try (BufferedInputStream contentStream = new BufferedInputStream(response.getEntity().getContent())) {
-                                    repository.putContentToFile(
-                                        new RepositoryFileReference(filesId, fileName),
-                                        contentStream
-                                    );
+                                LOGGER.info("Saving translated file \"{}\"", fileName);
+                                ArtifactTemplateFilesDirectoryId filesId = new ArtifactTemplateFilesDirectoryId(translatedArtifactId);
+                                if (response.getEntity() != null) {
+                                    try (BufferedInputStream contentStream = new BufferedInputStream(response.getEntity().getContent())) {
+                                        repository.putContentToFile(
+                                            new RepositoryFileReference(filesId, fileName),
+                                            contentStream
+                                        );
 
-                                    BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
+                                        BackendUtils.synchronizeReferences(RepositoryFactory.getRepository(), translatedArtifactId);
+                                        LOGGER.info("Successfully saved file!");
 
-                                    return new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
-                                        .setArtifactRef(translatedArtifactId.getQName())
-                                        .build();
+                                        TDeploymentArtifact translatedArtifact = new TDeploymentArtifact.Builder(deploymentArtifact.getName() + "-translated", mapping.getTargetArtifactType())
+                                            .setArtifactRef(translatedArtifactId.getQName())
+                                            .build();
+                                        LOGGER.info("Created \"{}\"", translatedArtifact);
+
+                                        return translatedArtifact;
+                                    }
+                                } else {
+                                    LOGGER.error("Service did not respond with a translated file!");
                                 }
                             } else {
-                                LOGGER.error("Service did not respond with a translated file!");
+                                LOGGER.error("Server responded with Status {} and error \"{}\"",
+                                    statusCode,
+                                    new String(response.getEntity().getContent().readAllBytes())
+                                );
                             }
                         } catch (IOException e) {
                             LOGGER.error("Could not refine DA...!", e);
@@ -334,14 +352,13 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     }
                 } catch (IOException e) {
                     LOGGER.error("Could not refine DA...!", e);
-                    LOGGER.warn("Defaulting to already contained DA!");
                 } catch (WineryRepositoryException e) {
                     LOGGER.error("Error while zipping the files in the artifact!", e);
                 }
             }
         }
 
-        LOGGER.warn("Using existing DA...");
+        LOGGER.warn("Defaulting to already contained DA!");
 
         return deploymentArtifact;
     }
