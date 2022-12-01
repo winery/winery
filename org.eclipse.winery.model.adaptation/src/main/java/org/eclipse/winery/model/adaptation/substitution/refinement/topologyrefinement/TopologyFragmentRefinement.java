@@ -282,7 +282,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
                     try (final InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray())) {
                         MultipartEntityBuilder multipartBuilder = MultipartEntityBuilder.create();
                         multipartBuilder.addBinaryBody(
-                            "files-zip",
+                            "file",
                             inputStream,
                             ContentType.APPLICATION_OCTET_STREAM,
                             "files.zip"
