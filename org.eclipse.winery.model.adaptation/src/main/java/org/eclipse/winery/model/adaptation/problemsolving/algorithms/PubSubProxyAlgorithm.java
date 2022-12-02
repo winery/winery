@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.problemsolving.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -28,6 +29,8 @@ import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+
+import org.bouncycastle.math.raw.Mod;
 
 public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
 
@@ -63,62 +66,34 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
         topology.addNodeTemplate(targetNodeProxy);
 
         setNewCoordinates(targetNodeProxy, targetNode, 300, 0);
-
-        TNodeTemplate targetNodeProxyReturn = new TNodeTemplate();
-        targetNodeProxyReturn.setType(OpenToscaBaseTypes.publisherProxy);
-        targetNodeProxyReturn.setName(OpenToscaBaseTypes.publisherProxy.getLocalPart());
-        targetNodeProxyReturn.setId(targetNode.getId() + "_proxy" + IdCounter++);
-        setNewCoordinates(targetNode, targetNodeProxyReturn, 150, 100);
-        topology.addNodeTemplate(targetNodeProxyReturn);
-
-        TNodeTemplate topicNode2 = new TNodeTemplate();
-        topicNode2.setType(OpenToscaBaseTypes.topic);
-        topicNode2.setName(OpenToscaBaseTypes.topic.getLocalPart());
-        topicNode2.setId(topicNode2.getName() + "_new" + IdCounter++);
-        setNewCoordinates(sourceNodeProxy, topicNode2, 300, 100);
-        topology.addNodeTemplate(topicNode2);
-
-        TNodeTemplate sourceNodeProxyReturn = new TNodeTemplate();
-        sourceNodeProxyReturn.setType(OpenToscaBaseTypes.subscriberProxy);
-        sourceNodeProxyReturn.setName(OpenToscaBaseTypes.subscriberProxy.getLocalPart());
-        sourceNodeProxyReturn.setId(sourceNode.getId() + "_proxy" + IdCounter++);
-        setNewCoordinates(topicNode2, sourceNodeProxyReturn, 300, 100);
-        topology.addNodeTemplate(sourceNodeProxyReturn);
-
-        setNewCoordinates(targetNodeProxy, targetNode, 300, 0);
-
+        
         TRelationshipTemplate newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNode, sourceNodeProxy,
-            ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
+            OpenToscaBaseTypes.httpConnectsTo, "httpconnectsTo", topology);
         topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
         newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxy, topicNode,
-            OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
+            OpenToscaBaseTypes.topicConnectsTo, "topicconnectsTo", topology);
         topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
         newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, topicNode,
-            OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
+            OpenToscaBaseTypes.topicConnectsTo, "topicconnectsTo", topology);
         topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
         newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, targetNode,
-            ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
-        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
-        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxyReturn, sourceNode,
-            ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
-        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
-        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(sourceNodeProxyReturn, topicNode2,
-            OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
-        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
-        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxyReturn, topicNode2,
-            OpenToscaBaseTypes.topicConnectsTo, "connectsTo", topology);
-        topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
-        newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNode, targetNodeProxyReturn,
-            ToscaBaseTypes.connectsToRelationshipType, "connectsTo", topology);
+            OpenToscaBaseTypes.httpConnectsTo, "httpconnectsTo", topology);
         topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
 
         //Add Requirements to the inserted Node Templates
         ModelUtilities.addRequirement(topicNode, OpenToscaBaseTypes.topicReqType, this.getUniqueReqID(topology));
-        ModelUtilities.addRequirement(topicNode2, OpenToscaBaseTypes.topicReqType, this.getUniqueReqID(topology));
         ModelUtilities.addRequirement(sourceNodeProxy, OpenToscaBaseTypes.proxyReqType, this.getUniqueReqID(topology));
-        ModelUtilities.addRequirement(sourceNodeProxyReturn, OpenToscaBaseTypes.proxyReqType, this.getUniqueReqID(topology));
         ModelUtilities.addRequirement(targetNodeProxy, OpenToscaBaseTypes.proxyReqType, this.getUniqueReqID(topology));
-        ModelUtilities.addRequirement(targetNodeProxyReturn, OpenToscaBaseTypes.proxyReqType, this.getUniqueReqID(topology));
+        
+        Optional<String> participantSource = ModelUtilities.getParticipant(sourceNode);
+        Optional<String> participantTarget = ModelUtilities.getParticipant(targetNode);
+        
+        if (participantSource.isPresent()) {
+            ModelUtilities.setParticipant(sourceNodeProxy, participantSource.get());
+        }
+        if (participantTarget.isPresent()) {
+            ModelUtilities.setParticipant(targetNodeProxy, participantTarget.get());
+        }
 
         //Add Driver to the Proxies
         TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(new ArtifactTemplateId(OpenToscaBaseTypes.abstractJava11DriverTemplate));
@@ -131,15 +106,7 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
             .Builder(this.getUniqueDAID(sourceNodeProxy, "Driver"), artifactTemplate.getType())
             .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
         sourceNodeProxy.setDeploymentArtifacts(sourceNodeProxyDAs);
-
-        List<TDeploymentArtifact> sourceNodeProxyReturnDAs = new ArrayList<>();
-        if (sourceNodeProxyReturn.getDeploymentArtifacts() != null && !sourceNodeProxyReturn.getDeploymentArtifacts().isEmpty()) {
-            sourceNodeProxyReturnDAs.addAll(sourceNodeProxyReturn.getDeploymentArtifacts());
-        }
-        sourceNodeProxyReturnDAs.add(new TDeploymentArtifact
-            .Builder(this.getUniqueDAID(sourceNodeProxyReturn, "Driver"), artifactTemplate.getType())
-            .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
-        sourceNodeProxyReturn.setDeploymentArtifacts(sourceNodeProxyReturnDAs);
+        
 
         List<TDeploymentArtifact> targetNodeProxyDAs = new ArrayList<>();
         if (targetNodeProxy.getDeploymentArtifacts() != null && !targetNodeProxy.getDeploymentArtifacts().isEmpty()) {
@@ -149,17 +116,11 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
             .Builder(this.getUniqueDAID(targetNodeProxy, "Driver"), artifactTemplate.getType())
             .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
         targetNodeProxy.setDeploymentArtifacts(targetNodeProxyDAs);
-
-        List<TDeploymentArtifact> targetNodeProxyReturnDAs = new ArrayList<>();
-        if (targetNodeProxyReturn.getDeploymentArtifacts() != null && !targetNodeProxyReturn.getDeploymentArtifacts().isEmpty()) {
-            targetNodeProxyReturnDAs.addAll(targetNodeProxyReturn.getDeploymentArtifacts());
-        }
-        targetNodeProxyReturnDAs.add(new TDeploymentArtifact
-            .Builder(this.getUniqueDAID(targetNodeProxyReturn, "Driver"), artifactTemplate.getType())
-            .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
-        targetNodeProxyReturn.setDeploymentArtifacts(targetNodeProxyReturnDAs);
         
-        topology.getNodeTemplateOrRelationshipTemplate().remove(oldConnection);
+        List<TRelationshipTemplate> relationshipTemplates = topology.getRelationshipTemplates();
+        relationshipTemplates.remove(oldConnection);
+        topology.setRelationshipTemplates(relationshipTemplates);
+        
 
         return true;
     }

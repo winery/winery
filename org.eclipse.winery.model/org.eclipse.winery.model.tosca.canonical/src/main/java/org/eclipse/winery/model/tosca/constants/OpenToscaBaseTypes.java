@@ -45,6 +45,7 @@ public class OpenToscaBaseTypes {
     public static final QName proxyReqType = QName.valueOf("{http://opentosca.org/requirementtypes}Java11Runtime");
     public static final QName abstractJava11DriverTemplate = QName.valueOf("{http://opentosca.org/driverinjection/artifacttemplates}Abstract-Java11Driver");
     public static final QName topicConnectsTo = QName.valueOf("{http://opentosca.org/driverinjection/relationshiptypes}ConnectsToTopic");
+    public static final QName httpConnectsTo = QName.valueOf("{http://opentosca.org/problemdetection/relationshiptypes}HTTPConnectsTo");
     //endregion
     
     //region ********** multiparticipant-placeholder **********
