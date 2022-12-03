@@ -108,6 +108,7 @@ import org.eclipse.winery.repository.splitting.SplittingException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.bouncycastle.math.raw.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -413,17 +414,20 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 TNodeTemplate nodeTemplateWithOpenReq = entry.getValue();
                 // get type of node template with open requirements
                 NodeTypeId id = new NodeTypeId(nodeTemplateWithOpenReq.getType());
-                TNodeType sourceNodeType = repo.getElement(id);
+                TNodeType elementNodeType = repo.getElement(id);
 
-                List<TInterface> sourceNodeTypeInterfaces = sourceNodeType.getInterfaces();
-                if (sourceNodeTypeInterfaces != null) {
-                    for (TInterface tInterface : sourceNodeTypeInterfaces) {
-                        // TODO: make this more safe
-                        for (TOperation tOperation : tInterface.getOperations()) {
-                            List<TParameter> inputParameters = tOperation.getInputParameters();
-                            if (inputParameters != null) {
-                                for (TParameter inputParameter : inputParameters) {
-                                    generateInputParameters(propertyDefinitionKVList, placeholderNodeTemplateProperties, sourceNodeType, inputParameter);
+                List<TInterface> allInterfaces = elementNodeType.getInterfaces();
+                if (allInterfaces != null && allInterfaces.isEmpty()) {
+                    List<TInterface> sourceNodeTypeInterfaces = allInterfaces.stream().filter(tInterface -> !tInterface.getIdFromIdOrNameField().contains("connect")).collect(Collectors.toList());
+                    if (sourceNodeTypeInterfaces != null) {
+                        for (TInterface tInterface : sourceNodeTypeInterfaces) {
+                            // TODO: make this more safe
+                            for (TOperation tOperation : tInterface.getOperations()) {
+                                List<TParameter> inputParameters = tOperation.getInputParameters();
+                                if (inputParameters != null) {
+                                    for (TParameter inputParameter : inputParameters) {
+                                        generateInputParameters(propertyDefinitionKVList, placeholderNodeTemplateProperties, elementNodeType, inputParameter);
+                                    }
                                 }
                             }
                         }
@@ -431,20 +435,26 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 }
 
                 List<TRelationshipTemplate> incomingRelationshipTemplates = ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, nodeTemplateWithOpenReq);
-                List<TParameter> inputParameters = splitting.getInputParamListofIncomingRelationshipTemplates(topologyTemplate, incomingRelationshipTemplates);
-                for (TParameter inputParameter : inputParameters) {
-                    String prefixTARGET = "TARGET_";
-                    String prefixSOURCE = "SOURCE_";
-                    String inputParamName = inputParameter.getName();
-                    if (inputParamName.contains(prefixTARGET)) {
-                        inputParamName = inputParamName.replaceAll(prefixTARGET, "");
+                for (TRelationshipTemplate incomingRelation : incomingRelationshipTemplates) {
+                    List<TParameter> inputParameters = splitting.getInputParamListofIncomingRelationshipTemplate(topologyTemplate, incomingRelation);
+                    for (TParameter inputParameter : inputParameters) {
+                        String prefixTARGET = "TARGET_";
+                        String prefixSOURCE = "SOURCE_";
+                        String inputParamName = inputParameter.getName();
+                        if (inputParamName.contains(prefixTARGET)) {
+                            inputParamName = inputParamName.replaceAll(prefixTARGET, "");
+                        }
+                        if (inputParamName.contains(prefixSOURCE)) {
+                            inputParamName = inputParamName.replaceAll(prefixSOURCE, "");
+                        }
+                        inputParameter.setName(inputParamName);
+                        
+                        TNodeTemplate relationSourceTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelation);
+                        Map<String, String> relationSourceProperties = ModelUtilities.getPropertiesKV(relationSourceTemplate);
+                        TNodeTemplate relationTargetTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelation);
+                        Map<String, String> relationTargetTProperties = ModelUtilities.getPropertiesKV(relationTargetTemplate);
+                        generateInputParametersForIncomingRelations(propertyDefinitionKVList, placeholderNodeTemplateProperties, relationSourceProperties, relationTargetTProperties, inputParameter);
                     }
-                    if (inputParamName.contains(prefixSOURCE)) {
-                        inputParamName = inputParamName.replaceAll(prefixSOURCE, "");
-                    }
-                    inputParameter.setName(inputParamName);
-
-                    generateInputParameters(propertyDefinitionKVList, placeholderNodeTemplateProperties, sourceNodeType, inputParameter);
                 }
 
                 // get required capability type of open requirement
@@ -454,7 +464,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                 TNodeType placeholderNodeType = splitting.createPlaceholderNodeType(nodeTemplateWithOpenReq.getName());
                 QName placeholderQName = new QName(placeholderNodeType.getTargetNamespace(), placeholderNodeType.getName());
 
-                WinerysPropertiesDefinition winerysPropertiesDefinition = sourceNodeType.getWinerysPropertiesDefinition();
+                WinerysPropertiesDefinition winerysPropertiesDefinition = elementNodeType.getWinerysPropertiesDefinition();
                 if (Objects.isNull(winerysPropertiesDefinition)) {
                     winerysPropertiesDefinition = new WinerysPropertiesDefinition();
                 }
@@ -521,10 +531,29 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
     private void generateInputParameters(List<PropertyDefinitionKV> propertyDefinitionKVList, LinkedHashMap<String, String> placeholderNodeTemplateProperties, TNodeType sourceNodeType, TParameter inputParameter) {
         PropertyDefinitionKV inputParamKV = new PropertyDefinitionKV(inputParameter.getName(), inputParameter.getType());
         if (sourceNodeType.getWinerysPropertiesDefinition() != null &&
-            !sourceNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().contains(inputParamKV)
+            !sourceNodeType.getWinerysPropertiesDefinition().getPropertyDefinitions().stream().anyMatch(p -> p.getKey().equals(inputParameter.getName()))
             && !propertyDefinitionKVList.contains(inputParamKV)) {
             propertyDefinitionKVList.add(inputParamKV);
             placeholderNodeTemplateProperties.put(inputParameter.getName(), "get_input: " + inputParameter.getName());
+        } else if (sourceNodeType.getWinerysPropertiesDefinition() == null && !propertyDefinitionKVList.contains(inputParamKV)) {
+            propertyDefinitionKVList.add(inputParamKV);
+            placeholderNodeTemplateProperties.put(inputParameter.getName(), "get_input: " + inputParameter.getName());
+        }
+    }
+
+    private void generateInputParametersForIncomingRelations(List<PropertyDefinitionKV> propertyDefinitionKVList, LinkedHashMap<String, String> placeholderNodeTemplateProperties, 
+                                                             Map<String, String> sourceTemplateProperties,
+                                                             Map<String, String> targetTemplateProperties, TParameter inputParameter) {
+        PropertyDefinitionKV inputParamKV = new PropertyDefinitionKV(inputParameter.getName(), inputParameter.getType());
+        if (!propertyDefinitionKVList.contains(inputParamKV) && ((sourceTemplateProperties != null &&
+            !sourceTemplateProperties.keySet().stream().anyMatch(p -> p.equals(inputParameter.getName()))) ||
+            sourceTemplateProperties == null)) {
+            if ((targetTemplateProperties != null &&
+                !targetTemplateProperties.keySet().stream().anyMatch(p -> p.equals(inputParameter.getName()))) ||
+                targetTemplateProperties == null) {
+                propertyDefinitionKVList.add(inputParamKV);
+                placeholderNodeTemplateProperties.put(inputParameter.getName(), "get_input: " + inputParameter.getName());
+            }
         }
     }
 
@@ -577,7 +606,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         Splitting splitting = new Splitting();
         TTopologyTemplate matchedHostsTopologyTemplate;
         TTopologyTemplate matchedConnectedTopologyTemplate;
-        
 
         if (hostInjectionSelections != null && !hostInjectionSelections.isEmpty()) {
             matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), hostInjectionSelections, InjectRemoval.REMOVE_REPLACED_AND_SUCCESSORS);

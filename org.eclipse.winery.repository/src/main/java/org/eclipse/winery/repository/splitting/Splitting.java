@@ -266,39 +266,37 @@ public class Splitting {
         return placeholderNodeTemplate;
     }
 
-    public List<TParameter> getInputParamListofIncomingRelationshipTemplates(TTopologyTemplate
-                                                                                 topologyTemplate, List<TRelationshipTemplate> listOfIncomingRelationshipTemplates) {
+    public List<TParameter> getInputParamListofIncomingRelationshipTemplate(TTopologyTemplate
+                                                                                 topologyTemplate, TRelationshipTemplate incomingRelationshipTemplate) {
         List<TParameter> listOfInputs = new ArrayList<>();
         IRepository repo = RepositoryFactory.getRepository();
-        for (TRelationshipTemplate incomingRelationshipTemplate : listOfIncomingRelationshipTemplates) {
-            TNodeTemplate incomingNodetemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
-            NodeTypeId incomingNodeTypeId = new NodeTypeId(incomingNodetemplate.getType());
-            TNodeType incomingNodeType = repo.getElement(incomingNodeTypeId);
-            List<TInterface> incomingNodeTypeInterfaces = incomingNodeType.getInterfaces();
-            RelationshipTypeId incomingRelationshipTypeId = new RelationshipTypeId(incomingRelationshipTemplate.getType());
+        TNodeTemplate incomingNodetemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
+        NodeTypeId incomingNodeTypeId = new NodeTypeId(incomingNodetemplate.getType());
+        TNodeType incomingNodeType = repo.getElement(incomingNodeTypeId);
+        List<TInterface> incomingNodeTypeInterfaces = incomingNodeType.getInterfaces();
+        RelationshipTypeId incomingRelationshipTypeId = new RelationshipTypeId(incomingRelationshipTemplate.getType());
 
-            if (incomingNodeTypeInterfaces != null && !incomingNodeTypeInterfaces.isEmpty()) {
-                TInterface relevantInterface = null;
-                List<TInterface> connectionInterfaces = incomingNodeTypeInterfaces.stream().filter(tInterface -> tInterface.getIdFromIdOrNameField().contains("connection")).collect(Collectors.toList());
-                if (connectionInterfaces.size() > 1) {
-                    TNodeTemplate targetNodeTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
-                    for (TInterface tInterface : connectionInterfaces) {
-                        int separator = tInterface.getIdFromIdOrNameField().lastIndexOf("/");
-                        String prefixRelation = tInterface.getIdFromIdOrNameField().substring(separator + 1);
-                        if (targetNodeTemplate.getName() != null && targetNodeTemplate.getName().toLowerCase().contains(prefixRelation.toLowerCase())) {
-                            relevantInterface = tInterface;
-                        }
+        if (incomingNodeTypeInterfaces != null && !incomingNodeTypeInterfaces.isEmpty()) {
+            TInterface relevantInterface = null;
+            List<TInterface> connectionInterfaces = incomingNodeTypeInterfaces.stream().filter(tInterface -> tInterface.getIdFromIdOrNameField().contains("connect")).collect(Collectors.toList());
+            if (connectionInterfaces.size() > 1) {
+                TNodeTemplate targetNodeTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
+                for (TInterface tInterface : connectionInterfaces) {
+                    int separator = tInterface.getIdFromIdOrNameField().lastIndexOf("/");
+                    String prefixRelation = tInterface.getIdFromIdOrNameField().substring(separator + 1);
+                    if (targetNodeTemplate.getName() != null && targetNodeTemplate.getName().toLowerCase().contains(prefixRelation.toLowerCase())) {
+                        relevantInterface = tInterface;
                     }
-                } else if (connectionInterfaces.size() == 1) {
-                    relevantInterface = connectionInterfaces.get(0);
                 }
+            } else if (connectionInterfaces.size() == 1) {
+                relevantInterface = connectionInterfaces.get(0);
+            }
 
-                if (relevantInterface != null) {
-                    for (TOperation tOperation : relevantInterface.getOperations()) {
-                        List<TParameter> inputParameters = tOperation.getInputParameters();
-                        if (inputParameters != null) {
-                            listOfInputs.addAll(inputParameters);
-                        }
+            if (relevantInterface != null) {
+                for (TOperation tOperation : relevantInterface.getOperations()) {
+                    List<TParameter> inputParameters = tOperation.getInputParameters();
+                    if (inputParameters != null) {
+                        listOfInputs.addAll(inputParameters);
                     }
                 }
             }
