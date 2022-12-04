@@ -115,6 +115,12 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
         targetNodeProxyDAs.add(new TDeploymentArtifact
             .Builder(this.getUniqueDAID(targetNodeProxy, "Driver"), artifactTemplate.getType())
             .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
+        
+        TArtifactTemplate subscriberDA = RepositoryFactory.getRepository().getElement(new ArtifactTemplateId(OpenToscaBaseTypes.subscriberProxyDA));
+        targetNodeProxyDAs.add(new TDeploymentArtifact
+            .Builder(this.getUniqueDAID(targetNodeProxy, "Subscriber_DA"), subscriberDA.getType())
+            .setArtifactRef(OpenToscaBaseTypes.subscriberProxyDA).build());
+
         targetNodeProxy.setDeploymentArtifacts(targetNodeProxyDAs);
         
         List<TRelationshipTemplate> relationshipTemplates = topology.getRelationshipTemplates();
