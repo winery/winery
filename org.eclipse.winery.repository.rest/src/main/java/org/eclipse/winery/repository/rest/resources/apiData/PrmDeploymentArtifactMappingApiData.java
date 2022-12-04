@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PrmDeploymentArtifactMappingApiData extends AbstractPrmMappingElement {
 
     public QName artifactType;
+    public QName targetArtifactType;
 
     public PrmDeploymentArtifactMappingApiData() {
     }
@@ -32,6 +33,7 @@ public class PrmDeploymentArtifactMappingApiData extends AbstractPrmMappingEleme
     public OTDeploymentArtifactMapping createDeploymentArtifactMapping(TEntityTemplate detectorNodeTemplate, TEntityTemplate refinementNodeTemplate) {
         return new OTDeploymentArtifactMapping(new OTDeploymentArtifactMapping.Builder(this.id)
             .setArtifactType(this.artifactType)
+            .setTargetArtifactType(this.targetArtifactType)
             .setDetectorElement(detectorNodeTemplate)
             .setRefinementElement(refinementNodeTemplate)
         );

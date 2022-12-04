@@ -48,11 +48,17 @@ ENV WINERY_FEATURE_UPDATE_TEMPLATES false
 ENV WINERY_FEATURE_LIVE_MODELING false
 ENV WINERY_FEATURE_PROPERTY_CHECK false
 ENV WINERY_FEATURE_RESEARCH_OBJECT false
+ENV WINERY_FEATURE_LICENSE_ENGINE false
+ENV LICENSE_ENGINE_HOSTNAME localhost
+ENV LICENSE_ENGINE_PORT 7000
 ENV DOCKERIZE_VERSION v0.6.1
 ENV CHE_URL "che.localhost"
 ENV CHE_URL_PROTOCOL "http"
 ENV GITHUB_CLIENT_ID ""
 ENV GITHUB_CLIENT_SECRET ""
+ENV DARUS_HOSTNAME "demodarus.izus.uni-stuttgart.de"
+ENV DARUS_API_TOKEN ""
+ENV DARUS_DATAVERSE "spielwiese"
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \

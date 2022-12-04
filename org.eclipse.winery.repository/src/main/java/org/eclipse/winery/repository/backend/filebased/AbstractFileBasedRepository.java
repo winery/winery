@@ -587,9 +587,12 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         FileUtils.createDirectory(targetPath.getParent());
 
         try {
-            Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.debug("Wrote {} bytes to \"{}\"",
+                Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING),
+                targetPath
+            );
         } catch (IllegalStateException e) {
-            LOGGER.debug("Guessing that stream with length 0 is to be written to a file", e);
+            LOGGER.warn("Guessing that stream with length 0 is to be written to a file", e);
             // copy throws an "java.lang.IllegalStateException: Stream already closed" if the InputStream contains 0 bytes
             // For instance, this case happens if SugarCE-6.4.2.zip.removed is tried to be uploaded
             // We work around the Java7 issue and create an empty file

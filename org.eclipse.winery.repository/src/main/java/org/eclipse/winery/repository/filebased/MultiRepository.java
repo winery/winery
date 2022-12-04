@@ -486,6 +486,13 @@ public class MultiRepository implements IWrappingRepository {
     }
 
     @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        IRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
+        repository.putContentToFile(ref, inputStream);
+        addNamespacesToRepository(repository, ref);
+    }
+
+    @Override
     public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
         IRepository repository = RepositoryUtils.getRepositoryByRef(ref, this);
         return repository.getAllDirsAndFiles(ref, depth);

@@ -97,6 +97,7 @@ import org.eclipse.winery.repository.rest.resources._support.dataadapter.injecti
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.NodeInjectionOptions;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.edmm.EdmmResource;
+import org.eclipse.winery.repository.rest.resources.researchObject.ResearchObjectResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;

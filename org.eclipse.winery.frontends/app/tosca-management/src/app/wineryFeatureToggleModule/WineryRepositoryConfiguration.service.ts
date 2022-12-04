@@ -41,6 +41,7 @@ export interface WineryConfiguration {
         yaml: boolean;
         patternDetection: boolean;
         normalization: boolean;
+        licenseEngine: boolean;
     };
     endpoints: {
         bpmnModeler: string;
@@ -51,12 +52,18 @@ export interface WineryConfiguration {
         eclipseChe: string;
         tops: string;
         deploymentNormalizationAssistant: string;
+        licenseEngine: string;
     };
     git: {
         clientId: string;
         accessToken: string;
         tokenType: string;
         username: string;
+    };
+    darus: {
+        server: string;
+        apiToken: string;
+        dataverse: string;
     };
 }
 

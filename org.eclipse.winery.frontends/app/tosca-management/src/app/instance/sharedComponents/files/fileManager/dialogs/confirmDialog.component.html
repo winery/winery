@@ -11,11 +11,12 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<h4 mat-dialog-title>Are you sure you want</h4>
-<h4 *ngIf="!data.isFile" mat-dialog-title>to delete this folder?</h4>
-<h4 *ngIf="data.isFile" mat-dialog-title>to delete this file?</h4>
-<h3 mat-dialog-title><strong>{{data.name}}</strong></h3>
+<h4 *ngIf="!data.isFile" mat-dialog-title>Delete folder</h4>
+<h4 *ngIf="data.isFile" mat-dialog-title>Delete file</h4>
 
+<mat-dialog-content>
+    <p> Are you sure you want to delete <strong>{{data.name}}</strong>? </p>
+</mat-dialog-content>
 
 <mat-dialog-actions>
     <button mat-raised-button mat-dialog-close="delete" color="warn">Delete</button>

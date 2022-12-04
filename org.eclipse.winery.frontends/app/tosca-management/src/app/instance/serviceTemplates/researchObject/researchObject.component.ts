@@ -13,7 +13,6 @@
  *******************************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { ActivatedRoute } from '@angular/router';
 import { ResearchObjectService } from './researchObject.service';
 
 @Component({
@@ -23,15 +22,11 @@ import { ResearchObjectService } from './researchObject.service';
 })
 export class ResearchObjectComponent implements OnInit {
 
-    urlSegment: string;
-
     constructor(private service: ResearchObjectService,
-                private iService: InstanceService,
-                private route: ActivatedRoute) {
-        this.route.url.subscribe(data => this.urlSegment = data[0].path);
+                private iService: InstanceService) {
     }
 
     ngOnInit() {
-        this.service.setBaseUrl(this.iService.path + '/' + this.urlSegment + '/');
+        this.service.setBaseUrl(this.iService.path);
     }
 }

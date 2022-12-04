@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources.servicetemplates;
+package org.eclipse.winery.repository.rest.resources.researchObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +45,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ResearchObjectFilesD
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.FileOrFolderElementApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.FileApiData;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -88,7 +89,7 @@ public class ResearchObjectResource {
     @Path("metadata")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putMetadata(ResearchObject.Metadata metadata) {
-        String content = ResearchObjectUtils.putResearchObjectMetadata(metadata, repository, this.researchObjectDirectoryId);
+        InputStream content = ResearchObjectUtils.putResearchObjectMetadata(metadata, repository, this.researchObjectDirectoryId);
         return RestUtils.putContentToFile(this.metadata_xml_ref, content, MediaType.TEXT_XML_TYPE);
     }
 
@@ -103,7 +104,7 @@ public class ResearchObjectResource {
     @Path("publication")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putPublication(ResearchObject.Publication publication) {
-        String content = ResearchObjectUtils.putResearchObjectPublication(publication, repository, this.researchObjectDirectoryId);
+        InputStream content = ResearchObjectUtils.putResearchObjectPublication(publication, repository, this.researchObjectDirectoryId);
         return RestUtils.putContentToFile(this.metadata_xml_ref, content, MediaType.TEXT_XML_TYPE);
     }
 
