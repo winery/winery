@@ -186,6 +186,7 @@ public class BackendUtils {
 
     private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
+    private static int IdCounter = 1;
     /**
      * @return true if given fileDate is newer then the modified date (or modified is null)
      */
@@ -544,8 +545,21 @@ public class BackendUtils {
         if (nodeTemplate.getPolicies() != null) {
             nodeTemplateClone.setPolicies(new ArrayList<>(nodeTemplate.getPolicies()));
         }
-        nodeTemplateClone.setRequirements(nodeTemplate.getRequirements());
-        nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
+        if(nodeTemplate.getCapabilities() != null) {
+            nodeTemplate.getCapabilities().stream().forEach(cap -> {
+                QName capType = cap.getType();
+                String capName = cap.getName();
+                ModelUtilities.addCapability(nodeTemplateClone, capType, capName+"_"+IdCounter++);
+            });
+        }
+        if(nodeTemplate.getRequirements() != null) {
+            nodeTemplate.getRequirements().stream().forEach(req -> {
+                QName reqType = req.getType();
+                String reqName = req.getName();
+                ModelUtilities.addRequirement(nodeTemplateClone, reqType, reqName+"_"+IdCounter++);
+            });
+        }
+        
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
         if (Objects.nonNull(nodeTemplate.getX())) {

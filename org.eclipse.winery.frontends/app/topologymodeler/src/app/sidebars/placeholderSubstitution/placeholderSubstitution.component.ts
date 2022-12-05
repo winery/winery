@@ -152,7 +152,8 @@ export class PlaceholderSubstitutionComponent implements OnDestroy {
             + '&ns=' + encodeURIComponent(ns)
             + '&id=' + id
             + '&parentPath=' + this.backendService.configuration.parentPath
-            + '&elementPath=' + this.backendService.configuration.elementPath;
+            + '&elementPath=' + this.backendService.configuration.elementPath
+            + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
         if (readonly) {
             editorConfig += '&isReadonly=true';
         }

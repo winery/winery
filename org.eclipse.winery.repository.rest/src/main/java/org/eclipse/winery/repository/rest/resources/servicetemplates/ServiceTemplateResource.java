@@ -451,7 +451,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                         inputParameter.setName(inputParamName);
                         
                         TNodeTemplate relationSourceTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelation);
-                        Map<String, String> relationSourceProperties = ModelUtilities.getPropertiesKV(relationSourceTemplate);
+                        Map<String, String> relationSourceProperties = new HashMap<>();
+                        if (relationSourceTemplate.getProperties() != null) {
+                            relationSourceProperties.putAll(ModelUtilities.getPropertiesKV(relationSourceTemplate));
+                        }
+                        if(incomingRelation.getProperties()!= null) {
+                            relationSourceProperties.putAll(ModelUtilities.getPropertiesKV(incomingRelation));
+                        }
                         TNodeTemplate relationTargetTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelation);
                         Map<String, String> relationTargetTProperties = ModelUtilities.getPropertiesKV(relationTargetTemplate);
                         generateInputParametersForIncomingRelations(propertyDefinitionKVList, placeholderNodeTemplateProperties, relationSourceProperties, relationTargetTProperties, inputParameter);

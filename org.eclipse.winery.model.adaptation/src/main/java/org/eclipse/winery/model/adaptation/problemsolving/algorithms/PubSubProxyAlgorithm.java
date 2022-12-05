@@ -19,15 +19,18 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.bouncycastle.math.raw.Mod;
@@ -41,27 +44,21 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
 
     @Override
     protected boolean insertProxy(TNodeTemplate sourceNode, TNodeTemplate targetNode, TRelationshipTemplate oldConnection, TTopologyTemplate topology) {
-        
+        IRepository repository = RepositoryFactory.getRepository();
         List<TPolicy> oldConnectionPolicies = oldConnection.getPolicies();
-        
-        TNodeTemplate sourceNodeProxy = new TNodeTemplate();
-        sourceNodeProxy.setType(OpenToscaBaseTypes.publisherProxy);
-        sourceNodeProxy.setName(OpenToscaBaseTypes.publisherProxy.getLocalPart());
-        sourceNodeProxy.setId(sourceNode.getId() + "_proxy" + IdCounter++);
+
+        TNodeType sourceNodeProxyType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.publisherProxy));
+        TNodeTemplate sourceNodeProxy = ModelUtilities.instantiateNodeTemplate(sourceNodeProxyType);
         setNewCoordinates(sourceNode, sourceNodeProxy, 150, 0);
         topology.addNodeTemplate(sourceNodeProxy);
 
-        TNodeTemplate topicNode = new TNodeTemplate();
-        topicNode.setType(OpenToscaBaseTypes.topic);
-        topicNode.setName(OpenToscaBaseTypes.topic.getLocalPart());
-        topicNode.setId(topicNode.getName() + "_new" + IdCounter++);
+        TNodeType topicNodeType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.topic));
+        TNodeTemplate topicNode = ModelUtilities.instantiateNodeTemplate(topicNodeType);
         setNewCoordinates(sourceNodeProxy, topicNode, 300, 0);
         topology.addNodeTemplate(topicNode);
 
-        TNodeTemplate targetNodeProxy = new TNodeTemplate();
-        targetNodeProxy.setType(OpenToscaBaseTypes.subscriberProxy);
-        targetNodeProxy.setName(OpenToscaBaseTypes.subscriberProxy.getLocalPart());
-        targetNodeProxy.setId(targetNode.getId() + "_proxy" + IdCounter++);
+        TNodeType targetNodeProxyType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.subscriberProxy));
+        TNodeTemplate targetNodeProxy = ModelUtilities.instantiateNodeTemplate(targetNodeProxyType);
         setNewCoordinates(topicNode, targetNodeProxy, 300, 0);
         topology.addNodeTemplate(targetNodeProxy);
 
@@ -79,11 +76,6 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
         newRelationshipTemplate = ModelUtilities.createRelationshipTemplateAndAddToTopology(targetNodeProxy, targetNode,
             OpenToscaBaseTypes.httpConnectsTo, "httpconnectsTo", topology);
         topology.getRelationshipTemplate(newRelationshipTemplate.getId()).setPolicies(oldConnectionPolicies);
-
-        //Add Requirements to the inserted Node Templates
-        ModelUtilities.addRequirement(topicNode, OpenToscaBaseTypes.topicReqType, this.getUniqueReqID(topology));
-        ModelUtilities.addRequirement(sourceNodeProxy, OpenToscaBaseTypes.proxyReqType, this.getUniqueReqID(topology));
-        ModelUtilities.addRequirement(targetNodeProxy, OpenToscaBaseTypes.proxyReqType, this.getUniqueReqID(topology));
         
         Optional<String> participantSource = ModelUtilities.getParticipant(sourceNode);
         Optional<String> participantTarget = ModelUtilities.getParticipant(targetNode);
@@ -104,7 +96,7 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
         }
         sourceNodeProxyDAs.add(new TDeploymentArtifact
             .Builder(this.getUniqueDAID(sourceNodeProxy, "Driver"), artifactTemplate.getType())
-            .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
+            .setArtifactRef(OpenToscaBaseTypes.abstractPython3DriverTemplate).build());
         sourceNodeProxy.setDeploymentArtifacts(sourceNodeProxyDAs);
         
 
@@ -116,10 +108,10 @@ public class PubSubProxyAlgorithm extends AbstractProxyAlgorithm {
             .Builder(this.getUniqueDAID(targetNodeProxy, "Driver"), artifactTemplate.getType())
             .setArtifactRef(OpenToscaBaseTypes.abstractJava11DriverTemplate).build());
         
-        TArtifactTemplate subscriberDA = RepositoryFactory.getRepository().getElement(new ArtifactTemplateId(OpenToscaBaseTypes.subscriberProxyDA));
-        targetNodeProxyDAs.add(new TDeploymentArtifact
-            .Builder(this.getUniqueDAID(targetNodeProxy, "Subscriber_DA"), subscriberDA.getType())
-            .setArtifactRef(OpenToscaBaseTypes.subscriberProxyDA).build());
+        //TArtifactTemplate subscriberDA = RepositoryFactory.getRepository().getElement(new ArtifactTemplateId(OpenToscaBaseTypes.subscriberProxyDA));
+        //targetNodeProxyDAs.add(new TDeploymentArtifact
+        //    .Builder(this.getUniqueDAID(targetNodeProxy, "Subscriber_DA"), subscriberDA.getType())
+        //    .setArtifactRef(OpenToscaBaseTypes.subscriberProxyDA).build());
 
         targetNodeProxy.setDeploymentArtifacts(targetNodeProxyDAs);
         

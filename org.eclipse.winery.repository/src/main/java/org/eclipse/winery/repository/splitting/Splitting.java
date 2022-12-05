@@ -267,7 +267,7 @@ public class Splitting {
     }
 
     public List<TParameter> getInputParamListofIncomingRelationshipTemplate(TTopologyTemplate
-                                                                                 topologyTemplate, TRelationshipTemplate incomingRelationshipTemplate) {
+                                                                                topologyTemplate, TRelationshipTemplate incomingRelationshipTemplate) {
         List<TParameter> listOfInputs = new ArrayList<>();
         IRepository repo = RepositoryFactory.getRepository();
         TNodeTemplate incomingNodetemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelationshipTemplate);
@@ -509,6 +509,14 @@ public class Splitting {
                         TNodeTemplate duplicatedNode = BackendUtils.clone(currentNode);
                         duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
                         duplicatedNode.setName(Util.makeNCName(currentNode.getName()));
+                        // rename capabilities and requirements
+                        if (Objects.nonNull(duplicatedNode.getCapabilities())) {
+                            duplicatedNode.getCapabilities().stream().forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                        }
+                        if (listIsNotNullOrEmpty(duplicatedNode.getRequirements())) {
+                            duplicatedNode.getRequirements().stream().forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                        }
+
                         serviceTemplate.getTopologyTemplate().addNodeTemplate(duplicatedNode);
                         serviceTemplateCopy.getTopologyTemplate().addNodeTemplate(duplicatedNode);
                         ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);

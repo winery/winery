@@ -1041,6 +1041,18 @@ public abstract class ModelUtilities {
         );
     }
 
+    public static void addCapability(TNodeTemplate node, QName capabilityType, String name) {
+        List<TCapability> capabilities = node.getCapabilities();
+        if (Objects.isNull(capabilities)) {
+            capabilities = new ArrayList<>();
+            node.setCapabilities(capabilities);
+        }
+
+        capabilities.add(
+            new TCapability.Builder(name, capabilityType, name).build()
+        );
+    }
+
     public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
         return Objects.nonNull(node.getPolicies()) &&
             node.getPolicies().stream()
