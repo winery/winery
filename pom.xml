@@ -85,7 +85,7 @@
         <commons-codec>1.11</commons-codec>
         <org.xmlunit>2.6.4</org.xmlunit>
         <org.skyscreamer.jsonassert>1.5.0</org.skyscreamer.jsonassert>
-        <io.rest-assured>3.0.2</io.rest-assured>
+        <io.rest-assured>5.3.0</io.rest-assured>
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
         <edmm.version>-b8ccf39ae2-1</edmm.version>
@@ -117,7 +117,6 @@
                 <module>org.eclipse.winery.compliance</module>
                 <module>org.eclipse.winery.crawler</module>
                 <module>org.eclipse.winery.edmm</module>
-                <module>org.eclipse.winery.frontends</module>
                 <module>org.eclipse.winery.generators.ia</module>
                 <module>org.eclipse.winery.highlevelrestapi</module>
                 <module>org.eclipse.winery.model</module>
@@ -133,6 +132,7 @@
                 <module>org.eclipse.winery.topologygraph</module>
                 <module>org.eclipse.winery.tools.copybaragenerator</module>
                 <module>org.eclipse.winery.tools.deployablecomponents</module>
+                <module>org.eclipse.winery.frontends</module>
             </modules>
         </profile>
         <profile>
