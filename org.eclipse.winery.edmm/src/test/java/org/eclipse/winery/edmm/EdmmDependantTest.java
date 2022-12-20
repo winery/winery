@@ -43,6 +43,13 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinition
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
+import io.github.edmm.model.component.Compute;
+import io.github.edmm.model.component.RootComponent;
+import io.github.edmm.model.component.SoftwareComponent;
+import io.github.edmm.model.component.WebApplication;
+import io.github.edmm.model.relation.ConnectsTo;
+import io.github.edmm.model.relation.DependsOn;
+import io.github.edmm.model.relation.HostedOn;
 import org.junit.jupiter.api.BeforeEach;
 
 public abstract class EdmmDependantTest {
@@ -56,7 +63,6 @@ public abstract class EdmmDependantTest {
     protected final HashMap<QName, TNodeTypeImplementation> nodeTypeImplementations = new HashMap<>();
     protected final HashMap<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = new HashMap<>();
     protected final HashMap<QName, TArtifactTemplate> artifactTemplates = new HashMap<>();
-    protected final HashMap<QName, EdmmType> edmmTypeExtendsMapping = new HashMap<>();
     protected final HashMap<QName, EdmmType> edmm1to1Mapping = new HashMap<>();
 
     protected EdmmDependantTest() throws UnsupportedEncodingException {
@@ -65,10 +71,46 @@ public abstract class EdmmDependantTest {
     @BeforeEach
     void setup() {
         // region *** NodeType setup ***
+        QName nodeTypeRootQName = QName.valueOf("{" + NAMESPACE + "}" + "root-node-type");
+        TNodeType rootNodeType = new TNodeType();
+        rootNodeType.setName(nodeTypeRootQName.getLocalPart());
+        rootNodeType.setTargetNamespace(nodeTypeRootQName.getNamespaceURI());
+        nodeTypes.put(nodeTypeRootQName, rootNodeType);
+
+        QName nodeTypeComputeQName = QName.valueOf("{" + NAMESPACE + "}" + "compute-node-type");
+        TNodeType computeNodeType = new TNodeType();
+        computeNodeType.setName(nodeTypeComputeQName.getLocalPart());
+        computeNodeType.setTargetNamespace(nodeTypeComputeQName.getNamespaceURI());
+        TEntityType.DerivedFrom parentOfCompute = new TNodeType.DerivedFrom();
+        parentOfCompute.setTypeRef(nodeTypeRootQName);
+        computeNodeType.setDerivedFrom(parentOfCompute);
+        nodeTypes.put(nodeTypeComputeQName, computeNodeType);
+
+        QName nodeTypeWebApplicationQName = QName.valueOf("{" + NAMESPACE + "}" + "web-application-node-type");
+        TNodeType webApplicationNodeType = new TNodeType();
+        webApplicationNodeType.setName(nodeTypeWebApplicationQName.getLocalPart());
+        webApplicationNodeType.setTargetNamespace(nodeTypeWebApplicationQName.getNamespaceURI());
+        TEntityType.DerivedFrom parentOfWebApplication = new TNodeType.DerivedFrom();
+        parentOfWebApplication.setTypeRef(nodeTypeRootQName);
+        webApplicationNodeType.setDerivedFrom(parentOfWebApplication);
+        nodeTypes.put(nodeTypeWebApplicationQName, webApplicationNodeType);
+
+        QName nodeTypeSoftwareComponentQName = QName.valueOf("{" + NAMESPACE + "}" + "software-component-node-type");
+        TNodeType softwareComponentNodeType = new TNodeType();
+        softwareComponentNodeType.setName(nodeTypeSoftwareComponentQName.getLocalPart());
+        softwareComponentNodeType.setTargetNamespace(nodeTypeSoftwareComponentQName.getNamespaceURI());
+        TEntityType.DerivedFrom parentOfSoftwareComponent = new TNodeType.DerivedFrom();
+        parentOfSoftwareComponent.setTypeRef(nodeTypeRootQName);
+        softwareComponentNodeType.setDerivedFrom(parentOfSoftwareComponent);
+        nodeTypes.put(nodeTypeSoftwareComponentQName, softwareComponentNodeType);
+
         QName nodeType1QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type");
         TNodeType nodeType1 = new TNodeType();
         nodeType1.setName(nodeType1QName.getLocalPart());
         nodeType1.setTargetNamespace(nodeType1QName.getNamespaceURI());
+        TEntityType.DerivedFrom parentForNodeType1 = new TNodeType.DerivedFrom();
+        parentForNodeType1.setTypeRef(nodeTypeRootQName);
+        nodeType1.setDerivedFrom(parentForNodeType1);
         nodeTypes.put(nodeType1QName, nodeType1);
 
         QName nodeType2QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_2");
@@ -76,7 +118,7 @@ public abstract class EdmmDependantTest {
         nodeType2.setName(nodeType2QName.getLocalPart());
         nodeType2.setTargetNamespace(nodeType2QName.getNamespaceURI());
         TEntityType.DerivedFrom derivedFrom = new TNodeType.DerivedFrom();
-        derivedFrom.setTypeRef(nodeType1QName);
+        derivedFrom.setTypeRef(nodeTypeSoftwareComponentQName);
         nodeType2.setDerivedFrom(derivedFrom);
         nodeTypes.put(nodeType2QName, nodeType2);
 
@@ -93,6 +135,9 @@ public abstract class EdmmDependantTest {
         wpd.setPropertyDefinitions(kvList);
         ModelUtilities.replaceWinerysPropertiesDefinition(nodeType3, wpd);
         nodeType3.setProperties(wpd);
+        TEntityType.DerivedFrom parentOfNodeType3 = new TNodeType.DerivedFrom();
+        parentOfNodeType3.setTypeRef(nodeTypeComputeQName);
+        nodeType3.setDerivedFrom(parentOfNodeType3);
         nodeTypes.put(nodeType3QName, nodeType3);
 
         QName nodeType4QName = QName.valueOf("{" + NAMESPACE + "}" + "test_node_type_4");
@@ -110,6 +155,9 @@ public abstract class EdmmDependantTest {
         List<TInterface> tInterfaces = new ArrayList<>();
         tInterfaces.add(lifecycle);
         nodeType4.setInterfaces(tInterfaces);
+        TEntityType.DerivedFrom parentOfNodeType4 = new TNodeType.DerivedFrom();
+        parentOfNodeType4.setTypeRef(nodeTypeWebApplicationQName);
+        nodeType4.setDerivedFrom(parentOfNodeType4);
         nodeTypes.put(nodeType4QName, nodeType4);
         // endregion
 
@@ -179,17 +227,29 @@ public abstract class EdmmDependantTest {
 
         // endregion
 
+        QName dependsOnQName = QName.valueOf("{" + NAMESPACE + "}" + "dependsOn");
+        TRelationshipType dependsOnType = new TRelationshipType();
+        dependsOnType.setName(dependsOnQName.getLocalPart());
+        dependsOnType.setTargetNamespace(dependsOnQName.getNamespaceURI());
+        relationshipTypes.put(dependsOnQName, dependsOnType);
+
         // region *** RelationType setup ***
         QName hostedOnQName = QName.valueOf("{" + NAMESPACE + "}" + "hostedOn");
         TRelationshipType hostedOnType = new TRelationshipType();
         hostedOnType.setName(hostedOnQName.getLocalPart());
         hostedOnType.setTargetNamespace(hostedOnQName.getNamespaceURI());
+        TEntityType.DerivedFrom hostedOnDerivedFrom = new TRelationshipType.DerivedFrom();
+        hostedOnDerivedFrom.setTypeRef(dependsOnQName);
+        hostedOnType.setDerivedFrom(hostedOnDerivedFrom);
         relationshipTypes.put(hostedOnQName, hostedOnType);
 
         QName connectsToQName = QName.valueOf("{" + NAMESPACE + "}" + "connectsTo");
         TRelationshipType connectsToType = new TRelationshipType();
         connectsToType.setName(connectsToQName.getLocalPart());
         connectsToType.setTargetNamespace(connectsToQName.getNamespaceURI());
+        TEntityType.DerivedFrom connectsToDerivedFrom = new TRelationshipType.DerivedFrom();
+        connectsToDerivedFrom.setTypeRef(dependsOnQName);
+        connectsToType.setDerivedFrom(connectsToDerivedFrom);
         relationshipTypes.put(connectsToQName, connectsToType);
         // endregion
 
@@ -267,12 +327,18 @@ public abstract class EdmmDependantTest {
         // endregion
 
         // region *** create edmm type mapping ***
-        edmm1to1Mapping.put(nodeType1QName, EdmmType.SOFTWARE_COMPONENT);
+        EdmmType customMadeEdmmType = new EdmmType("great_type");
+        edmm1to1Mapping.put(nodeType1QName, customMadeEdmmType);
         // edmmTypeMapping.put(nodeType2QName, EdmmType.SOFTWARE_COMPONENT);
-        edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.COMPUTE);
-        edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.WEB_APPLICATION);
-        edmm1to1Mapping.put(hostedOnQName, EdmmType.HOSTED_ON);
-        edmm1to1Mapping.put(connectsToQName, EdmmType.CONNECTS_TO);
+        // edmmTypeExtendsMapping.put(nodeType3QName, EdmmType.fromEntityClass(Compute.class));
+        // edmmTypeExtendsMapping.put(nodeType4QName, EdmmType.fromEntityClass(WebApplication.class));
+        edmm1to1Mapping.put(hostedOnQName, EdmmType.fromEntityClass(HostedOn.class));
+        edmm1to1Mapping.put(connectsToQName, EdmmType.fromEntityClass(ConnectsTo.class));
+        edmm1to1Mapping.put(dependsOnQName, EdmmType.fromEntityClass(DependsOn.class));
+        edmm1to1Mapping.put(nodeTypeRootQName, EdmmType.fromEntityClass(RootComponent.class));
+        edmm1to1Mapping.put(nodeTypeComputeQName, EdmmType.fromEntityClass(Compute.class));
+        edmm1to1Mapping.put(nodeTypeSoftwareComponentQName, EdmmType.fromEntityClass(SoftwareComponent.class));
+        edmm1to1Mapping.put(nodeTypeWebApplicationQName, EdmmType.fromEntityClass(WebApplication.class));
         // endregion
     }
 }

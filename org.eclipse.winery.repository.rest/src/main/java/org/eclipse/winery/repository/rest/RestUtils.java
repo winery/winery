@@ -129,8 +129,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
- * more. For instance, resource functionality. Utility functionality for the repository is contained at {@link
- * BackendUtils}
+ * more. For instance, resource functionality. Utility functionality for the repository is contained at
+ * {@link BackendUtils}
  */
 public class RestUtils {
 
@@ -306,7 +306,6 @@ public class RestUtils {
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
         Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
-        Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
 
         if (nodeTypes.isEmpty()) {
             throw new IllegalStateException("No Node Types defined!");
@@ -314,7 +313,7 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
+        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
 
         return edmmConverter.transform(element);
     }

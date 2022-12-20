@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,33 +18,24 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SectionData } from '../../../section/sectionData';
 import { ToscaTypes } from '../../../model/enums';
-import { EdmmTypesService } from '../edmmTypes/edmmTypes.service';
-
-export class EdmmMappingItem {
-    edmmType: string;
-    toscaType: string;
-}
+import { EdmmMappingItem } from '../edmmMappings/edmmMappings.service';
+import { map } from 'rxjs/internal/operators';
 
 @Injectable()
-export class EdmmMappingsService {
+export class EdmmTypesService {
 
     private readonly path: string;
 
-    constructor(private http: HttpClient,
-                private route: Router) {
-        this.path = backendBaseURL + decodeURIComponent(this.route.url);
+    constructor(private http: HttpClient) {
+        this.path = backendBaseURL + '/admin/edmmtypes';
     }
 
-    getToscaTypes(type: ToscaTypes): Observable<SectionData[]> {
-        return this.http.get<SectionData[]>(backendBaseURL + '/' + type + '/');
+    getEdmmTypes(): Observable<string[]> {
+        return this.http.get<string[]>(this.path).pipe(map(items => items.sort()));
     }
 
-    getMappings(): Observable<EdmmMappingItem[]> {
-        return this.http.get<EdmmMappingItem[]>(this.path);
-    }
-
-    updateEdmmMapping(mappings: EdmmMappingItem[]): Observable<EdmmMappingItem[]> {
-        return this.http.put<EdmmMappingItem[]>(this.path, mappings);
+    updateEdmmTypes(mappings: string[]): Observable<string[]> {
+        return this.http.put<string[]>(this.path, mappings);
     }
 
 }
