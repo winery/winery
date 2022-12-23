@@ -52,7 +52,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
@@ -71,10 +70,10 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
@@ -129,8 +128,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
- * more. For instance, resource functionality. Utility functionality for the repository is contained at {@link
- * BackendUtils}
+ * more. For instance, resource functionality. Utility functionality for the repository is contained at
+ * {@link BackendUtils}
  */
 public class RestUtils {
 
@@ -381,14 +380,14 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(id);
+        return Environments.getInstance().getUiConfig().getApiEndpoint() + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(ref);
+        return Environments.getInstance().getUiConfig().getApiEndpoint() + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {

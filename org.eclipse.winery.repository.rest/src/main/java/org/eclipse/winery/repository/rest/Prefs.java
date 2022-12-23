@@ -88,6 +88,8 @@ public class Prefs implements ServletContextListener {
         ServletContext context = servletContextEvent.getServletContext();
         Objects.requireNonNull(context);
 
+        System.setProperty("line.separator", "\n");
+
         try {
             this.doRepositoryInitialization();
         } catch (Exception e) {

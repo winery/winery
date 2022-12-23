@@ -62,7 +62,7 @@ public class FileMeta {
         }
         this.url = RestUtils.getAbsoluteURL(ref);
         this.deleteUrl = this.url;
-        this.thumbnailUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl") + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
+        this.thumbnailUrl = Environments.getInstance().getUiConfig().getApiEndpoint() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
     }
 
     /**

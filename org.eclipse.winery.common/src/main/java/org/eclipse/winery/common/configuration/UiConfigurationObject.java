@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory;
 import static org.eclipse.winery.common.configuration.RepositoryConfigurationObject.RepositoryProvider.YAML;
 
 /**
- * This Class is used to create a JSON Object that is structured like the winery.yaml file. Therefore this class is a
+ * This Class is used to create a JSON Object that is structured like the winery.yaml file. Therefore, this class is a
  * structural copy of that file.
  */
 public class UiConfigurationObject extends AbstractConfigurationObject {
 
-    public static String apiUrlKey = "repositoryApiUrl";
+    private static final String apiUrlKey = "repositoryApiUrl";
 
     private static final Logger logger = LoggerFactory.getLogger(UiConfigurationObject.class);
 
@@ -71,6 +71,17 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
     public Map<String, String> getGit() {
         return git;
+    }
+
+    public String getApiEndpoint() {
+        String apiEndpoint = this.endpoints.get(apiUrlKey);
+
+        if (apiEndpoint == null) {
+            // set to default
+            apiEndpoint = "http://localhost:8080/winery";
+        }
+
+        return apiEndpoint;
     }
 
     @Override
