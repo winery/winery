@@ -65,9 +65,9 @@ public class Splitting {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Splitting.class);
 
-    // counter for relationships starts at 100 because all TRelationshipTemplate should have a 3 digit number in their id
+    // counter for relationships starts at 100 because all TRelationshipTemplate should have a 3-digit number in their id
     private static int newRelationshipIdCounter = 100;
-    private static int IdCounter = 1;
+    private static int idCounter = 1;
     private static int newCapabilityCounter = 1;
 
     // Required variables for the following computation of the transitive closure of a given topology
@@ -251,12 +251,12 @@ public class Splitting {
         boolean uniqueID = false;
         id = new StringBuilder(NodeTemplateGettingPlaceholder.getName() + "_placeholder");
         while (!uniqueID) {
-            if (!ids.contains(id.toString() + IdCounter)) {
-                id.append(IdCounter);
-                IdCounter++;
+            if (!ids.contains(id.toString() + idCounter)) {
+                id.append(idCounter);
+                idCounter++;
                 uniqueID = true;
             } else {
-                IdCounter++;
+                idCounter++;
             }
         }
         placeholderNodeTemplate.setId(id.toString());
@@ -511,10 +511,14 @@ public class Splitting {
                         duplicatedNode.setName(Util.makeNCName(currentNode.getName()));
                         // rename capabilities and requirements
                         if (Objects.nonNull(duplicatedNode.getCapabilities())) {
-                            duplicatedNode.getCapabilities().stream().forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                            duplicatedNode.getCapabilities().forEach(capability -> 
+                                capability.setId(capability.getId() + "-" + targetLabel + "_" + idCounter++)
+                            );
                         }
                         if (listIsNotNullOrEmpty(duplicatedNode.getRequirements())) {
-                            duplicatedNode.getRequirements().stream().forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                            duplicatedNode.getRequirements().forEach(requirement -> 
+                                requirement.setId(requirement.getId() + "-" + targetLabel + "_" + idCounter++)
+                            );
                         }
 
                         serviceTemplate.getTopologyTemplate().addNodeTemplate(duplicatedNode);
@@ -873,7 +877,7 @@ public class Splitting {
                 newMatchingNodeTemplate = newHostNodeTemplate;
                 matchingTopologyFragment.getNodeTemplateOrRelationshipTemplate().stream()
                     .filter(et -> topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream().anyMatch(tet -> tet.getId().equals(et.getId())))
-                    .forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                    .forEach(et -> et.setId(et.getId() + "_" + idCounter++));
 
                 // rename capabilities and requirements
                 matchingTopologyFragment.getNodeTemplates().forEach(node -> {
@@ -884,7 +888,7 @@ public class Splitting {
                                 .filter(nt -> Objects.nonNull(nt.getCapabilities()))
                                 .flatMap(nt -> nt.getCapabilities().stream())
                                 .anyMatch(cap -> cap.getId().equals(et.getId())))
-                            .forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                            .forEach(et -> et.setId(et.getId() + "_" + idCounter++));
                     }
 
                     if (listIsNotNullOrEmpty(node.getRequirements())) {
@@ -893,7 +897,7 @@ public class Splitting {
                                 .filter(nt -> Objects.nonNull(nt.getRequirements()))
                                 .flatMap(nt -> nt.getRequirements().stream())
                                 .anyMatch(req -> req.getId().equals(et.getId()))
-                            ).forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                            ).forEach(et -> et.setId(et.getId() + "_" + idCounter++));
                     }
                 });
 
@@ -1099,7 +1103,7 @@ public class Splitting {
 
             selectedConnectionFragments.get(openRequirementId).getNodeTemplateOrRelationshipTemplate().stream()
                 .filter(et -> topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream().anyMatch(tet -> tet.getId().equals(et.getId())))
-                .forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+                .forEach(et -> et.setId(et.getId() + "_" + idCounter++));
 
             topologyTemplate.getNodeTemplateOrRelationshipTemplate()
                 .addAll(selectedConnectionFragments.get(openRequirementId).getNodeTemplateOrRelationshipTemplate());

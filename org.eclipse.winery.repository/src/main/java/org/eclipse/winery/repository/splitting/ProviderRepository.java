@@ -40,7 +40,7 @@ public class ProviderRepository {
 
     public static final ProviderRepository INSTANCE = new ProviderRepository();
 
-    private static final String NS_NAME_START = "http://opentosca.org/matching/providers/";
+    private static final String NS_NAME_START = "http://www.opentosca.org/providers/";
 
     /**
      * Pointing to a concrete node template has to be done by putting this node template into a separate namespace <p>

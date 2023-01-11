@@ -186,7 +186,6 @@ public class BackendUtils {
 
     private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
-    private static int IdCounter = 1;
     /**
      * @return true if given fileDate is newer then the modified date (or modified is null)
      */
@@ -239,7 +238,7 @@ public class BackendUtils {
         try {
             tcId = constructor.newInstance(namespace, id, urlEncoded);
         } catch (InstantiationException | IllegalAccessException
-            | IllegalArgumentException | InvocationTargetException e) {
+                 | IllegalArgumentException | InvocationTargetException e) {
             BackendUtils.LOGGER.error("Could not create id instance", e);
             throw new IllegalStateException(e);
         }
@@ -515,7 +514,7 @@ public class BackendUtils {
         serviceTemplateClone.setTags(tags);
         return serviceTemplateClone;
     }
-    
+
     /**
      * @param topologyTemplate which should be cloned
      * @return Copy od topologyTemplate
@@ -545,21 +544,31 @@ public class BackendUtils {
         if (nodeTemplate.getPolicies() != null) {
             nodeTemplateClone.setPolicies(new ArrayList<>(nodeTemplate.getPolicies()));
         }
-        if(nodeTemplate.getCapabilities() != null) {
-            nodeTemplate.getCapabilities().stream().forEach(cap -> {
+        if (nodeTemplate.getCapabilities() != null) {
+            nodeTemplate.getCapabilities().forEach(cap -> {
                 QName capType = cap.getType();
-                String capName = cap.getName();
-                ModelUtilities.addCapability(nodeTemplateClone, capType, capName+"_"+IdCounter++);
+                // We need a copy of the String, thus:
+                // noinspection StringOperationCanBeSimplified
+                ModelUtilities.addCapability(nodeTemplateClone,
+                    new QName(capType.getNamespaceURI(), capType.getLocalPart()),
+                    new String(cap.getName()),
+                    new String(cap.getId())
+                );
             });
         }
-        if(nodeTemplate.getRequirements() != null) {
-            nodeTemplate.getRequirements().stream().forEach(req -> {
+        if (nodeTemplate.getRequirements() != null) {
+            nodeTemplate.getRequirements().forEach(req -> {
                 QName reqType = req.getType();
-                String reqName = req.getName();
-                ModelUtilities.addRequirement(nodeTemplateClone, reqType, reqName+"_"+IdCounter++);
+                // We need a copy of the String, thus:
+                // noinspection StringOperationCanBeSimplified
+                ModelUtilities.addRequirement(nodeTemplateClone,
+                    new QName(reqType.getNamespaceURI(), reqType.getLocalPart()),
+                    new String(req.getName()),
+                    new String(req.getId())
+                );
             });
         }
-        
+
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
         if (Objects.nonNull(nodeTemplate.getX())) {
@@ -697,7 +706,7 @@ public class BackendUtils {
         WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
 
         List<TEntityType> hierarchy = repository.getParentsAndChild(entityType);
-        
+
         if (winerysPropertiesDefinition == null) {
             for (TEntityType type : hierarchy) {
                 if (type.getWinerysPropertiesDefinition() != null) {
@@ -705,17 +714,17 @@ public class BackendUtils {
                     break;
                 }
             }
-            
+
             if (winerysPropertiesDefinition == null) {
                 return;
             }
         }
-        
+
         // Merge properties definitions
         List<PropertyDefinitionKV> propertiesDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
-        
+
         final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
-        propertiesDefinitions.forEach(prop -> 
+        propertiesDefinitions.forEach(prop ->
             emptyKVProperties.put(prop.getKey(), prop.getDefaultValue() == null ? "" : prop.getDefaultValue())
         );
 
@@ -755,8 +764,8 @@ public class BackendUtils {
     /**
      * @throws IOException           if content could not be updated in the repository
      * @throws IllegalStateException if an JAXBException occurred. This should never happen.
-     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or {@link
-     * IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
+     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or
+     * {@link IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
      */
     @Deprecated
     public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType, IRepository repo) throws IOException {
@@ -1142,7 +1151,8 @@ public class BackendUtils {
     }
 
     /**
-     * Tests if a path matches a glob pattern. @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>
+     * Tests if a path matches a glob pattern. @see <a
+     * href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>
      *
      * @param glob Glob pattern to test the path against.
      * @param path Path that should match the glob pattern.

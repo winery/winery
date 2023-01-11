@@ -604,7 +604,7 @@ public abstract class ModelUtilities {
     public static Optional<String> getParticipant(TNodeTemplate nodeTemplate) {
         return getOtherAttributeValue(nodeTemplate, QNAME_PARTICIPANT);
     }
-    
+
     public static void setParticipant(TNodeTemplate nodeTemplate, String participant) {
         Objects.requireNonNull(nodeTemplate);
         Objects.requireNonNull(participant);
@@ -619,7 +619,7 @@ public abstract class ModelUtilities {
     }
 
     public static String getOwnerParticipantOfServiceTemplate(TServiceTemplate serviceTemplate) {
-        if (serviceTemplate.getTags() != null && 
+        if (serviceTemplate.getTags() != null &&
             serviceTemplate.getTags().stream().anyMatch(t -> t.getName().equals("participant"))) {
             return serviceTemplate.getTags().stream().filter(t -> t.getName().equals("participant")).findFirst().get().getValue();
         }
@@ -1030,6 +1030,10 @@ public abstract class ModelUtilities {
     }
 
     public static void addRequirement(TNodeTemplate node, QName requirementType, String name) {
+        addRequirement(node, requirementType, name, name);
+    }
+
+    public static void addRequirement(TNodeTemplate node, QName requirementType, String name, String id) {
         List<TRequirement> requirements = node.getRequirements();
         if (Objects.isNull(requirements)) {
             requirements = new ArrayList<>();
@@ -1037,11 +1041,15 @@ public abstract class ModelUtilities {
         }
 
         requirements.add(
-            new TRequirement.Builder(name, requirementType).build()
+            new TRequirement.Builder(id, name, requirementType).build()
         );
     }
 
     public static void addCapability(TNodeTemplate node, QName capabilityType, String name) {
+        addCapability(node, capabilityType, name, name);
+    }
+
+    public static void addCapability(TNodeTemplate node, QName capabilityType, String name, String id) {
         List<TCapability> capabilities = node.getCapabilities();
         if (Objects.isNull(capabilities)) {
             capabilities = new ArrayList<>();
@@ -1049,7 +1057,7 @@ public abstract class ModelUtilities {
         }
 
         capabilities.add(
-            new TCapability.Builder(name, capabilityType, name).build()
+            new TCapability.Builder(id, capabilityType, name).build()
         );
     }
 
