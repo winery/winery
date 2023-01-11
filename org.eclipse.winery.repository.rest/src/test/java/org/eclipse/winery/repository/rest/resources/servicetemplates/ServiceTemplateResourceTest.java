@@ -101,9 +101,9 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 
     @Test
     public void injectNodeTemplates() throws Exception {
-        this.setRevisionTo("d535f69bf50b2c4eda437be46b7ba1f85c4ff3bc");
+        this.setRevisionTo("f647f86f43b2cb7cc4f40a9b01f24cbc67e12d34");
         this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/replace",
-            "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
+            "servicetemplates/ServiceTemplateResource-Injection-input.json");
     }
 
     @Test
