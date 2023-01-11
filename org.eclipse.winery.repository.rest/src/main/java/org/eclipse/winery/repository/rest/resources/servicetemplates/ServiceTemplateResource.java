@@ -109,7 +109,6 @@ import org.eclipse.winery.repository.splitting.SplittingException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.bouncycastle.math.raw.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -449,13 +448,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
                             inputParamName = inputParamName.replaceAll(prefixSOURCE, "");
                         }
                         inputParameter.setName(inputParamName);
-                        
+
                         TNodeTemplate relationSourceTemplate = ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelation);
                         Map<String, String> relationSourceProperties = new HashMap<>();
                         if (relationSourceTemplate.getProperties() != null) {
                             relationSourceProperties.putAll(ModelUtilities.getPropertiesKV(relationSourceTemplate));
                         }
-                        if(incomingRelation.getProperties()!= null) {
+                        if (incomingRelation.getProperties() != null) {
                             relationSourceProperties.putAll(ModelUtilities.getPropertiesKV(incomingRelation));
                         }
                         TNodeTemplate relationTargetTemplate = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, incomingRelation);
@@ -548,7 +547,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceResourceCo
         }
     }
 
-    private void generateInputParametersForIncomingRelations(List<PropertyDefinitionKV> propertyDefinitionKVList, LinkedHashMap<String, String> placeholderNodeTemplateProperties, 
+    private void generateInputParametersForIncomingRelations(List<PropertyDefinitionKV> propertyDefinitionKVList, LinkedHashMap<String, String> placeholderNodeTemplateProperties,
                                                              Map<String, String> sourceTemplateProperties,
                                                              Map<String, String> targetTemplateProperties, TParameter inputParameter) {
         PropertyDefinitionKV inputParamKV = new PropertyDefinitionKV(inputParameter.getName(), inputParameter.getType());

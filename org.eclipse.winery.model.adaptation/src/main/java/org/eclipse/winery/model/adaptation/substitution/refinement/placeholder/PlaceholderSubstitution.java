@@ -140,14 +140,14 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
                 node.getPolicies().forEach(policy -> policyNames.add(policy.getName()));
             }
         }
-        
+
         //Add nodes and relationships
         hostedOnSuccessors.forEach(n -> {
             n.setId(n.getId() + IdCounter++);
             if (ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate) != null) {
                 ModelUtilities.setParticipant(n, ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate));
             }
-            
+
             //Ensure unique Ids for capabilities
             if (n.getCapabilities() != null) {
                 n.getCapabilities().forEach(cap -> cap.setId(getUniqueId(capabilityIds, cap.getId())));
@@ -184,7 +184,7 @@ public class PlaceholderSubstitution extends AbstractSubstitution {
                         .findFirst().get();
                     TNodeTemplate directHostedOnSuccessor = ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(substitutionTemplate, outgoingRelationship);
                     //TODO: Fix for use case - participant must be propagated to all following nodes as well 
-                    if(ModelUtilities.getParticipant(placeholder).isPresent()) {
+                    if (ModelUtilities.getParticipant(placeholder).isPresent()) {
                         ModelUtilities.setParticipant(directHostedOnSuccessor, ModelUtilities.getParticipant(placeholder).get());
                     }
                     incomingHostedOnRelation.setTargetNodeTemplate(directHostedOnSuccessor);

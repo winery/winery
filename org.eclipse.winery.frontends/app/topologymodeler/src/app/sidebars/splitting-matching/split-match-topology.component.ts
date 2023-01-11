@@ -21,7 +21,9 @@ import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { ToastrService } from 'ngx-toastr';
-import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { BackendService } from '../../services/backend.service';
 import { TopologyRendererState } from '../../redux/reducers/topologyRenderer.reducer';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -170,7 +172,7 @@ export class SplitMatchTopologyComponent implements OnDestroy {
             + '&parentPath=' + this.backendService.configuration.parentPath
             + '&elementPath=' + this.backendService.configuration.elementPath
             + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
-        
+
         if (readonly) {
             editorConfig += '&isReadonly=true';
         }

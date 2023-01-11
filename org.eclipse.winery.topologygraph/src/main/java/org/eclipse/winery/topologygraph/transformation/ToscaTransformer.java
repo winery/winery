@@ -38,7 +38,7 @@ public class ToscaTransformer {
 
     public static ToscaGraph createTOSCAGraph(TTopologyTemplate topologyTemplate) {
         ToscaGraph graph = new ToscaGraph();
-       
+
         List<TNodeTemplate> nodeTemplates = topologyTemplate.getNodeTemplates();
         Map<String, ToscaNode> nodes = new HashMap<>();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
@@ -46,7 +46,7 @@ public class ToscaTransformer {
             nodes.put(nodeTemplate.getId(), node);
             graph.addVertex(node);
         }
-        if(topologyTemplate.getRelationshipTemplates() != null) {
+        if (topologyTemplate.getRelationshipTemplates() != null) {
             List<TRelationshipTemplate> relationshipTemplates = topologyTemplate.getRelationshipTemplates();
             for (TRelationshipTemplate tRelationshipTemplate : relationshipTemplates) {
                 ToscaNode source = nodes.get(tRelationshipTemplate.getSourceElement().getRef().getId());
