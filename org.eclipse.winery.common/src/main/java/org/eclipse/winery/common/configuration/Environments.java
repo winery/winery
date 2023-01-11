@@ -41,6 +41,7 @@ public final class Environments {
     private static GitConfigurationObject gitConfigurationObject;
     private static UiConfigurationObject uiConfigurationObject;
     private static AccountabilityConfigurationObject accountabilityConfigurationObject;
+    private static DARefinementConfigurationObject daRefinementConfigurationObject;
     private static Environments instance;
 
     private Environments() {
@@ -49,6 +50,7 @@ public final class Environments {
         gitConfigurationObject = new GitConfigurationObject(instance.getConfiguration());
         repositoryConfigurationObject = new RepositoryConfigurationObject(instance.getConfiguration(), gitConfigurationObject);
         uiConfigurationObject = new UiConfigurationObject(instance.getConfiguration());
+        daRefinementConfigurationObject = new DARefinementConfigurationObject(instance.getConfiguration());
     }
 
     public static Environments getInstance() {
@@ -64,6 +66,7 @@ public final class Environments {
         gitConfigurationObject.update(updatedConfiguration);
         uiConfigurationObject.update(updatedConfiguration);
         accountabilityConfigurationObject.update(updatedConfiguration);
+        daRefinementConfigurationObject.update(updatedConfiguration);
     }
 
     static void initializeConfigurationObjects() {
@@ -71,6 +74,7 @@ public final class Environments {
         repositoryConfigurationObject.initialize();
         gitConfigurationObject.initialize();
         accountabilityConfigurationObject.initialize();
+        daRefinementConfigurationObject.initialize();
     }
 
     /**
@@ -128,6 +132,14 @@ public final class Environments {
             accountabilityConfigurationObject = new AccountabilityConfigurationObject(Environment.getInstance().getConfiguration());
         }
         return accountabilityConfigurationObject;
+    }
+
+    public DARefinementConfigurationObject getDaRefinementConfigurationObject() {
+        checkForUpdateAndUpdateInstances();
+        if (daRefinementConfigurationObject == null) {
+            daRefinementConfigurationObject = new DARefinementConfigurationObject(Environment.getInstance().getConfiguration());
+        }
+        return daRefinementConfigurationObject;
     }
 
     /**

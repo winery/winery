@@ -70,7 +70,7 @@ public class TopologyWrapper {
     }
 
     public boolean isHostedOn(TRelationshipTemplate relationshipTemplate) {
-        TRelationshipType type = splitting.getBasisRelationshipType(relationshipTemplate.getType());
+        TRelationshipType type = Splitting.getBaseRelationshipType(relationshipTemplate.getType());
         if (type.getName().equalsIgnoreCase("hostedOn")) {
             return true;
         }
@@ -85,7 +85,7 @@ public class TopologyWrapper {
     }
 
     public boolean isConnectsTo(TRelationshipTemplate relationshipTemplate) {
-        TRelationshipType type = splitting.getBasisRelationshipType(relationshipTemplate.getType());
+        TRelationshipType type = Splitting.getBaseRelationshipType(relationshipTemplate.getType());
         if (type.getName().equalsIgnoreCase("connectsTo")) {
             return true;
         }

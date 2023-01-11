@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,9 +40,11 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
     private static final String key = "ui";
     private static final String featurePrefix = key + ".features.";
     private static final String endpointPrefix = key + ".endpoints.";
+    private static final String darusPrefix = key + ".darus.";
 
     private Map<String, Boolean> features;
     private Map<String, String> endpoints;
+    private Map<String, String> darus;
     private Map<String, String> git;
 
     /**
@@ -69,6 +71,10 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         return endpoints;
     }
 
+    public Map<String, String> getDarus() {
+        return darus;
+    }
+
     public Map<String, String> getGit() {
         return git;
     }
@@ -91,6 +97,8 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
             ).forEach(property -> configuration.setProperty(featurePrefix + property, this.features.get(property)));
         this.endpoints.keySet()
             .forEach(property -> configuration.setProperty(endpointPrefix + property, this.endpoints.get(property)));
+        this.darus.keySet()
+            .forEach(property -> configuration.setProperty(darusPrefix + property, this.darus.get(property)));
         Environment.getInstance().save();
     }
 
@@ -99,11 +107,14 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         this.configuration = configuration;
         Map<String, Boolean> features = new HashMap<>();
         Map<String, String> endpoints = new HashMap<>();
+        Map<String, String> darus = new HashMap<>();
         Map<String, String> git = new HashMap<>();
         Iterator<String> featureIterator = this.configuration.getKeys(featurePrefix);
         Iterator<String> endpointIterator = this.configuration.getKeys(endpointPrefix);
+        Iterator<String> darusIterator = this.configuration.getKeys(darusPrefix);
         featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), this.configuration.getBoolean((key))));
         endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), this.configuration.getString(key)));
+        darusIterator.forEachRemaining(key -> darus.put(key.replace(darusPrefix, ""), this.configuration.getString(key)));
         git.put("clientId", this.configuration.getString("repository.git.clientID"));
         git.put("accessToken", this.configuration.getString("repository.git.accessToken"));
         git.put("tokenType", this.configuration.getString("repository.git.tokenType"));
@@ -120,6 +131,7 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
         this.features = features;
         this.endpoints = endpoints;
+        this.darus = darus;
         this.git = git;
     }
 

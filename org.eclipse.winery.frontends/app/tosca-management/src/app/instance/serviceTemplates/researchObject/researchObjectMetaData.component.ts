@@ -25,63 +25,62 @@ export class ResearchObjectMetaDataComponent implements OnInit {
 
     data: ROMetadataApiData;
     loading = true;
-    private items: Array<string> = ['Agricultural Sciences', 'Arts and Humanities', 'Astronomy and Astrophysics', 'Business and Management',
+    private subjects: Array<string> = ['Agricultural Sciences', 'Arts and Humanities', 'Astronomy and Astrophysics', 'Business and Management',
         'Chemistry', 'Computer and Information Science', 'Earth and Environmental Sciences', 'Engineering', 'Law',
-        'Mathematical Sciences', 'Medicine', 'Health and Life Sciences', 'Physics', 'Social Sciences', 'Other'];
-    private selection: string[] = [];
+        'Mathematical Sciences', 'Medicine, Health and Life Sciences', 'Physics', 'Social Sciences', 'Other'];
+    private selection: { id: string, text: string }[] = [];
 
     constructor(private service: ResearchObjectService,
                 private notify: WineryNotificationService) {
     }
 
     ngOnInit() {
-        if (this.service.researchObjectMetadata) {
-            this.handleData();
-        } else {
-            this.getResearchObjectMetadata();
-        }
+        this.service.getResearchObjectMetadata()
+            .subscribe(
+                (data) => {
+                    this.handleData(data);
+                },
+                (error) => {
+                    this.handleError(error);
+                }
+            );
     }
 
-    public itemsToList(value: Array<any> = []): Array<string> {
+    public itemsToList(): Array<string> {
         const valueList: Array<string> = [];
-        for (const entry of value) {
+        for (const entry of this.selection) {
             valueList.push(entry.text);
         }
         return valueList;
     }
 
-    getResearchObjectMetadata() {
-        this.service.getResearchObjectMetadata().subscribe(
-            data => this.handleData(),
-            error => {
-                this.notify.error(error.toString());
-                this.loading = false;
-            });
-    }
-
     saveResearchObjectMetadata() {
-        this.data.subjects = { subject: this.itemsToList(this.selection) };
+        this.data.subjects = { subject: this.itemsToList() };
         this.service.saveResearchObjectMetadata(this.data).subscribe(
-            data => {
+            (data) => {
                 this.handleSuccess('Saved data');
             },
-            error => this.handleError(error)
+            (error) => this.handleError(error)
         );
     }
 
-    handleData() {
-        this.data = this.service.researchObjectMetadata;
-        if (!!this.data.subjects) {
-            this.selection = this.data.subjects.subject;
+    handleData(data: ROMetadataApiData) {
+        this.data = data;
+        if (data.subjects) {
+            for (const entry of data.subjects.subject) {
+                this.selection.push({ id: entry, text: entry });
+            }
         }
         this.loading = false;
     }
 
     handleSuccess(message: string) {
         this.notify.success(message);
+        this.loading = false;
     }
 
     handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
+        this.loading = false;
     }
 }

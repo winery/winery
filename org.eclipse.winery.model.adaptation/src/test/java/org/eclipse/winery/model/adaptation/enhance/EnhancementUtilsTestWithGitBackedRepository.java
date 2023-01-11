@@ -209,11 +209,10 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         ubuntuFeatures.put(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}Ubuntu_16.04-testable-w1"), testingFeatureName);
         ubuntuFeatures.put(QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}Ubuntu_16.04-freezable-w1"), freezeFeatureName);
 
-        TNodeTemplate nodeTemplate = new TNodeTemplate();
-        nodeTemplate.setType(
+        TNodeTemplate nodeTemplate = new TNodeTemplate.Builder(
+            nodeTemplateId,
             QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes}Ubuntu_16.04-w1")
-        );
-        nodeTemplate.setId(nodeTemplateId);
+        ).build();
 
         TNodeType generatedFeatureEnrichedNodeType = EnhancementUtils.createFeatureNodeType(nodeTemplate, ubuntuFeatures);
 

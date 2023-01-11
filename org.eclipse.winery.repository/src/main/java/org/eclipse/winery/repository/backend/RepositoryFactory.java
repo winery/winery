@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.common.configuration.GitBasedRepositoryConfiguration;
@@ -57,10 +58,14 @@ public class RepositoryFactory {
     }
 
     public static AbstractFileBasedRepository createXmlOrYamlRepository(FileBasedRepositoryConfiguration configuration, Path repositoryRoot) {
+        return createXmlOrYamlRepository(configuration, repositoryRoot, Constants.DEFAULT_LOCAL_REPO_NAME);
+    }
+
+    public static AbstractFileBasedRepository createXmlOrYamlRepository(FileBasedRepositoryConfiguration configuration, Path repositoryRoot, String id) {
         if (RepositoryConfigurationObject.RepositoryProvider.YAML.equals(configuration.getRepositoryProvider())) {
-            return new YamlRepository(repositoryRoot);
+            return new YamlRepository(repositoryRoot, id);
         } else {
-            return new XmlRepository(repositoryRoot);
+            return new XmlRepository(repositoryRoot, id);
         }
     }
 

@@ -145,7 +145,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
             if (isXml(fileName)) {
                 org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
             } else if (isZip(fileName)) {
-                // TODO  @pmeyer: Cool ZIP equal test
+                // TODO: Cool ZIP equal test
                 assertNotNull(receivedStr);
             } else {
                 JSONAssert.assertEquals(

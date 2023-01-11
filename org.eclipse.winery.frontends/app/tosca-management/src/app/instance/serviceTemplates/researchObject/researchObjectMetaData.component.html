@@ -17,31 +17,33 @@
 
 <div *ngIf="!loading">
     <br>
-    <label class="control-label" for="metaTitle">Title:</label>
+    <label class="control-label" for="metaTitle">Title <span style="color: darkred">*</span></label>
     <input class="form-control" id="metaTitle" name="title" [(ngModel)]="data.title">
     <br>
-    <label class="control-label" for="metaAuthor">Author:</label>
+    <label class="control-label" for="metaAuthor">Author <span style="color: darkred">*</span></label>
     <input class="form-control" id="metaAuthor" name="author" [(ngModel)]="data.author">
     <br>
-    <label class="control-label" for="metaContact">Contact:</label>
+    <label class="control-label" for="metaContact">E-Mail <span style="color: darkred">*</span></label>
     <input class="form-control" id="metaContact" name="contact" [(ngModel)]="data.contact">
     <br>
     <div class="form-group">
-        <label class="label-form">Description:</label>
+        <label class="label-form">Description <span style="color: darkred">*</span></label>
         <textarea class="form-control" id="researchObjectDescriptionDiv" name="description"
                   [(ngModel)]="data.description"></textarea>
     </div>
 
     <div class="control-group">
-        <label class="control-label">Subject:</label>
+        <label class="control-label">Subject <span style="color: darkred">*</span></label>
         <div>
             <ng-select [multiple]="true"
                        [(ngModel)]="selection"
-                       [items]="items"
+                       [items]="subjects"
                        placeholder="Select Subjects">
             </ng-select>
         </div>
     </div>
+    <br>
+    <span style="color: darkred; float: right">* Required fields for publishing a ROAR.</span>
     <br>
     <div>
         <button class="btn btn-primary" (click)="saveResearchObjectMetadata()" name="save">

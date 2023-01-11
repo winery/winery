@@ -256,6 +256,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
             <version>8.2.0</version>
@@ -353,6 +358,7 @@
                     <include>winery.properties</include>
                     <include>logback.xml</include>
                     <include>logback-test.xml</include>
+                    <include>darus-template.json</include>
                 </includes>
             </resource>
         </resources>

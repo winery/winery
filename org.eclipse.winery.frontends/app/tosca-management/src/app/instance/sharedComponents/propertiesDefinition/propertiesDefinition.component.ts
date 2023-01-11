@@ -632,7 +632,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param itemToDelete
      */
     private deleteItem(itemToDelete: any): void {
-        const list = this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList || [];
+        const list = this.propertiesDefinitions.propertiesDefinition.propertyDefinitionKVList || [];
         for (let i = 0; i < list.length; i++) {
             if (list[i].key === itemToDelete.key) {
                 list.splice(i, 1);

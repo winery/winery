@@ -19,7 +19,9 @@ import { definitionType, TableType, urlElement } from '../../models/enums';
 import { BackendService } from '../../services/backend.service';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { ReqCapRelationshipService } from '../../services/req-cap-relationship.service';
-import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { ReqCapModalType, ShowReqCapModalEventData } from './showReqCapModalEventData';
 import { RequirementModel } from '../../models/requirementModel';
 import { RequirementDefinitionModel } from '../../models/requirementDefinitonModel';
@@ -127,12 +129,10 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
             let qName;
             let namespace = '';
             let templateName = '(none)';
-            try {
+            if (policy.policyRef) {
                 qName = new QName(policy.policyRef);
                 namespace = qName.nameSpace;
                 templateName = qName.localName;
-            } catch (e) {
-                console.log(e);
             }
             const type = policy.policyType;
             const name = policy.name;
@@ -147,12 +147,10 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
         let qName;
         let namespace;
         let templateName = '(none)';
-        try {
+        if (deploymentArtifact.artifactRef) {
             qName = new QName(deploymentArtifact.artifactRef);
             namespace = qName.nameSpace;
             templateName = qName.localName;
-        } catch (e) {
-            console.log(e);
         }
         const type = deploymentArtifact.artifactType;
         const name = deploymentArtifact.name;

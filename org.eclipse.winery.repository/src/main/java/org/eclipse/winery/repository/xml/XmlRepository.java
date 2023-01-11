@@ -66,8 +66,8 @@ public class XmlRepository extends AbstractFileBasedRepository {
     /**
      * @param repositoryRoot root of the file-based repository
      */
-    public XmlRepository(Path repositoryRoot) {
-        super(repositoryRoot);
+    public XmlRepository(Path repositoryRoot, String id) {
+        super(repositoryRoot, id);
     }
 
     @Override
@@ -112,12 +112,17 @@ public class XmlRepository extends AbstractFileBasedRepository {
             }
         } else {
             // another quick hack; storing the mime type is not required for research object files
-            if (!ref.getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT_FILES) && !ref.getParent().getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT)) {
+            if (ref.getParent() != null && ref.getParent().getParent() != null && !ref.getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT_FILES) && !ref.getParent().getParent().getXmlId().getDecoded().equals(Constants.DIRNAME_RESEARCH_OBJECT)) {
                 this.setMimeType(ref, mediaType);
             }
             Path targetPath = this.ref2AbsolutePath(ref);
             writeInputStreamToPath(targetPath, inputStream);
         }
+    }
+
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        Path targetPath = this.ref2AbsolutePath(ref);
+        writeInputStreamToPath(targetPath, inputStream);
     }
 
     @Override
@@ -174,9 +179,9 @@ public class XmlRepository extends AbstractFileBasedRepository {
                         try {
                             id = constructor.newInstance(ns, xmlId);
                         } catch (InstantiationException
-                            | IllegalAccessException
-                            | IllegalArgumentException
-                            | InvocationTargetException e) {
+                                 | IllegalAccessException
+                                 | IllegalArgumentException
+                                 | InvocationTargetException e) {
                             LOGGER.debug("Internal error at invocation of id constructor", e);
                             // abort everything, return invalid result
                             return res;

@@ -23,18 +23,13 @@ import { FileApiData } from '../../../model/fileApiData';
 @Injectable()
 export class ResearchObjectService {
 
-    researchObjectMetadata: ROMetadataApiData;
-    researchObjectPublication: ROPublicationApiData;
-    pathToElementsMap: Map<string, FileOrFolderElement[]>;
     baseUrl: string;
 
     constructor(private http: HttpClient) {
     }
 
     getResearchObjectMetadata(): Observable<ROMetadataApiData> {
-        const o = this.http.get<ROMetadataApiData>(this.baseUrl + 'metadata');
-        o.subscribe(data => this.researchObjectMetadata = data);
-        return o;
+        return this.http.get<ROMetadataApiData>(this.baseUrl + 'metadata');
     }
 
     saveResearchObjectMetadata(data: ROMetadataApiData): Observable<HttpResponse<string>> {
@@ -45,9 +40,7 @@ export class ResearchObjectService {
     }
 
     getResearchObjectPublication(): Observable<ROPublicationApiData> {
-        const o = this.http.get<ROPublicationApiData>(this.baseUrl + 'publication');
-        o.subscribe(data => this.researchObjectPublication = data);
-        return o;
+        return this.http.get<ROPublicationApiData>(this.baseUrl + 'publication');
     }
 
     saveResearchObjectPublication(data: ROPublicationApiData): Observable<HttpResponse<string>> {
@@ -58,17 +51,7 @@ export class ResearchObjectService {
     }
 
     getDirsAndFiles(): Observable<Map<string, FileOrFolderElement[]>> {
-        const o = this.http.get<any>(this.baseUrl + 'files');
-        o.subscribe(data => this.pathToElementsMap = this.createMap(data));
-        return o;
-    }
-
-    createMap(data: any): Map<string, FileOrFolderElement[]> {
-        const map: Map<string, FileOrFolderElement[]> = new Map();
-        for (const path of Object.keys(data)) {
-            map.set(path, data[path]);
-        }
-        return map;
+        return this.http.get<any>(this.baseUrl + 'files');
     }
 
     createDirectory(path: string): Observable<HttpResponse<string>> {
@@ -94,7 +77,7 @@ export class ResearchObjectService {
     }
 
     setBaseUrl(url: string) {
-        this.baseUrl = url;
+        this.baseUrl = url + '/researchobject/';
     }
 
 }

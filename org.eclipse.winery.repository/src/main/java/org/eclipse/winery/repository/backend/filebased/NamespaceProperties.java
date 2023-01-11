@@ -31,6 +31,8 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
     private boolean isSecureCollection = false;
     private boolean isGeneratedNamespace = false;
 
+    private String repositoryId;
+
     /**
      * This constructor must not be used. It is only required for serialization.
      */
@@ -97,6 +99,14 @@ public class NamespaceProperties implements Serializable, Comparable<NamespacePr
         isGeneratedNamespace = generatedNamespace;
     }
 
+    public String getRepositoryId() {
+        return repositoryId;
+    }
+
+    public void setRepositoryId(String repositoryId) {
+        this.repositoryId = repositoryId;
+    }
+    
     @Override
     public int compareTo(NamespaceProperties o) {
         int compareTo = this.prefix.compareTo(o.prefix);

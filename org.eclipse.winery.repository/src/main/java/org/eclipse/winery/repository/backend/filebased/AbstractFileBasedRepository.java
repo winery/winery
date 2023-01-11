@@ -81,20 +81,28 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     private final boolean isLocal;
     private final FileSystem fileSystem;
     private final FileSystemProvider provider;
+    
+    private final String id;
 
     /**
      * @param repositoryRoot Root to the repository
      */
-    public AbstractFileBasedRepository(Path repositoryRoot) {
+    public AbstractFileBasedRepository(Path repositoryRoot, String id) {
         Objects.requireNonNull(repositoryRoot);
 
         this.repositoryRoot = repositoryRoot;
 
         this.fileSystem = this.repositoryRoot.getFileSystem();
         this.provider = this.fileSystem.provider();
+        this.id = id;
 
         this.isLocal = this.repositoryRoot.getFileName().toString().equals(Constants.DEFAULT_LOCAL_REPO_NAME);
+        LOGGER.debug("{} initialized with id \"{}\"",  this.getClass().getSimpleName(), id);
         LOGGER.debug("Repository root: {}", this.repositoryRoot);
+    }
+
+    public AbstractFileBasedRepository(Path repositoryRoot) {
+        this(repositoryRoot, Constants.DEFAULT_LOCAL_REPO_NAME);
     }
 
     public void forceDelete(RepositoryFileReference ref) throws IOException {
@@ -579,9 +587,12 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         FileUtils.createDirectory(targetPath.getParent());
 
         try {
-            Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+             LOGGER.debug("Wrote {} bytes to \"{}\"",
+                Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING),
+                targetPath
+            );
         } catch (IllegalStateException e) {
-            LOGGER.debug("Guessing that stream with length 0 is to be written to a file", e);
+            LOGGER.warn("Guessing that stream with length 0 is to be written to a file", e);
             // copy throws an "java.lang.IllegalStateException: Stream already closed" if the InputStream contains 0 bytes
             // For instance, this case happens if SugarCE-6.4.2.zip.removed is tried to be uploaded
             // We work around the Java7 issue and create an empty file
@@ -633,4 +644,9 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     }
 
     public abstract <T extends DefinitionsChildId> SortedSet<T> getDefinitionsChildIds(Class<T> idClass, boolean omitDevelopmentVersions);
+    
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

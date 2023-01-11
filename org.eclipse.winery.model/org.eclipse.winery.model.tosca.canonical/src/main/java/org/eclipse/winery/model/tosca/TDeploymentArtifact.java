@@ -43,6 +43,15 @@ public class TDeploymentArtifact extends TDeploymentOrImplementationArtifact {
         visitor.visit(this);
     }
 
+    @Override
+    public String toString() {
+        return "TDeploymentArtifact{" +
+            "name='" + name + '\'' +
+            ", artifactType=" + artifactType +
+            ", artifactRef=" + artifactRef +
+            '}';
+    }
+
     public static class Builder extends TDeploymentOrImplementationArtifact.Builder<Builder> {
 
         public Builder(String name, QName artifactType) {

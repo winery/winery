@@ -26,12 +26,14 @@ export interface RefinementWebSocketData {
     task: RefinementTasks;
     refineWith?: number;
     serviceTemplate?: string;
+    selectedNodeTemplateIds?: string[];
 }
 
 export abstract class AbstractRefinementWebSocketService<T> {
 
     protected socket: WebSocket;
     protected listener: BehaviorSubject<T>;
+    private observable: Observable<T>;
 
     protected constructor(protected backendService: BackendService) {
     }
@@ -42,20 +44,30 @@ export abstract class AbstractRefinementWebSocketService<T> {
         }
     }
 
-    protected startRefinementSocket(endpoint: string): Observable<T> {
-        this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + endpoint);
-        this.listener = new BehaviorSubject<T>(null);
-
+    protected startRefinementSocket(endpoint: string, subgraphDetector?: string[]): Observable<T> {
         const start: RefinementWebSocketData = {
             task: RefinementTasks.START,
             serviceTemplate: this.backendService.configuration.definitionsElement.qName
         };
 
-        this.socket.onmessage = event => this.onMessage(event);
-        this.socket.onclose = event => this.onClose(event);
-        this.socket.onopen = event => this.socket.send(JSON.stringify(start));
+        if (subgraphDetector) {
+            start.selectedNodeTemplateIds = subgraphDetector;
+        }
 
-        return this.listener.asObservable();
+        if (!this.socket) {
+            this.socket = new WebSocket(this.backendService.configuration.webSocketUrl + endpoint);
+            this.listener = new BehaviorSubject<T>(null);
+
+
+            this.socket.onmessage = event => this.onMessage(event);
+            this.socket.onclose = event => this.onClose(event);
+            this.socket.onopen = () => this.socket.send(JSON.stringify(start));
+            this.observable = this.listener.asObservable();
+        } else {
+            this.socket.send(JSON.stringify(start));
+        }
+
+        return this.observable;
     }
 
     private onMessage(event: MessageEvent) {

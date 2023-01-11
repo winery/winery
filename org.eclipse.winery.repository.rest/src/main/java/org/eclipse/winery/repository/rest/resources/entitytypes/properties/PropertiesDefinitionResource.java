@@ -65,22 +65,20 @@ public class PropertiesDefinitionResource {
     // therefore, we can have "wpd" final
     private final WinerysPropertiesDefinition wpd;
 
-
     public PropertiesDefinitionResource(EntityTypeResource res) {
         this.parentRes = res;
         this.wpd = res.getEntityType().getWinerysPropertiesDefinition();
     }
 
     /**
-     * Returns the properties definition defined by this entity type. 
-     * Inheritance is not considered.
+     * Returns the property definitions defined by this entity type. Inheritance is not considered.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PropertiesDefinitionResourceApiData getJson() {
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), this.wpd);
     }
-    
+
     /**
      * Merge properties definitions with inherited definitions.
      */
@@ -93,44 +91,44 @@ public class PropertiesDefinitionResource {
 
         // Merge properties definitions
         List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
-        
+
         // Create new WPD
         WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         winerysPropertiesDefinition.setElementName(this.getEntityType().getName());
         winerysPropertiesDefinition.setNamespace(this.getEntityType().getTargetNamespace());
         winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
-        
+
         return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), winerysPropertiesDefinition);
     }
 
     /**
      * Returns a list of properties definition of each parent.
-     * 
-     * Only self-defined properties definition are considered.
-     * Properties definition of a parent's parent are not merged into the properties definition of the parent.
+     *
+     * Only self-defined properties definition are considered. Properties definition of a parent's parent are not merged
+     * into the property definitions of the parent.
      */
     @GET
     @Path("inherited")
     @Produces(MediaType.APPLICATION_JSON)
     public List<InheritedPropertiesDefinitionsResourceApiData> getInheritedPropertiesDefinitionResource() {
         ArrayList<TEntityType> parents = RepositoryFactory.getRepository().getParents(this.parentRes.getEntityType());
-        
+
         ArrayList<InheritedPropertiesDefinitionsResourceApiData> list = new ArrayList<>();
         for (TEntityType parent : parents) {
-        
+
             // Add winerys properties definition of parent if defined to list
             WinerysPropertiesDefinition winerysPropertiesDefinition = parent.getWinerysPropertiesDefinition();
             if (winerysPropertiesDefinition != null) {
-                
+
                 // Add derived from information
                 List<PropertyDefinitionKV> propertyDefinitions = winerysPropertiesDefinition.getPropertyDefinitions();
                 if (propertyDefinitions != null) {
-                    for (PropertyDefinitionKV propertyDefinition : propertyDefinitions ) {
+                    for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
                         propertyDefinition.setDerivedFromType(parent.getQName());
                         propertyDefinition.setDerivedFromStatus("SELF");
                     }
                 }
-                
+
                 // Add winerys properties definition to list
                 PropertiesDefinitionResourceApiData propertiesDefinitionResourceApiData = new PropertiesDefinitionResourceApiData(parent.getProperties(), winerysPropertiesDefinition);
                 list.add(new InheritedPropertiesDefinitionsResourceApiData(parent.getQName(), propertiesDefinitionResourceApiData));
@@ -175,11 +173,11 @@ public class PropertiesDefinitionResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response onJsonPost(PropertiesDefinitionResourceApiData data) {  
-        
+    public Response onJsonPost(PropertiesDefinitionResourceApiData data) {
+
         // CASE: XML
         if (data.selectedValue == PropertiesDefinitionEnum.Element || data.selectedValue == PropertiesDefinitionEnum.Type) {
-            // first of all, remove Winery's Properties definition (if it exists)
+            // first, remove Winery's Properties definition (if it exists)
             ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
             // replace old properties definition by new one
             // FIXME need to actually handle propertiesData properly!
@@ -195,8 +193,8 @@ public class PropertiesDefinitionResource {
                 PropertiesDefinitionResource.LOGGER.debug(error);
             }
             return RestUtils.persist(this.parentRes);
-        } 
-        
+        }
+
         // CASE: winerys properties definition
         // Only definitions are stored which are not defined by any parent
         if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
@@ -215,24 +213,28 @@ public class PropertiesDefinitionResource {
             List<PropertyDefinitionKV> definitions = new ArrayList<>();
             for (PropertyDefinitionKV definition : data.winerysPropertiesDefinition.getPropertyDefinitions()) {
                 boolean exists = false;
-                for (PropertyDefinitionKV currentDefinition: parentsPropertiesDefinitions) {
+                for (PropertyDefinitionKV currentDefinition : parentsPropertiesDefinitions) {
                     if (definition.equals(currentDefinition)) {
                         exists = true;
                         break;
                     }
                 }
-                
+
                 if (!exists) {
                     definitions.add(definition);
                 }
             }
 
             // Update and store definitions
-            data.winerysPropertiesDefinition.setPropertyDefinitions(definitions);
-            this.getEntityType().setProperties(data.winerysPropertiesDefinition);
+            if (!definitions.isEmpty()) {
+                data.winerysPropertiesDefinition.setPropertyDefinitions(definitions);
+                this.getEntityType().setProperties(data.winerysPropertiesDefinition);
+            } else {
+                this.getEntityType().setProperties(null);
+            }
             return RestUtils.persist(this.parentRes);
-        } 
-        
+        }
+
         // CASE: YAML
         if (data.selectedValue == PropertiesDefinitionEnum.Yaml) {
             TEntityType entityType = this.parentRes.getEntityType();
@@ -246,5 +248,4 @@ public class PropertiesDefinitionResource {
         // OTHERWISE: throw error
         return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
     }
-    
 }

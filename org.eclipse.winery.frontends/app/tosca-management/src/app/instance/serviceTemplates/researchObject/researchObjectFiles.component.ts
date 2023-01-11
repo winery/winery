@@ -37,59 +37,66 @@ export class ResearchObjectFilesComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.service.pathToElementsMap) {
-            this.handleData();
-        } else {
-            this.getAllDirsAndFiles();
-        }
+        this.getAllDirsAndFiles();
     }
 
     getAllDirsAndFiles() {
         this.service.getDirsAndFiles().subscribe(
-            data => this.handleData(),
-            error => {
-                this.notify.error(error.toString());
-                this.loading = false;
-            });
+            (data) => {
+                this.handleData(data);
+            },
+            (error) => {
+                this.handleError(error);
+            }
+        );
     }
 
-    handleData() {
-        this.pathToElementsMap = this.service.pathToElementsMap;
+    handleData(data: Map<string, FileOrFolderElement[]>) {
+        this.pathToElementsMap = this.createMap(data);
         this.loading = false;
     }
 
     createNewFolder(folderPath: string) {
         this.service.createDirectory(folderPath).subscribe(
-            data => this.getAllDirsAndFiles(),
-            error => {
-                this.notify.error(error.toString());
-                this.loading = false;
-            });
+            (data) => {
+                this.getAllDirsAndFiles();
+            },
+            (error) => {
+                this.handleError(error);
+            }
+        );
     }
 
     delete(element: string) {
         this.service.delete(element).subscribe(
-            data => this.getAllDirsAndFiles(),
-            error => {
-                this.notify.error(error.toString());
+            (data) => {
+                this.getAllDirsAndFiles();
+            },
+            (error) => {
+                this.handleError(error);
             }
         );
     }
 
     move(element: { oldPath: string, newPath: string }) {
         this.service.move(element.oldPath, element.newPath).subscribe(
-            data => this.getAllDirsAndFiles(),
-            error => {
-                this.notify.error(error.toString());
-            });
+            (data) => {
+                this.getAllDirsAndFiles();
+            },
+            (error) => {
+                this.handleError(error);
+            }
+        );
     }
 
     handleSuccess(message: string) {
         this.notify.success(message);
+        this.loading = false;
     }
 
     handleError(error: HttpErrorResponse) {
         this.notify.error(error.message);
+        this.loading = false;
     }
 
     download(repo: string, branch: string, targetPath: string) {
@@ -100,17 +107,26 @@ export class ResearchObjectFilesComponent implements OnInit {
         }
         repo = 'https://api.github.com/repos/' + repo + '/zipball/' + branch;
         this.service.move(repo, targetPath).subscribe(
-            data => {
+            (data) => {
                 this.downloaderStatus = this.STATUS[1];
                 this.getAllDirsAndFiles();
             },
-            error => {
+            (error) => {
                 this.downloaderStatus = this.STATUS[2];
-                this.notify.error(error.toString());
+                this.handleError(error);
             });
     }
 
     correctURL(url: string) {
         return url.startsWith('https://github.com/');
     }
+
+    createMap(data: any): Map<string, FileOrFolderElement[]> {
+        const map: Map<string, FileOrFolderElement[]> = new Map();
+        for (const path of Object.keys(data)) {
+            map.set(path, data[path]);
+        }
+        return map;
+    }
+
 }

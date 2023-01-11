@@ -37,7 +37,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ExistsService } from './services/exists.service';
 import { EntitiesModalService } from './canvas/entities-modal/entities-modal.service';
 import { ImportTopologyService } from './services/import-topology.service';
-import { SplitMatchTopologyService } from './services/split-match-topology.service';
+import { SplitMatchTopologyService } from './sidebars/splitting-matching/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
@@ -84,6 +84,11 @@ import { LoggingService } from './services/logging.service';
 import { LiveModelingSidebarModule } from './live-modeling/live-modeling-sidebar.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarModule } from './navbar/navbar.module';
+import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
+import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderSubstitution/placeholderSubstitutionWebSocket.service';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { MatListModule } from '@angular/material';
+import { SplitMatchTopologyComponent } from './sidebars/splitting-matching/split-match-topology.component';
 
 @NgModule({
     declarations: [
@@ -104,6 +109,8 @@ import { NavbarModule } from './navbar/navbar.module';
         ManageParticipantsComponent,
         ResearchPluginsComponent,
         EdmmReplacementRulesComponent,
+        PlaceholderSubstitutionComponent,
+        SplitMatchTopologyComponent
     ],
     exports: [WineryComponent],
     imports: [
@@ -142,7 +149,9 @@ import { NavbarModule } from './navbar/navbar.module';
         AngularResizedEventModule,
         ModalModule.forRoot(),
         LiveModelingSidebarModule,
-        NavbarModule
+        NavbarModule,
+        CdkAccordionModule,
+        MatListModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
@@ -174,7 +183,8 @@ import { NavbarModule } from './navbar/navbar.module';
         ReqCapRelationshipService,
         OverlayService,
         TopologyService,
-        LoggingService
+        LoggingService,
+        PlaceholderSubstitutionWebSocketService
     ],
     bootstrap: [WineryComponent]
 })

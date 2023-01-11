@@ -134,6 +134,11 @@ public class TenantRepository implements IWrappingRepository {
     }
 
     @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        getRepository().putContentToFile(ref, inputStream);
+    }
+
+    @Override
     public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
         getRepository().putContentToFile(ref, inputStream, mediaType);
     }
@@ -291,6 +296,11 @@ public class TenantRepository implements IWrappingRepository {
     @Override
     public Path getRepositoryRoot() {
         return getRepository().getRepositoryRoot();
+    }
+
+    @Override
+    public String getId() {
+        return null;
     }
 
     @Override

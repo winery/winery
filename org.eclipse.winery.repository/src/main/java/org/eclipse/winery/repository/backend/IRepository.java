@@ -174,9 +174,9 @@ public interface IRepository extends IWineryRepositoryCommon {
      * <p>
      * If the parent of the reference does not exist, it is created.
      * <p>
-     * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
-     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
-     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * This method should not be used to write Definitions, calling it with the well-known Media Type
+     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a
+     * warning. For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref       the reference to the file. Must not be null.
      * @param content   the content to put into the file. Must not be null.
@@ -191,9 +191,9 @@ public interface IRepository extends IWineryRepositoryCommon {
      * <p>
      * If the parent of the reference does not exist, it is created.
      * <p>
-     * This method should not be used to write Definitions, calling it with the well-known Media Type {@link
-     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a warning.
-     * For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * This method should not be used to write Definitions, calling it with the well-known Media Type
+     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a
+     * warning. For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
      *
      * @param ref         the reference to the file
      * @param inputStream the content to put into the file
@@ -201,6 +201,22 @@ public interface IRepository extends IWineryRepositoryCommon {
      * @see #putDefinition(DefinitionsChildId, TDefinitions)
      */
     void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
+
+    /**
+     * Puts the given content to the given file. Replaces existing content.
+     * :warning: This method must only be used for streams that cannot be reset which seems to be the case for streams
+     * that are sending a file as a response from an HTTP request.
+     * <p>
+     * If the parent of the reference does not exist, it is created.
+     * <p>
+     * This method should not be used to write Definitions, calling it with the well-known Media Type
+     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS} will result in a
+     * warning. For such cases use {@link #putDefinition(DefinitionsChildId, TDefinitions)} instead.
+     * @param ref         the reference to the file
+     * @param inputStream the content to put into the file
+     * @throws IOException if something goes wrong
+     */
+    void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException;
 
     Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException;
 
@@ -210,8 +226,8 @@ public interface IRepository extends IWineryRepositoryCommon {
 
     /**
      * Serializes the given content at a location that the repository makes as belonging to the given id. This acts as a
-     * replacement for all invocations of {@link #putContentToFile} for the media type {@link
-     * org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
+     * replacement for all invocations of {@link #putContentToFile} for the media type
+     * {@link org.eclipse.winery.repository.backend.constants.MediaTypes#MEDIATYPE_TOSCA_DEFINITIONS}.
      *
      * @param id      The id of the definitions child encapsulated in the content to be put into the repository
      * @param content The content to be put into the repository at the given id.
@@ -661,7 +677,7 @@ public interface IRepository extends IWineryRepositoryCommon {
             try {
                 parentId = constructor.newInstance(derivedFromType);
             } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException e) {
+                     | IllegalArgumentException | InvocationTargetException e) {
                 throw new IllegalStateException("Could not instantiate id for parent", e);
             }
 
@@ -1473,4 +1489,6 @@ public interface IRepository extends IWineryRepositoryCommon {
     Path makeAbsolute(Path relativePath);
 
     Path getRepositoryRoot();
+
+    String getId();
 }

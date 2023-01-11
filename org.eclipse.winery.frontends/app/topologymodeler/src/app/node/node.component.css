@@ -37,15 +37,14 @@ div.node:hover {
 }
 
 div.pattern {
-    border-top-right-radius: 50%;
-    border-bottom-right-radius: 50%;
-    width: 80px;
-    height: 80px;
+    border-radius: 9%;
+    width: 75px;
+    height: 75px;
 }
 
 .patternImage {
-    margin-top: 10px;
-    margin-left: 3px;
+    margin-top: 8px;
+    margin-left: 4px;
     max-width: 50px;
     max-height: 50px;
 }
@@ -200,7 +199,8 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
 
 .policyIconsAnnotation {
     position: absolute;
-    top: -27px
+    top: -27px;
+    width: max-content;
 }
 
 .policyAnnotation {

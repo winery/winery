@@ -105,6 +105,7 @@ public class EdmmConverter {
 
         List<OTParticipant> participants = serviceTemplate.getTopologyTemplate().getParticipants();
         if (participants != null && !participants.isEmpty()) {
+            entityGraph.addEntity(new ScalarEntity(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate), EntityGraph.OWNER, entityGraph));
             entityGraph.addEntity(new MappingEntity(EntityGraph.PARTICIPANTS, entityGraph));
             participants.forEach(participant -> createParticipant(participant, nodeTemplates, entityGraph));
         }

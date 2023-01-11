@@ -8,7 +8,6 @@ import { MultiParticipantsService } from '../services/multi-participants.service
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { backendBaseURL } from '../../../../tosca-management/src/app/configuration';
-import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { BackendService } from '../services/backend.service';
 import { ErrorHandlerService } from '../services/error-handler.service';
 
@@ -44,12 +43,13 @@ export class MultiParticipantsComponent implements OnInit {
         if (currentButtonsState.buttonsState.generateGDM) {
             this.multiParticipantsService.postNewVersion().subscribe(
                 newVersion => {
-                    this.alert.success('Successfully created placeholders for tolopgy template');
+                    this.alert.success('Successfully created placeholders forFtopology template');
                     this.ngRedux.dispatch(this.actions.generatePlaceholder());
                     const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
                         + '&uiURL=' + encodeURIComponent(backendBaseURL)
                         + '&ns=' + newVersion.namespace
-                        + '&id=' + newVersion.localname;
+                        + '&id=' + newVersion.localname
+                        + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
                     this.editorConfiguration = editorConfig;
                     this.multiParticipantsService.postPlaceholders(newVersion.localname).subscribe(
                         placeholderResponse => {
@@ -64,21 +64,6 @@ export class MultiParticipantsComponent implements OnInit {
                     this.errorHandlerService.handleError(error);
                 }
             );
-        } else if (currentButtonsState.buttonsState.generatePlaceholderSubs) {
-            this.multiParticipantsService.postSubstituteVersion().subscribe(
-                placeholderSubstitution => {
-                    this.ngRedux.dispatch(this.actions.generatePlaceholderSubs());
-                    const editorConfig = '?repositoryURL=' + this.backendService.configuration.repositoryURL
-                        + '&uiURL=' + encodeURIComponent(backendBaseURL)
-                        + '&ns=' + placeholderSubstitution.namespace
-                        + '&id=' + placeholderSubstitution.localname;
-                    this.alert.success('Successfully substituted placeholder for topology');
-                    window.open(this.wineryConfigurationService.configuration.endpoints.topologymodeler + editorConfig);
-                },
-                error => {
-                    this.errorHandlerService.handleError(error);
-                }
-            );
         } else if (currentButtonsState.buttonsState.extractLDM) {
             this.multiParticipantsService.postParticipantsVersion().subscribe(
                 participantVersions => {
@@ -88,12 +73,14 @@ export class MultiParticipantsComponent implements OnInit {
                         const editorConfiguration = '?repositoryURL=' + this.backendService.configuration.repositoryURL
                             + '&uiURL=' + encodeURIComponent(backendBaseURL)
                             + '&ns=' + participantVersion.entity.namespace
-                            + '&id=' + participantVersion.entity.localname;
+                            + '&id=' + participantVersion.entity.localname
+                            + '&topologyProDecURL=' + this.backendService.configuration.topologyProDecURL;
                         window.open(this.wineryConfigurationService.configuration.endpoints.topologymodeler + editorConfiguration);
                     }
                 },
                 error => {
                     this.errorHandlerService.handleError(error);
+                    this.ngRedux.dispatch(this.actions.extractLDM());
                 }
             );
         }
