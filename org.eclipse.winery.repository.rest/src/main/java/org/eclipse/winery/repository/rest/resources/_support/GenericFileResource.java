@@ -106,7 +106,7 @@ public class GenericFileResource {
     }
 
     /**
-     * Returns a list of file meta object
+     * Returns a list of file meta information
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
