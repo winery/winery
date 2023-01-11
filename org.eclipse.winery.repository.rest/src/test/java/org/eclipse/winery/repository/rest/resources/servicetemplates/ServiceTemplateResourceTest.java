@@ -86,11 +86,10 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     }
 
     @Test
-    public void getInjectorOptionsWithoutOpenRequirementsBadRequest() throws Exception {
+    public void getInjectorOptionsWithoutOpenRequirements() throws Exception {
         this.setRevisionTo("origin/black");
-        //this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/pony.json");
-        this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options",
-            "servicetemplates/ServiceTemplateResource-getInjectorOptionsWithoutOpenRequirements-badrequest.txt");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options",
+            "servicetemplates/ServiceTemplateResource-getInjectorOptionsWithoutOpenRequirements.json");
     }
 
     @Test
@@ -104,7 +103,7 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     public void injectNodeTemplates() throws Exception {
         this.setRevisionTo("d535f69bf50b2c4eda437be46b7ba1f85c4ff3bc");
         this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/replace",
-            "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input2.json");
+            "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
     }
 
     @Test

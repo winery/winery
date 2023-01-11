@@ -67,7 +67,7 @@ public class PlacementModelsResourceTest extends AbstractResourceTest {
         Field field = Splitting.class.getDeclaredField("newRelationshipIdCounter");
         field.setAccessible(true);
         field.set(null, 100);
-        field = Splitting.class.getDeclaredField("IdCounter");
+        field = Splitting.class.getDeclaredField("idCounter");
         field.setAccessible(true);
         field.set(null, 1);
     }
