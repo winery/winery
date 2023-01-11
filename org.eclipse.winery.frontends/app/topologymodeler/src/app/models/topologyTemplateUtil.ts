@@ -382,7 +382,9 @@ export abstract class TopologyTemplateUtil {
         if (!this.objectsEquals(currentRelationshipTemplate.properties, lastSavedRelationshipTemplate.properties)) {
             return true;
         }
-        if (!this.objectsEquals(currentRelationshipTemplate.policies, lastSavedRelationshipTemplate.policies)) {
+        if ((!currentRelationshipTemplate.policies && lastSavedRelationshipTemplate.policies)
+            || (currentRelationshipTemplate.policies && !lastSavedRelationshipTemplate.policies)
+            || !this.objectsEquals(currentRelationshipTemplate.policies, lastSavedRelationshipTemplate.policies)) {
             return true;
         }
         return false;

@@ -34,8 +34,8 @@ public class DriverInjectionTest extends TestWithGitBackedRepository {
 
     @Test
     public void injectDriver() throws Exception {
-        setRevisionTo("d8ee55deecf37f5052d27807df691a7b70ec50f2");
-        ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
+        setRevisionTo("origin/plain");
+        ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTestMatched", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
 
         TTopologyTemplate tTopologyTemplate = DriverInjection.injectDriver(topologyTemplate);
@@ -55,8 +55,8 @@ public class DriverInjectionTest extends TestWithGitBackedRepository {
 
     @Test
     public void setDriverProperty() throws Exception {
-        setRevisionTo("d8ee55deecf37f5052d27807df691a7b70ec50f2");
-        ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
+        setRevisionTo("origin/plain");
+        ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTestMatched", false);
         TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
         TRelationshipTemplate relationshipTemplate = topologyTemplate.getRelationshipTemplate("con_71");
         TDeploymentArtifact deploymentArtifact = topologyTemplate.getNodeTemplate("dressageequipment").getDeploymentArtifacts().stream()

@@ -17,13 +17,10 @@ package org.eclipse.winery.model.adaptation.problemsolving.algorithms;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.adaptation.problemsolving.SolutionInputData;
-import org.eclipse.winery.model.adaptation.problemsolving.SolutionStrategy;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -39,38 +36,10 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
  *     <li>{@link ToscaBaseTypes#hostedOnRelationshipType }</li>
  * </ul>
  */
-public abstract class AbstractSecureProxyAlgorithm implements SolutionStrategy {
-
+public abstract class AbstractSecureProxyAlgorithm extends AbstractProxyAlgorithm {
+    
     @Override
-    public boolean applySolution(TTopologyTemplate topology, SolutionInputData inputData) {
-        if (Objects.isNull(inputData.getFindings()) || inputData.getFindings().size() < 2) {
-            return false;
-        }
-
-        String firstComponentId = inputData.getFindings().get(0).getComponentId();
-        TNodeTemplate firstComponent = topology.getNodeTemplate(firstComponentId);
-        String secondComponentId = inputData.getFindings().get(1).getComponentId();
-        TNodeTemplate secondComponent = topology.getNodeTemplate(secondComponentId);
-
-        Optional<TRelationshipTemplate> connectsToRelation = ModelUtilities.getOutgoingRelationshipTemplates(topology, firstComponent).stream()
-            .filter(relationship -> relationship.getType().equals(ToscaBaseTypes.connectsToRelationshipType))
-            .filter(relationship -> relationship.getTargetElement().getRef().getId().equals(secondComponentId))
-            .findFirst();
-
-        if (!connectsToRelation.isPresent()) {
-            connectsToRelation = ModelUtilities.getOutgoingRelationshipTemplates(topology, secondComponent).stream()
-                .filter(relationship -> relationship.getType().equals(ToscaBaseTypes.connectsToRelationshipType))
-                .filter(relationship -> relationship.getTargetElement().getRef().getId().equals(firstComponentId))
-                .findFirst();
-
-            return connectsToRelation.isPresent()
-                && insertProxy(secondComponent, firstComponent, connectsToRelation.get(), topology);
-        }
-
-        return insertProxy(firstComponent, secondComponent, connectsToRelation.get(), topology);
-    }
-
-    private boolean insertProxy(TNodeTemplate sourceNode, TNodeTemplate targetNode, TRelationshipTemplate oldConnection, TTopologyTemplate topology) {
+    protected boolean insertProxy(TNodeTemplate sourceNode, TNodeTemplate targetNode, TRelationshipTemplate oldConnection, TTopologyTemplate topology) {
         topology.getNodeTemplateOrRelationshipTemplate().remove(oldConnection);
 
         TNodeTemplate sourceNodeProxy = createProxy(sourceNode);

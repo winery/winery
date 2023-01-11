@@ -56,6 +56,12 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
             .map(repository::getElement)
             .collect(Collectors.toList());
     }
+    
+    public AbstractRefinement(RefinementChooser refinementChooser, List<OTRefinementModel> refinementModels, String versionAppendix) {
+        this.refinementChooser = refinementChooser;
+        this.versionAppendix = versionAppendix;
+        this.refinementModels = refinementModels;
+    }
 
     public ServiceTemplateId refineServiceTemplate(ServiceTemplateId id) {
         refinementServiceTemplateId = this.getSubstitutionServiceTemplateId(id);

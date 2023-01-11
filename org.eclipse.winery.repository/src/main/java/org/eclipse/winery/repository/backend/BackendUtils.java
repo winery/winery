@@ -120,6 +120,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
@@ -237,7 +238,7 @@ public class BackendUtils {
         try {
             tcId = constructor.newInstance(namespace, id, urlEncoded);
         } catch (InstantiationException | IllegalAccessException
-            | IllegalArgumentException | InvocationTargetException e) {
+                 | IllegalArgumentException | InvocationTargetException e) {
             BackendUtils.LOGGER.error("Could not create id instance", e);
             throw new IllegalStateException(e);
         }
@@ -502,6 +503,19 @@ public class BackendUtils {
     }
 
     /**
+     * @param serviceTemplate which should be cloned
+     * @return Copy od serviceTemplate
+     */
+    public static TServiceTemplate clone(TServiceTemplate serviceTemplate) {
+        TServiceTemplate serviceTemplateClone = new TServiceTemplate();
+        TTopologyTemplate topologyTemplateClone = clone(serviceTemplate.getTopologyTemplate());
+        serviceTemplateClone.setTopologyTemplate(topologyTemplateClone);
+        List<TTag> tags = serviceTemplate.getTags();
+        serviceTemplateClone.setTags(tags);
+        return serviceTemplateClone;
+    }
+
+    /**
      * @param topologyTemplate which should be cloned
      * @return Copy od topologyTemplate
      */
@@ -530,8 +544,31 @@ public class BackendUtils {
         if (nodeTemplate.getPolicies() != null) {
             nodeTemplateClone.setPolicies(new ArrayList<>(nodeTemplate.getPolicies()));
         }
-        nodeTemplateClone.setRequirements(nodeTemplate.getRequirements());
-        nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
+        if (nodeTemplate.getCapabilities() != null) {
+            nodeTemplate.getCapabilities().forEach(cap -> {
+                QName capType = cap.getType();
+                // We need a copy of the String, thus:
+                // noinspection StringOperationCanBeSimplified
+                ModelUtilities.addCapability(nodeTemplateClone,
+                    new QName(capType.getNamespaceURI(), capType.getLocalPart()),
+                    new String(cap.getName()),
+                    new String(cap.getId())
+                );
+            });
+        }
+        if (nodeTemplate.getRequirements() != null) {
+            nodeTemplate.getRequirements().forEach(req -> {
+                QName reqType = req.getType();
+                // We need a copy of the String, thus:
+                // noinspection StringOperationCanBeSimplified
+                ModelUtilities.addRequirement(nodeTemplateClone,
+                    new QName(reqType.getNamespaceURI(), reqType.getLocalPart()),
+                    new String(req.getName()),
+                    new String(req.getId())
+                );
+            });
+        }
+
         nodeTemplateClone.setProperties(nodeTemplate.getProperties());
         nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
         if (Objects.nonNull(nodeTemplate.getX())) {
@@ -553,6 +590,10 @@ public class BackendUtils {
         String provider = nodeTemplate.getOtherAttributes().get(ModelUtilities.NODE_TEMPLATE_PROVIDER);
         if (Objects.nonNull(provider)) {
             nodeTemplateClone.getOtherAttributes().put(ModelUtilities.NODE_TEMPLATE_PROVIDER, provider);
+        }
+        String participant = nodeTemplate.getOtherAttributes().get(ModelUtilities.QNAME_PARTICIPANT);
+        if (Objects.nonNull(participant)) {
+            nodeTemplateClone.getOtherAttributes().put(ModelUtilities.QNAME_PARTICIPANT, participant);
         }
 
         return nodeTemplateClone;
@@ -665,7 +706,7 @@ public class BackendUtils {
         WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
 
         List<TEntityType> hierarchy = repository.getParentsAndChild(entityType);
-        
+
         if (winerysPropertiesDefinition == null) {
             for (TEntityType type : hierarchy) {
                 if (type.getWinerysPropertiesDefinition() != null) {
@@ -673,17 +714,17 @@ public class BackendUtils {
                     break;
                 }
             }
-            
+
             if (winerysPropertiesDefinition == null) {
                 return;
             }
         }
-        
+
         // Merge properties definitions
         List<PropertyDefinitionKV> propertiesDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
-        
+
         final LinkedHashMap<String, String> emptyKVProperties = new LinkedHashMap<>();
-        propertiesDefinitions.forEach(prop -> 
+        propertiesDefinitions.forEach(prop ->
             emptyKVProperties.put(prop.getKey(), prop.getDefaultValue() == null ? "" : prop.getDefaultValue())
         );
 
@@ -723,8 +764,8 @@ public class BackendUtils {
     /**
      * @throws IOException           if content could not be updated in the repository
      * @throws IllegalStateException if an JAXBException occurred. This should never happen.
-     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or {@link
-     * IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
+     * @deprecated Instead use {@link IRepository#putDefinition(DefinitionsChildId, TDefinitions)} or
+     * {@link IRepository#putContentToFile(RepositoryFileReference, InputStream, MediaType)}
      */
     @Deprecated
     public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType, IRepository repo) throws IOException {
@@ -1110,7 +1151,8 @@ public class BackendUtils {
     }
 
     /**
-     * Tests if a path matches a glob pattern. @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>
+     * Tests if a path matches a glob pattern. @see <a
+     * href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>
      *
      * @param glob Glob pattern to test the path against.
      * @param path Path that should match the glob pattern.

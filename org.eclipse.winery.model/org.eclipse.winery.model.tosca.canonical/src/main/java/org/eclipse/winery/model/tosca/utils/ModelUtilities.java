@@ -605,6 +605,27 @@ public abstract class ModelUtilities {
         return getOtherAttributeValue(nodeTemplate, QNAME_PARTICIPANT);
     }
 
+    public static void setParticipant(TNodeTemplate nodeTemplate, String participant) {
+        Objects.requireNonNull(nodeTemplate);
+        Objects.requireNonNull(participant);
+        Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
+        otherAttributes.put(QNAME_PARTICIPANT, participant);
+    }
+
+    public static List<TNodeTemplate> getNodeTemplatesOfParticipant(String participantName, List<TNodeTemplate> nodeTemplates) {
+
+        return nodeTemplates.stream().filter(nt -> getParticipant(nt).isPresent())
+            .filter(nt -> getParticipant(nt).get().equals(participantName)).collect(Collectors.toList());
+    }
+
+    public static String getOwnerParticipantOfServiceTemplate(TServiceTemplate serviceTemplate) {
+        if (serviceTemplate.getTags() != null &&
+            serviceTemplate.getTags().stream().anyMatch(t -> t.getName().equals("participant"))) {
+            return serviceTemplate.getTags().stream().filter(t -> t.getName().equals("participant")).findFirst().get().getValue();
+        }
+        return null;
+    }
+
     private static Optional<String> getOtherAttributeValue(TNodeTemplate nodeTemplate, QName otherAttribute) {
         if (nodeTemplate == null) {
             return Optional.empty();
@@ -1008,6 +1029,38 @@ public abstract class ModelUtilities {
         );
     }
 
+    public static void addRequirement(TNodeTemplate node, QName requirementType, String name) {
+        addRequirement(node, requirementType, name, name);
+    }
+
+    public static void addRequirement(TNodeTemplate node, QName requirementType, String name, String id) {
+        List<TRequirement> requirements = node.getRequirements();
+        if (Objects.isNull(requirements)) {
+            requirements = new ArrayList<>();
+            node.setRequirements(requirements);
+        }
+
+        requirements.add(
+            new TRequirement.Builder(id, name, requirementType).build()
+        );
+    }
+
+    public static void addCapability(TNodeTemplate node, QName capabilityType, String name) {
+        addCapability(node, capabilityType, name, name);
+    }
+
+    public static void addCapability(TNodeTemplate node, QName capabilityType, String name, String id) {
+        List<TCapability> capabilities = node.getCapabilities();
+        if (Objects.isNull(capabilities)) {
+            capabilities = new ArrayList<>();
+            node.setCapabilities(capabilities);
+        }
+
+        capabilities.add(
+            new TCapability.Builder(id, capabilityType, name).build()
+        );
+    }
+
     public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
         return Objects.nonNull(node.getPolicies()) &&
             node.getPolicies().stream()
@@ -1043,9 +1096,8 @@ public abstract class ModelUtilities {
     }
 
     /**
-     * Merge properties definitions.
-     * Only winery properties definitions are considered.
-     * The first element in the list is the lowest in the inheritance hierarchy.
+     * Merge properties definitions. Only winery properties definitions are considered. The first element in the list is
+     * the lowest in the inheritance hierarchy.
      */
     public static <T extends TEntityType> List<PropertyDefinitionKV> mergePropertiesDefinitions(List<T> entityTypes) {
         List<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
@@ -1080,25 +1132,23 @@ public abstract class ModelUtilities {
 
                 if (!exists) {
                     entityTypePropertyDefinition.setDerivedFromType(entityType.getQName());
-                    
+
                     if (i == 0) {
                         entityTypePropertyDefinition.setDerivedFromStatus("SELF");
                     } else {
                         entityTypePropertyDefinition.setDerivedFromStatus("INHERITED");
                     }
-                    
+
                     propertyDefinitions.add(entityTypePropertyDefinition);
                 }
             }
         }
 
-        return  propertyDefinitions;
+        return propertyDefinitions;
     }
 
     /**
-     * Check if two lists are the same.
-     * Order does not matter. 
-     * Null is handled as empty list.
+     * Check if two lists are the same. Order does not matter. Null is handled as empty list.
      */
     public static <T> boolean compareUnorderedNullableLists(List<T> first, List<T> second) {
         if (first == null) first = new ArrayList<T>();
