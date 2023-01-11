@@ -587,7 +587,7 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         FileUtils.createDirectory(targetPath.getParent());
 
         try {
-            LOGGER.debug("Wrote {} bytes to \"{}\"",
+             LOGGER.debug("Wrote {} bytes to \"{}\"",
                 Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING),
                 targetPath
             );

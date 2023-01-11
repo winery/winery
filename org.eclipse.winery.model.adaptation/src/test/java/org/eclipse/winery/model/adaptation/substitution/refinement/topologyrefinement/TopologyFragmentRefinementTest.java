@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.configuration.DARefinementConfigurationObject;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
@@ -71,9 +72,9 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
         service.url = mockServer.getHttpBaseUrl() + "/endpoint";
         service.canRefine = new DARefinementConfigurationObject.TransformationCapabilities();
         service.canRefine.from = new ArrayList<>();
-        service.canRefine.from.add("TestType");
+        service.canRefine.from.add(sourceType.getLocalPart());
         service.canRefine.to = new ArrayList<>();
-        service.canRefine.to.add("TargetType");
+        service.canRefine.to.add(targetType.getLocalPart());
 
         Map<String, DARefinementConfigurationObject.DARefinementService> configMap = new HashMap<>();
         configMap.put("testRefinementService", service);
@@ -114,8 +115,17 @@ class TopologyFragmentRefinementTest extends TestWithGitBackedRepository {
 
         assertNotNull(transformationResult);
         assertNotEquals(testDa, transformationResult);
+        assertEquals(targetType, transformationResult.getArtifactType());
+        assertEquals(testDa.getName() + "-translated", transformationResult.getName());
 
-        ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(new ArtifactTemplateId(transformationResult.getArtifactRef()));
+        ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(transformationResult.getArtifactRef());
+
+        TArtifactTemplate element = repository.getElement(artifactTemplateId);
+        assertEquals(targetType, element.getType());
+        assertEquals("ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties_TargetType-w1-wip1", element.getId());
+        assertEquals("ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties_TargetType-w1-wip1", element.getName());
+
+        ArtifactTemplateFilesDirectoryId filesDirectoryId = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(filesDirectoryId, "test.zip");
         assertEquals(
             Files.size(Paths.get(ClassLoader.getSystemClassLoader().getResource("__files/test.zip").toURI())), // 128 bytes
