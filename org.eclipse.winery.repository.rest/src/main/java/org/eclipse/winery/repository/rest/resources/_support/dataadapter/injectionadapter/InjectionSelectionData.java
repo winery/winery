@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,32 +14,45 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter;
 
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Map;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@XmlRootElement(name = "InjectorReplaceData")
-public class InjectorReplaceData {
+@XmlRootElement
+public class InjectionSelectionData {
+    
+    @XmlElement(name = "hostInjections")
+    public List<Injection> hostInjections;
+    @XmlElement(name = "connectionInjections")
+    public List<Injection> connectionInjections;
 
-    @XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
-    public Map<String, TTopologyTemplate> hostInjections;
-
-    @XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
-    public Map<String, TTopologyTemplate> connectionInjections;
-
-    public void setHostInjections(Map<String, TTopologyTemplate> hostInjections) {
-        this.hostInjections = hostInjections;
+    public InjectionSelectionData() {
     }
 
-    public void setConnectionInjections(Map<String, TTopologyTemplate> connectionInjections) {
+    public InjectionSelectionData(List<Injection> hostInjections, List<Injection> connectionInjections) {
+        this.hostInjections = hostInjections;
         this.connectionInjections = connectionInjections;
     }
 
+    public List<Injection> getHostInjections() {
+        return hostInjections;
+    }
+
+    public void setHostInjections(List<Injection> hostInjections) {
+        this.hostInjections = hostInjections;
+    }
+
+    public List<Injection> getConnectionInjections() {
+        return connectionInjections;
+    }
+
+    public void setConnectionInjections(List<Injection> connectionInjections) {
+        this.connectionInjections = connectionInjections;
+    }
 }

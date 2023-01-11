@@ -38,7 +38,7 @@ public class ToscaTransformer {
 
     public static ToscaGraph createTOSCAGraph(TTopologyTemplate topologyTemplate) {
         ToscaGraph graph = new ToscaGraph();
-        List<TRelationshipTemplate> relationshipTemplates = topologyTemplate.getRelationshipTemplates();
+
         List<TNodeTemplate> nodeTemplates = topologyTemplate.getNodeTemplates();
         Map<String, ToscaNode> nodes = new HashMap<>();
         for (TNodeTemplate nodeTemplate : nodeTemplates) {
@@ -46,12 +46,15 @@ public class ToscaTransformer {
             nodes.put(nodeTemplate.getId(), node);
             graph.addVertex(node);
         }
-        for (TRelationshipTemplate tRelationshipTemplate : relationshipTemplates) {
-            ToscaNode source = nodes.get(tRelationshipTemplate.getSourceElement().getRef().getId());
-            ToscaNode target = nodes.get(tRelationshipTemplate.getTargetElement().getRef().getId());
-            ToscaEdge edge = new ToscaEdge(source, target);
-            graph.addEdge(source, target, edge);
-            initializeTOSCAEdge(tRelationshipTemplate, edge);
+        if (topologyTemplate.getRelationshipTemplates() != null) {
+            List<TRelationshipTemplate> relationshipTemplates = topologyTemplate.getRelationshipTemplates();
+            for (TRelationshipTemplate tRelationshipTemplate : relationshipTemplates) {
+                ToscaNode source = nodes.get(tRelationshipTemplate.getSourceElement().getRef().getId());
+                ToscaNode target = nodes.get(tRelationshipTemplate.getTargetElement().getRef().getId());
+                ToscaEdge edge = new ToscaEdge(source, target);
+                graph.addEdge(source, target, edge);
+                initializeTOSCAEdge(tRelationshipTemplate, edge);
+            }
         }
         return graph;
     }

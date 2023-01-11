@@ -14,38 +14,30 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter;
 
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "InjectorReplaceOptions")
 public class InjectorReplaceOptions {
 
-    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-    public TTopologyTemplate topologyTemplate;
+    //@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
+    public List<NodeInjectionOptions> hostInjections = new ArrayList<>();
 
-    @XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
-    public Map<String, List<TTopologyTemplate>> hostInjections = new HashMap<>();
+    //@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
+    public List<NodeInjectionOptions> connectionInjections = new ArrayList<>();
 
-    @XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
-    public Map<String, List<TTopologyTemplate>> connectionInjections = new HashMap<>();
-
-    public void setTopologyTemplate(TTopologyTemplate topologyTemplate) {
-        this.topologyTemplate = topologyTemplate;
-    }
-
-    public void setHostInjectionOptions(Map<String, List<TTopologyTemplate>> hostInjectionOptions) {
+    public void setHostInjectionOptions(List<NodeInjectionOptions> hostInjectionOptions) {
         this.hostInjections = hostInjectionOptions;
     }
 
-    public void setConnectionInjectionOptions(Map<String, List<TTopologyTemplate>> connectionInjectionOptions) {
+    public void setConnectionInjectionOptions(List<NodeInjectionOptions> connectionInjectionOptions) {
         this.connectionInjections = connectionInjectionOptions;
     }
 }

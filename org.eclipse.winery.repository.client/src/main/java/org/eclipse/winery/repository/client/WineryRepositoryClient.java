@@ -43,20 +43,23 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.repository.common.Util;
-import org.eclipse.winery.repository.client.beans.NamespaceIdOptionalName;
 import org.eclipse.winery.common.exceptions.QNameAlreadyExistsException;
+import org.eclipse.winery.common.interfaces.QNameWithName;
+import org.eclipse.winery.common.json.JsonFeature;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.IdUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.interfaces.QNameWithName;
-import org.eclipse.winery.common.json.JsonFeature;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.xml.XTDefinitions;
+import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.client.beans.NamespaceIdOptionalName;
+import org.eclipse.winery.repository.common.Util;
+import org.eclipse.winery.repository.xml.converter.ToCanonical;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
@@ -66,7 +69,7 @@ import org.slf4j.LoggerFactory;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
-    public static final JAXBContext context = WineryRepositoryClient.initContext();
+    public static final JAXBContext context = JAXBSupport.getContext();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WineryRepositoryClient.class);
     // thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
@@ -175,7 +178,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         Response response = instanceResource.request(MediaType.APPLICATION_XML).get();
         if (response.getStatusInfo().equals(Response.Status.OK)) {
             // also handles 404
-            return response.readEntity(TDefinitions.class);
+            XTDefinitions definitions = response.readEntity(XTDefinitions.class);
+            ToCanonical converter = new ToCanonical();
+            return converter.convert(definitions);
         }
         return null;
     }

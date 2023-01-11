@@ -44,6 +44,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
     private Splitting splitting = new Splitting();
     private TTopologyTemplate topologyTemplate;
     private TTopologyTemplate topologyTemplate2;
+    private TServiceTemplate serviceTemplate;
 
     @BeforeEach
     public void initialize() throws Exception {
@@ -53,7 +54,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
         assertTrue(RepositoryFactory.getRepository().exists(id));
         assertTrue(RepositoryFactory.getRepository().exists(id2));
 
-        final TServiceTemplate serviceTemplate = this.repository.getElement(id);
+        serviceTemplate = this.repository.getElement(id);
         topologyTemplate = serviceTemplate.getTopologyTemplate();
         topologyTemplate2 = serviceTemplate.getTopologyTemplate();
     }
@@ -67,7 +68,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .filter(nt -> expectedIds.contains(nt.getId()))
             .collect(Collectors.toList());
 
-        List<TNodeTemplate> nodeTemplatesWithoutIncomingEdges = splitting.getNodeTemplatesWithoutIncomingHostedOnRelationships(topologyTemplate);
+        List<TNodeTemplate> nodeTemplatesWithoutIncomingEdges = splitting.getNodeTemplatesWithoutIncomingHostedOnRelationships(serviceTemplate);
         Assertions.assertEquals(expectedNodeTemplates, nodeTemplatesWithoutIncomingEdges);
     }
 
@@ -119,7 +120,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
         entityTemplates.add(rt);
         List<TNodeTemplate> expectedNodeTemplates = new ArrayList<>();
         expectedNodeTemplates.add(nt1);
-        assertEquals(expectedNodeTemplates, splitting.getNodeTemplatesWhichPredecessorsHasNoPredecessors(topologyTemplate));
+        assertEquals(expectedNodeTemplates, splitting.getNodeTemplatesWhichPredecessorsHasNoPredecessors(serviceTemplate));
     }
 
     @Test
@@ -176,7 +177,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .get();
         ModelUtilities.setTargetLabel(nt3, "1");
 
-        assertEquals(true, splitting.checkValidTopology(topologyTemplate));
+        assertEquals(true, splitting.checkValidTopology(serviceTemplate));
     }
 
     @Test
@@ -200,7 +201,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .get();
         ModelUtilities.setTargetLabel(nt2, "2");
 
-        TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+        TNodeTemplate nt3 = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()
             .stream()
             .filter(x -> x instanceof TNodeTemplate)
             .map(TNodeTemplate.class::cast)
@@ -209,7 +210,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .get();
         ModelUtilities.setTargetLabel(nt3, "1");
 
-        assertEquals(false, splitting.checkValidTopology(topologyTemplate));
+        assertEquals(false, splitting.checkValidTopology(serviceTemplate));
     }
 
     @Test
@@ -224,7 +225,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
 
         ModelUtilities.setTargetLabel(nt1, "1");
 
-        TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+        TNodeTemplate nt3 = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()
             .stream()
             .filter(x -> x instanceof TNodeTemplate)
             .map(TNodeTemplate.class::cast)
@@ -233,13 +234,13 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .get();
         ModelUtilities.setTargetLabel(nt3, "2");
 
-        assertEquals(true, splitting.checkValidTopology(topologyTemplate));
+        assertEquals(true, splitting.checkValidTopology(serviceTemplate));
     }
 
     @Test
     public void testcheckValidationTopologyForAInValidTopologyWithFirstNodesHasEmptyTargetLabel() throws Exception {
 
-        TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+        TNodeTemplate nt3 = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()
             .stream()
             .filter(x -> x instanceof TNodeTemplate)
             .map(TNodeTemplate.class::cast)
@@ -248,12 +249,12 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .get();
         ModelUtilities.setTargetLabel(nt3, "2");
 
-        assertEquals(false, splitting.checkValidTopology(topologyTemplate));
+        assertEquals(false, splitting.checkValidTopology(serviceTemplate));
     }
 
     @Test
     public void testgetPredecessorsWhichPredecessorsHasNoPredecessors() {
-        TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+        TNodeTemplate nt1 = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()
             .stream()
             .filter(x -> x instanceof TNodeTemplate)
             .map(TNodeTemplate.class::cast)
@@ -261,13 +262,13 @@ public class SplittingTest extends TestWithGitBackedRepository {
             .findAny()
             .get();
 
-        assertEquals(nt1.getId(), splitting.getNodeTemplatesWhichPredecessorsHasNoPredecessors(topologyTemplate).get(0).getId());
+        assertEquals(nt1.getId(), splitting.getNodeTemplatesWhichPredecessorsHasNoPredecessors(serviceTemplate).get(0).getId());
     }
 
     @Test
     public void splitSmallTopology() throws Exception {
         List<String> expectedIds = Arrays.asList("NT1", "NT1_2", "NT1_3-A", "NT1_3-B", "NT1_4-A", "NT1_4-B", "NT1_5-A", "NT1_5-B", "con37", "con45", "con_91-A-A", "con_57-B-B");
-        List<TEntityTemplate> NodeTemplates = splitting.split(topologyTemplate).getNodeTemplateOrRelationshipTemplate();
+        List<TEntityTemplate> NodeTemplates = splitting.split(serviceTemplate).getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
 
         List<String> Ids = new ArrayList<>();
         for (TEntityTemplate nodeTemplate : NodeTemplates) {
@@ -287,7 +288,7 @@ public class SplittingTest extends TestWithGitBackedRepository {
         TTopologyTemplate topologyTemplateMatching = serviceTemplate.getTopologyTemplate();
 
         List<String> expectedIds = Arrays.asList("PHP-5-WebApplication", "Java7", "MySQL-DB", "PHP-5-Module", "Apache-2.4", "Ubuntu-14.04-VM-OnPremiseIAAS", "OpenStack-Liberty-12-OnPremiseIAAS", "AmazonBeanstalk", "AmazonRDS");
-        List<TNodeTemplate> NodeTemplates = splitting.hostMatchingWithDefaultHostSelection(topologyTemplateMatching).getNodeTemplateOrRelationshipTemplate().stream().filter(t -> t instanceof TNodeTemplate).map(TNodeTemplate.class::cast).collect(Collectors.toList());
+        List<TNodeTemplate> NodeTemplates = splitting.hostMatchingWithDefaultHostSelection(serviceTemplate).getNodeTemplateOrRelationshipTemplate().stream().filter(t -> t instanceof TNodeTemplate).map(TNodeTemplate.class::cast).collect(Collectors.toList());
 
         List<String> Ids = new ArrayList<>();
         for (TNodeTemplate nodeTemplate : NodeTemplates) {

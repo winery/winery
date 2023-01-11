@@ -19,6 +19,10 @@ export interface HighlightNodesAction extends Action {
     nodesToHighlight: string[];
 }
 
+export interface SelectedNodesAction extends Action {
+    selectedNodes: string[];
+}
+
 export interface ShowSelectedMappingAction extends Action {
     mappingType: string;
 }
@@ -72,6 +76,7 @@ export class TopologyRendererActions {
     static TOGGLE_HIDE_DEPENDSON_RELATIONS = 'TOGGLE_HIDE_DEPENDSON_RELATIONS';
     static SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE = 'SHOW_ONLY_MAPPINGS_OF_SELECTED_TYPE';
     static DETECT_PATTERNS = 'DETECT_PATTERNS';
+    static SET_SELECTEDNODES = 'SELECTED_NODES';
 
     disableResearchPlugin(): Action {
         return { type: TopologyRendererActions.DISABLE_RESEARCH_PLUGIN };
@@ -251,5 +256,12 @@ export class TopologyRendererActions {
 
     detectPatterns(): Action {
         return { type: TopologyRendererActions.DETECT_PATTERNS };
+    }
+
+    setSelectedNodes(selectedNodesList: string[]): SelectedNodesAction {
+        return {
+            selectedNodes: selectedNodesList,
+            type: TopologyRendererActions.SET_SELECTEDNODES
+        };
     }
 }
