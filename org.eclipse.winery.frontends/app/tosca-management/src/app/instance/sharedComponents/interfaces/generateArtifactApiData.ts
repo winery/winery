@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,9 +20,9 @@ export class GenerateArtifactApiData {
     autoCreateArtifactTemplate: string;
     autoGenerateIA: string;
     // MUST be set
-    artifactType = '{http://opentosca.org/artifacttypes}WAR';
+    // = '{http://opentosca.org/artifacttypes}WAR';
+    artifactType: string;
     artifactSpecificContent: string;
     interfaceName: string;
     operationName: string;
-    javaPackage: string;
 }

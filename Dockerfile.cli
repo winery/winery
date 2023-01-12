@@ -1,6 +1,5 @@
-FROM openjdk:11-jre
+FROM openjdk:17
 LABEL maintainer "Oliver Kopp <kopp.dev@gmail.com>, Lukas Harzenetter <lharzenetter@gmx.de>"
-
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 RUN apt-get update && apt-get install -y git git-lfs
 

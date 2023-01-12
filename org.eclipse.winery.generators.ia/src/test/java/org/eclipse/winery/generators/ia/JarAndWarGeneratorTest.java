@@ -14,7 +14,6 @@
 package org.eclipse.winery.generators.ia;
 
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,24 +22,13 @@ import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class GeneratorTest {
+public class JarAndWarGeneratorTest {
 
-    private static Path wd;
-
-    @BeforeAll
-    public static void initialize() throws Exception {
-        wd = Files.createTempDirectory("IAGenerator");
-    }
-
-    @AfterAll
-    public static void destroy() throws Exception {
-        FileUtils.forceDelete(wd.toFile());
-    }
+    @TempDir
+    private Path wd;
 
     @Test
     public void testMultipleOpsWithInOutParams() throws Exception {
@@ -76,13 +64,12 @@ public class GeneratorTest {
             )
         ).build();
 
-        Generator gen = new Generator(iFace,
+        JarAndWarGenerator gen = new JarAndWarGenerator(iFace,
             "org.opentosca.ia.test",
             new URL("http://test.com"),
             "TestMultipleOpsWithInOutParams",
-            wd.toFile()
-        );
-        gen.generateProject();
+            wd);
+        gen.generateArtifact();
     }
 
     @Test
@@ -94,12 +81,11 @@ public class GeneratorTest {
             )
         ).build();
 
-        Generator gen = new Generator(iFace,
+        JarAndWarGenerator gen = new JarAndWarGenerator(iFace,
             "org.opentosca.ia.test",
             new URL("http://test.com"),
             "TestOneOpNoParams",
-            wd.toFile()
-        );
-        gen.generateProject();
+            wd);
+        gen.generateArtifact();
     }
 }

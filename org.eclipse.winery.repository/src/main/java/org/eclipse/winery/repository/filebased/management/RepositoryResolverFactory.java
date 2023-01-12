@@ -27,11 +27,14 @@ public class RepositoryResolverFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryResolverFactory.class);
 
-    public static Optional<IRepositoryResolver> getResolver(String url) {
-        return getResolver(url, Constants.MAIN_BRANCH);
+    public static Optional<IRepositoryResolver> getResolver(String url, boolean patternAtlasFlag) {
+        return getResolver(url, Constants.MAIN_BRANCH, patternAtlasFlag, "");
     }
 
-    public static Optional<IRepositoryResolver> getResolver(String url, String branch) {
+    public static Optional<IRepositoryResolver> getResolver(String url, String branch, boolean patternAtlasFlag, String patternAtlasUI) {
+        if (patternAtlasFlag) {
+            return Optional.of(new PatternAtlasResolver(url, patternAtlasUI));
+        }
         try {
             if (new URL(url).getHost().contains("github.com") || new URL(url).getHost().contains("gitlab")) {
                 return Optional.of(new GitResolver(url, branch));
