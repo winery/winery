@@ -14,26 +14,48 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter;
 
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import java.util.List;
+import javax.xml.namespace.QName;
 
-public class InjectionOption {
+public class NodeInjectionOptions {
     @XmlElement(name = "NodeID")
     protected String nodeID;
 
     @XmlElementWrapper(name = "InjectionOptions")
-    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-    protected List<TTopologyTemplate> injectionOptions;
+    protected List<QName> injectionOptions;
 
-    public InjectionOption() {
+    public NodeInjectionOptions() {
     }
 
-    public InjectionOption(String nodeID, List<TTopologyTemplate> injectionOptions) {
+    public NodeInjectionOptions(String nodeID, List<QName> injectionOptions) {
         this.nodeID = nodeID;
+        this.injectionOptions = injectionOptions;
+    }
+
+    public void addInjectionOption(QName injectionOption) {
+        if (this.injectionOptions == null) {
+            this.injectionOptions = new ArrayList<>();
+        }
+        injectionOptions.add(injectionOption);
+    }
+
+    public String getNodeID() {
+        return nodeID;
+    }
+
+    public void setNodeID(String nodeID) {
+        this.nodeID = nodeID;
+    }
+
+    public List<QName> getInjectionOptions() {
+        return injectionOptions;
+    }
+
+    public void setInjectionOptions(List<QName> injectionOptions) {
         this.injectionOptions = injectionOptions;
     }
 }

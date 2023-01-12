@@ -413,6 +413,11 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
     }
 
     @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        repository.putContentToFile(ref, inputStream);
+    }
+
+    @Override
     public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
         return repository.getAllDirsAndFiles(ref, depth);
     }

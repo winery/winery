@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,22 +12,25 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter;
+export class InjectorReplaceData {
 
-import javax.xml.bind.annotation.XmlElement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+    hostInjections?: InjectionSelection[];
+    connectionInjections?: InjectionSelection[];
 
-public class InjectionOptions {
-    @XmlElement
-    private List<InjectionOption> injectionOption = new ArrayList<>();
-
-    public List<InjectionOption> getInjectionOption() {
-        return Collections.unmodifiableList(injectionOption);
+    constructor(hostInjections: InjectionSelection[], connectionInjections: InjectionSelection[]) {
+        this.hostInjections = hostInjections;
+        this.connectionInjections = connectionInjections;
     }
 
-    public void addInjectionOptions(InjectionOption in) {
-        injectionOption.add(in);
-    }
+
+}
+
+export class InjectionSelection {
+    nodeID: string;
+    injection: string;
+}
+
+export class InjectionOptionsResponse {
+    hostInjections: any;
+    connectionInjections: any;
 }

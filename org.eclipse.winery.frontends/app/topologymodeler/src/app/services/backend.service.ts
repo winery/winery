@@ -41,6 +41,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { DeploymentTechnology } from '../models/deployment-technology';
+import { QNameApiData } from '../../../../tosca-management/src/app/model/qNameApiData';
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -318,11 +319,11 @@ export class BackendService {
     /**
      * Splits the template.
      */
-    splitTopology(): Observable<HttpResponse<string>> {
+    splitTopology(): Observable<QNameApiData> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        return this.http.post(this.configuration.elementUrl + '/split/',
+        return this.http.post<QNameApiData>(this.configuration.elementUrl + '/split/',
             {},
-            { headers: headers, observe: 'response', responseType: 'text' }
+            { headers: headers}
         );
     }
 

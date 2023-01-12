@@ -1,0 +1,14 @@
+{
+    "hostInjections": [
+        {
+            "nodeID": "shetland_pony",
+            "injection": "{http://www.opentosca.org/providers/PastureProvider}PastureProvider"
+        }
+    ],
+    "connectionInjections": [
+        {
+            "nodeID": "requiresDryFood",
+            "injection": "{http://www.opentosca.org/providers/FoodProvider}FoodProvider"
+        }
+    ]
+}

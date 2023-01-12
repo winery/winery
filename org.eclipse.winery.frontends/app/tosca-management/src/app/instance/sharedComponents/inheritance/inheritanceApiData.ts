@@ -15,4 +15,5 @@ export class InheritanceApiData {
     isAbstract: string;
     isFinal: string;
     derivedFrom: string;
+    cyclicInheritance: boolean;
 }

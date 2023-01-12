@@ -33,7 +33,7 @@ import static org.eclipse.winery.common.configuration.RepositoryConfigurationObj
  */
 public class UiConfigurationObject extends AbstractConfigurationObject {
 
-    public static String apiUrlKey = "repositoryApiUrl";
+    private static final String apiUrlKey = "repositoryApiUrl";
 
     private static final Logger logger = LoggerFactory.getLogger(UiConfigurationObject.class);
 
@@ -71,7 +71,20 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         return endpoints;
     }
 
-    public Map<String, String> getDarus() { return darus; }
+    public Map<String, String> getDarus() {
+        return darus;
+    }
+
+    public String getApiEndpoint() {
+        String apiEndpoint = this.endpoints.get(apiUrlKey);
+
+        if (apiEndpoint == null) {
+            // set to default
+            apiEndpoint = "http://localhost:8080/winery";
+        }
+
+        return apiEndpoint;
+    }
 
     public Map<String, String> getGit() {
         return git;

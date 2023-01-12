@@ -1,0 +1,56 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table title="EDMM Types"
+                  [columns]="columns"
+                  [data]="edmmTypes"
+                  (addBtnClicked)="onAddClick()"
+                  (removeBtnClicked)="onRemoveClick($event)">
+    </winery-table>
+</div>
+
+<ng-template #addModal>
+    <winery-modal-header [modalRef]="addModalRef" [title]="'Add EDMM Type'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form>
+            <div class="form-group">
+                <label for="newType" class="control-label">EDMM Type</label>
+                <input id="newType" name="newType" type="text" placeholder="Enter a name for the new EDMM type..."
+                       class="form-control" [(ngModel)]="elementToEdit.value">
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="addModalRef"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="(!elementToEdit?.value)"
+                         (onOk)="onAddType(elementToEdit.value)">
+    </winery-modal-footer>
+</ng-template>
+
+<ng-template #removeModal>
+    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Type'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>Are you sure you want to delete <b>{{ elementToEdit.value }}</b>?</p>
+    </winery-modal-body>
+    <winery-modal-footer [modalRef]="removeModalRef"
+                         [okButtonLabel]="'Delete'"
+                         (onOk)="onRemoveConfirmed()">
+    </winery-modal-footer>
+</ng-template>

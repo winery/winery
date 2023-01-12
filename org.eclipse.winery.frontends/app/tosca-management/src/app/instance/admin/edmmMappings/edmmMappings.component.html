@@ -15,7 +15,7 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-    <winery-table title="Defined Prefixes for Namespaces"
+    <winery-table title="EDMM-TOSCA Type Mappings"
                   [columns]="columns"
                   [data]="edmmMappings"
                   (addBtnClicked)="onAddClick()"
@@ -50,7 +50,7 @@
 </ng-template>
 
 <ng-template #removeModal>
-    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Property Mapping'">
+    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove EDMM Mapping'">
     </winery-modal-header>
     <winery-modal-body>
         <p>Are you sure you want to delete <b>{{ elementToEdit.toscaType }}</b>?</p>

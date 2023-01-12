@@ -1,0 +1,81 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div id="PlaceholderSubstitutionView">
+    <div class="placeholderSubstitutionContainer">
+        <h3>Placeholder Substitution</h3>
+        <br><br>
+        <div class="informationContainer" *ngIf="!substitutionIsRunning; else showIsRunning">
+            <div *ngIf="substitutionIsDone; else showStart">
+                <div *ngIf="serverErrorOccurs">
+                    <h5>Error occurred</h5>
+                </div>
+                <div *ngIf="substitutionIsDone && !serverErrorOccurs">
+                    <h5>Placeholder substitution successful!</h5>
+                </div>
+                <button class="btn btn-primary" (click)="restartSubstitution($event)">
+                    Next substitution
+                </button>
+            </div>
+        </div>
+        <ng-template #showStart>
+            <div [hidden]="selectedNodeTemplateIds && selectedNodeTemplateIds.length >0">
+                Please select the application-specific components for which a corresponding service template should
+                be fond to replace their placeholder components.<br>
+                <b>NOTE: Use the drag-function to select the node templates.</b>
+                <br>
+            </div>
+            <div [hidden]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
+                For the placeholder substitution the following nodes have been selected:<br>
+                <ul>
+                    <li *ngFor="let nodeId of selectedNodeTemplateIds">
+                        {{ nodeId }}
+                        <br>
+                    </li>
+                </ul>
+            </div>
+            <br><br>
+            <button class="btn btn-primary" (click)="startSubstitution($event)"
+                    [disabled]="!selectedNodeTemplateIds || selectedNodeTemplateIds.length == 0">
+                Start placeholder substitution
+            </button>
+        </ng-template>
+        <ng-template #showIsRunning>
+            <div class="loader" *ngIf="substitutionIsLoading; else showContent"></div>
+            <ng-template #showContent>
+                <ul>
+                    <li *ngFor="let candidate of substitutionCandidates">
+                        {{ "{" + candidate.serviceTemplateNS + "}" + candidate.serviceTemplateName }}
+                        <br>
+                        <div class="btn-group">
+                            <button
+                                class="btn btn-sm btn-info"
+                                (click)="openModeler($event, candidate.serviceTemplateName, 
+                                    candidate.serviceTemplateNS)">
+                                Show Service Template
+                            </button>
+                            <br>
+                            <button class="btn btn-sm btn-primary" (click)="substitutionChosen($event, candidate)">
+                                Choose
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn btn-sm btn-danger" (click)="stopSubstitution()">
+                    Stop
+                </button>
+            </ng-template>
+        </ng-template>
+    </div>
+</div>

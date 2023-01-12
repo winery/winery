@@ -59,7 +59,6 @@ public class EdmmImporter {
     private final Map<String, Map.Entry<QName, TRelationshipTypeImplementation>> normalizedRelationshipTypeImplementations = new HashMap<>();
     private final Map<String, Map.Entry<QName, TArtifactTemplate>> normalizedArtifactTemplates = new HashMap<>();
 
-    private final Map<QName, EdmmType> edmmTypeMappings;
     private final Map<EdmmType, QName> oneToOneMappings;
 
     private final IRepository repository;
@@ -72,8 +71,7 @@ public class EdmmImporter {
         loadAndNormalizeToscaTypes();
 
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        this.oneToOneMappings = edmmManager.getEdmmOneToOneMap();
-        this.edmmTypeMappings = edmmManager.getToscaTypeMap();
+        this.oneToOneMappings = edmmManager.getEdmmOneToToscaMap();
 
         logger.info("Initialized EDMM Importer!");
     }

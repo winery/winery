@@ -24,30 +24,25 @@ import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
 import org.eclipse.winery.model.ids.definitions.DataTypeId;
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
-import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.model.ids.extensions.RefinementId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.ids.extensions.ComplianceRuleId;
+import org.eclipse.winery.model.ids.extensions.PatternRefinementModelId;
+import org.eclipse.winery.model.ids.extensions.RefinementId;
+import org.eclipse.winery.model.ids.extensions.TestRefinementModelId;
 import org.eclipse.winery.model.ids.extensions.TopologyFragmentRefinementModelId;
-import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
-import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
-import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
 import org.eclipse.winery.model.tosca.TDataType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -64,6 +59,11 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.extensions.OTComplianceRule;
+import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTestRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -75,7 +75,8 @@ import static org.eclipse.winery.repository.backend.IRepository.LOGGER;
  * Methods are moved from @see org.eclipse.winery.repository.backend.IGenericRepository to here as soon there is an
  * implementation for them. The ultimate goal is to eliminate IGenericRepository
  * <p>
- * These methods are shared between {@link IWineryRepository} and @see org.eclipse.winery.repository.backend.IRepository
+ * These methods are shared between {@link IWineryRepository} and @see
+ * org.eclipse.winery.repository.backend.IRepository
  */
 public interface IWineryRepositoryCommon {
 
@@ -132,7 +133,7 @@ public interface IWineryRepositoryCommon {
     default TCapabilityType getElement(CapabilityTypeId id) {
         return (TCapabilityType) this.getDefinitions(id).getElement();
     }
-    
+
     default TDataType getElement(DataTypeId id) {
         return (TDataType) this.getDefinitions(id).getElement();
     }
@@ -152,7 +153,7 @@ public interface IWineryRepositoryCommon {
     default OTPatternRefinementModel getElement(PatternRefinementModelId id) {
         return (OTPatternRefinementModel) this.getDefinitions(id).getElement();
     }
-    
+
     default OTTopologyFragmentRefinementModel getElement(TopologyFragmentRefinementModelId id) {
         return (OTTopologyFragmentRefinementModel) this.getDefinitions(id).getElement();
     }
@@ -275,28 +276,32 @@ public interface IWineryRepositoryCommon {
         if (entityType instanceof TRequirementType) {
             return new RequirementTypeId(qName);
         }
-        
+
         return null;
     }
-    
+
     default <T extends TEntityType> @Nullable T getParent(T entityType) {
         if (entityType.getDerivedFrom() == null) {
             return null;
         }
-        
+
         DefinitionsChildId id = getDefinitionsChildId(entityType, entityType.getDerivedFrom().getType());
         if (id == null) {
             LOGGER.error("Could not get parent even though child has a parent. Repository might be corrupted.");
             return null;
         }
-        
+
         return getElement(id);
     }
-    
+
     default <T extends TEntityType> ArrayList<T> getParents(T entityType) {
         ArrayList<T> parents = new ArrayList<>();
         T child = entityType;
         while (child.getDerivedFrom() != null) {
+            TEntityType.DerivedFrom derivedFrom = child.getDerivedFrom();
+            if (parents.stream().anyMatch(p -> p.getQName().equals(derivedFrom.getType()))) {
+                throw new RuntimeException("Identified cyclic inheritance!");
+            }
             T parent = getParent(child);
             if (parent == null) {
                 break;

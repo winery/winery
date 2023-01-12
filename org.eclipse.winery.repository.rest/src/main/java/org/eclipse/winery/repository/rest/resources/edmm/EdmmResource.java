@@ -168,7 +168,7 @@ public class EdmmResource {
     public Response getOneToOneMap() {
         IRepository repository = RepositoryFactory.getRepository();
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        Map<QName, EdmmType> oneToOneMap = edmmManager.getToscaOneToOneMap();
+        Map<QName, EdmmType> oneToOneMap = edmmManager.getToscaToEdmmMap();
 
         Map<String, String> reverseOneToOneMap = new HashMap<>();
         for (Map.Entry<QName, EdmmType> entry : oneToOneMap.entrySet()) {
