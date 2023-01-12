@@ -36,7 +36,7 @@ Further development is also funded by the European Union’s Horizon 2020 projec
 
 ## License
 
-Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
+Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.
