@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,7 +15,6 @@ package org.eclipse.winery.repository.rest.resources.edmm;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -185,7 +185,7 @@ public class EdmmResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("create-placeholders-scripts")
-    public Response createPlaceholders(String componentType, @Context UriInfo uriInfo) throws IOException {
+    public Response createPlaceholders(String componentType, @Context UriInfo uriInfo, @Context HttpServletResponse response) throws Exception {
 
         // adding the interface to the component node type
         NodeTypeResource nodeTypeResource = new NodeTypesResource().getComponentInstanceResource(EncodingUtil.URLencode(NODE_TYPES), componentType);
@@ -251,7 +251,7 @@ public class EdmmResource {
                         artifactApiData.artifactTemplate.equals(implementationArtifact.getArtifactRef().toString());
                 });
             if (!implementationResourceExists) {
-                nodeTypeImplementationResource.getImplementationArtifacts().generateArtifact(artifactApiData, uriInfo);
+                nodeTypeImplementationResource.getImplementationArtifacts().generateArtifact(artifactApiData, uriInfo, response);
             }
         }
         return Response.status(Response.Status.CREATED).build();

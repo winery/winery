@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -32,10 +32,40 @@
                 <ng-template #reuseArtifact>
                     <div class="alert alert-info">Will be reused.</div>
                 </ng-template>
+                <div *ngIf="generateData.toscaType == artifactTemplate">
+                    <div *ngIf="artifactTypes">
+                        <label> Artifact Type</label>
+                        <ng-select name="artifactType" [items]="artifactTypes" (selected)="typeSelected($event)"
+                                   [active]="[selectedArtifactType]">
+                        </ng-select>
+                    </div>
+                    <div
+                        *ngIf="generateData.selectedInterface.operations && generateData.selectedInterface.operations.length > 1">
+                        <!--If we only have a single operation we can just use implement all.-->
+                        <br>
+                        <label>Scope</label>
+                        <div class="form-group">
+                            <br>
+                            <input type="radio" id="{{implementAllOperations.name}}" name="scope"
+                                   (click)="handleRadioButton(implementAllOperations)" [value]="implementAllOperations"
+                                   [(ngModel)]="generateData.selectedOperation">
+                            <label for="{{implementAllOperations.name}}">{{implementAllOperations.name}} (Whole
+                                Interface)</label>
+                            <div *ngFor="let operation of generateData.selectedInterface.operations">
+                                <br>
+                                <input type="radio" name="scope" id={{operation.name}}
+                                       (click)="handleRadioButton(operation)" [value]="operation"
+                                       [(ngModel)]="generateData.selectedOperation">
+                                <label for="{{operation.name}}">{{operation.name}} (Operation)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </ng-template>
             <div class="form-group">
                 <label for="finalName-{{ randomIdSuffix }}" class="control-label">Final name</label>
-                <input id="finalName-{{ randomIdSuffix }}" class="form-control" type="text" disabled [value]="generateData.name + '_w1-wip1'">
+                <input id="finalName-{{ randomIdSuffix }}" class="form-control" type="text" disabled
+                       [value]="generateData.name + '_w1-wip1'">
             </div>
             <!-- pattern parameter is required to enable form validation -->
             <winery-namespace-selector name="artifactNamespace"
