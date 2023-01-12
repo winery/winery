@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -240,7 +240,6 @@ export class WineryArtifactComponent implements OnInit {
         }
         this.newArtifact.interfaceName = this.selectedInterface.text;
         this.newArtifact.operationName = this.selectedOperation;
-        this.newArtifact.javaPackage = '';
         this.createNewImplementationArtifact();
         this.addArtifactModal.hide();
     }

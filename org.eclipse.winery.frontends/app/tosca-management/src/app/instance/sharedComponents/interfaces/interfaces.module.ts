@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ import { WineryIoParameterModule } from '../../../wineryIoParameter/wineryIoPara
 import { WineryTargetInterfaceModule } from './targetInterface/wineryTargetInterface.module';
 import { WineryComponentExistsModule } from '../../../wineryComponentExists/wineryComponentExists.module';
 import { SelectModule } from 'ng2-select';
+import { WineryArtifactService } from '../wineryArtifacts/artifact.service';
 
 @NgModule({
     imports: [
@@ -50,7 +51,8 @@ import { SelectModule } from 'ng2-select';
         InterfacesComponent,
     ],
     providers: [
-        ExistService
+        ExistService,
+        WineryArtifactService
     ],
 })
 export class InterfacesModule {
