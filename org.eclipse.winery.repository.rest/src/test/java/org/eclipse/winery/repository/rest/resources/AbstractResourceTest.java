@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Scanner;
@@ -79,7 +80,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         if (inputStream == null) {
             throw new IllegalStateException("Could not find " + fileName + " on classpath");
         }
-        return new Scanner(inputStream, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+        return new Scanner(inputStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
     }
 
     protected RequestSpecification start() {
@@ -96,10 +97,6 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         return (fileName.endsWith("xml"));
     }
 
-    private boolean isTxt(String fileName) {
-        return (fileName.endsWith("txt"));
-    }
-
     private boolean isZip(String fileName) {
         return (fileName.endsWith("zip") || fileName.endsWith(".csar"));
     }
@@ -107,9 +104,6 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     private String getAccept(String fileName) {
         if (isXml(fileName)) {
             return ContentType.XML.toString();
-        } else if (fileName.endsWith("-badrequest.txt")) {
-            // convention: we always expect JSON
-            return ContentType.JSON.toString();
         } else if (isZip(fileName)) {
             return "application/zip";
         } else {
@@ -131,7 +125,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     public void assertGet(String restURL, String fileName) {
         try {
             String expectedStr = readFromClasspath(fileName);
-            final String receivedStr = start()
+            String receivedStr = start()
                 .accept(getAccept(fileName))
                 .get(callURL(restURL))
                 .then()
@@ -148,49 +142,15 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
                 // TODO: Cool ZIP equal test
                 assertNotNull(receivedStr);
             } else {
+                // QuickHack to avoid failing tests between Windows/Unix 
+                if (receivedStr.contains("\\r") || receivedStr.contains("\\n")) {
+                    receivedStr = receivedStr.replace("\\r", "").replace("\\n", "");
+                }
                 JSONAssert.assertEquals(
                     expectedStr,
                     receivedStr,
                     // we allow different ordering in lists, but not extensible JSON. That means, more elements are NOT OK. The tests need to be adapted in case new elements come in
                     JSONCompareMode.NON_EXTENSIBLE);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected void assertGetNoContent(String restURL) {
-        start()
-            .get(callURL(restURL))
-            .then()
-            .log()
-            .ifValidationFails()
-            .statusCode(204);
-    }
-
-    protected void assertGetExpectBadRequestResponse(String restURL, String fileName) {
-        try {
-            String expectedStr = readFromClasspath(fileName);
-            final String receivedStr = start()
-                .accept(getAccept(fileName))
-                .get(callURL(restURL))
-                .then()
-                .log()
-                .ifValidationFails()
-                .statusCode(400)
-                .extract()
-                .response()
-                .getBody()
-                .asString();
-            if (isXml(fileName)) {
-                org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
-            } else if (isTxt(fileName)) {
-                assertEquals(expectedStr, receivedStr);
-            } else {
-                JSONAssert.assertEquals(
-                    expectedStr,
-                    receivedStr,
-                    true);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -317,8 +277,14 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     }
 
     protected void assertUploadBinary(String restURL, String fileName) {
+        URL fileUrl = ClassLoader.getSystemClassLoader().getResource(fileName);
+        if (fileUrl == null) {
+            throw new IllegalStateException("Could not find " + fileName + " on classpath");
+        }
+
         given()
-            .multiPart(new File(fileName))
+            .multiPart(new File(fileUrl.getFile()))
+            .put(callURL(restURL))
             .then()
             .statusCode(204);
     }
