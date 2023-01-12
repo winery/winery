@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -62,12 +62,16 @@ public abstract class Generator {
 
     public static Generator getGenerator(String artifactType, TInterface tInterface, String packageAndNamespace, URL iaArtifactTemplateUploadUrl, String name, Path workingDir, String operation) {
         artifactType = artifactType.substring(artifactType.lastIndexOf("}") + 1);
-        return switch (artifactType) {
-            case "Bash" -> new BashGenerator(tInterface, operation, workingDir);
-            case "Python" -> new PythonGenerator(tInterface, operation, workingDir);
-            case "WAR", "JAR" ->
-                new JarAndWarGenerator(tInterface, packageAndNamespace, iaArtifactTemplateUploadUrl, name, workingDir);
-            default -> new DefaultGenerator(tInterface, operation, workingDir);
-        };
+        switch (artifactType) {
+            case "Bash":
+                return new BashGenerator(tInterface, operation, workingDir);
+            case "Python":
+                return new PythonGenerator(tInterface, operation, workingDir);
+            case "WAR":
+            case "JAR":
+                return new JarAndWarGenerator(tInterface, packageAndNamespace, iaArtifactTemplateUploadUrl, name, workingDir);
+            default:
+                return new DefaultGenerator(tInterface, operation, workingDir);
+        }
     }
 }
