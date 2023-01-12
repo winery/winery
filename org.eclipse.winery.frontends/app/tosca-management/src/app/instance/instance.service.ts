@@ -19,7 +19,9 @@ import { ToscaComponent } from '../model/toscaComponent';
 import { ToscaTypes } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem, SubMenuItems } from '../model/subMenuItem';
 
 export interface ToscaLightCompatibilityData {
@@ -173,7 +175,7 @@ export class InstanceService {
                     subMenu.push(SubMenuItems.accountability);
                 }
                 if (this.configurationService.configuration.features.edmmModeling) {
-                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypeMappings);
+                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypes);
                 }
         }
 

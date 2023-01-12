@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,53 +11,46 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <div [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-    <winery-table title="EDMM-TOSCA Type Mappings"
+    <winery-table title="EDMM Types"
                   [columns]="columns"
-                  [data]="edmmMappings"
+                  [data]="edmmTypes"
                   (addBtnClicked)="onAddClick()"
                   (removeBtnClicked)="onRemoveClick($event)">
     </winery-table>
 </div>
 
 <ng-template #addModal>
-    <winery-modal-header [modalRef]="addModalRef" [title]="'Add EDMM Mapping'">
+    <winery-modal-header [modalRef]="addModalRef" [title]="'Add EDMM Type'">
     </winery-modal-header>
     <winery-modal-body>
         <form>
             <div class="form-group">
-                <label for="toscaType" class="control-label">TOSCA Type</label>
-                <ng-select id="toscaType" [items]="typesSelect"
-                           (selected)="toscaTypeSelected($event)">
-                </ng-select>
-            </div>
-            <div class="form-group">
-                <label for="edmmType" class="control-label">EDMM Type</label>
-                <ng-select id="edmmType" [items]="edmmTypes"
-                           (selected)="edmmTypeSelected($event)">
-                </ng-select>
+                <label for="newType" class="control-label">EDMM Type</label>
+                <input id="newType" name="newType" type="text" placeholder="Enter a name for the new EDMM type..."
+                       class="form-control" [(ngModel)]="elementToEdit.value">
             </div>
         </form>
     </winery-modal-body>
     <winery-modal-footer [modalRef]="addModalRef"
                          [okButtonLabel]="'Add'"
-                         [disableOkButton]="(!elementToEdit.toscaType || !elementToEdit.edmmType)"
-                         (onOk)="onAddEdmmMapping()">
+                         [disableOkButton]="(!elementToEdit?.value)"
+                         (onOk)="onAddType(elementToEdit.value)">
     </winery-modal-footer>
 </ng-template>
 
 <ng-template #removeModal>
-    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove EDMM Mapping'">
+    <winery-modal-header [modalRef]="removeModalRef" [title]="'Remove Type'">
     </winery-modal-header>
     <winery-modal-body>
-        <p>Are you sure you want to delete <b>{{ elementToEdit.toscaType }}</b>?</p>
+        <p>Are you sure you want to delete <b>{{ elementToEdit.value }}</b>?</p>
     </winery-modal-body>
     <winery-modal-footer [modalRef]="removeModalRef"
                          [okButtonLabel]="'Delete'"
                          (onOk)="onRemoveConfirmed()">
     </winery-modal-footer>
 </ng-template>
-

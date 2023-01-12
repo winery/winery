@@ -33,19 +33,13 @@ public interface EdmmManager {
         return new JsonBasedEdmmManager(repo.ref2AbsolutePath(ref).toFile());
     }
 
+    List<EdmmType> getEdmmTypes();
+
+    void setEdmmTypes(List<EdmmType> newTypes);
+
     List<EdmmMappingItem> getOneToOneMappings();
 
     void setOneToOneMappings(List<EdmmMappingItem> list);
-
-    List<EdmmMappingItem> getTypeMappings();
-
-    void setTypeMappings(List<EdmmMappingItem> list);
-
-    default Map<QName, EdmmType> getTypeMap() {
-        Map<QName, EdmmType> typeMappings = new HashMap<>();
-        this.getTypeMappings().forEach(m -> typeMappings.put(m.toscaType, m.edmmType));
-        return typeMappings;
-    }
 
     default Map<QName, EdmmType> getOneToOneMap() {
         Map<QName, EdmmType> typeMappings = new HashMap<>();

@@ -53,7 +53,7 @@ class ToscaLightCheckerTest extends EdmmDependantTest {
         serviceTemplate.setTargetNamespace(this.NAMESPACE);
         // endregion
 
-        ToscaLightChecker toscaLightChecker = new ToscaLightChecker(this.nodeTypes, this.relationshipTypes, this.edmmTypeExtendsMapping, this.edmm1to1Mapping);
+        ToscaLightChecker toscaLightChecker = new ToscaLightChecker(this.nodeTypes, this.relationshipTypes, this.edmm1to1Mapping);
         boolean compliant = toscaLightChecker.isToscaLightCompliant(serviceTemplate);
         Map<QName, List<String>> resultList = toscaLightChecker.getErrorList();
 

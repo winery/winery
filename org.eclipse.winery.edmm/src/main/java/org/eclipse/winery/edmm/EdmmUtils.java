@@ -53,10 +53,9 @@ public class EdmmUtils {
 
         Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, EdmmType> typeMap = EdmmManager.forRepository(repository).getTypeMap();
         Map<QName, EdmmType> oneToOneMap = EdmmManager.forRepository(repository).getOneToOneMap();
 
-        return new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
+        return new ToscaLightChecker(nodeTypes, relationshipTypes, oneToOneMap);
     }
 
     public static Map<QName, TServiceTemplate> getAllToscaLightCompliantModels() {
