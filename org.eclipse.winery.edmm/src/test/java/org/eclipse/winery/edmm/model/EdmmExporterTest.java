@@ -34,9 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EdmmConverterTest extends EdmmDependantTest {
+public class EdmmExporterTest extends EdmmDependantTest {
 
-    protected EdmmConverterTest() throws UnsupportedEncodingException {
+    protected EdmmExporterTest() throws UnsupportedEncodingException {
     }
 
     @Test
@@ -49,9 +49,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertEquals(15, transform.vertexSet().size());
@@ -67,9 +67,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
@@ -88,9 +88,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
@@ -132,9 +132,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
@@ -163,9 +163,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate.Builder("testST", topology.build())
             .build();
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping, false);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
 
@@ -197,9 +197,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         serviceTemplate.setTopologyTemplate(topology.build());
         // endregion
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping, false);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 

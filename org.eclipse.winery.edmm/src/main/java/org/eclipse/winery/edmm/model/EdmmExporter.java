@@ -50,10 +50,14 @@ import io.github.edmm.core.parser.MappingEntity;
 import io.github.edmm.core.parser.ScalarEntity;
 import io.github.edmm.core.parser.SequenceEntity;
 import io.github.edmm.core.parser.support.DefaultKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE;
 
-public class EdmmConverter {
+public class EdmmExporter {
+
+    private final Logger logger = LoggerFactory.getLogger(EdmmExporter.class);
 
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TRelationshipType> relationshipTypes;
@@ -63,20 +67,20 @@ public class EdmmConverter {
     private final Map<QName, EdmmType> oneToOneMappings;
     private final boolean useAbsolutePaths;
 
-    public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
-                         Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
-                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
-                         Map<QName, TArtifactTemplate> artifactTemplates,
-                         Map<QName, EdmmType> oneToOneMappings) {
+    public EdmmExporter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
+                        Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
+                        Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
+                        Map<QName, TArtifactTemplate> artifactTemplates,
+                        Map<QName, EdmmType> oneToOneMappings) {
         this(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates,
             oneToOneMappings, true);
     }
 
-    public EdmmConverter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
-                         Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
-                         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
-                         Map<QName, TArtifactTemplate> artifactTemplates,
-                         Map<QName, EdmmType> oneToOneMappings, boolean useAbsolutePaths) {
+    public EdmmExporter(Map<QName, TNodeType> nodeTypes, Map<QName, TRelationshipType> relationshipTypes,
+                        Map<QName, TNodeTypeImplementation> nodeTypeImplementations,
+                        Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations,
+                        Map<QName, TArtifactTemplate> artifactTemplates,
+                        Map<QName, EdmmType> oneToOneMappings, boolean useAbsolutePaths) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
         this.nodeTypeImplementations = nodeTypeImplementations;
@@ -91,6 +95,10 @@ public class EdmmConverter {
         EntityGraph entityGraph = new EntityGraph();
 
         setMetadata(entityGraph);
+
+        if (serviceTemplate.getTopologyTemplate() == null) {
+            throw new RuntimeException("Service Template does not have a Topology Template!");
+        }
 
         List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
         List<TRelationshipTemplate> relationshipTemplates = serviceTemplate.getTopologyTemplate().getRelationshipTemplates();
@@ -223,11 +231,14 @@ public class EdmmConverter {
                     path = artifactTemplate.getArtifactReferences().get(0).getReference();
                 }
 
-                EntityId artifactEntityId = artifactsEntityId.extend(
-                    artifact.getArtifactType().getLocalPart().toLowerCase()
-                );
-
-                createPathReferenceEntity(entityGraph, path, artifactEntityId);
+                if (artifact.getArtifactType() != null) {
+                    EntityId artifactEntityId = artifactsEntityId.extend(
+                        artifact.getArtifactType().getLocalPart().toLowerCase()
+                    );
+                    createPathReferenceEntity(entityGraph, path, artifactEntityId);
+                } else {
+                    logger.error("Artifact Type of Artifact {} is not set!", artifact.getArtifactRef());
+                }
             }
         }
     }
@@ -254,8 +265,7 @@ public class EdmmConverter {
         EntityId propertiesEntityId = componentNodeId.extend(DefaultKeys.PROPERTIES);
         entityGraph.addEntity(new MappingEntity(propertiesEntityId, entityGraph));
 
-        if (Objects.nonNull(toscaTemplate.getProperties()) && Objects.nonNull(ModelUtilities.getPropertiesKV(toscaTemplate))) {
-
+        if (toscaTemplate.getProperties() != null && ModelUtilities.getPropertiesKV(toscaTemplate) != null) {
             ModelUtilities.getPropertiesKV(toscaTemplate)
                 .forEach((key, value) -> {
                     EntityId propertyEntityId = propertiesEntityId.extend(key);

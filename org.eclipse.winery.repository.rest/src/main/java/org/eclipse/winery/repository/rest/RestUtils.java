@@ -56,7 +56,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmExporter;
 import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -312,9 +312,9 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
 
-        return edmmConverter.transform(element);
+        return edmmExporter.transform(element);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
