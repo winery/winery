@@ -19,23 +19,6 @@ jobs:
     steps:
       - id: skip_check
         uses: fkirc/skip-duplicate-actions@master
-
-#  java11:
-#    needs: pre_job
-#    if: |
-#      needs.pre_job.outputs.should_skip != 'true'
-#      || needs.pre_job.outputs.docker_run_required == 'true'
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Set up JDK
-#        uses: actions/setup-java@v2
-#        with:
-#          distribution: 'temurin'
-#          java-version: 11
-#          cache: 'maven'
-#      - name: Build with Maven
-#        run: mvn -Pjava -B package
   
   java17:
     needs: pre_job
@@ -49,7 +32,7 @@ jobs:
         run: |
           if grep -i -q '\.all()' org.eclipse.winery.repository.rest/src/test/java/org/eclipse/winery/repository/rest/resources/AbstractResourceTest.java;
           then
-            echo "Log output should be shortend. Use .ifValidationFails()!";
+            echo "Log output should be shortened. Use .ifValidationFails()!";
             exit 1;
           fi
       - name: Set up JDK
