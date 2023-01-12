@@ -34,6 +34,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -53,13 +54,21 @@ public class EdmmImporter {
 
     private final static Logger logger = LoggerFactory.getLogger(EdmmImporter.class);
 
+    private final static String EDMM_IMPORTED_NAMESPACE = "https://opentosca.org/import/edmm/";
+
+    private final Map<QName, TNodeType> nodeTypes;
+    private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
     private final Map<String, Map.Entry<QName, TNodeType>> normalizedNodeTypes = new HashMap<>();
+
+    private final Map<QName, TRelationshipType> relationshipTypes;
+
     private final Map<String, Map.Entry<QName, TRelationshipType>> normalizedRelationshipTypes = new HashMap<>();
-    private final Map<String, Map.Entry<QName, TNodeTypeImplementation>> normalizedNodeTypeImplementations = new HashMap<>();
-    private final Map<String, Map.Entry<QName, TRelationshipTypeImplementation>> normalizedRelationshipTypeImplementations = new HashMap<>();
+    private final Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations;
+
+    private final Map<QName, TArtifactTemplate> artifactTemplates;
     private final Map<String, Map.Entry<QName, TArtifactTemplate>> normalizedArtifactTemplates = new HashMap<>();
 
-    private final Map<EdmmType, QName> oneToOneMappings;
+    private final Map<EdmmType, QName> edmmToToscaMap;
 
     private final IRepository repository;
 
@@ -68,21 +77,27 @@ public class EdmmImporter {
 
         this.repository = RepositoryFactory.getRepository();
 
-        loadAndNormalizeToscaTypes();
+        this.nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+        this.relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
+        this.nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
+        this.relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
+        this.artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
+
+        normalizeToscaTypes();
 
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        this.oneToOneMappings = edmmManager.getEdmmOneToToscaMap();
+        this.edmmToToscaMap = edmmManager.getEdmmOneToToscaMap();
 
         logger.info("Initialized EDMM Importer!");
     }
 
-    public void importFromStream(InputStream uploadedInputStream) {
+    public void importFromStream(InputStream uploadedInputStream, boolean overwrite) {
         Path tempFile = null;
         try {
             tempFile = File.createTempFile("edmm-import", "winery").toPath();
             Files.copy(uploadedInputStream, tempFile);
 
-            transform(tempFile);
+            transform(tempFile, overwrite);
         } catch (IOException e) {
             logger.error("Cloud not save uploaded file!");
             throw new RuntimeException(e);
@@ -97,7 +112,7 @@ public class EdmmImporter {
         }
     }
 
-    public boolean transform(Path edmmFilePath) {
+    public boolean transform(Path edmmFilePath, boolean override) {
         String pathString = edmmFilePath.toString();
         logger.info("Received path \"{}\" to import.", pathString);
 
@@ -138,30 +153,88 @@ public class EdmmImporter {
             // If the EDMM Model does not contain components, the DeploymentModel.of throws an IllegalStateException
             DeploymentModel deploymentModel = DeploymentModel.of(edmmEntryFilePath.toFile());
             logger.info("Successfully imported EDMM deployment model\"{}\"", deploymentModel.getName());
-            return importEddmModel(deploymentModel);
+            return importEdmmModel(deploymentModel, override);
         } catch (Exception e) {
             logger.error("Error while loading EDMM model!", e);
             return false;
         }
     }
 
-    public boolean transform(String edmmYaml) {
-        return importEddmModel(DeploymentModel.of(edmmYaml));
+    public boolean transform(String edmmYaml, boolean override) {
+        return importEdmmModel(DeploymentModel.of(edmmYaml), override);
     }
 
-    private boolean importEddmModel(DeploymentModel deploymentModel) {
+    private boolean importEdmmModel(DeploymentModel deploymentModel, boolean override) {
         logger.info("Starting to import \"{}\"", deploymentModel.getName());
 
         EntityGraph deploymentModelGraph = deploymentModel.getGraph();
-        Optional<Entity> componentTypes = deploymentModelGraph.getEntity(EntityGraph.COMPONENT_TYPES);
-        if (componentTypes.isPresent()) {
-            Set<Entity> types = componentTypes.get().getChildren();
-            logger.debug("Found {} Component Types to import", types.size());
+        Optional<Entity> componentTypesOptional = deploymentModelGraph.getEntity(EntityGraph.COMPONENT_TYPES);
+        if (componentTypesOptional.isPresent()) {
+            Set<Entity> componentTypes = componentTypesOptional.get().getChildren();
+            logger.debug("Found {} Component Types to import", componentTypes.size());
 
-            types.forEach(this::importComponentTypes);
+            componentTypes.forEach(this::importComponentTypes);
+        }
+
+        Optional<Entity> relationTypesOptional = deploymentModelGraph.getEntity(EntityGraph.RELATION_TYPES);
+        if (relationTypesOptional.isPresent()) {
+            Set<Entity> relationTypes = relationTypesOptional.get().getChildren();
+            logger.debug("Found {} Relation Types to import", relationTypes.size());
+
+            relationTypes.forEach(this::importRelationTypes);
+        }
+
+        Optional<Entity> componentsOptional = deploymentModelGraph.getEntity(EntityGraph.COMPONENT_TYPES);
+        if (componentsOptional.isPresent()) {
+            Set<Entity> components = componentsOptional.get().getChildren();
+            logger.debug("Found {} Components to import", components.size());
+
+            importEdmmApplication(deploymentModel, components, override);
         }
 
         return true;
+    }
+
+    private void importRelationTypes(Entity entity) {
+        String typeName = entity.getName();
+
+        QName qName = this.edmmToToscaMap.get(new EdmmType(typeName));
+        TRelationshipType relationshipType = this.relationshipTypes.get(qName);
+        if (qName == null) {
+            Map.Entry<QName, TRelationshipType> equivalentRelationshipType = normalizedRelationshipTypes.get(typeName);
+            if (equivalentRelationshipType == null) {
+
+                logger.info("Creating new Relationship Type \"{}\"", typeName);
+
+                // todo
+
+            } else {
+                qName = equivalentRelationshipType.getKey();
+                relationshipType = equivalentRelationshipType.getValue();
+            }
+        } else {
+            logger.info("Found existing Relationship Type matching requested Type! Reusing it...");
+            logger.info("Type was: \"{}\"", qName);
+        }
+    }
+
+    private void importEdmmApplication(DeploymentModel deploymentModel, Set<Entity> components, boolean override) {
+        String deploymentModelName = deploymentModel.getName() != null
+            ? deploymentModel.getName()
+            : "Imported-EDMM_" + System.currentTimeMillis();
+
+        ServiceTemplateId serviceTemplateId = new ServiceTemplateId(
+            new QName(EDMM_IMPORTED_NAMESPACE + "serviceTemplates", deploymentModelName)
+        );
+        if (repository.exists(serviceTemplateId) && !override) {
+            logger.info("Service Template with id \"{}\" already exists and should not be overridden!", serviceTemplateId.getQName());
+            return;
+        }
+
+        logger.info("Importing EDMM-Model as Service Template with id \"{}\"", serviceTemplateId.getQName());
+
+        // TODO
+
     }
 
     private void importComponentTypes(Entity entity) {
@@ -179,36 +252,22 @@ public class EdmmImporter {
         }
     }
 
-    private void loadAndNormalizeToscaTypes() {
-        Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
+    /**
+     * Loads the required Type Definitions and creates a "normalized" definitions map.
+     */
+    private void normalizeToscaTypes() {
         nodeTypes.entrySet()
             .forEach(entry -> normalizedNodeTypes.put(
                 EdmmUtils.normalizeQName(entry.getKey()),
                 entry
             ));
 
-        Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
         relationshipTypes.entrySet()
             .forEach(entry -> normalizedRelationshipTypes.put(
                 EdmmUtils.normalizeQName(entry.getKey()),
                 entry
             ));
 
-        Map<QName, TNodeTypeImplementation> nodeTypeImplementations = repository.getQNameToElementMapping(NodeTypeImplementationId.class);
-        nodeTypeImplementations.entrySet()
-            .forEach(entry -> normalizedNodeTypeImplementations.put(
-                EdmmUtils.normalizeQName(entry.getKey()),
-                entry
-            ));
-
-        Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
-        relationshipTypeImplementations.entrySet()
-            .forEach(entry -> normalizedRelationshipTypeImplementations.put(
-                EdmmUtils.normalizeQName(entry.getKey()),
-                entry
-            ));
-
-        Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         artifactTemplates.entrySet()
             .forEach(entry -> normalizedArtifactTemplates.put(
                 EdmmUtils.normalizeQName(entry.getKey()),
