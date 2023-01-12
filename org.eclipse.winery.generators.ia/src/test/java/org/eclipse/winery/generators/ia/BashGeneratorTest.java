@@ -67,7 +67,7 @@ public class BashGeneratorTest {
         ).build();
 
         BashGenerator gen = new BashGenerator(iFace,
-            "install",
+            "interface",
             wd
         );
         Assertions.assertThrows(IllegalArgumentException.class, gen::generateArtifact);
