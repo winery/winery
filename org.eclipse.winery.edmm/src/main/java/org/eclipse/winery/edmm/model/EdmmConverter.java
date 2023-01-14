@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTParticipant;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
@@ -86,22 +87,26 @@ public class EdmmConverter {
     }
 
     public EntityGraph transform(TServiceTemplate serviceTemplate) {
+        assert serviceTemplate.getTopologyTemplate() != null;
+        return this.transform(serviceTemplate.getTopologyTemplate(), ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate));
+    }
 
+    public EntityGraph transform(TTopologyTemplate topology, String ownerParticipant) {
         EntityGraph entityGraph = new EntityGraph();
-
         setMetadata(entityGraph);
+        List<TNodeTemplate> nodeTemplates = topology.getNodeTemplates();
+        List<TRelationshipTemplate> relationshipTemplates = topology.getRelationshipTemplates();
 
-        List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
-        List<TRelationshipTemplate> relationshipTemplates = serviceTemplate.getTopologyTemplate().getRelationshipTemplates();
         if (!nodeTemplates.isEmpty()) {
             entityGraph.addEntity(new MappingEntity(EntityGraph.COMPONENTS, entityGraph));
         }
+
         nodeTemplates.forEach(nodeTemplate -> createNode(nodeTemplate, entityGraph));
         relationshipTemplates.forEach(relationship -> createRelation(relationship, entityGraph));
+        List<OTParticipant> participants = topology.getParticipants();
 
-        List<OTParticipant> participants = serviceTemplate.getTopologyTemplate().getParticipants();
-        if (participants != null && !participants.isEmpty()) {
-            entityGraph.addEntity(new ScalarEntity(ModelUtilities.getOwnerParticipantOfServiceTemplate(serviceTemplate), EntityGraph.OWNER, entityGraph));
+        if (participants != null && !participants.isEmpty() && ownerParticipant != null) {
+            entityGraph.addEntity(new ScalarEntity(ownerParticipant, EntityGraph.OWNER, entityGraph));
             entityGraph.addEntity(new MappingEntity(EntityGraph.PARTICIPANTS, entityGraph));
             participants.forEach(participant -> createParticipant(participant, nodeTemplates, entityGraph));
         }
