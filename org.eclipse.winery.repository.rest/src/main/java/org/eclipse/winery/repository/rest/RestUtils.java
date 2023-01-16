@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -85,6 +85,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -294,8 +295,7 @@ public class RestUtils {
         return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
-    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
-
+    private static EdmmConverter createEdmmConverter(boolean useAbsolutPaths) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -312,15 +312,34 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+        return new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+    }
 
-        return edmmConverter.transform(element);
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+        EdmmConverter converter = createEdmmConverter(useAbsolutPaths);
+
+        return converter.transform(element);
+    }
+
+    public static EntityGraph getEdmmEntityGraph(TTopologyTemplate topology, boolean useAbsolutePaths) {
+        EdmmConverter converter = createEdmmConverter(useAbsolutePaths);
+
+        return converter.transform(topology, null);
+    }
+
+    public static Response getEdmmModel(TTopologyTemplate element, boolean useAbsolutPaths) {
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
+        return getEdmmModelAsYamlResponse(transform);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
-
         EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
 
+        return getEdmmModelAsYamlResponse(transform);
+    }
+
+    private static Response getEdmmModelAsYamlResponse(EntityGraph transform) {
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
