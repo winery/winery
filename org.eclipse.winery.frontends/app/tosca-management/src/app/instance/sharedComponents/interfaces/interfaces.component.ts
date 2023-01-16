@@ -291,6 +291,7 @@ export class InterfacesComponent implements OnInit {
         this.interfacesData.push(lifecycle);
         this.interfaceComponent.selectItem(lifecycle);
     }
+
     containsDefaultLifecycle(): boolean {
         if (this.sharedData.currentVersion.editable) {
             if (this.interfacesData === null || this.interfacesData === undefined) {
@@ -321,6 +322,7 @@ export class InterfacesComponent implements OnInit {
             );
         }
     }
+
     checkArtifactTemplateExists(): void {
         if (!this.generateArtifactApiData.artifactTemplateNamespace.endsWith('/')) {
             this.existService.check(backendBaseURL + '/artifacttemplates/'
@@ -416,6 +418,7 @@ export class InterfacesComponent implements OnInit {
         this.interfacesData = data ? data : [];
 
     }
+
     private handleInheritedInterfaceData(data: InheritedInterface[]) {
 
         this.inheritedInterfacesData = data ? data : [];
@@ -443,7 +446,6 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleError(error: HttpErrorResponse) {
-        console.log(error);
         this.generating = false;
         this.notify.error(error.error);
     }
@@ -453,7 +455,7 @@ export class InterfacesComponent implements OnInit {
             this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName = this.artifactTemplate.name;
             this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
             this.generateArtifactApiData.artifactType = this.artifactTemplate.artifactTypeQName;
-            console.log(this.generateArtifactApiData);
+
             this.service.createArtifactTemplate(this.implementation.name, this.implementation.namespace, this.generateArtifactApiData)
                 .subscribe(
                     (response) => this.handleGeneratedArtifact(response),
