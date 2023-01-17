@@ -27,8 +27,8 @@ jobs:
       || needs.pre_job.outputs.docker_run_required == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Check if AbstractResourceTest does not cotain log().all().
+      - uses: actions/checkout@v3
+      - name: Check if AbstractResourceTest does not contain log().all().
         run: |
           if grep -i -q '\.all()' org.eclipse.winery.repository.rest/src/test/java/org/eclipse/winery/repository/rest/resources/AbstractResourceTest.java;
           then
@@ -36,21 +36,28 @@ jobs:
             exit 1;
           fi
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
           cache: 'maven'
       - name: Build with Maven
         run: mvn -Pjava -B package
-      - name: Upload binary to artifacts
-        uses: actions/upload-artifact@v3
-        if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
+      - uses: actions/cache@v3
+        name: Upload built UI files
         with:
-          name: artifacts
           path: |
-            **/winery.war
-            **/winery-cli.jar
+            org.eclipse.winery.repository.rest/target
+            org.eclipse.winery.cli/target
+          key: ${{ runner.os }}-${{ github.run_id }}
+#      - name: Upload binary to artifacts
+#        uses: actions/upload-artifact@v3
+#        if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
+#        with:
+#          name: artifacts
+#          path: |
+#            **/winery.war
+#            **/winery-cli.jar
       - name: Run codacy-coverage-reporter
         if: ${{ github.repository_owner == 'OpenTOSCA' }}
         uses: codacy/codacy-coverage-reporter-action@master
@@ -65,37 +72,63 @@ jobs:
       || needs.pre_job.outputs.docker_run_required == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-kes: |
+            npm-${{ runner.os }}
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
           cache: 'maven'
       - name: Build with Maven
         run: mvn -Pfrontend -B package
-      - name: Upload binary to artifacts
-        uses: actions/upload-artifact@v3
-        if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
+      - uses: actions/cache@v3
+        name: Upload built UI files
         with:
-          name: artifacts
-          path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
+          path: |
+            org.eclipse.winery.frontends/target
+          key: ${{ runner.os }}-${{ github.run_id }}
+#      - name: Upload binary to artifacts
+#        uses: actions/upload-artifact@v3
+#        if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
+#        with:
+#          name: artifacts
+#          path: ${{ github.workspace }}/org.eclipse.winery.frontends/target/*.war
 
   dockerBuild:
     needs: [ java17, frontend ]
     runs-on: ubuntu-latest
-    if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
+#    if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
+#      - uses: actions/download-artifact@v3
+#        with:
+#          name: artifacts
+#          path: ${{ github.workspace }}
+#      - name: Prepare artifacts
+#        run: |
+#          mv org.eclipse.winery.cli/target/winery-cli.jar winery-cli.jar
+#          mv org.eclipse.winery.repository.rest/target/winery.war winery.war
+#          ls -al
+      - uses: actions/cache@v3
+        name: Upload built UI files
         with:
-          name: artifacts
-          path: ${{ github.workspace }}
-      - name: Prepare artifacts
-        run: |
-          mv org.eclipse.winery.cli/target/winery-cli.jar winery-cli.jar
-          mv org.eclipse.winery.repository.rest/target/winery.war winery.war
-          ls -al
+          path: |
+            org.eclipse.winery.repository.rest/target
+            org.eclipse.winery.cli/target
+          key: ${{ runner.os }}-${{ github.run_id }}
+      - uses: actions/cache@v3
+        name: Upload built UI files
+        with:
+          path: |
+            org.eclipse.winery.frontends/target
+          key: ${{ runner.os }}-${{ github.run_id }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
@@ -128,7 +161,7 @@ jobs:
           context: .
           file: Dockerfile.noBuild
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: ${{ steps.vars.outputs.tags }}
       - name: Build and push latest CLI Docker image
         uses: docker/build-push-action@v2
@@ -136,5 +169,5 @@ jobs:
           context: .
           file: Dockerfile.cli
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: 'opentosca/winery-cli:latest'
