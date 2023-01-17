@@ -3,7 +3,7 @@ LABEL maintainer = "Oliver Kopp <kopp.dev@gmail.com>, Lukas Harzenetter <lharzen
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 RUN apt-get update && apt-get install -y git git-lfs
 
-COPY org.eclipse.winery.frontends/target/winery-cli.jar /usr/local/bin
+COPY winery-cli.jar /usr/local/bin
 COPY docker/winery-cli /usr/local/bin
 
 RUN chmod +x /usr/local/bin/winery-cli
