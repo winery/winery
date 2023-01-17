@@ -1146,6 +1146,21 @@ public abstract class ModelUtilities {
 
         return propertyDefinitions;
     }
+    
+    public static <T extends TEntityType> WinerysPropertiesDefinition getEffectiveWineryPropertyDefinitions(List<T> hierarchy) {
+        List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
+
+        // Convention defines that the first element in the list is the child
+        T child = hierarchy.get(0);
+        
+        // Create new WPD
+        WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        winerysPropertiesDefinition.setElementName(child.getName());
+        winerysPropertiesDefinition.setNamespace(child.getTargetNamespace());
+        winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
+        
+        return winerysPropertiesDefinition;
+    }
 
     /**
      * Check if two lists are the same. Order does not matter. Null is handled as empty list.
