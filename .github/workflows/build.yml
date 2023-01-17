@@ -112,6 +112,16 @@ jobs:
         uses: docker/setup-qemu-action@v2
         with:
           platforms: amd64,arm64,arm
+      - name: Debug
+        run: |
+          echo "Contents of UI: "
+          ll org.eclipse.winery.frontends/target
+          echo ""
+          echo "Contents of REST"
+          ll org.eclipse.winery.repository.rest/target
+          echo ""
+          echo "Contents of CLI"
+          ll org.eclipse.winery.cli/target
       - name: Set variables
         id: vars
         run: |
