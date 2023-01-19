@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -44,10 +44,10 @@ export class FileManagerComponent implements OnChanges {
     listView = true;
     contextMenuPosition = { x: '0px', y: '0px' };
 
+    readonly SEPARATOR = '/';
+
     private dirsAndFilesList: FileOrFolderElement[];
     private lastSort: Sort = { active: 'size', direction: 'asc' };
-
-    private readonly SEPARATOR = '\\';
     private readonly COLUMNS: string[] = ['isFile', 'name', 'size', 'modified'];
     private readonly UNITS = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 
@@ -155,7 +155,7 @@ export class FileManagerComponent implements OnChanges {
     }
 
     depth(path: string): number {
-        return (path.match(/\\/g) || []).length;
+        return (path.match(new RegExp('/', 'g')) || []).length;
     }
 
     openFolder(folder: FileOrFolderElement) {
