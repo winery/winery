@@ -11,13 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnChanges, Output, SimpleChanges, ViewChild, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FileOrFolderElement } from '../../../../model/fileOrFolderElement';
-import { MatTable, Sort } from '@angular/material';
+import { MatMenuTrigger, MatTable, Sort } from '@angular/material';
 import { RenameDialogComponent } from './dialogs/renameDialog.component';
 import { NewFolderDialogComponent } from './dialogs/newFolderDialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material';
 import { ConfirmDialogComponent } from './dialogs/confirmDialog.component';
 
 @Component({
@@ -67,7 +66,11 @@ export class FileManagerComponent implements OnChanges {
     determineBaseDir() {
         const keys = Array.from(this.pathToElementsMap.keys());
         keys.sort((a, b) => a.length > b.length ? 1 : -1);
-        this.baseDir = keys[0];
+        if (!keys[0]) {
+            this.baseDir = '';
+        } else {
+            this.baseDir = keys[0];
+        }
     }
 
     setCurrentPath(newPath: string) {
