@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,15 +37,20 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import io.github.edmm.core.parser.Entity;
 import io.github.edmm.core.parser.EntityGraph;
+import io.github.edmm.core.parser.ScalarEntity;
+import io.github.edmm.core.parser.support.DefaultKeys;
 import io.github.edmm.model.DeploymentModel;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -152,7 +158,7 @@ public class EdmmImporter {
         try {
             // If the EDMM Model does not contain components, the DeploymentModel.of throws an IllegalStateException
             DeploymentModel deploymentModel = DeploymentModel.of(edmmEntryFilePath.toFile());
-            logger.info("Successfully imported EDMM deployment model\"{}\"", deploymentModel.getName());
+            logger.info("Successfully stored EDMM deployment model\"{}\"", deploymentModel.getName());
             return importEdmmModel(deploymentModel, override);
         } catch (Exception e) {
             logger.error("Error while loading EDMM model!", e);
@@ -240,15 +246,76 @@ public class EdmmImporter {
     private void importComponentTypes(Entity entity) {
         String typeName = entity.getName();
 
-        Map.Entry<QName, TNodeType> equivalentNodeType = normalizedNodeTypes.get(typeName);
-        if (equivalentNodeType == null) {
-            logger.info("Creating new Node Type \"{}\"", typeName);
+        QName qName = this.edmmToToscaMap.get(new EdmmType(typeName));
+        TNodeType nodeType = null;
 
-            // todo
+        if (qName != null) {
+            nodeType = this.nodeTypes.get(qName);
+        }
 
-        } else {
-            logger.info("Found existing Node Type matching requested Type! Reusing it...");
-            logger.info("Type was: \"{}\"", typeName);
+        if (nodeType == null) {
+            Map.Entry<QName, TNodeType> equivalentNodeType = normalizedNodeTypes.get(typeName);
+
+            if (equivalentNodeType == null) {
+                logger.debug("Creating new Node Type \"{}\"", typeName);
+                qName = EdmmUtils.getQNameFromType(typeName, "nodeTypes");
+                TNodeType.Builder builder = new TNodeType.Builder(qName);
+
+                entity.getChildren().forEach(typeAttributes -> {
+                    if (typeAttributes.getName().equals(DefaultKeys.EXTENDS)) {
+                        // todo                        
+                    }
+                    if (typeAttributes.getName().equals(DefaultKeys.PROPERTIES)) {
+                        addPropertiesToTEntityType(typeAttributes.getChildren(), builder);
+                    }
+                });
+
+                NodeTypeId nodeTypeId = new NodeTypeId(qName);
+                try {
+                    repository.setElement(nodeTypeId, builder.build());
+                } catch (IOException e) {
+                    logger.error("Could not create NodeType with QName: \"{}\"", nodeTypeId.getQName());
+                }
+
+                logger.debug("Created new Node Type \"{}\"", typeName);
+
+                return;
+            } else {
+                qName = equivalentNodeType.getKey();
+            }
+        }
+        
+            logger.debug("Found existing Node Type \"{}\" matching requested Type! Reusing it...", qName);
+            logger.debug("Type was: \"{}\"", typeName);
+        
+    }
+
+    private void addPropertiesToTEntityType(Set<Entity> children, TEntityType.Builder<?> builder) {
+        ArrayList<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
+        children.forEach(property -> {
+            String propertyName = property.getName();
+            Optional<Entity> child = property.getChild(DefaultKeys.TYPE);
+            if (child.isPresent()) {
+                Entity entity = child.get();
+                if (entity instanceof ScalarEntity) {
+                    propertyDefinitions.add(
+                        new PropertyDefinitionKV(propertyName, ((ScalarEntity) entity).getValue())
+                    );
+                }
+            } else {
+                logger.warn("Could not find property type of Property \"{}\"", property);
+            }
+        });
+        
+        if (!propertyDefinitions.isEmpty()) {
+            TEntityType.PropertiesDefinition properties = builder.getProperties();
+            if (properties instanceof WinerysPropertiesDefinition) {
+                ((WinerysPropertiesDefinition) properties).getPropertyDefinitions().addAll(propertyDefinitions);
+            } else {
+                WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+                winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
+                builder.setProperties(winerysPropertiesDefinition);
+            }
         }
     }
 

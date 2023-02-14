@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.visitor.Visitor;
 
@@ -159,8 +160,13 @@ public class TNodeType extends TEntityType {
         private List<TInterfaceDefinition> interfaceDefinitions;
         private List<TArtifact> artifacts;
 
+        @Deprecated
         public Builder(String name) {
             super(name);
+        }
+
+        public Builder(QName id) {
+            super(id);
         }
 
         public Builder(TEntityType entityType) {

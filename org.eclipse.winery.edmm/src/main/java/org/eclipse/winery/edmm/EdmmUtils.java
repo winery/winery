@@ -32,7 +32,13 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class EdmmUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EdmmUtils.class);
+    private static final String IMPORTED_EDMM_NAMESPACE = "https://opentosca.org/edmm/imported/";
 
     public static Map<String, Object> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
         ToscaLightChecker toscaLightChecker = getToscaLightChecker();
@@ -74,7 +80,30 @@ public abstract class EdmmUtils {
         return qName.toString()
             .replace("{", "")
             .replace("}", "__")
-            .replace("/", "")
-            .replace(':', '_');
+            .replace("/", "--")
+            .replace(':', '+');
+    }
+
+    /**
+     * Tries to generate a QName from a type name. Thereby, two underscores are treated as the separation between a
+     * potential namespace and the ID
+     *
+     * @param typeName the name of the EDMM type
+     * @return a QName
+     */
+    public static QName getQNameFromType(String typeName, String namespaceSuffix) {
+        if (typeName.contains("__")) {
+            return QName.valueOf(
+                "{" +
+                    typeName.replace('+', ':')
+                        .replace("__", "}")
+                        .replace("--", "/")
+            );
+        }
+
+        return new QName(
+            IMPORTED_EDMM_NAMESPACE + namespaceSuffix,
+            typeName
+        );
     }
 }

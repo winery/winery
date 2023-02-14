@@ -2,7 +2,7 @@
 version: edm_1_0
 components:
   test_ubuntu_w1-wip1_0:
-    type: http_opentosca.orgexampleapplicationsnodetypes__test_ubuntu_w1-wip1
+    type: http+----opentosca.org--example--applications--nodetypes__test_ubuntu_w1-wip1
     properties:
       name: test_ubuntu_w1-wip1
   MySQL_DBMS:
@@ -40,7 +40,7 @@ component_types:
         type: string
       user:
         type: string
-  http_opentosca.orgexampleapplicationsnodetypes__test_ubuntu_w1-wip1:
+  http+----opentosca.org--example--applications--nodetypes__test_ubuntu_w1-wip1:
     extends: compute
     properties:
       ip-address:

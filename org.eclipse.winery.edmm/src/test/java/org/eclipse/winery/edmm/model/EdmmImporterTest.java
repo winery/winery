@@ -17,25 +17,48 @@ package org.eclipse.winery.edmm.model;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EdmmImporterTest extends TestWithGitBackedRepository {
 
     @Test
     void importComponentTypesTest() throws Exception {
+        this.setRevisionTo("origin/plain");
         EdmmImporter edmmImporter = new EdmmImporter();
 
         File edmmFile = loadFromClasspath("edmmModels/componentTypes.yaml");
         assertTrue(
             edmmImporter.transform(edmmFile.toPath(), true)
         );
+
+        TNodeType ubuntuType = repository.getElement(new NodeTypeId(
+            QName.valueOf("{http://opentosca.org/example/applications/nodetypes}test_ubuntu_w1-wip1")
+        ));
+        assertNotNull(ubuntuType);
+        WinerysPropertiesDefinition winerysPropertiesDefinition = ubuntuType.getWinerysPropertiesDefinition();
+        assertNotNull(winerysPropertiesDefinition);
+        List<PropertyDefinitionKV> properties = winerysPropertiesDefinition.getPropertyDefinitions();
+        assertNotNull(properties);
+        assertEquals(1, properties.size());
+        PropertyDefinitionKV ipProperty = properties.get(0);
+        assertEquals("ip-address", ipProperty.getKey());
+        assertEquals("string", ipProperty.getType());
     }
-    
+
     @Test
     void importWholeDeploymentModelTest() throws Exception {
         EdmmImporter edmmImporter = new EdmmImporter();
