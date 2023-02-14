@@ -23,10 +23,12 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
@@ -90,6 +92,15 @@ class EdmmImporterTest extends TestWithGitBackedRepository {
         assertTrue(
             edmmImporter.transform(edmmFile.toPath(), true)
         );
+
+        TServiceTemplate serviceTemplate = repository.getElement(new ServiceTemplateId(
+            QName.valueOf("{https://opentosca.org/edmm/imported/serviceTemplates}MySQL-OpenStack")
+        ));
+        assertNotNull(serviceTemplate);
+        TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+        assertNotNull(topologyTemplate);
+
+        assertEquals(3, topologyTemplate.getNodeTemplates().size());
     }
 
     private File loadFromClasspath(String path) throws URISyntaxException {

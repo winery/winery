@@ -37,11 +37,15 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -52,6 +56,8 @@ import io.github.edmm.core.parser.EntityGraph;
 import io.github.edmm.core.parser.ScalarEntity;
 import io.github.edmm.core.parser.support.DefaultKeys;
 import io.github.edmm.model.DeploymentModel;
+import io.github.edmm.model.Property;
+import io.github.edmm.model.component.RootComponent;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -191,13 +197,9 @@ public class EdmmImporter {
             relationTypes.forEach(this::importRelationTypes);
         }
 
-        Optional<Entity> componentsOptional = deploymentModelGraph.getEntity(EntityGraph.COMPONENT_TYPES);
-        if (componentsOptional.isPresent()) {
-            Set<Entity> components = componentsOptional.get().getChildren();
-            logger.debug("Found {} Components to import", components.size());
-
-            importEdmmApplication(deploymentModel, components, override);
-        }
+        Set<RootComponent> components = deploymentModel.getComponents();
+        logger.debug("Found {} Components to import", components.size());
+        importEdmmApplication(deploymentModel, components, override);
 
         return true;
     }
@@ -225,9 +227,9 @@ public class EdmmImporter {
         }
     }
 
-    private void importEdmmApplication(DeploymentModel deploymentModel, Set<Entity> components, boolean override) {
+    private void importEdmmApplication(DeploymentModel deploymentModel, Set<RootComponent> components, boolean override) {
         String deploymentModelName = deploymentModel.getName() != null
-            ? deploymentModel.getName()
+            ? deploymentModel.getName().replaceAll(".y(a?)ml", "")
             : "Imported-EDMM_" + System.currentTimeMillis();
 
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(
@@ -240,7 +242,39 @@ public class EdmmImporter {
 
         logger.info("Importing EDMM-Model as Service Template with id \"{}\"", serviceTemplateId.getQName());
 
-        // TODO
+        TTopologyTemplate.Builder topologyBuilder = new TTopologyTemplate.Builder();
+        components.forEach(entity -> importComponents(entity, topologyBuilder));
+        components.forEach(entity -> importRelations(entity, topologyBuilder));
+
+        TServiceTemplate importedServiceTemplate = new TServiceTemplate.Builder(
+            deploymentModelName,
+            serviceTemplateId.getNamespace().getDecoded(),
+            topologyBuilder.build()
+        ).build();
+
+        try {
+            repository.setElement(
+                serviceTemplateId,
+                importedServiceTemplate
+            );
+        } catch (IOException e) {
+            logger.error("Error while saving the ServiceTemplate \"{}\"", serviceTemplateId);
+        }
+    }
+
+    private void importComponents(RootComponent component, TTopologyTemplate.Builder topologyBuilder) {
+        QName type = getQNameForType(component.getType(), nodeTypesString);
+        TNodeTemplate.Builder nodeBuilder = new TNodeTemplate.Builder(
+            component.getName(),
+            type
+        );
+
+        addPropertiesToTEntityTemplate(component.getProperties(), nodeBuilder, nodeTypesString);
+
+        topologyBuilder.addNodeTemplate(nodeBuilder.build());
+    }
+
+    private void importRelations(RootComponent entity, TTopologyTemplate.Builder topologyBuilder) {
 
     }
 
@@ -319,6 +353,20 @@ public class EdmmImporter {
             }
         }
         return qName;
+    }
+
+    private void addPropertiesToTEntityTemplate(Map<String, Property> propertiesMap, TEntityTemplate.Builder<?> tempalteBuilder, String toscaType) {
+        TEntityTemplate.WineryKVProperties wineryKVProperties = new TEntityTemplate.WineryKVProperties();
+        wineryKVProperties.setNamespace(EdmmUtils.IMPORTED_EDMM_NAMESPACE + toscaType);
+        wineryKVProperties.setElementName("Properties");
+
+        propertiesMap.forEach(
+            (key, value) -> wineryKVProperties.addProperty(key, value.getValue())
+        );
+
+        if (wineryKVProperties.getKVProperties().size() > 0) {
+            tempalteBuilder.setProperties(wineryKVProperties);
+        }
     }
 
     private void addPropertiesToTEntityType(Set<Entity> children, TEntityType.Builder<?> builder) {
