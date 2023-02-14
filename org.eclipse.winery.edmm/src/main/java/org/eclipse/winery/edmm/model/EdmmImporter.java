@@ -78,6 +78,9 @@ public class EdmmImporter {
 
     private final IRepository repository;
 
+    private final String nodeTypesString = "nodeTypes";
+    private final String relationshipTypesString = "relationshipTypes";
+
     public EdmmImporter() {
         logger.debug("Initializing EDMM Importer...");
 
@@ -246,48 +249,74 @@ public class EdmmImporter {
     private void importComponentTypes(Entity entity) {
         String typeName = entity.getName();
 
-        QName qName = this.edmmToToscaMap.get(new EdmmType(typeName));
-        TNodeType nodeType = null;
+        QName qName = existsQNameForType(typeName, nodeTypesString);
 
-        if (qName != null) {
-            nodeType = this.nodeTypes.get(qName);
-        }
+        if (qName == null) {
+            logger.debug("Creating new Node Type \"{}\"", typeName);
+            qName = EdmmUtils.getQNameFromType(typeName, nodeTypesString);
+            TNodeType.Builder builder = new TNodeType.Builder(qName);
 
-        if (nodeType == null) {
-            Map.Entry<QName, TNodeType> equivalentNodeType = normalizedNodeTypes.get(typeName);
-
-            if (equivalentNodeType == null) {
-                logger.debug("Creating new Node Type \"{}\"", typeName);
-                qName = EdmmUtils.getQNameFromType(typeName, "nodeTypes");
-                TNodeType.Builder builder = new TNodeType.Builder(qName);
-
-                entity.getChildren().forEach(typeAttributes -> {
-                    if (typeAttributes.getName().equals(DefaultKeys.EXTENDS)) {
-                        // todo                        
-                    }
-                    if (typeAttributes.getName().equals(DefaultKeys.PROPERTIES)) {
-                        addPropertiesToTEntityType(typeAttributes.getChildren(), builder);
-                    }
-                });
-
-                NodeTypeId nodeTypeId = new NodeTypeId(qName);
-                try {
-                    repository.setElement(nodeTypeId, builder.build());
-                } catch (IOException e) {
-                    logger.error("Could not create NodeType with QName: \"{}\"", nodeTypeId.getQName());
+            entity.getChildren().forEach(typeAttributes -> {
+                if (typeAttributes.getName().equals(DefaultKeys.EXTENDS) && typeAttributes instanceof ScalarEntity) {
+                    QName parent = getQNameForType(((ScalarEntity) typeAttributes).getValue(), nodeTypesString);
+                    builder.setDerivedFrom(parent);
                 }
+                if (typeAttributes.getName().equals(DefaultKeys.PROPERTIES)) {
+                    addPropertiesToTEntityType(typeAttributes.getChildren(), builder);
+                }
+            });
 
-                logger.debug("Created new Node Type \"{}\"", typeName);
-
-                return;
-            } else {
-                qName = equivalentNodeType.getKey();
+            NodeTypeId nodeTypeId = new NodeTypeId(qName);
+            try {
+                repository.setElement(nodeTypeId, builder.build());
+            } catch (IOException e) {
+                logger.error("Could not create NodeType with QName: \"{}\"", nodeTypeId.getQName());
             }
+
+            logger.debug("Created new Node Type \"{}\"", qName);
         }
-        
+    }
+
+    private QName getQNameForType(String typeName, String toscaType) {
+        QName qName = existsQNameForType(typeName, toscaType);
+
+        if (qName == null) {
+            logger.debug("Creating new Node Type \"{}\"", typeName);
+            qName = EdmmUtils.getQNameFromType(typeName, toscaType);
+        } else {
             logger.debug("Found existing Node Type \"{}\" matching requested Type! Reusing it...", qName);
             logger.debug("Type was: \"{}\"", typeName);
-        
+        }
+
+        return qName;
+    }
+
+    private QName existsQNameForType(String typeName, String toscaType) {
+        QName qName = this.edmmToToscaMap.get(new EdmmType(typeName));
+        TEntityType type = null;
+
+        if (qName != null) {
+            if (toscaType.equals(nodeTypesString)) {
+                type = this.nodeTypes.get(qName);
+            } else if (toscaType.equals(relationshipTypesString)) {
+                type = this.relationshipTypes.get(qName);
+            }
+        }
+
+        if (type == null) {
+            Map.Entry<QName, ?> entry = null;
+
+            if (toscaType.equals(nodeTypesString)) {
+                entry = normalizedNodeTypes.get(typeName);
+            } else if (toscaType.equals(relationshipTypesString)) {
+                entry = normalizedRelationshipTypes.get(typeName);
+            }
+
+            if (entry != null) {
+                qName = entry.getKey();
+            }
+        }
+        return qName;
     }
 
     private void addPropertiesToTEntityType(Set<Entity> children, TEntityType.Builder<?> builder) {
@@ -306,7 +335,7 @@ public class EdmmImporter {
                 logger.warn("Could not find property type of Property \"{}\"", property);
             }
         });
-        
+
         if (!propertyDefinitions.isEmpty()) {
             TEntityType.PropertiesDefinition properties = builder.getProperties();
             if (properties instanceof WinerysPropertiesDefinition) {

@@ -49,14 +49,18 @@ class EdmmImporterTest extends TestWithGitBackedRepository {
             QName.valueOf("{http://opentosca.org/example/applications/nodetypes}test_ubuntu_w1-wip1")
         ));
         assertNotNull(ubuntuType);
-        WinerysPropertiesDefinition winerysPropertiesDefinition = ubuntuType.getWinerysPropertiesDefinition();
-        assertNotNull(winerysPropertiesDefinition);
-        List<PropertyDefinitionKV> properties = winerysPropertiesDefinition.getPropertyDefinitions();
+        assertNotNull(ubuntuType.getWinerysPropertiesDefinition());
+        List<PropertyDefinitionKV> properties = ubuntuType.getWinerysPropertiesDefinition().getPropertyDefinitions();
         assertNotNull(properties);
         assertEquals(1, properties.size());
         PropertyDefinitionKV ipProperty = properties.get(0);
         assertEquals("ip-address", ipProperty.getKey());
         assertEquals("string", ipProperty.getType());
+        assertNotNull(ubuntuType.getDerivedFrom());
+        assertEquals(
+            QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM"),
+            ubuntuType.getDerivedFrom().getType()
+        );
     }
 
     @Test
