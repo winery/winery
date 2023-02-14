@@ -31,7 +31,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.eclipse.winery" level="TRACE"/>
+    <logger name="org.eclipse.winery" level="INFO"/>
     <logger name="org.eclipse.winery.repository.export.ToscaExportUtil" level="TRACE"/>
     <logger name="org.eclipse.winery.repository.export.CsarExporter" level="TRACE"/>
     <logger name="org.eclipse.winery.repository.backend.filebased.GitBasedRepository" level="TRACE"/>

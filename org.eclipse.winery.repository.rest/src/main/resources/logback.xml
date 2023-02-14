@@ -20,7 +20,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.eclipse.winery" level="DEBUG"/>
+    <logger name="org.eclipse.winery" level="TRACE"/>
     <logger name="org.glassfish.jersey" level="DEBUG"/>
     <logger name="org.apache.catalina.core.ApplicationDispatcher" level="SEVERE"/>
     <logger name="org.eclipse.jgit" level="INFO"/>

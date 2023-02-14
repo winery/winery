@@ -556,10 +556,18 @@ public abstract class ModelUtilities {
         WinerysPropertiesDefinition propDef = nodeType.getWinerysPropertiesDefinition();
         if (propDef != null && propDef.getPropertyDefinitions() != null) {
             Map<String, String> properties = new HashMap<>();
-            propDef.getPropertyDefinitions().forEach(propertyDefinition ->
-                properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue())
+            propDef.getPropertyDefinitions().forEach(propertyDefinition -> {
+                    if (propertyDefinition.getDefaultValue() != null)
+                        properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue());
+                    else {
+                        properties.put(propertyDefinition.getKey(), "");
+                    }
+                }
+
             );
             TEntityTemplate.WineryKVProperties tProps = new TEntityTemplate.WineryKVProperties();
+            tProps.setNamespace(propDef.getNamespace());
+            tProps.setElementName(propDef.getElementName());
             tProps.setKVProperties(new LinkedHashMap<>(properties));
             builder.setProperties(tProps);
         }
@@ -1145,6 +1153,21 @@ public abstract class ModelUtilities {
         }
 
         return propertyDefinitions;
+    }
+    
+    public static <T extends TEntityType> WinerysPropertiesDefinition getEffectiveWineryPropertyDefinitions(List<T> hierarchy) {
+        List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
+
+        // Convention defines that the first element in the list is the child
+        T child = hierarchy.get(0);
+        
+        // Create new WPD
+        WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        winerysPropertiesDefinition.setElementName(child.getName());
+        winerysPropertiesDefinition.setNamespace(child.getTargetNamespace());
+        winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
+        
+        return winerysPropertiesDefinition;
     }
 
     /**
