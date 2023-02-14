@@ -42,6 +42,7 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -242,15 +243,17 @@ public class EdmmImporter {
 
         logger.info("Importing EDMM-Model as Service Template with id \"{}\"", serviceTemplateId.getQName());
 
-        TTopologyTemplate.Builder topologyBuilder = new TTopologyTemplate.Builder();
-        components.forEach(entity -> importComponents(entity, topologyBuilder));
-        components.forEach(entity -> importRelations(entity, topologyBuilder));
+        TTopologyTemplate topologyTemplate = new TTopologyTemplate.Builder().build();
+        components.forEach(entity -> importComponents(entity, topologyTemplate));
+        components.forEach(entity -> importRelations(entity, topologyTemplate));
 
         TServiceTemplate importedServiceTemplate = new TServiceTemplate.Builder(
             deploymentModelName,
             serviceTemplateId.getNamespace().getDecoded(),
-            topologyBuilder.build()
-        ).build();
+            topologyTemplate
+        )
+            .setName(deploymentModelName)
+            .build();
 
         try {
             repository.setElement(
@@ -262,20 +265,43 @@ public class EdmmImporter {
         }
     }
 
-    private void importComponents(RootComponent component, TTopologyTemplate.Builder topologyBuilder) {
+    private void importComponents(RootComponent component, TTopologyTemplate topologyTemplate) {
         QName type = getQNameForType(component.getType(), nodeTypesString);
         TNodeTemplate.Builder nodeBuilder = new TNodeTemplate.Builder(
-            component.getName(),
+            component.getId(),
             type
-        );
+        )
+            .setName(component.getName());
 
         addPropertiesToTEntityTemplate(component.getProperties(), nodeBuilder, nodeTypesString);
 
-        topologyBuilder.addNodeTemplate(nodeBuilder.build());
+        topologyTemplate.addNodeTemplate(nodeBuilder.build());
     }
 
-    private void importRelations(RootComponent entity, TTopologyTemplate.Builder topologyBuilder) {
+    private void importRelations(RootComponent entity, TTopologyTemplate topologyTemplate) {
+        TNodeTemplate source = topologyTemplate.getNodeTemplate(entity.getId());
 
+        entity.getRelations().forEach(relation -> {
+            QName relationType = this.getQNameForType(relation.getId(), relationshipTypesString);
+
+            TNodeTemplate target = topologyTemplate.getNodeTemplate(relation.getTarget());
+            TRelationshipTemplate.Builder relationshipBuilder = new TRelationshipTemplate.Builder(
+                entity.getId() + "-" + relation.getId() + "-" + relation.getTarget(),
+                relationType,
+                source,
+                target
+            );
+
+            // Properties for relations are currently unsupported by the EDMM parser...
+            // java.lang.ClassCastException: class io.github.edmm.core.parser.ScalarEntity cannot be cast to
+            // class io.github.edmm.core.parser.MappingEntity (io.github.edmm.core.parser.ScalarEntity and
+            // io.github.edmm.core.parser.MappingEntity are in unnamed module of loader 'app')
+            this.addPropertiesToTEntityTemplate(relation.getProperties(), relationshipBuilder, relationshipTypesString);
+
+            topologyTemplate.addRelationshipTemplate(
+                relationshipBuilder.build()
+            );
+        });
     }
 
     private void importComponentTypes(Entity entity) {
@@ -361,7 +387,11 @@ public class EdmmImporter {
         wineryKVProperties.setElementName("Properties");
 
         propertiesMap.forEach(
-            (key, value) -> wineryKVProperties.addProperty(key, value.getValue())
+            (key, value) -> {
+                if (!key.equals("name")) {
+                    wineryKVProperties.addProperty(key, value.getValue());
+                }
+            }
         );
 
         if (wineryKVProperties.getKVProperties().size() > 0) {
