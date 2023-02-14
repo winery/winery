@@ -63,6 +63,8 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class EdmmImporter {
 
     private final static Logger logger = LoggerFactory.getLogger(EdmmImporter.class);
@@ -105,11 +107,11 @@ public class EdmmImporter {
         logger.info("Initialized EDMM Importer!");
     }
 
-    public void importFromStream(InputStream uploadedInputStream, boolean overwrite) {
+    public void importFromStream(InputStream uploadedInputStream, String fileName, boolean overwrite) {
         Path tempFile = null;
         try {
-            tempFile = File.createTempFile("edmm-import", "winery").toPath();
-            Files.copy(uploadedInputStream, tempFile);
+            tempFile = FileUtils.getTempDirectory().toPath().resolve(fileName);
+            Files.copy(uploadedInputStream, tempFile, REPLACE_EXISTING);
 
             transform(tempFile, overwrite);
         } catch (IOException e) {
@@ -290,13 +292,13 @@ public class EdmmImporter {
                 relationType,
                 source,
                 target
-            );
+            ).setName(relation.getName());
 
             // Properties for relations are currently unsupported by the EDMM parser...
             // java.lang.ClassCastException: class io.github.edmm.core.parser.ScalarEntity cannot be cast to
             // class io.github.edmm.core.parser.MappingEntity (io.github.edmm.core.parser.ScalarEntity and
             // io.github.edmm.core.parser.MappingEntity are in unnamed module of loader 'app')
-            this.addPropertiesToTEntityTemplate(relation.getProperties(), relationshipBuilder, relationshipTypesString);
+            // this.addPropertiesToTEntityTemplate(relation.getProperties(), relationshipBuilder, relationshipTypesString);
 
             topologyTemplate.addRelationshipTemplate(
                 relationshipBuilder.build()
@@ -330,8 +332,11 @@ public class EdmmImporter {
     private void importTypeSpecificElements(Entity entity, TEntityType.Builder<?> builder, String toscaType) {
         entity.getChildren().forEach(typeAttributes -> {
             if (typeAttributes.getName().equals(DefaultKeys.EXTENDS) && typeAttributes instanceof ScalarEntity) {
-                QName parent = getQNameForType(((ScalarEntity) typeAttributes).getValue(), toscaType);
-                builder.setDerivedFrom(parent);
+                String parentType = ((ScalarEntity) typeAttributes).getValue();
+                if (parentType != null && parentType.isEmpty()) {
+                    QName parent = getQNameForType(parentType, toscaType);
+                    builder.setDerivedFrom(parent);
+                }
             }
             if (typeAttributes.getName().equals(DefaultKeys.PROPERTIES)) {
                 addPropertiesToTEntityType(typeAttributes.getChildren(), builder);

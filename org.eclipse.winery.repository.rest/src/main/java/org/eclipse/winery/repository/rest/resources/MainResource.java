@@ -250,7 +250,7 @@ public class MainResource {
         // @formatter:on
 
         if (edmm) {
-            new EdmmImporter().importFromStream(uploadedInputStream, overwrite);
+            new EdmmImporter().importFromStream(uploadedInputStream, fileDetail.getFileName(), overwrite);
             return Response.noContent().build();
         }
         
