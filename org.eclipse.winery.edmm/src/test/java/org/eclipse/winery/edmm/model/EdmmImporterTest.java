@@ -22,7 +22,9 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
@@ -60,6 +62,23 @@ class EdmmImporterTest extends TestWithGitBackedRepository {
         assertEquals(
             QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM"),
             ubuntuType.getDerivedFrom().getType()
+        );
+
+        TRelationshipType customRelType = repository.getElement(new RelationshipTypeId(
+            QName.valueOf("{https://opentosca.org/edmm/imported/relationshipTypes}customType")
+        ));
+        assertNotNull(customRelType);
+        assertNotNull(customRelType.getWinerysPropertiesDefinition());
+        List<PropertyDefinitionKV> relProperties = customRelType.getWinerysPropertiesDefinition().getPropertyDefinitions();
+        assertNotNull(relProperties);
+        assertEquals(1, relProperties.size());
+        PropertyDefinitionKV myProperty = relProperties.get(0);
+        assertEquals("myProperty", myProperty.getKey());
+        assertEquals("string", ipProperty.getType());
+        assertNotNull(customRelType.getDerivedFrom());
+        assertEquals(
+            QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}DependsOn"),
+            customRelType.getDerivedFrom().getType()
         );
     }
 

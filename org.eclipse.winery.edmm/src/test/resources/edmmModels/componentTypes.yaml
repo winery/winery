@@ -28,6 +28,11 @@ relation_types:
     extends: null
   hosted_on:
     extends: depends_on
+  customType:
+    extends: depends_on
+    properties:
+      myProperty:
+        type: string
 component_types:
   compute:
     extends: base

@@ -60,8 +60,6 @@ public class EdmmImporter {
 
     private final static Logger logger = LoggerFactory.getLogger(EdmmImporter.class);
 
-    private final static String EDMM_IMPORTED_NAMESPACE = "https://opentosca.org/import/edmm/";
-
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TNodeTypeImplementation> nodeTypeImplementations;
     private final Map<String, Map.Entry<QName, TNodeType>> normalizedNodeTypes = new HashMap<>();
@@ -207,23 +205,23 @@ public class EdmmImporter {
     private void importRelationTypes(Entity entity) {
         String typeName = entity.getName();
 
-        QName qName = this.edmmToToscaMap.get(new EdmmType(typeName));
-        TRelationshipType relationshipType = this.relationshipTypes.get(qName);
+        QName qName = existsQNameForType(typeName, relationshipTypesString);
+
         if (qName == null) {
-            Map.Entry<QName, TRelationshipType> equivalentRelationshipType = normalizedRelationshipTypes.get(typeName);
-            if (equivalentRelationshipType == null) {
+            logger.debug("Creating new Relationship Type \"{}\"", typeName);
+            qName = EdmmUtils.getQNameFromType(typeName, relationshipTypesString);
+            TRelationshipType.Builder builder = new TRelationshipType.Builder(qName);
 
-                logger.info("Creating new Relationship Type \"{}\"", typeName);
+            importTypeSpecificElements(entity, builder, relationshipTypesString);
 
-                // todo
-
-            } else {
-                qName = equivalentRelationshipType.getKey();
-                relationshipType = equivalentRelationshipType.getValue();
+            RelationshipTypeId relationshipTypeId = new RelationshipTypeId(qName);
+            try {
+                repository.setElement(relationshipTypeId, builder.build());
+            } catch (IOException e) {
+                logger.error("Could not create Relationship Type with QName: \"{}\"", relationshipTypeId.getQName());
             }
-        } else {
-            logger.info("Found existing Relationship Type matching requested Type! Reusing it...");
-            logger.info("Type was: \"{}\"", qName);
+
+            logger.debug("Created new Relationship Type \"{}\"", qName);
         }
     }
 
@@ -233,7 +231,7 @@ public class EdmmImporter {
             : "Imported-EDMM_" + System.currentTimeMillis();
 
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(
-            new QName(EDMM_IMPORTED_NAMESPACE + "serviceTemplates", deploymentModelName)
+            new QName(EdmmUtils.IMPORTED_EDMM_NAMESPACE + "serviceTemplates", deploymentModelName)
         );
         if (repository.exists(serviceTemplateId) && !override) {
             logger.info("Service Template with id \"{}\" already exists and should not be overridden!", serviceTemplateId.getQName());
@@ -256,15 +254,7 @@ public class EdmmImporter {
             qName = EdmmUtils.getQNameFromType(typeName, nodeTypesString);
             TNodeType.Builder builder = new TNodeType.Builder(qName);
 
-            entity.getChildren().forEach(typeAttributes -> {
-                if (typeAttributes.getName().equals(DefaultKeys.EXTENDS) && typeAttributes instanceof ScalarEntity) {
-                    QName parent = getQNameForType(((ScalarEntity) typeAttributes).getValue(), nodeTypesString);
-                    builder.setDerivedFrom(parent);
-                }
-                if (typeAttributes.getName().equals(DefaultKeys.PROPERTIES)) {
-                    addPropertiesToTEntityType(typeAttributes.getChildren(), builder);
-                }
-            });
+            importTypeSpecificElements(entity, builder, nodeTypesString);
 
             NodeTypeId nodeTypeId = new NodeTypeId(qName);
             try {
@@ -275,6 +265,18 @@ public class EdmmImporter {
 
             logger.debug("Created new Node Type \"{}\"", qName);
         }
+    }
+
+    private void importTypeSpecificElements(Entity entity, TEntityType.Builder<?> builder, String toscaType) {
+        entity.getChildren().forEach(typeAttributes -> {
+            if (typeAttributes.getName().equals(DefaultKeys.EXTENDS) && typeAttributes instanceof ScalarEntity) {
+                QName parent = getQNameForType(((ScalarEntity) typeAttributes).getValue(), toscaType);
+                builder.setDerivedFrom(parent);
+            }
+            if (typeAttributes.getName().equals(DefaultKeys.PROPERTIES)) {
+                addPropertiesToTEntityType(typeAttributes.getChildren(), builder);
+            }
+        });
     }
 
     private QName getQNameForType(String typeName, String toscaType) {

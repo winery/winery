@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 
 public abstract class EdmmUtils {
 
+    public static final String IMPORTED_EDMM_NAMESPACE = "https://opentosca.org/edmm/imported/";
     private static final Logger LOGGER = LoggerFactory.getLogger(EdmmUtils.class);
-    private static final String IMPORTED_EDMM_NAMESPACE = "https://opentosca.org/edmm/imported/";
 
     public static Map<String, Object> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
         ToscaLightChecker toscaLightChecker = getToscaLightChecker();
