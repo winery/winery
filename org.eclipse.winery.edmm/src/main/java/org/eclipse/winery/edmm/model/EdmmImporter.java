@@ -333,7 +333,7 @@ public class EdmmImporter {
         entity.getChildren().forEach(typeAttributes -> {
             if (typeAttributes.getName().equals(DefaultKeys.EXTENDS) && typeAttributes instanceof ScalarEntity) {
                 String parentType = ((ScalarEntity) typeAttributes).getValue();
-                if (parentType != null && parentType.isEmpty()) {
+                if (parentType != null && !parentType.isEmpty()) {
                     QName parent = getQNameForType(parentType, toscaType);
                     builder.setDerivedFrom(parent);
                 }
