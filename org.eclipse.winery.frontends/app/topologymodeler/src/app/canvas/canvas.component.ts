@@ -1377,7 +1377,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
      * @param dragSourceInfo
      */
     setDragSource(dragSourceInfo: DragSource): void {
-        console.log(dragSourceInfo);
         const nodeArrayLength = this.allNodeTemplates.length;
         const currentNodeIsSource = this.newJsPlumbInstance.isSource(dragSourceInfo.dragSource);
         if (!this.dragSourceActive && !currentNodeIsSource && nodeArrayLength > 1) {
@@ -1388,7 +1387,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             });
             this.dragSourceInfos = dragSourceInfo;
             this.targetNodes = this.allNodesIds.filter((nodeId) => nodeId !== this.dragSourceInfos.nodeId);
-            console.log(this.targetNodes);
             if (this.targetNodes.length > 0) {
                 this.newJsPlumbInstance.makeTarget(this.targetNodes);
                 this.dragSourceActive = true;
