@@ -128,7 +128,7 @@ public class EdmmImporter {
         }
     }
 
-    public boolean transform(Path edmmFilePath, boolean override) {
+    public boolean transform(Path edmmFilePath, boolean overwrite) {
         String pathString = edmmFilePath.toString();
         logger.info("Received path \"{}\" to import.", pathString);
 
@@ -169,18 +169,18 @@ public class EdmmImporter {
             // If the EDMM Model does not contain components, the DeploymentModel.of throws an IllegalStateException
             DeploymentModel deploymentModel = DeploymentModel.of(edmmEntryFilePath.toFile());
             logger.info("Successfully stored EDMM deployment model\"{}\"", deploymentModel.getName());
-            return importEdmmModel(deploymentModel, override);
+            return importEdmmModel(deploymentModel, overwrite);
         } catch (Exception e) {
             logger.error("Error while loading EDMM model!", e);
             return false;
         }
     }
 
-    public boolean transform(String edmmYaml, boolean override) {
-        return importEdmmModel(DeploymentModel.of(edmmYaml), override);
+    public boolean transform(String edmmYaml, boolean overwrite) {
+        return importEdmmModel(DeploymentModel.of(edmmYaml), overwrite);
     }
 
-    private boolean importEdmmModel(DeploymentModel deploymentModel, boolean override) {
+    private boolean importEdmmModel(DeploymentModel deploymentModel, boolean overwrite) {
         logger.info("Starting to import \"{}\"", deploymentModel.getName());
 
         EntityGraph deploymentModelGraph = deploymentModel.getGraph();
@@ -202,7 +202,7 @@ public class EdmmImporter {
 
         Set<RootComponent> components = deploymentModel.getComponents();
         logger.debug("Found {} Components to import", components.size());
-        importEdmmApplication(deploymentModel, components, override);
+        importEdmmApplication(deploymentModel, components, overwrite);
 
         return true;
     }
@@ -230,7 +230,7 @@ public class EdmmImporter {
         }
     }
 
-    private void importEdmmApplication(DeploymentModel deploymentModel, Set<RootComponent> components, boolean override) {
+    private void importEdmmApplication(DeploymentModel deploymentModel, Set<RootComponent> components, boolean overwrite) {
         String deploymentModelName = deploymentModel.getName() != null
             ? deploymentModel.getName().replaceAll(".y(a?)ml", "")
             : "Imported-EDMM_" + System.currentTimeMillis();
@@ -238,7 +238,7 @@ public class EdmmImporter {
         ServiceTemplateId serviceTemplateId = new ServiceTemplateId(
             new QName(EdmmUtils.IMPORTED_EDMM_NAMESPACE + "serviceTemplates", deploymentModelName)
         );
-        if (repository.exists(serviceTemplateId) && !override) {
+        if (repository.exists(serviceTemplateId) && !overwrite) {
             logger.info("Service Template with id \"{}\" already exists and should not be overridden!", serviceTemplateId.getQName());
             return;
         }
