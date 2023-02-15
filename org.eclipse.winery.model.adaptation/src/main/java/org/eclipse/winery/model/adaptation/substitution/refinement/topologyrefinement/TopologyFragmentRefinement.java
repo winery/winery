@@ -54,6 +54,8 @@ import org.eclipse.winery.model.tosca.extensions.OTAttributeMapping;
 import org.eclipse.winery.model.tosca.extensions.OTAttributeMappingType;
 import org.eclipse.winery.model.tosca.extensions.OTDeploymentArtifactMapping;
 import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
+import org.eclipse.winery.model.tosca.extensions.OTRelationDirection;
+import org.eclipse.winery.model.tosca.extensions.OTRelationMapping;
 import org.eclipse.winery.model.tosca.extensions.OTStayMapping;
 import org.eclipse.winery.model.tosca.extensions.OTTopologyFragmentRefinementModel;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -169,7 +171,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
             this.applyDeploymentArtifactMapping(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
-            if (!getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isPresent()) {
+            if (getStayMappingsOfCurrentElement(prm, vertex.getTemplate()).findFirst().isEmpty()) {
                 topology.getNodeTemplateOrRelationshipTemplate().remove(matchingNode);
             } else if (shouldRemoveBehaviorPatterns(vertex.getTemplate(), matchingNode)) {
                 if (vertex.getTemplate().getPolicies() != null && matchingNode.getPolicies() != null)
@@ -187,7 +189,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
 
                 this.applyPropertyMappings(refinement, edge.getId(), relationshipTemplate, topology, idMapping);
 
-                if (!getStayMappingsOfCurrentElement(prm, edge.getTemplate()).findFirst().isPresent()) {
+                if (getStayMappingsOfCurrentElement(prm, edge.getTemplate()).findFirst().isEmpty()) {
                     topology.getNodeTemplateOrRelationshipTemplate().remove(relationshipTemplate);
                 }
             });
@@ -414,15 +416,43 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             .findFirst().isPresent()
             ||
             this.getExternalRelations(matchingNode, refinement, topology)
-                .allMatch(relationship ->
-                    refinement.getRefinementModel().getRelationMappings()
+                .allMatch(relationship -> {
+                    List<OTRelationMapping> applicableRelMaps = refinement.getRefinementModel().getRelationMappings()
                         .stream()
                         // use anyMatch to reduce runtime
                         .filter(mapping -> mapping.getDetectorElement().getId().equals(detectorNode.getId()))
-                        .anyMatch(relationMapping ->
-                            redirectRelation(relationMapping, relationship, topology, idMapping, this.relationshipTypes, this.nodeTypes)
+                        .filter(mapping -> (mapping.getDirection() == OTRelationDirection.INGOING
+                                && relationship.getTargetElement().getRef().getId().equals(matchingNode.getId())
+                            ) || (mapping.getDirection() == OTRelationDirection.OUTGOING
+                                && relationship.getSourceElement().getRef().getId().equals(matchingNode.getId()))
                         )
-                );
+                        .filter(mapping -> RefinementUtils.canRedirectRelation(mapping, relationship, relationshipTypes, nodeTypes))
+                        .toList();
+
+                    if (applicableRelMaps.size() == 0) {
+                        return false;
+                    }
+
+                    OTRelationMapping relationMapping = applicableRelMaps.get(0);
+                    if (applicableRelMaps.size() > 1) {
+                        Optional<OTRelationMapping> moreConcreteRedirect = applicableRelMaps.stream()
+                            .filter(mapping -> {
+                                if (mapping.getValidSourceOrTarget() != null) {
+                                    if (mapping.getDirection() == OTRelationDirection.INGOING) {
+                                        return ModelUtilities.isOfType(mapping.getValidSourceOrTarget(), relationship.getSourceElement().getRef().getType(), nodeTypes);
+                                    } else {
+                                        return ModelUtilities.isOfType(mapping.getValidSourceOrTarget(), relationship.getTargetElement().getRef().getType(), nodeTypes);
+                                    }
+                                }
+                                return false;
+                            })
+                            .findFirst();
+                        if (moreConcreteRedirect.isPresent()) {
+                            relationMapping = moreConcreteRedirect.get();
+                        }
+                    }
+                    return redirectRelation(relationMapping, relationship, topology, idMapping, this.relationshipTypes, this.nodeTypes);
+                });
     }
 
     private void redirectInternalRelations(OTTopologyFragmentRefinementModel prm, TNodeTemplate currentDetectorNode,
