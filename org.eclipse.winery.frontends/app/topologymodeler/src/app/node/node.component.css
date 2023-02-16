@@ -18,7 +18,6 @@ div.node {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    z-index: 60;
     font-size: small;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     background: #ffffff;
@@ -40,6 +39,7 @@ div.pattern {
     border-radius: 9%;
     width: 75px;
     height: 75px;
+    z-index: 10;
 }
 
 .patternImage {
@@ -257,4 +257,8 @@ div.overlay .overlay-icon {
     right: 0;
     top: 0;
     transform: translate(50%, -50%);
+}
+
+div.pattern > bs-tooltip-container {
+    z-index: 50;
 }

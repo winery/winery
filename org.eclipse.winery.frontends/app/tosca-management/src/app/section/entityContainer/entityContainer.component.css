@@ -29,6 +29,10 @@
     display: inline-block;
 }
 
+.namespaceContainer {
+    max-width: 450px;
+}
+
 .largeContainer {
     max-width: 274px;
 }

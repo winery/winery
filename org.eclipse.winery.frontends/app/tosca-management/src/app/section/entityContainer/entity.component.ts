@@ -83,6 +83,8 @@ export class EntityComponent implements OnInit {
             this.containerSizeClass = 'smallContainer';
         } else if (this.maxWidth === 440) {
             this.containerSizeClass = 'middleContainerSize';
+        } else if (!this.data.id) {
+            this.containerSizeClass = 'namespaceContainer';
         } else {
             this.containerSizeClass = 'largeContainer';
         }

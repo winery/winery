@@ -41,9 +41,15 @@ public interface EdmmManager {
 
     void setOneToOneMappings(List<EdmmMappingItem> list);
 
-    default Map<QName, EdmmType> getOneToOneMap() {
+    default Map<QName, EdmmType> getToscaToEdmmMap() {
         Map<QName, EdmmType> typeMappings = new HashMap<>();
         this.getOneToOneMappings().forEach(m -> typeMappings.put(m.toscaType, m.edmmType));
+        return typeMappings;
+    }
+
+    default Map<EdmmType, QName> getEdmmOneToToscaMap() {
+        Map<EdmmType, QName> typeMappings = new HashMap<>();
+        this.getOneToOneMappings().forEach(m -> typeMappings.put(m.edmmType, m.toscaType));
         return typeMappings;
     }
 }

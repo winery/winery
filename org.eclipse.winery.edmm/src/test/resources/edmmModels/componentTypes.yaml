@@ -1,0 +1,50 @@
+---
+version: edm_1_0
+components:
+relation_types:
+  depends_on:
+    extends: null
+  hosted_on:
+    extends: depends_on
+  customType:
+    extends: depends_on
+    properties:
+      myProperty:
+        type: string
+component_types:
+  compute:
+    extends: base
+  database:
+    extends: base
+    properties:
+      password:
+        type: string
+      schema_name:
+        type: string
+      user:
+        type: string
+  http+----opentosca.org--example--applications--nodetypes__test_ubuntu_w1-wip1:
+    extends: compute
+    properties:
+      ip-address:
+        type: string
+  dbms:
+    extends: software_component
+    properties:
+      port:
+        type: integer
+      root_password:
+        type: string
+  software_component:
+    extends: base
+  mysql_dbms:
+    extends: dbms
+    properties:
+      port:
+        type: integer
+      root_password:
+        type: string
+      version:
+        type: string
+  mysql_database:
+    extends: database
