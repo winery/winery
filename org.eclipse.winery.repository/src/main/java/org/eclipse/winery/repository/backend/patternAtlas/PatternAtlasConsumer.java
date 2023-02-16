@@ -84,9 +84,7 @@ public class PatternAtlasConsumer {
                 patternLanguageNode.get("id").asText(),
                 patternLanguageNode.get("name").asText(),
                 patternLanguageNode.get("uri").asText(),
-                patternLanguageNode.get("logo").asText(),
-                patternLanguageNode.get("patternCount").asInt(),
-                patternLanguageNode.get("creativeCommonsReference").asText()));
+                patternLanguageNode.get("patternCount").asInt()));
         }
         return patternLanguageList;
     }
@@ -123,21 +121,17 @@ public class PatternAtlasConsumer {
 
         private String name;
         private URI uri;
-        private URL logo;
         private int patternCount;
-        private URL creativeCommonsReference;
 
         private PatternLanguage() {
 
         }
 
-        public PatternLanguage(String id, String name, String uri, String logo, int patternCount, String creativeCommonsReference) throws URISyntaxException, MalformedURLException {
+        public PatternLanguage(String id, String name, String uri, int patternCount) throws URISyntaxException, MalformedURLException {
             this.id = id;
             this.name = name;
             this.uri = new URI(uri);
-            this.logo = new URL(logo);
             this.patternCount = patternCount;
-            this.creativeCommonsReference = new URL(creativeCommonsReference);
         }
 
         @Override
@@ -146,9 +140,7 @@ public class PatternAtlasConsumer {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", uri=" + uri +
-                ", logo=" + logo +
                 ", patternCount=" + patternCount +
-                ", creativeCommonsReference=" + creativeCommonsReference +
                 '}';
         }
 
@@ -162,9 +154,7 @@ public class PatternAtlasConsumer {
             if (patternCount != that.patternCount) return false;
             if (!id.equals(that.id)) return false;
             if (!name.equals(that.name)) return false;
-            if (!uri.equals(that.uri)) return false;
-            if (!Objects.equals(logo, that.logo)) return false;
-            return Objects.equals(creativeCommonsReference, that.creativeCommonsReference);
+            return uri.equals(that.uri);
         }
 
         @Override
@@ -172,9 +162,7 @@ public class PatternAtlasConsumer {
             int result = id != null ? id.hashCode() : 0;
             result = 31 * result + (name != null ? name.hashCode() : 0);
             result = 31 * result + (uri != null ? uri.hashCode() : 0);
-            result = 31 * result + (logo != null ? logo.hashCode() : 0);
             result = 31 * result + patternCount;
-            result = 31 * result + (creativeCommonsReference != null ? creativeCommonsReference.hashCode() : 0);
             return result;
         }
 
@@ -190,16 +178,8 @@ public class PatternAtlasConsumer {
             return uri;
         }
 
-        public URL getLogo() {
-            return logo;
-        }
-
         public int getPatternCount() {
             return patternCount;
-        }
-
-        public URL getCreativeCommonsReference() {
-            return creativeCommonsReference;
         }
     }
 

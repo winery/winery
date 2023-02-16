@@ -53,7 +53,7 @@ public class EdmmTypesResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if (!typeSet.containsAll(EdmmManager.forRepository(RepositoryFactory.getRepository()).getOneToOneMap().values())) {
+        if (!typeSet.containsAll(EdmmManager.forRepository(RepositoryFactory.getRepository()).getToscaToEdmmMap().values())) {
             return Response.status(Response.Status.CONFLICT).build();
         }
 

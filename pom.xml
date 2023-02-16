@@ -88,7 +88,7 @@
         <io.rest-assured>5.3.0</io.rest-assured>
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
-        <edmm.version>-b8ccf39ae2-1</edmm.version>
+        <edmm.version>7f550a1915</edmm.version>
         <tika.version>1.26</tika.version>
 
         <!-- grouped libraries -->

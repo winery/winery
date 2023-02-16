@@ -19,7 +19,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.security.AccessControlException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmExporter;
 import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -152,7 +151,7 @@ public class RestUtils {
                 // needed for {@link
                 // returnRepoPath(File, String)}
                 Locale.setDefault(Locale.ENGLISH);
-            } catch (AccessControlException e) {
+            } catch (SecurityException e) {
                 // Happens at Google App Engine
                 LOGGER.error("Could not switch locale to English", e);
             }
@@ -295,7 +294,7 @@ public class RestUtils {
         return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
-    private static EdmmConverter createEdmmConverter(boolean useAbsolutPaths) {
+    private static EdmmExporter createEdmmConverter(boolean useAbsolutPaths) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -304,7 +303,7 @@ public class RestUtils {
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
+        Map<QName, EdmmType> oneToOneMappings = edmmManager.getToscaToEdmmMap();
 
         if (nodeTypes.isEmpty()) {
             throw new IllegalStateException("No Node Types defined!");
@@ -312,17 +311,17 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        return new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+        return new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
     }
 
     public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
-        EdmmConverter converter = createEdmmConverter(useAbsolutPaths);
+        EdmmExporter converter = createEdmmConverter(useAbsolutPaths);
 
         return converter.transform(element);
     }
 
     public static EntityGraph getEdmmEntityGraph(TTopologyTemplate topology, boolean useAbsolutePaths) {
-        EdmmConverter converter = createEdmmConverter(useAbsolutePaths);
+        EdmmExporter converter = createEdmmConverter(useAbsolutePaths);
 
         return converter.transform(topology, null);
     }

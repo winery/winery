@@ -34,9 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EdmmConverterTest extends EdmmDependantTest {
+public class EdmmExporterTest extends EdmmDependantTest {
 
-    protected EdmmConverterTest() throws UnsupportedEncodingException {
+    protected EdmmExporterTest() throws UnsupportedEncodingException {
     }
 
     @Test
@@ -49,9 +49,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertEquals(15, transform.vertexSet().size());
@@ -67,9 +67,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
@@ -88,9 +88,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
@@ -132,9 +132,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate();
         serviceTemplate.setTopologyTemplate(topology.build());
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
         assertTrue(transform.vertexSet().stream().anyMatch(entity ->
@@ -163,9 +163,9 @@ public class EdmmConverterTest extends EdmmDependantTest {
         TServiceTemplate serviceTemplate = new TServiceTemplate.Builder("testST", topology.build())
             .build();
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping, false);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
 
         assertNotNull(transform);
 
@@ -197,77 +197,79 @@ public class EdmmConverterTest extends EdmmDependantTest {
         serviceTemplate.setTopologyTemplate(topology.build());
         // endregion
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations,
+        EdmmExporter edmmExporter = new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations,
             relationshipTypeImplementations, artifactTemplates, edmm1to1Mapping, false);
-        EntityGraph transform = edmmConverter.transform(serviceTemplate);
+        EntityGraph transform = edmmExporter.transform(serviceTemplate);
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
-        assertEquals("---\n" +
-            "components:\n" +
-            "  test_node_1:\n" +
-            "    type: great_type\n" +
-            "    relations:\n" +
-            "    - connects_to: test_node_2\n" +
-            "    - hosted_on: test_node_3\n" +
-            "    properties:\n" +
-            "      name: test_node_1\n" +
-            "    artifacts:\n" +
-            "    - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/testNode1-DA/files/da.war\n" +
-            "  test_node_3:\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_3\n" +
-            "    properties:\n" +
-            "      public_key: '-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----'\n" +
-            "      ssh_port: '22'\n" +
-            "      os_family: ubuntu\n" +
-            "      name: test_node_3\n" +
-            "  test_node_2:\n" +
-            "    relations:\n" +
-            "    - hosted_on: test_node_3\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_2\n" +
-            "    properties:\n" +
-            "      name: test_node_2\n" +
-            "  test_node_4:\n" +
-            "    operations:\n" +
-            "      stop: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
-            "      start: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh\n" +
-            "    type: https_ex.orgtoscatoedmm__test_node_type_4\n" +
-            "    relations:\n" +
-            "    - hosted_on: test_node_1\n" +
-            "    properties:\n" +
-            "      name: test_node_4\n" +
-            "relation_types:\n" +
-            "  depends_on:\n" +
-            "    extends: null\n" +
-            "  hosted_on:\n" +
-            "    extends: depends_on\n" +
-            "  connects_to:\n" +
-            "    extends: depends_on\n" +
-            "multi_id: '12345'\n" +
-            "component_types:\n" +
-            "  great_type:\n" +
-            "    extends: base\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type_2:\n" +
-            "    extends: software_component\n" +
-            "  compute:\n" +
-            "    extends: base\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type_3:\n" +
-            "    extends: compute\n" +
-            "    properties:\n" +
-            "      public_key:\n" +
-            "        type: string\n" +
-            "      ssh_port:\n" +
-            "        type: number\n" +
-            "      os_family:\n" +
-            "        type: string\n" +
-            "  web_application:\n" +
-            "    extends: base\n" +
-            "  https_ex.orgtoscatoedmm__test_node_type_4:\n" +
-            "    extends: web_application\n" +
-            "  software_component:\n" +
-            "    extends: base\n" +
-            "  base:\n" +
-            "    extends: null\n" +
-            "version: edm_1_0\n", stringWriter.toString());
+        assertEquals("""
+            ---
+            components:
+              test_node_1:
+                type: great_type
+                relations:
+                - connects_to: test_node_2
+                - hosted_on: test_node_3
+                properties:
+                  name: test_node_1
+                artifacts:
+                - war: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/testNode1-DA/files/da.war
+              test_node_3:
+                type: https+----ex.org--tosca--to--edmm__test_node_type_3
+                properties:
+                  public_key: '-----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----'
+                  ssh_port: '22'
+                  os_family: ubuntu
+                  name: test_node_3
+              test_node_2:
+                type: https+----ex.org--tosca--to--edmm__test_node_type_2
+                relations:
+                - hosted_on: test_node_3
+                properties:
+                  name: test_node_2
+              test_node_4:
+                operations:
+                  stop: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh
+                  start: /artifacttemplates/https%3A%2F%2Fex.org%2Ftosca%2Fto%2Fedmm/startTestNode4/files/script.sh
+                type: https+----ex.org--tosca--to--edmm__test_node_type_4
+                relations:
+                - hosted_on: test_node_1
+                properties:
+                  name: test_node_4
+            relation_types:
+              depends_on:
+                extends: null
+              hosted_on:
+                extends: depends_on
+              connects_to:
+                extends: depends_on
+            multi_id: '12345'
+            component_types:
+              great_type:
+                extends: base
+              compute:
+                extends: base
+              web_application:
+                extends: base
+              https+----ex.org--tosca--to--edmm__test_node_type_2:
+                extends: software_component
+              https+----ex.org--tosca--to--edmm__test_node_type_3:
+                extends: compute
+                properties:
+                  public_key:
+                    type: string
+                  ssh_port:
+                    type: number
+                  os_family:
+                    type: string
+              https+----ex.org--tosca--to--edmm__test_node_type_4:
+                extends: web_application
+              software_component:
+                extends: base
+              base:
+                extends: null
+            version: edm_1_0
+            """, stringWriter.toString());
     }
 }
