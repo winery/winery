@@ -33,6 +33,7 @@ import { SectionService } from '../../../section/section.service';
 import { AddComponentValidation } from '../../../wineryAddComponentModule/addComponentValidation';
 import { ExistService } from '../../../wineryUtils/existService';
 import { WineryAddComponentDataComponent } from '../../../wineryAddComponentDataModule/addComponentData.component';
+import { QName } from '../../../../../../shared/src/app/model/qName';
 
 @Component({
     selector: 'winery-artifact',
@@ -361,7 +362,7 @@ export class WineryArtifactComponent implements OnInit {
         this.interfaceAndOperation();
     }
 
-    interfaceAndOperation() {
+    public interfaceAndOperation() {
         if (this.isImplementationArtifact) {
             this.addComponentData.createArtifactName(this.sharedData.toscaComponent, this.nodeOrRelationshipType,
                 this.selectedInterface.text, this.selectedOperation, this.isImplementationArtifact, this.nodeOrRelationShipTypeName);
@@ -471,7 +472,7 @@ export class WineryArtifactComponent implements OnInit {
         } else {
             this.nodeOrRelationshipType = compData.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].relationshipType;
         }
-        this.nodeOrRelationShipTypeName = this.nodeOrRelationshipType
-            .substring(this.nodeOrRelationshipType.lastIndexOf('}') + 1, this.nodeOrRelationshipType.lastIndexOf('_'));
+
+        this.nodeOrRelationShipTypeName = Utils.getNameWithoutVersion(new QName(this.nodeOrRelationshipType).localName);
     }
 }
