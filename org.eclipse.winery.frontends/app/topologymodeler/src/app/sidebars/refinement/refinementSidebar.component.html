@@ -60,3 +60,25 @@
         </ng-template>
     </div>
 </div>
+
+<winery-modal bsModal #confirmRefineModal="bs-modal" [modalRef]="confirmRefineModal">
+    <winery-modal-header [title]="'This PRM does not refine all Behavior Patterns'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <div  *ngIf="confirmCandidate != null">
+            <p id="elementToRemoveMessage">
+                The PRM <span
+                style="font-weight:bold;">{{ confirmCandidate.refinementModel.name }}</span> shows the following warnings:
+            </p>
+            <ul>
+                <li *ngFor="let nodeId of object.keys(confirmCandidate.warnings)">
+                    {{ confirmCandidate.warnings[nodeId] }}
+                </li>
+            </ul>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="candidateConfirmed(confirmCandidate)"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>
