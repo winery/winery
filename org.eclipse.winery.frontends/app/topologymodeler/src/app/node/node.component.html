@@ -135,9 +135,9 @@
             <div class="endpointContainer center-block row" style="border: 0; box-shadow: none"
                  *ngIf="connectorEndpointVisible && !readonly"
                  (mouseover)="makeSource()">
-                <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}
-                     (mousedown)="passCurrentType($event)">
+                <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}>
                     <button *ngFor="let rel of entityTypes.relationshipTypes"
+                            (mousedown)="passCurrentType(rel)"
                             type="button" class="btn btn-sm btn-outline-secondary btn-block"
                             [style.color]="rel.color"
                             style="font-size: x-small;">

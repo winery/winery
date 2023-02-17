@@ -13,14 +13,13 @@
  ********************************************************************************/
 
 import {
-    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
-    OnDestroy, OnInit, Output, Renderer2, ViewChild
+    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
-import { EntityType, OTParticipant, TGroupDefinition, TNodeTemplate } from '../models/ttopology-template';
+import { EntityType, OTParticipant, TGroupDefinition, TNodeTemplate, VisualEntityType } from '../models/ttopology-template';
 import { LiveModelingStates, NodeTemplateInstanceStates, PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
@@ -32,14 +31,10 @@ import { Visuals } from '../models/visuals';
 import { VersionElement } from '../models/versionElement';
 import { VersionsComponent } from './versions/versions.component';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
-import {
-    FeatureEnum
-} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
+import { FeatureEnum } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/wineryRepository.feature.direct';
 import { PropertiesComponent } from '../properties/properties.component';
 import { Subscription } from 'rxjs';
-import {
-    WineryRepositoryConfigurationService
-} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
@@ -367,19 +362,11 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     }
 
     /**
-     * Sets the current type of a node.
+     * Sets the type of the currently created relation.
      */
-    passCurrentType($event): void {
-        $event.stopPropagation();
-        $event.preventDefault();
-        let currentType: string;
-        try {
-            currentType = $event.srcElement.innerText.replace(/\n/g, '').replace(/\s+/g, '');
-        } catch (e) {
-            currentType = $event.target.innerText.replace(/\n/g, '').replace(/\s+/g, '');
-        }
+    passCurrentType(relation: VisualEntityType): void {
         this.entityTypes.relationshipTypes.some(relType => {
-            if (relType.qName.includes(currentType)) {
+            if (relType.qName === relation.qName) {
                 this.sendSelectedRelationshipType.emit(relType);
                 return true;
             }
@@ -497,18 +484,18 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 new DetailsSidebarState(false, true, this.nodeEntityType)));
         } else {
             this.$ngRedux.dispatch(this.actions.triggerSidebar({
-                    visible: true,
-                    nodeClicked: true,
-                    nodeData: {
-                        entityTypes: this.entityTypes,
-                        nodeTemplate: this.nodeTemplate,
-                        propertyDefinitionType: this.propertyDefinitionType,
-                        entityType: this.nodeEntityType
-                    },
-                    template: this.nodeTemplate,
-                    // special handling for instance restrictions due to infinity
-                    minInstances: this.nodeTemplate.minInstances,
-                    maxInstances: this.nodeTemplate.maxInstances,
+                visible: true,
+                nodeClicked: true,
+                nodeData: {
+                    entityTypes: this.entityTypes,
+                    nodeTemplate: this.nodeTemplate,
+                    propertyDefinitionType: this.propertyDefinitionType,
+                    entityType: this.nodeEntityType
+                },
+                template: this.nodeTemplate,
+                // special handling for instance restrictions due to infinity
+                minInstances: this.nodeTemplate.minInstances,
+                maxInstances: this.nodeTemplate.maxInstances,
             }));
         }
     }
