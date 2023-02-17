@@ -42,6 +42,7 @@ export interface WineryConfiguration {
         patternDetection: boolean;
         normalization: boolean;
         licenseEngine: boolean;
+        cloudAllocation: boolean;
     };
     endpoints: {
         bpmnModeler: string;
