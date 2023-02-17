@@ -37,7 +37,7 @@ a.styledTabMenuButton > div {
 }
 
 a.styledTabMenuButton > div.left {
-    width: 19px;
+    width: 15px;
 }
 
 a.styledTabMenuButton > div.center {
@@ -51,5 +51,5 @@ a.styledTabMenuButton > div.center {
 }
 
 a.styledTabMenuButton > div.right {
-    width: 29px;
+    width: 22px;
 }
