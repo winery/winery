@@ -45,5 +45,7 @@
         <p>Do you want to delete the dependency?</p>
     </winery-modal-body>
     <winery-modal-footer (onOk)="removeObject(object)" [closeButtonLabel]="'Cancel'"
-                         [okButtonLabel]="'Delete'"></winery-modal-footer>
+                         [okButtonClass]="'btn-danger'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
 </winery-modal>
