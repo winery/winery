@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,22 +72,36 @@ public class PatternAtlasConsumer {
      *
      * @return All pattern languages contained in the pattern atlas
      */
-    public List<PatternLanguage> getPatternLanguages() throws JsonProcessingException, MalformedURLException, URISyntaxException {
+    public List<PatternLanguage> getPatternLanguages() {
         WebTarget patternLanguageTarget = this.rootTarget.path(patternLanguageResourceName);
-        // MediaTypes does not have this.
-        String jsonResponse = patternLanguageTarget.request().get(String.class);
-        JsonNode root = new ObjectMapper().readTree(jsonResponse);
-        JsonNode patternLanguages = root.get("_embedded").get("patternLanguageModels");
-        List<PatternLanguage> patternLanguageList = new ArrayList<>(patternLanguages.size());
-        System.out.println("Number of Pattern languages: " + patternLanguages.size());
-        for (JsonNode patternLanguageNode : patternLanguages) {
-            patternLanguageList.add(new PatternLanguage(
-                patternLanguageNode.get("id").asText(),
-                patternLanguageNode.get("name").asText(),
-                patternLanguageNode.get("uri").asText(),
-                patternLanguageNode.get("patternCount").asInt()));
+
+        try {
+            // Because of the current JSON structure, we manually parse the contents from the _embedded element.
+            String jsonResponse = patternLanguageTarget.request().get(String.class);
+            JsonNode root = new ObjectMapper().readTree(jsonResponse);
+            JsonNode patternLanguages = root.get("_embedded").get("patternLanguageModels");
+            List<PatternLanguage> patternLanguageList = new ArrayList<>(patternLanguages.size());
+            LOGGER.info("Number of Pattern languages: {}", patternLanguages.size());
+
+            for (JsonNode patternLanguageNode : patternLanguages) {
+                patternLanguageList.add(new PatternLanguage(
+                    patternLanguageNode.get("id").asText(),
+                    patternLanguageNode.get("name").asText(),
+                    patternLanguageNode.get("uri").asText(),
+                    patternLanguageNode.get("patternCount").asInt()));
+            }
+
+            return patternLanguageList;
+        } catch (JsonProcessingException | URISyntaxException e) {
+            LOGGER.error("Could not synchronize pattern languages with the PatternAtlas!", e);
+        } catch (Exception e) {
+            // Happens in the case of a java.net.ConnectException.
+            // However, as the above block does not throw this Exception, we need to use the generic Exception class.
+            LOGGER.error("Could not connect to the PatternAtlas!");
+            LOGGER.warn("Continuing without cloning/synchronizing patterns...");
         }
-        return patternLanguageList;
+
+        return Collections.emptyList();
     }
 
     /**
@@ -95,25 +110,35 @@ public class PatternAtlasConsumer {
      * @param patternLanguage The pattern language the
      * @return All patterns in the provided Pattern Language
      */
-    public List<Pattern> getPatternsOfPatternLanguage(PatternLanguage patternLanguage) throws JsonProcessingException, MalformedURLException, URISyntaxException {
+    public List<Pattern> getPatternsOfPatternLanguage(PatternLanguage patternLanguage) {
         WebTarget patternTarget = this.rootTarget.path(patternLanguageResourceName).path(patternLanguage.id).path(patternResourceName);
-        // MediaTypes does not have this.
-        String jsonResponse = patternTarget.request().get(String.class);
-        JsonNode root = new ObjectMapper().readTree(jsonResponse);
-        JsonNode patterns = root.get("_embedded").get("patternModels");
-        List<Pattern> patternList = new ArrayList<>(patterns.size());
-        for (JsonNode patternNode : patterns) {
-            patternList.add(new Pattern(
-                patternNode.get("id").asText(),
-                patternNode.get("name").asText(),
-                patternNode.get("uri").asText(),
-                patternNode.get("iconUrl").asText(),
-                patternLanguage,
-                patternNode.get("deploymentModelingBehaviorPattern").asBoolean(),
-                patternNode.get("deploymentModelingStructurePattern").asBoolean()
-            ));
+
+        try {
+            // Because of the current JSON structure, we manually parse the contents from the _embedded element.
+            String jsonResponse = patternTarget.request().get(String.class);
+            JsonNode root = new ObjectMapper().readTree(jsonResponse);
+            JsonNode patterns = root.get("_embedded").get("patternModels");
+            List<Pattern> patternList = new ArrayList<>(patterns.size());
+            LOGGER.info("Number of Pattern languages: {}", patterns.size());
+
+            for (JsonNode patternNode : patterns) {
+                patternList.add(new Pattern(
+                    patternNode.get("id").asText(),
+                    patternNode.get("name").asText(),
+                    patternNode.get("uri").asText(),
+                    patternNode.get("iconUrl").asText(),
+                    patternLanguage,
+                    patternNode.get("deploymentModelingBehaviorPattern").asBoolean(),
+                    patternNode.get("deploymentModelingStructurePattern").asBoolean()
+                ));
+            }
+
+            return patternList;
+        } catch (JsonProcessingException | URISyntaxException e) {
+            LOGGER.error("Could not synchronize patterns with the PatternAtlas!", e);
         }
-        return patternList;
+
+        return Collections.emptyList();
     }
 
     public static class PatternLanguage {
@@ -127,7 +152,7 @@ public class PatternAtlasConsumer {
 
         }
 
-        public PatternLanguage(String id, String name, String uri, int patternCount) throws URISyntaxException, MalformedURLException {
+        public PatternLanguage(String id, String name, String uri, int patternCount) throws URISyntaxException {
             this.id = id;
             this.name = name;
             this.uri = new URI(uri);
@@ -198,7 +223,8 @@ public class PatternAtlasConsumer {
         private String intent;
         private String solutionSketch;
 
-        public Pattern(String id, String name, String uri, String iconURL, PatternLanguage patternLanguage, boolean deploymentModelingBehaviorPattern, boolean deploymentModelingStructurePattern) throws URISyntaxException, MalformedURLException {
+        public Pattern(String id, String name, String uri, String iconURL, PatternLanguage patternLanguage,
+                       boolean deploymentModelingBehaviorPattern, boolean deploymentModelingStructurePattern) throws URISyntaxException {
             this.id = id;
             // TODO: Use this in default case:
             this.name = name.replace(" ", "-").replace("(", "").replace(")", "");
@@ -214,7 +240,7 @@ public class PatternAtlasConsumer {
             this.deploymentModelingBehaviorPattern = deploymentModelingBehaviorPattern;
             this.deploymentModelingStructurePattern = deploymentModelingStructurePattern;
         }
-        
+
         public TNodeType toTNodeType() {
             TNodeType.Builder nodeTypeBuilder = new TNodeType.Builder(this.name);
             nodeTypeBuilder.setTargetNamespace(this.namespace);
@@ -240,7 +266,7 @@ public class PatternAtlasConsumer {
                 ", solutionSketch='" + solutionSketch + '\'' +
                 '}';
         }
-        
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
