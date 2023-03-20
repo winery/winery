@@ -115,7 +115,7 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
 
     @Test
     public void applyMoreConcreteRelationRedirect() throws Exception {
-        // this.setRevisionTo("origin/plain");
+        this.setRevisionTo("origin/plain");
 
         TServiceTemplate serviceTemplate = repository.getElement(new ServiceTemplateId(
             "http://winery.opentosca.org/test/concrete/servicetemplates",
@@ -167,5 +167,47 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
         assertNotNull(compOnetoPattern);
         assertEquals("NodeTypeInheritingFromAbstractType_1-w1-wip1_0", compOnetoPattern.getSourceElement().getRef().getId());
         assertEquals("FifthPattern_w1", compOnetoPattern.getTargetElement().getRef().getId());
+    }
+
+    @Test
+    public void testStyingElementWithSameIdInRefinementStructureAndRefinedTopology() throws Exception {
+        //this.setRevisionTo("origin/plain");
+
+        TServiceTemplate serviceTemplate = repository.getElement(new ServiceTemplateId(
+            "http://winery.opentosca.org/test/concrete/servicetemplates",
+            "Pattern-basedDeploymentModelWithTwoSameSubgraphs_staying-same-id-w1-wip1",
+            false
+        ));
+
+        TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+        assertNotNull(topologyTemplate);
+
+        new PatternRefinement((candidates, refinementServiceTemplate, currentTopology) -> {
+            for (RefinementCandidate candidate : candidates) {
+                if (candidate.getRefinementModel().getName().equals("ProblemWithStayingElementSameId_w1-wip1")) {
+                    return candidate; 
+                }
+            }
+            throw new RuntimeException("Did not find expected RefinementCandidate!");
+        }).refineTopology(topologyTemplate);
+
+        TRelationshipTemplate ubuntuHostedOnCloud_0 = topologyTemplate.getRelationshipTemplate("con_HostedOn_0");
+        assertNotNull(ubuntuHostedOnCloud_0);
+        assertEquals("Ubuntu_w1-wip1_0", ubuntuHostedOnCloud_0.getSourceElement().getRef().getId());
+        assertEquals("rs_CloudProvider1_w1-wip1_0", ubuntuHostedOnCloud_0.getTargetElement().getRef().getId());
+
+        TRelationshipTemplate newUbuntuHostedOnCloud_1 = topologyTemplate.getRelationshipTemplate("rs_con_HostedOn_0");
+        assertNotNull(newUbuntuHostedOnCloud_1);
+        assertEquals("rs_Ubuntu_w1-wip1_0", newUbuntuHostedOnCloud_1.getSourceElement().getRef().getId());
+        assertEquals("rs_CloudProvider1_w1-wip1_1", newUbuntuHostedOnCloud_1.getTargetElement().getRef().getId());
+        
+        long ingoingRelationsAtStayingElement = topologyTemplate.getRelationshipTemplates().stream()
+            .filter(relation -> "rs_CloudProvider1_w1-wip1_1".equals(relation.getTargetElement().getRef().getId()))
+            .count();
+        assertEquals(1, ingoingRelationsAtStayingElement);
+        long ingoingRelationsAtElementWithSameIdAsStayingRefinedElement = topologyTemplate.getRelationshipTemplates().stream()
+            .filter(relation -> "rs_CloudProvider1_w1-wip1_0".equals(relation.getTargetElement().getRef().getId()))
+            .count();
+        assertEquals(1, ingoingRelationsAtElementWithSameIdAsStayingRefinedElement);
     }
 }

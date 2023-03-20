@@ -165,7 +165,7 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
             // get the matching node in the topology
             TNodeTemplate matchingNode = refinement.getGraphMapping().getVertexCorrespondence(vertex, false).getTemplate();
 
-            this.redirectInternalRelations(prm, vertex.getTemplate(), matchingNode, topology);
+            this.redirectInternalRelations(prm, vertex.getTemplate(), matchingNode, topology, idMapping);
             this.redirectExternalRelations(refinement, vertex.getTemplate(), matchingNode, topology, idMapping);
 
             this.applyPropertyMappings(refinement, vertex.getId(), matchingNode, topology, idMapping);
@@ -456,28 +456,35 @@ public class TopologyFragmentRefinement extends AbstractRefinement {
     }
 
     private void redirectInternalRelations(OTTopologyFragmentRefinementModel prm, TNodeTemplate currentDetectorNode,
-                                           TNodeTemplate matchingNodeInTopology, TTopologyTemplate topology) {
+                                           TNodeTemplate matchingNodeInTopology, TTopologyTemplate topology, Map<String, String> idMapping) {
         if (prm.getStayMappings() != null) {
-            topology.getRelationshipTemplates()
-                .forEach(relationship ->
-                    // get all relationships that are either the source or the target of the current node that is staying
-                    this.getStayMappingsOfCurrentElement(prm, currentDetectorNode)
-                        .forEach(staying -> {
-                                String targetId = relationship.getTargetElement().getRef().getId();
-                                String sourceId = relationship.getSourceElement().getRef().getId();
+            this.getStayMappingsOfCurrentElement(prm, currentDetectorNode)
+                .forEach(staying -> {
+                    prm.getRefinementTopology().getRelationshipTemplates()
+                        .forEach(refinementRelation -> {
+                            if (refinementRelation.getSourceElement().getRef().getId().equals(staying.getRefinementElement().getId())) {
+                                String addedRelationsID = idMapping.get(refinementRelation.getId());
+                                TRelationshipTemplate addedRelation = topology.getRelationshipTemplate(addedRelationsID);
 
-                                String idInRefinementStructure = staying.getRefinementElement().getId();
-
-                                if (targetId.equals(idInRefinementStructure)) {
-                                    LOGGER.debug("Redirecting target of {} to {}", relationship.getId(), matchingNodeInTopology.getId());
-                                    relationship.getTargetElement().setRef(matchingNodeInTopology);
-                                } else if (sourceId.equals(idInRefinementStructure)) {
-                                    LOGGER.debug("Redirecting source of {} to {}", relationship.getId(), matchingNodeInTopology.getId());
-                                    relationship.getSourceElement().setRef(matchingNodeInTopology);
+                                if (addedRelation == null) {
+                                    LOGGER.error("Something went terribly wrong! Added Relation was not found...");
+                                    return;
                                 }
+
+                                addedRelation.getSourceElement().setRef(matchingNodeInTopology);
+                            } else if (refinementRelation.getTargetElement().getRef().getId().equals(staying.getRefinementElement().getId())) {
+                                String addedRelationsID = idMapping.get(refinementRelation.getId());
+                                TRelationshipTemplate addedRelation = topology.getRelationshipTemplate(addedRelationsID);
+
+                                if (addedRelation == null) {
+                                    LOGGER.error("Something went terribly wrong! Added Relation was not found...");
+                                    return;
+                                }
+
+                                addedRelation.getTargetElement().setRef(matchingNodeInTopology);
                             }
-                        )
-                );
+                        });
+                });
         }
     }
 
