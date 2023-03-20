@@ -171,7 +171,7 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
 
     @Test
     public void testStyingElementWithSameIdInRefinementStructureAndRefinedTopology() throws Exception {
-        //this.setRevisionTo("origin/plain");
+        this.setRevisionTo("origin/plain");
 
         TServiceTemplate serviceTemplate = repository.getElement(new ServiceTemplateId(
             "http://winery.opentosca.org/test/concrete/servicetemplates",
