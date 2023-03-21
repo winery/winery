@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
@@ -39,6 +39,7 @@ export class EnricherComponent {
     availableFeatures: Enrichment;
     // array to store enrichment to be applied
     toApply = [];
+    loading = false;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
@@ -88,6 +89,7 @@ export class EnricherComponent {
      * It starts the Enricher Service to apply the selected enrichments.
      */
     protected applyEnrichment() {
+        this.loading = true;
         this.enricherService.applySelectedFeatures(this.toApply).subscribe(
             data => this.enrichmentApplied(data),
             error => this.handleError(error)
@@ -128,6 +130,7 @@ export class EnricherComponent {
     private checkButtonsState(currentButtonsState: TopologyRendererState) {
         // check if Enrichment Button is clicked and available features are pulled
         if (currentButtonsState.buttonsState.enrichmentButton && !this.availableFeatures) {
+            this.loading = true;
             this.enricherService.getAvailableFeatures().subscribe(
                 data => this.showAvailableFeatures(data),
                 error => this.handleError(error)
@@ -193,6 +196,7 @@ export class EnricherComponent {
      * @param data: json response of backend containing available features for all node templates
      */
     private showAvailableFeatures(data: Enrichment): void {
+        this.loading = false;
         // check if array contains data at all (data != null does not work, as data is not null but an empty array)
         if (data.length > 0) {
             this.availableFeatures = data;
@@ -203,11 +207,12 @@ export class EnricherComponent {
 
     /**
      * This method is called when an error occurs durring fetching or pushing the enrichments.
-     * It alerts the merror message in the UI.
+     * It alerts the error message in the UI.
      * @param error: error message
      */
     private handleError(error: HttpErrorResponse) {
         this.alert.error(error.message);
+        this.loading = false;
     }
 
     /**
@@ -216,6 +221,7 @@ export class EnricherComponent {
      * @param data: topology template that was updated
      */
     private enrichmentApplied(data: TTopologyTemplate) {
+        this.loading = false;
         TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, data, this.entityTypes, this.configurationService.isYaml());
         // reset available features since they are no longer valid
         this.availableFeatures = null;

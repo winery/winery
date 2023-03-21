@@ -63,7 +63,6 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesD
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -830,46 +829,6 @@ public abstract class ModelUtilities {
         return children;
     }
 
-    /**
-     * Retrieve the available types of the <code>givenType</code> and filter them according to their implementation
-     * based on the underlying <code>deploymentTechnology</code>. If the filtering by the
-     * <code>deploymentTechnology</code> is not required, <code>null</code> should be passed.
-     *
-     * @param givenType              The QName of the type to be investigated.
-     * @param elements               The set of Types available.
-     * @param deploymentTechnologies The underlying deployment technology, the features must comply to.
-     * @param <T>                    The type of the Elements
-     * @return The set of applicable features.
-     */
-    public static <T extends
-        TEntityType> Map<T, String> getAvailableFeaturesOfType(
-        QName givenType, Map<QName, T> elements,
-        List<String> deploymentTechnologies) {
-        HashMap<T, String> features = new HashMap<>();
-        getChildrenOf(givenType, elements).forEach((qName, t) -> {
-            if (Objects.nonNull(t.getTags())) {
-                List<TTag> list = t.getTags();
-
-                // To enable the usage of "technology" and "technologies", we only check for "technolog"
-                String supportedDeploymentTechnologies = list.stream()
-                    .filter(tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase()))
-                    .map(TTag::getValue)
-                    .collect(
-                        Collectors.joining(" "));
-
-                if (StringUtils.isBlank(supportedDeploymentTechnologies)
-                    || "*".equals(supportedDeploymentTechnologies) || deploymentTechnologies.stream()
-                    .anyMatch(s -> supportedDeploymentTechnologies.toLowerCase().contains(s.toLowerCase()))) {
-                    list.stream()
-                        .filter(tag -> "feature".equalsIgnoreCase(tag.getName()))
-                        .findFirst()
-                        .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
-                }
-            }
-        });
-        return features;
-    }
-
     public static <T extends TEntityType> boolean isFeatureType(QName givenType, Map<QName, T> elements) {
         return Objects.nonNull(elements.get(givenType))
             && Objects.nonNull(elements.get(givenType).getTags())
@@ -1154,19 +1113,19 @@ public abstract class ModelUtilities {
 
         return propertyDefinitions;
     }
-    
+
     public static <T extends TEntityType> WinerysPropertiesDefinition getEffectiveWineryPropertyDefinitions(List<T> hierarchy) {
         List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
 
         // Convention defines that the first element in the list is the child
         T child = hierarchy.get(0);
-        
+
         // Create new WPD
         WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         winerysPropertiesDefinition.setElementName(child.getName());
         winerysPropertiesDefinition.setNamespace(child.getTargetNamespace());
         winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
-        
+
         return winerysPropertiesDefinition;
     }
 
