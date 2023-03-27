@@ -39,7 +39,7 @@ export class EnricherComponent {
     availableFeatures: Enrichment;
     // array to store enrichment to be applied
     toApply = [];
-    loading = false;
+    loading = true;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: TopologyRendererActions,
@@ -135,7 +135,7 @@ export class EnricherComponent {
                 data => this.showAvailableFeatures(data),
                 error => this.handleError(error)
             );
-            // if button is unclicked, reset available features
+            // if button is clicked again, reset available features
         } else if (!currentButtonsState.buttonsState.enrichmentButton) {
             this.availableFeatures = null;
         }

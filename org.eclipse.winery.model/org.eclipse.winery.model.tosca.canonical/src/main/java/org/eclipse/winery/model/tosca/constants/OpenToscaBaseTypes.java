@@ -61,8 +61,8 @@ public class OpenToscaBaseTypes {
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
     public static final QName isoArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}ISO");
     public static final QName cloudImageArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}CloudImage");
-    public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
-    public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}FreezableComponent");
+    public static final QName statefulComponentPolicyType = QName.valueOf("{https://patternpedia.org/patternLanguages/cloudComputingPatterns}Stateful-Component");
+    public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/management/features/policytypes}FreezableComponent");
     // endregion
 
     // region ********** management features **********

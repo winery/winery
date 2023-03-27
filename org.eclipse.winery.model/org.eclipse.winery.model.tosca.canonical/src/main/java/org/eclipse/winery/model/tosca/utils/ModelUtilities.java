@@ -803,8 +803,7 @@ public abstract class ModelUtilities {
         return item;
     }
 
-    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends
-        TEntityType> elements) {
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends TEntityType> elements) {
         if (!givenType.equals(requiredType)) {
             TEntityType entityType = elements.get(givenType);
             if (Objects.isNull(entityType) || Objects.isNull(entityType.getDerivedFrom())) {
@@ -821,7 +820,20 @@ public abstract class ModelUtilities {
         TEntityType entityType = elements.get(givenType);
         if (Objects.nonNull(entityType)) {
             elements.forEach((qName, type) -> {
-                if (!qName.equals(givenType) && isOfType(givenType, qName, elements)) {
+                if (isOfType(givenType, qName, elements)) {
+                    children.put(qName, type);
+                }
+            });
+        }
+        return children;
+    }
+
+    public static <T extends TEntityType> Map<QName, T> getDirectChildrenOf(QName givenType, Map<QName, T> elements) {
+        HashMap<QName, T> children = new HashMap<>();
+        TEntityType entityType = elements.get(givenType);
+        if (Objects.nonNull(entityType)) {
+            elements.forEach((qName, type) -> {
+                if (!qName.equals(givenType) && type.getDerivedFrom() != null && type.getDerivedFrom().getType().equals(givenType)) {
                     children.put(qName, type);
                 }
             });

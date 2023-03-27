@@ -33,6 +33,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElementWithTags;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -75,16 +76,14 @@ public class EnhancementUtils {
         topology.getNodeTemplates().stream()
             .filter(nodeTemplate -> {
                 TNodeType type = nodeTypes.get(nodeTemplate.getType());
-                if (Objects.nonNull(type.getTags())) {
-                    return type.getTags()
-                        .stream()
-                        .anyMatch(
-                            tag -> "stateful".equalsIgnoreCase(tag.getName())
-                                || "isStateful".equalsIgnoreCase(tag.getName())
-                        );
-                }
-
-                return false;
+                return RepositoryFactory.getRepository().getParentsAndChild(type)
+                    .stream()
+                    .map(TExtensibleElementWithTags::getTags)
+                    .filter(Objects::nonNull)
+                    .flatMap(Collection::stream)
+                    .anyMatch(tag ->
+                        "stateful".equalsIgnoreCase(tag.getName())
+                            || "isStateful".equalsIgnoreCase(tag.getName()));
             })
             // avoid duplicate annotations
             .filter(node -> !ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.statefulComponentPolicyType))
@@ -293,7 +292,8 @@ public class EnhancementUtils {
 
         TEntityType entityType = elements.get(givenType);
         for (TEntityType type : RepositoryFactory.getRepository().getParentsAndChild(entityType)) {
-            ModelUtilities.getChildrenOf(type.getQName(), elements).forEach((qName, t) -> {
+            // Only the direct Children can define features.
+            ModelUtilities.getDirectChildrenOf(type.getQName(), elements).forEach((qName, t) -> {
                 if (Objects.nonNull(t.getTags())) {
                     List<TTag> list = t.getTags();
 
@@ -401,7 +401,7 @@ public class EnhancementUtils {
         if (Objects.isNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())) {
             WinerysPropertiesDefinition props = new WinerysPropertiesDefinition();
             props.setPropertyDefinitions(new ArrayList<>());
-            ModelUtilities.replaceWinerysPropertiesDefinition(featureEnrichedNodeType, props);
+            featureEnrichedNodeType.setProperties(props);
         }
         List<PropertyDefinitionKV> baseProperties = featureEnrichedNodeType.getWinerysPropertiesDefinition()
             .getPropertyDefinitions();
