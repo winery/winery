@@ -169,7 +169,7 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
         if (mapping instanceof OTStayMapping) {
             localPart = "StayMapping";
         } else if (mapping instanceof OTRelationMapping) {
-            localPart = "RelationMapping";
+            localPart = "RelationshipMapping";
         } else if (mapping instanceof OTAttributeMapping) {
             localPart = "AttributeMapping";
         } else if (mapping instanceof OTPermutationMapping) {
