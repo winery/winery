@@ -22,13 +22,13 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -71,7 +71,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     public Set<String> apply(TTopologyTemplate template) {
         List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                && Objects.equals(node.getType(), QNAME_DOCKER_CONTAINER))
+                && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(QNAME_DOCKER_CONTAINER.getLocalPart()))
             .collect(Collectors.toList());
 
         Set<String> discoveredNodeIds = new HashSet<>();
