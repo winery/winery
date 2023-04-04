@@ -110,6 +110,6 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     protected IToscaMatcher getToscaMatcher() {
-        return new ToscaPropertyMatcher(true);
+        return new ToscaPropertyMatcher(true, true);
     }
 }

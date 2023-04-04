@@ -134,7 +134,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     protected IToscaMatcher getToscaMatcher() {
-        return new ToscaPropertyMatcher(true) {
+        return new ToscaPropertyMatcher(true, true) {
             @Override
             public boolean isCompatible(
                 ToscaNode left,

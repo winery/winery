@@ -98,9 +98,10 @@ public abstract class InstanceModelUtils {
     public static Session createJschSession(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
         Map<String, String> sshCredentials = getSSHCredentials(template, nodeIdsToBeReplaced);
 
+        File key = null;
         try {
             JSch jsch = new JSch();
-            File key = File.createTempFile("key", "tmp", FileUtils.getTempDirectory());
+            key = File.createTempFile("key", "tmp", FileUtils.getTempDirectory());
             FileUtils.write(key, sshCredentials.get(vmPrivateKey), "UTF-8");
             logger.info("tmp key file created: {}", key.exists());
 
@@ -111,13 +112,19 @@ public abstract class InstanceModelUtils {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
-            FileUtils.forceDelete(key);
-            logger.info("tmp key file deleted: {}", key.exists());
-
             return session;
         } catch (JSchException | IOException e) {
             logger.error("Failed to connect to {} using user {}.", sshCredentials.get(vmIP), sshCredentials.get(vmUser), e);
             throw new RuntimeException(e);
+        } finally {
+            if (key != null) {
+                try {
+                    FileUtils.forceDelete(key);
+                } catch (IOException e) {
+                    logger.warn("Could not delete file...");
+                }
+                logger.info("tmp key file deleted: {}", !key.exists());
+            }
         }
     }
 

@@ -97,7 +97,7 @@ public abstract class InstanceModelRefinementPlugin {
      */
     @JsonIgnore
     protected IToscaMatcher getToscaMatcher() {
-        return new ToscaPropertyMatcher();
+        return new ToscaPropertyMatcher(false , true);
     }
 
     public String getId() {

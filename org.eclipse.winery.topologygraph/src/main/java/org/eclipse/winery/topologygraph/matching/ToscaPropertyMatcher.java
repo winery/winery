@@ -34,6 +34,11 @@ public class ToscaPropertyMatcher extends ToscaTypeMatcher {
     }
 
     public ToscaPropertyMatcher(boolean matchPropertiesByRegex) {
+        this(matchPropertiesByRegex, false);
+    }
+
+    public ToscaPropertyMatcher(boolean matchPropertiesByRegex, boolean ignoreVersions) {
+        super(ignoreVersions);
         this.matchPropertiesByRegex = matchPropertiesByRegex;
     }
 
