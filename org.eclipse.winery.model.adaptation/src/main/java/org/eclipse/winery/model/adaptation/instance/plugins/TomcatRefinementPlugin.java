@@ -62,7 +62,9 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
         try {
-            List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
+            List<String> nodes = this.matchToBeRefined.nodeIdsToBeReplaced;
+
+            List<String> outputs = InstanceModelUtils.executeCommands(topology, nodes, this.nodeTypes,
                 "sudo cat /opt/tomcat/latest/RELEASE-NOTES | grep 'Apache Tomcat Version' | awk '{print $4}'",
                 "sudo cat /opt/tomcat/latest/conf/server.xml | grep '<Connector port=\".*\" protocol=\"HTTP/1.1\"' | awk '{print $2}' | sed -r 's/.*\"([0-9]+)\"$/\\1/'"
             );
@@ -74,7 +76,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
             logger.info("Retrieved Tomcat port: {}", tomcatPort);
 
             topology.getNodeTemplates().stream()
-                .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
+                .filter(node -> nodes.contains(node.getId())
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("Tomcat".toLowerCase()))
                 .findFirst()
                 .ifPresent(tomcat -> {
