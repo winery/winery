@@ -37,30 +37,30 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.jcraft.jsch.Session;
-
 import static org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin.petClinic;
 
 public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin {
 
     private static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
-    public SpringWebAppRefinementPlugin() {
+    private final Map<QName, TNodeType> nodeTypes;
+
+    public SpringWebAppRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
         super("SpringWebApplication");
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
-        Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
-        String contextPath = InstanceModelUtils.executeCommand(
-            session,
+
+        List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
             "sudo find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
         );
 
-        session.disconnect();
+        String contextPath = outputs.get(0);
 
-        template.getNodeTemplates().stream()
+        topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
             .findFirst()

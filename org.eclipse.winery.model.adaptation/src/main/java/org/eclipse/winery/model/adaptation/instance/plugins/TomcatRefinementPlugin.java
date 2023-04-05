@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,7 +38,6 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.jcraft.jsch.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,35 +46,34 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     private static final Logger logger = LoggerFactory.getLogger(TomcatRefinementPlugin.class);
 
     private static final QName webserver = ToscaBaseTypes.webserver;
-    private static final QName tomcatQName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat");
+    private static final QName tomcatQName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat-w1");
     private static final QName tomcat7QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_7-w1");
     private static final QName tomcat8QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_8-w1");
     private static final QName tomcat9QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_9-w1");
 
-    public TomcatRefinementPlugin() {
+    private final Map<QName, TNodeType> nodeTypes;
+
+    public TomcatRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
         super("Tomcat");
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
         try {
-            Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
-            String tomcatVersion = InstanceModelUtils.executeCommand(
-                session,
-                "sudo cat /opt/tomcat/latest/RELEASE-NOTES | grep 'Apache Tomcat Version' | awk '{print $4}'"
-            );
-            logger.info("Retrieved Tomcat version: {}", tomcatVersion);
-
-            String tomcatPort = InstanceModelUtils.executeCommand(
-                session,
+            List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
+                "sudo cat /opt/tomcat/latest/RELEASE-NOTES | grep 'Apache Tomcat Version' | awk '{print $4}'",
                 "sudo cat /opt/tomcat/latest/conf/server.xml | grep '<Connector port=\".*\" protocol=\"HTTP/1.1\"' | awk '{print $2}' | sed -r 's/.*\"([0-9]+)\"$/\\1/'"
             );
+
+            String tomcatVersion = outputs.get(0);
+            logger.info("Retrieved Tomcat version: {}", tomcatVersion);
+
+            String tomcatPort = outputs.get(1);
             logger.info("Retrieved Tomcat port: {}", tomcatPort);
 
-            session.disconnect();
-
-            template.getNodeTemplates().stream()
+            topology.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("Tomcat".toLowerCase()))
                 .findFirst()

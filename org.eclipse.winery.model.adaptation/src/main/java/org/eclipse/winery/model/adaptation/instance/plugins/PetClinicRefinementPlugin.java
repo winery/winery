@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -37,16 +38,17 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.jcraft.jsch.Session;
-
 import static org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin.mySqlDbQName;
 
 public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
 
     public static final QName petClinic = QName.valueOf("{https://examples.opentosca.org/edmm/nodetypes}Pet_Clinic_w1");
 
-    public PetClinicRefinementPlugin() {
+    private final Map<QName, TNodeType> nodeTypes;
+
+    public PetClinicRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
         super("PetClinic");
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
@@ -66,26 +68,21 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
             if (petClinicNode.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                 LinkedHashMap<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) petClinicNode.getProperties()).getKVProperties();
 
-                Session session = InstanceModelUtils.createJschSession(topology, this.matchToBeRefined.nodeIdsToBeReplaced);
-                String databaseType = InstanceModelUtils.executeCommand(
-                    session,
+                List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
                     "sudo find /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim()
                         + " -name application-mysql.properties -exec cat {} \\; "
                         + "| grep database= | sed -r 's/database=(.*)$/\\1/'"
                 );
+                String databaseType = outputs.get(0);
 
                 if (databaseType.trim().equals("mysql")) {
-                    String dbName = InstanceModelUtils.executeCommand(
-                        session,
-                        "sudo cat /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim()
-                            + "/WEB-INF/classes/db/mysql/schema.sql | grep USE | sed -r 's/USE (.*);$/\\1/'"
+                    outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
+                        "sudo cat /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim() + "/WEB-INF/classes/db/mysql/schema.sql | grep USE | sed -r 's/USE (.*);$/\\1/'",
+                        "sudo cat /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim() + "/WEB-INF/classes/db/mysql/schema.sql | grep 'IDENTIFIED BY' | sed -r 's/(.*)IDENTIFIED BY (.*);$/\\2/'"
                     );
-                    String dbUser = InstanceModelUtils.executeCommand(
-                        session,
-                        "sudo cat /opt/tomcat/latest/webapps/" + kvProperties.get("context").trim()
-                            + "/WEB-INF/classes/db/mysql/schema.sql"
-                            + " | grep 'IDENTIFIED BY' | sed -r 's/(.*)IDENTIFIED BY (.*);$/\\2/'"
-                    );
+
+                    String dbName = outputs.get(0);
+                    String dbUser = outputs.get(1);
 
                     topology.getNodeTemplates().stream()
                         .filter(node -> Objects.requireNonNull(node.getType()).equals(mySqlDbQName))
@@ -108,8 +105,6 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
                             discoveredNodeIds.add(db.getId());
                         });
                 }
-
-                session.disconnect();
             }
         }
 

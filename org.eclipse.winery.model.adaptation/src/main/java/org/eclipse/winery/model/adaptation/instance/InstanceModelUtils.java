@@ -17,6 +17,7 @@ package org.eclipse.winery.model.adaptation.instance;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +25,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -46,9 +50,9 @@ public abstract class InstanceModelUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
 
-    public static Set<String> getRequiredSSHInputs(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
+    public static Set<String> getRequiredSSHInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
         Set<String> inputs = new HashSet<>();
-        Map<String, String> sshCredentials = getSSHCredentials(template, nodeIdsToBeReplaced);
+        Map<String, String> sshCredentials = getSSHCredentials(topology, nodeIdsToBeRefined);
         if (sshCredentials.get(vmPrivateKey) == null || sshCredentials.get(vmPrivateKey).isEmpty()
             || sshCredentials.get(vmPrivateKey).toLowerCase().startsWith("get_input")) {
             inputs.add(vmPrivateKey);
@@ -64,13 +68,13 @@ public abstract class InstanceModelUtils {
         return inputs;
     }
 
-    public static Map<String, String> getSSHCredentials(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
+    public static Map<String, String> getSSHCredentials(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
         Map<String, String> properties = new HashMap<>();
 
-        template.getNodeTemplates().stream()
-            .filter(node -> nodeIdsToBeReplaced.contains(node.getId()))
+        topology.getNodeTemplates().stream()
+            .filter(node -> nodeIdsToBeRefined.contains(node.getId()))
             .forEach(node -> {
-                List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(template, node);
+                List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, node);
                 hostedOnSuccessors.add(node);
 
                 for (TNodeTemplate host : hostedOnSuccessors) {
@@ -95,8 +99,8 @@ public abstract class InstanceModelUtils {
         return properties;
     }
 
-    public static Session createJschSession(TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
-        Map<String, String> sshCredentials = getSSHCredentials(template, nodeIdsToBeReplaced);
+    public static Session createJschSession(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        Map<String, String> sshCredentials = getSSHCredentials(topology, nodeIdsToBeRefined);
 
         File key = null;
         try {
@@ -128,10 +132,10 @@ public abstract class InstanceModelUtils {
         }
     }
 
-    public static void setUserInputs(Map<String, String> userInputs, TTopologyTemplate template, List<String> nodeIdsToBeReplaced) {
-        nodeIdsToBeReplaced.forEach(nodeId -> {
-            TNodeTemplate node = template.getNodeTemplate(nodeId);
-            List<TNodeTemplate> nodes = ModelUtilities.getHostedOnSuccessors(template, node);
+    public static void setUserInputs(Map<String, String> userInputs, TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        nodeIdsToBeRefined.forEach(nodeId -> {
+            TNodeTemplate node = topology.getNodeTemplate(nodeId);
+            List<TNodeTemplate> nodes = ModelUtilities.getHostedOnSuccessors(topology, node);
             nodes.add(node);
 
             nodes.forEach(nodeTemplate -> {
@@ -147,7 +151,7 @@ public abstract class InstanceModelUtils {
         });
     }
 
-    public static String executeCommand(Session session, String command) {
+    static String executeCommand(Session session, String command) {
         ChannelExec channelExec = null;
         try {
             logger.info("Executing script: \"{}\"", command);
@@ -200,5 +204,41 @@ public abstract class InstanceModelUtils {
                 channelExec.disconnect();
             }
         }
+    }
+
+    public static List<String> executeCommands(TTopologyTemplate topology, List<String> nodeIdsToBeRefined,
+                                               Map<QName, ? extends TEntityType> types, String ...commands) {
+        List<String> output = new ArrayList<>();
+
+        // determine whether the host is a Docker Container or a VM
+        boolean docker = isDockerContainer(topology, nodeIdsToBeRefined, types);
+        
+        if (docker) {
+            // todo
+        } else {
+            Session jschSession = createJschSession(topology, nodeIdsToBeRefined);
+            for (String command : commands) {
+                output.add(executeCommand(jschSession, command));   
+            }
+            jschSession.disconnect();
+        }
+
+        return output;
+    }
+
+    private static boolean isDockerContainer(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, Map<QName, ? extends TEntityType> types) {
+        return topology.getNodeTemplates().stream()
+            .filter(node -> nodeIdsToBeRefined.contains(node.getId()))
+            .anyMatch(node -> {
+                List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, node);
+                hostedOnSuccessors.add(node);
+
+                return hostedOnSuccessors.stream()
+                    .anyMatch(host -> ModelUtilities.isOfType(
+                        QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer_w1"),
+                        host.getType(),
+                        types)
+                    );
+            });
     }
 }

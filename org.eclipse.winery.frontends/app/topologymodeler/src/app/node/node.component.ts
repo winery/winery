@@ -303,7 +303,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      * Get the icons of the policies.
      */
     setPolicyIcons() {
-        if (this.nodeTemplate.policies) {
+        if (this.nodeTemplate && this.nodeTemplate.policies) {
             this.policyIcons = [];
             const list: TPolicy[] = this.nodeTemplate.policies;
 

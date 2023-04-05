@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -36,7 +37,6 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.jcraft.jsch.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,27 +48,26 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
     private static final QName mySql_5_5_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.5-w1");
     private static final QName mySql_5_7_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.7-w1");
 
-    public MySqlDbmsRefinementPlugin() {
+    private final Map<QName, TNodeType> nodeTypes;
+
+    public MySqlDbmsRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
         super("MySQL-DBMS");
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
         try {
-            Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
-            String mySQL_DBMS_version = InstanceModelUtils.executeCommand(
-                session,
-                "sudo /usr/bin/mysql --help | grep Distrib | awk '{print $5}' | sed -r 's/([0-9]+),$/\\1/'"
-            );
-            String mySQL_DBMS_port = InstanceModelUtils.executeCommand(
-                session,
+            List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
+                "sudo /usr/bin/mysql --help | grep Distrib | awk '{print $5}' | sed -r 's/([0-9]+),$/\\1/'",
                 "sudo netstat -tulpen | grep mysqld | awk '{print $4}' | sed -r 's/.*:([0-9]+)$/\\1/'"
             );
 
-            session.disconnect();
+            String mySQL_DBMS_version = outputs.get(0);
+            String mySQL_DBMS_port = outputs.get(1);
 
-            template.getNodeTemplates().stream()
+            topology.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("MySQL-DBMS".toLowerCase()))
                 .findFirst()

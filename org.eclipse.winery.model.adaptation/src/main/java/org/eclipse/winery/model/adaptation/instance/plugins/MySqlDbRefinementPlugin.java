@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,7 +35,6 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.jcraft.jsch.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,26 +45,30 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
         ", 'sys');\"";
     private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
 
-    public MySqlDbRefinementPlugin() {
+    private final Map<QName, TNodeType> nodeTypes;
+
+    public MySqlDbRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
         super("MySQL-DB");
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
-        Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
-        String mySqlDatabases = InstanceModelUtils.executeCommand(
-            session,
+
+        List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
             COMMAND_RETRIEVE_DB_NAME
         );
+
+        String mySqlDatabases = outputs.get(0);
         logger.info("Found MySqlDatabases: {}", mySqlDatabases);
 
-        session.disconnect();
+        //  mongosh --quiet --eval "db.getName()"
 
         if (!mySqlDatabases.isEmpty()) {
             String[] identifiedDBs = mySqlDatabases.split("\\n");
 
-            template.getNodeTemplates().stream()
+            topology.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
                 .findFirst()

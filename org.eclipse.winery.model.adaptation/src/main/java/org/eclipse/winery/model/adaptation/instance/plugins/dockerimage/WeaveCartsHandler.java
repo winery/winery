@@ -36,7 +36,7 @@ public class WeaveCartsHandler implements ImageRefinementHandler {
     private static final String IMAGE_ID_WEAVE_SHIPPING = "weaveworksdemos/shipping:0.4.8";
     private static final QName QNAME_ALPINE_CONTAINER = QName.valueOf(
         "{https://examples.opentosca.org/edmm/nodetypes}Alpine-Container");
-    private static final QName QNAME_JAVA8 = QName.valueOf("{http://opentosca.org/nodetypes}Java8");
+    private static final QName QNAME_JAVA8 = QName.valueOf("{http://opentosca.org/nodetypes}Java_8-w1");
     private static final QName QNAME_SPRING_WEB = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
     @Override
