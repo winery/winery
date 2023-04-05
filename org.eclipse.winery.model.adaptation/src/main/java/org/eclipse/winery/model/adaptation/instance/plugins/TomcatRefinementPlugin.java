@@ -46,7 +46,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     private static final Logger logger = LoggerFactory.getLogger(TomcatRefinementPlugin.class);
 
     private static final QName webserver = ToscaBaseTypes.webserver;
-    private static final QName tomcatQName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat-w1");
+    private static final QName tomcatQName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_w1");
     private static final QName tomcat7QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_7-w1");
     private static final QName tomcat8QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_8-w1");
     private static final QName tomcat9QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_9-w1");
