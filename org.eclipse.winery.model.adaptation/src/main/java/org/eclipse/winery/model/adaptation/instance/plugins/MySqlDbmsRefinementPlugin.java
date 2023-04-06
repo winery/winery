@@ -40,13 +40,15 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.eclipse.winery.model.adaptation.instance.InstanceModelUtils.getClosestVersionMatchOfVersion;
+
 public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
 
     private static final Logger logger = LoggerFactory.getLogger(MySqlDbmsRefinementPlugin.class);
 
-    private static final QName mySqlName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS");
-    private static final QName mySql_5_5_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.5-w1");
-    private static final QName mySql_5_7_QName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DBMS_5.7-w1");
+    private static final String namespace = "{http://opentosca.org/nodetypes}";
+    private static final String mySQLName = "MySQL-DBMS";
+    private static final String mariaDBName = "MariaDBMS";
 
     private final Map<QName, TNodeType> nodeTypes;
 
@@ -60,7 +62,7 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
         Set<String> discoveredNodeIds = new HashSet<>();
         try {
             List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
-                "sudo /usr/bin/mysql --help | grep Distrib | awk '{print $5}' | sed -r 's/([0-9]+),$/\\1/'",
+                "sudo /usr/bin/mysql --help | grep ' Ver ' | sed -r 's/(.*)Ver (.*)?, for(.*)/\\2/'",
                 "sudo netstat -tulpen | grep mysqld | awk '{print $4}' | sed -r 's/.*:([0-9]+)$/\\1/'"
             );
 
@@ -69,18 +71,24 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
 
             topology.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith("MySQL-DBMS".toLowerCase()))
+                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().contains("DBMS".toLowerCase()))
                 .findFirst()
                 .ifPresent(mySQL -> {
-                    WineryVersion version = VersionUtils.getVersion(Objects.requireNonNull(mySQL.getType()).getLocalPart());
-                    String[] split = mySQL_DBMS_version.split("\\.");
+                    WineryVersion wineryVersion = VersionUtils.getVersion(Objects.requireNonNull(mySQL.getType()).getLocalPart());
+                    String[] versionSplit = mySQL_DBMS_version.split("\\s");
+                    String version = versionSplit[0];
+                    logger.info("Found MySQL DBMS version \"{}\"", version);
 
-                    discoveredNodeIds.add(mySQL.getId());
-                    if (version.getComponentVersion() == null || !version.getComponentVersion().startsWith(split[0])) {
-                        if ("5".equals(split[0]) && "5".equals(split[1])) {
-                            mySQL.setType(mySql_5_5_QName);
-                        } else if ("5".equals(split[0]) && "7".equals(split[1])) {
-                            mySQL.setType(mySql_5_7_QName);
+                    // Case 15.1 Distrib 10.3.38-MariaDB
+                    if (versionSplit.length > 1) {
+                        String[] split = versionSplit[2].split("-");
+                        version = split[0];
+                        if (wineryVersion.getComponentVersion() == null || !wineryVersion.getComponentVersion().contains(version)) {
+                            mySQL.setType(getClosestVersionMatchOfVersion(namespace, mariaDBName, version, this.nodeTypes));
+                        }
+                    } else {
+                        if (wineryVersion.getComponentVersion() == null || !wineryVersion.getComponentVersion().contains(version)) {
+                            mySQL.setType(getClosestVersionMatchOfVersion(namespace, mySQLName, version, this.nodeTypes));
                         }
                     }
                     if (mySQL.getProperties() == null) {
@@ -90,6 +98,8 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
                         TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) mySQL.getProperties();
                         properties.getKVProperties().put("DBMSPort", mySQL_DBMS_port);
                     }
+
+                    discoveredNodeIds.add(mySQL.getId());
                 });
         } catch (RuntimeException e) {
             logger.error("Error while retrieving Tomcat information...", e);
@@ -108,7 +118,7 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
     protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
-        TNodeType mySQLType = repository.getElement(new NodeTypeId(mySqlName));
+        TNodeType mySQLType = repository.getElement(new NodeTypeId(QName.valueOf(namespace + mySQLName)));
         TNodeTemplate mySQL_DBMS = ModelUtilities.instantiateNodeTemplate(mySQLType);
 
         return Collections.singletonList(

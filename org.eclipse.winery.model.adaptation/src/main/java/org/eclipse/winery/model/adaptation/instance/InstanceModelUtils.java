@@ -27,9 +27,12 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
@@ -207,18 +210,18 @@ public abstract class InstanceModelUtils {
     }
 
     public static List<String> executeCommands(TTopologyTemplate topology, List<String> nodeIdsToBeRefined,
-                                               Map<QName, ? extends TEntityType> types, String ...commands) {
+                                               Map<QName, ? extends TEntityType> types, String... commands) {
         List<String> output = new ArrayList<>();
 
         // determine whether the host is a Docker Container or a VM
         boolean docker = isDockerContainer(topology, nodeIdsToBeRefined, types);
-        
+
         if (docker) {
             // todo
         } else {
             Session jschSession = createJschSession(topology, nodeIdsToBeRefined);
             for (String command : commands) {
-                output.add(executeCommand(jschSession, command));   
+                output.add(executeCommand(jschSession, command));
             }
             jschSession.disconnect();
         }
@@ -240,5 +243,48 @@ public abstract class InstanceModelUtils {
                         types)
                     );
             });
+    }
+
+    /**
+     * Do fancy detection of a NodeType matching the given namespace and id while being as close as possible to the
+     * given version. Additionally, it tries to identify the latest Version of the found version.
+     *
+     * @param namespace The namespace to search in
+     * @param id        The ID of the required NodeType
+     * @param version   The version to search for
+     * @param nodeTypes The list of all NodeTypes in the current repository
+     * @return The closest Node Type found
+     */
+    public static QName getClosestVersionMatchOfVersion(String namespace, String id, String version, Map<QName, TNodeType> nodeTypes) {
+        String namespaceWithCurlies = namespace;
+        if (!namespace.contains("{")) {
+            namespaceWithCurlies = "{" + namespaceWithCurlies;
+        }
+        if (!namespace.contains("}")) {
+            namespaceWithCurlies += "}";
+        }
+
+        // Backup type that may not exist...
+        QName closestMatchToGivenVersion = QName.valueOf(namespaceWithCurlies + id + "_" + version + "-w1");
+        List<WineryVersion> allVersionsOfThisType = nodeTypes.keySet().stream()
+            .filter(type -> VersionUtils.getNameWithoutVersion(type.getLocalPart())
+                .equals(VersionUtils.getNameWithoutVersion(id)))
+            .map(type -> VersionUtils.getVersion(type.getLocalPart()))
+            .toList();
+
+        for (int[] index = {version.length() - 1}; index[0] > 0; index[0]--) {
+            if (version.charAt(index[0]) == '.') {
+                List<WineryVersion> list = allVersionsOfThisType.stream()
+                    .filter(type -> type.getComponentVersion().equals(version.substring(0, index[0])))
+                    .sorted(WineryVersion::compareTo)
+                    .toList();
+                if (list.size() > 0) {
+                    // since we search for the most concrete version first, we now return
+                    return QName.valueOf(namespaceWithCurlies + id + "_" + list.get(list.size() - 1).toString());
+                }
+            }
+        }
+
+        return closestMatchToGivenVersion;
     }
 }
