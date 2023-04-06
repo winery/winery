@@ -126,7 +126,7 @@ public class InstanceModelRefinement {
         do {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topologyTemplate);
             List<InstanceModelRefinementPlugin> executablePlugins = this.plugins.stream()
-                .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph))
+                .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph, discoveryPluginDescriptors))
                 .collect(Collectors.toList());
             InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
 
