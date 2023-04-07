@@ -36,6 +36,20 @@
             <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon.imageUrl" class="policyAnnotation"
              alt="Policy icon" tooltip="{{ policyIcon.policyType }}">
         </div>
+        
+<!--        <div *ngIf="instanceInformation?.discoveredBy">-->
+<!--            discovered-->
+<!--        </div>-->
+        <div *ngIf="instanceInformation?.deploymentTech" class="deploymentTech">
+            <img *ngIf="instanceInformation.deploymentTech === 'kubernetes'"
+                 alt="Kubernetes"
+                 src="https://www.linuxfoundation.org/hs-fs/hubfs/trademark-kubernetes-icon-correct-140x140-1.png?width=62&name=trademark-kubernetes-icon-correct-140x140-1.png"
+            class="policyAnnotation">
+            <img *ngIf="instanceInformation.deploymentTech === 'puppet'"
+                 alt="Puppet"
+                 src="https://static-00.iconduck.com/assets.00/file-type-puppet-icon-333x512-rln688e4.png"
+            class="policyAnnotation">
+        </div>
 
         <div *ngIf="newerVersions?.length !== 0">
             <i *wineryRepositoryFeatureToggle="configEnum.updateTemplates"

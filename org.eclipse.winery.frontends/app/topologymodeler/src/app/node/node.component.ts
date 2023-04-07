@@ -38,6 +38,7 @@ import { WineryRepositoryConfigurationService } from '../../../../tosca-manageme
 import { InheritanceUtils } from '../models/InheritanceUtils';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
+import { InstanceDeploymentTechnology, InstancePlugin } from '../models/instanceModeling';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -87,6 +88,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     policiesOfNode: TPolicy[];
     groupDefinitions: TGroupDefinition[];
     participants: OTParticipant[];
+
+    instanceInformation: { discoveredBy: string[]; deploymentTech: string };
 
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;
@@ -285,6 +288,9 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             .subscribe((liveModelingState) => {
                 this.liveModelingEnabled = liveModelingState !== LiveModelingStates.DISABLED;
             }));
+
+        this.$ngRedux.select((store) => store.wineryState.instanceInformation)
+            .subscribe(instanceInformation => this.setInstanceInformation(instanceInformation));
     }
 
     /**
@@ -633,5 +639,44 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         });
 
         return result;
+    }
+
+    private setInstanceInformation(instanceInfo: { plugins: InstancePlugin[]; deploymentTechs: InstanceDeploymentTechnology[] }) {
+        if (this.nodeTemplate) {
+            this.instanceInformation = {
+                discoveredBy: [],
+                deploymentTech: '',
+            };
+
+            if (instanceInfo.deploymentTechs) {
+                instanceInfo.deploymentTechs.forEach(tech => {
+                    if (tech.managedIds) {
+                        for (const managedId of tech.managedIds) {
+                            if (managedId === this.nodeTemplate.id) {
+                                this.instanceInformation.deploymentTech = tech.technologyId;
+                            }
+                        }
+                    }
+                    if (tech.discoveredIds) {
+                        for (const discoveredId of tech.discoveredIds) {
+                            if (discoveredId === this.nodeTemplate.id) {
+                                this.instanceInformation.discoveredBy.push(tech.technologyId);
+                            }
+                        }
+                    }
+                });
+            }
+            if (instanceInfo.plugins) {
+                instanceInfo.plugins.forEach(plugin => {
+                    if (plugin.discoveredIds) {
+                        for (const discoveredId of plugin.discoveredIds) {
+                            if (discoveredId === this.nodeTemplate.id) {
+                                this.instanceInformation.discoveredBy.push(plugin.id);
+                            }
+                        }
+                    }
+                });
+            }
+        }
     }
 }

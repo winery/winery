@@ -210,6 +210,13 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     max-height: 30px;
 }
 
+.deploymentTech {
+    position: absolute;
+    top: 3px;
+    float: right;
+    left: 185px;
+}
+
 .newVersionTriangle {
     position: absolute;
     right: -4px;
