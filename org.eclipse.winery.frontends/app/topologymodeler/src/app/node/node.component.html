@@ -49,6 +49,10 @@
                  alt="Puppet"
                  src="https://static-00.iconduck.com/assets.00/file-type-puppet-icon-333x512-rln688e4.png"
             class="policyAnnotation">
+            <img *ngIf="instanceInformation.deploymentTech === 'terraform'"
+                 alt="Terraform"
+                 src="https://static-00.iconduck.com/assets.00/file-type-terraform-icon-455x512-csyun60o.png"
+            class="policyAnnotation">
         </div>
 
         <div *ngIf="newerVersions?.length !== 0">
