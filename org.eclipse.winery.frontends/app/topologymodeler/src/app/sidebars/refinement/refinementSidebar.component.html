@@ -43,7 +43,7 @@
                                 <button class="btn btn-sm btn-info"
                                         (click)="openModeler($event, candidate.refinementModel.name, 
                                         candidate.refinementModel.targetNamespace, 'detector')">
-                                    Show Detector
+                                    Show Pattern Structure
                                 </button>
                             </ng-template>
                             <br>
@@ -72,7 +72,12 @@
             </p>
             <ul>
                 <li *ngFor="let nodeId of object.keys(confirmCandidate.warnings)">
-                    {{ confirmCandidate.warnings[nodeId] }}
+                    Warnings for Node Template  <span style="font-weight:bold;">{{ nodeId }}</span>
+                    <ul>
+                        <li *ngFor="let warning of confirmCandidate.warnings[nodeId]">
+                            {{ warning }}
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

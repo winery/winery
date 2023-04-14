@@ -648,7 +648,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 deploymentTech: '',
             };
 
-            if (instanceInfo.deploymentTechs) {
+            if (instanceInfo && instanceInfo.deploymentTechs) {
                 instanceInfo.deploymentTechs.forEach(tech => {
                     if (tech.managedIds) {
                         for (const managedId of tech.managedIds) {
@@ -666,7 +666,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                     }
                 });
             }
-            if (instanceInfo.plugins) {
+            if (instanceInfo && instanceInfo.plugins) {
                 instanceInfo.plugins.forEach(plugin => {
                     if (plugin.discoveredIds) {
                         for (const discoveredId of plugin.discoveredIds) {

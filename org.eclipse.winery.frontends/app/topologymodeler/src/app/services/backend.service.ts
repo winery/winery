@@ -33,6 +33,7 @@ import { TPolicy } from '../models/policiesModalData';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { ToscaUtils } from '../models/toscaUtils';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
+import { of as ObservableOf } from 'rxjs';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
 import { takeLast, tap } from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
@@ -849,9 +850,10 @@ export class BackendService {
     }
 
     private requestServiceTemplateTags() {
-        if (this.configuration) {
+        if (this.configuration && this.configuration.elementPath === 'topologytemplate') {
             return this.http.get<Tag[]>(this.configuration.parentElementUrl + 'tags');
         }
+        return ObservableOf<Tag[]>([]);
     }
 
     private initTags(tags: Tag[]) {
