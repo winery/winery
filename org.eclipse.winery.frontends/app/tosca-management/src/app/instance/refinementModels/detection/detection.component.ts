@@ -34,11 +34,11 @@ export class DetectionComponent implements OnInit {
 
     ngOnInit(): void {
         this.service.getDetectionModel()
-            .subscribe(data => {
+            .subscribe((data) => {
                     this.detectionModel = data;
                     this.loading = false;
                 },
-                error => {
+                (error) => {
                     this.notify.error(error.message);
                     this.loading = false;
                 });
@@ -48,11 +48,11 @@ export class DetectionComponent implements OnInit {
         this.loading = true;
         this.service.setDetectionModel(this.detectionModel)
             .subscribe(
-                data => {
+                () => {
                     this.notify.success('Saved successfully');
                     this.loading = false;
                 },
-                error => {
+                (error) => {
                     this.notify.error(error.message);
                     this.loading = false;
                 }

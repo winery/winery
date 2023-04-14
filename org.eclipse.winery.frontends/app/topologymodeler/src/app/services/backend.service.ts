@@ -21,7 +21,7 @@ import { ServiceTemplateId } from '../models/serviceTemplateId';
 import { ToscaDiff } from '../models/ToscaDiff';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject, concat, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, concat, forkJoin, of, of as ObservableOf } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 import { ThreatCreation } from '../models/threatCreation';
@@ -33,7 +33,6 @@ import { TPolicy } from '../models/policiesModalData';
 import { EntityTypesModel } from '../models/entityTypesModel';
 import { ToscaUtils } from '../models/toscaUtils';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
-import { of as ObservableOf } from 'rxjs';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
 import { takeLast, tap } from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
@@ -42,6 +41,12 @@ import { WineryActions } from '../redux/actions/winery.actions';
 import { DeploymentTechnology } from '../models/deployment-technology';
 import { QNameApiData } from '../../../../tosca-management/src/app/model/qNameApiData';
 import { InstancePlugin } from '../models/instanceModeling';
+
+interface Tag {
+    id: string;
+    name: string;
+    value: string;
+}
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -875,10 +880,4 @@ export class BackendService {
 
         this.ngRedux.dispatch(this.wineryActions.setInstanceInformation(executedPlugins, deploymentTechnologies));
     }
-}
-
-interface Tag {
-    id: string;
-    name: string;
-    value: string;
 }

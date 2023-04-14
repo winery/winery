@@ -290,7 +290,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             }));
 
         this.$ngRedux.select((store) => store.wineryState.instanceInformation)
-            .subscribe(instanceInformation => this.setInstanceInformation(instanceInformation));
+            .subscribe((instanceInformation) => this.setInstanceInformation(instanceInformation));
     }
 
     /**
@@ -649,7 +649,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
             };
 
             if (instanceInfo && instanceInfo.deploymentTechs) {
-                instanceInfo.deploymentTechs.forEach(tech => {
+                instanceInfo.deploymentTechs.forEach((tech) => {
                     if (tech.managedIds) {
                         for (const managedId of tech.managedIds) {
                             if (managedId === this.nodeTemplate.id) {
@@ -667,7 +667,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
                 });
             }
             if (instanceInfo && instanceInfo.plugins) {
-                instanceInfo.plugins.forEach(plugin => {
+                instanceInfo.plugins.forEach((plugin) => {
                     if (plugin.discoveredIds) {
                         for (const discoveredId of plugin.discoveredIds) {
                             if (discoveredId === this.nodeTemplate.id) {
