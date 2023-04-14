@@ -506,29 +506,29 @@ export class WineryActions {
         ((nodeId: string, valid: boolean) => ({
             type: WineryActions.SET_NODE_VALIDITY,
             nodeValidity: {
-                nodeId: nodeId,
-                valid: valid
+                nodeId,
+                valid
             }
         }));
     setNodeInstanceState: ActionCreator<SetNodeInstanceStateAction> =
         ((nodeId: string, state: NodeTemplateInstanceStates) => ({
             type: WineryActions.SET_NODE_INSTANCE_STATE,
             nodeInstanceState: {
-                nodeId: nodeId,
-                state: state
+                nodeId,
+                state
             }
         }));
     setNodeWorking: ActionCreator<SetNodeWorkingAction> =
         ((nodeId: string, working: boolean) => ({
             type: WineryActions.SET_NODE_WORKING,
             nodeWorking: {
-                nodeId: nodeId,
-                working: working
+                nodeId,
+                working
             }
         }));
-    setInstanceInformation: ActionCreator<SetInstanceInformationAction> = ((plugins: InstancePlugin[], techs: InstanceDeploymentTechnology[]) => ({
+    setInstanceInformation: ActionCreator<SetInstanceInformationAction> = ((plugins: InstancePlugin[], deploymentTechs: InstanceDeploymentTechnology[]) => ({
         type: WineryActions.SET_INSTANCE_INFORMATION,
-        plugins: plugins,
-        deploymentTechs: techs,
+        plugins,
+        deploymentTechs,
     }));
 }
