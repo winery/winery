@@ -14,25 +14,20 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins.dockerimage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
-import org.eclipse.winery.model.ids.definitions.NodeTypeId;
-import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +35,10 @@ import org.slf4j.LoggerFactory;
 public class LogAnalyzerSpring implements DockerLogsAnalyzer {
 
     private static final Logger logger = LoggerFactory.getLogger(LogAnalyzerSpring.class);
+    private final Map<QName, TNodeType> nodeTypes;
 
-    public LogAnalyzerSpring() {
+    public LogAnalyzerSpring(Map<QName, TNodeType> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
@@ -54,27 +51,8 @@ public class LogAnalyzerSpring implements DockerLogsAnalyzer {
             String springVersion = matcher.group(3);
             logger.info("Found Spring application in Spring version \"{}\"", springVersion);
 
-            TNodeTemplate containerNode = topology.getNodeTemplate(containerNodeId);
-            ArrayList<TNodeTemplate> hostedOnPredecessors = ModelUtilities.getHostedOnPredecessors(topology, containerNode);
-            Optional<TNodeTemplate> springWebApp = hostedOnPredecessors.stream()
-                .filter(node -> node.getType().getLocalPart().startsWith("SpringWebApp"))
-                .findFirst();
-
-            IRepository repo = RepositoryFactory.getRepository();
-
-            TNodeType springType = repo.getElement(new NodeTypeId(SpringWebAppRefinementPlugin.springWebApp));
-            TNodeTemplate webApp = ModelUtilities.instantiateNodeTemplate(springType);
-            if (springWebApp.isPresent()) {
-                webApp = springWebApp.get();
-            } else {
-                TRelationshipTemplate relationshipTemplate = ModelUtilities.instantiateRelationshipTemplate(
-                    repo.getElement(new RelationshipTypeId(ToscaBaseTypes.hostedOnRelationshipType)),
-                    webApp,
-                    containerNode
-                );
-                topology.addNodeTemplate(webApp);
-                topology.addRelationshipTemplate(relationshipTemplate);
-            }
+            TNodeTemplate webApp = InstanceModelUtils.getOrAddNodeTemplateMatchingTypeAndHost(topology, containerNodeId,
+                SpringWebAppRefinementPlugin.springWebApp, this.nodeTypes);
 
             discoveredNodeIds.add(webApp.getId());
             TEntityTemplate.Properties properties = webApp.getProperties();

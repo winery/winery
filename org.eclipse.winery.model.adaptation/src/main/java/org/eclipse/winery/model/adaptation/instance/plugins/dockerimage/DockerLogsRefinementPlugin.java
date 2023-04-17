@@ -43,7 +43,9 @@ public class DockerLogsRefinementPlugin extends InstanceModelRefinementPlugin {
         super("DockerLogsRefinement");
         this.nodeTypes = nodeTypes;
         this.logsAnalyzers = List.of(
-            new LogAnalyzerSpring()
+            // leave in this order!
+            new LogAnalyzerSpring(nodeTypes),
+            new LogAnalyzerSpringToMongoDB(nodeTypes)
         );
     }
 

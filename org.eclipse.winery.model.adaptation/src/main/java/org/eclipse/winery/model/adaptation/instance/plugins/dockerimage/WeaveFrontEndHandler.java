@@ -64,6 +64,8 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
         TNodeTemplate nodeJs = ModelUtilities.instantiateNodeTemplate(nodeJsType);
 
         topologyTemplate.addNodeTemplate(nodeJs);
+        nodeJs.setX(dockerContainer.getX());
+        nodeJs.setY(String.valueOf(Integer.parseInt(dockerContainer.getY()) - 160));
 
         ModelUtilities.createRelationshipTemplateAndAddToTopology(nodeJs,
             dockerContainer,
@@ -75,6 +77,8 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
         nodeApp.setName(dockerContainer.getName());
 
         topologyTemplate.addNodeTemplate(nodeApp);
+        nodeApp.setX(nodeJs.getX());
+        nodeApp.setY(String.valueOf(Integer.parseInt(nodeJs.getY()) - 160));
 
         ModelUtilities.createRelationshipTemplateAndAddToTopology(nodeApp,
             nodeJs,

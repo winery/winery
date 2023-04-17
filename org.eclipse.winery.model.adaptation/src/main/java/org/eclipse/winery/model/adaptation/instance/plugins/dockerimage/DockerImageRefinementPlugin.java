@@ -56,9 +56,10 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
 
         this.nodeTypes = nodeTypes;
 
-        List<ImageRefinementHandler> handlers = Arrays.asList(new MongoDbHandler(),
+        List<ImageRefinementHandler> handlers = Arrays.asList(
+            // new MongoDbHandler(),
             new WeaveGoHandler(),
-            new WeaveCartsHandler(),
+            // new WeaveCartsHandler(),
             new WeaveFrontEndHandler());
 
         handlers

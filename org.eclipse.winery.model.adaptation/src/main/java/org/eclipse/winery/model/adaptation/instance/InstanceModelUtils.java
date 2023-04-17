@@ -31,12 +31,18 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -361,6 +367,34 @@ public abstract class InstanceModelUtils {
                     );
             })
             .findFirst();
+    }
+
+    public static TNodeTemplate getOrAddNodeTemplateMatchingTypeAndHost(TTopologyTemplate topology, String hostId, QName requiredType,
+                                                                        Map<QName, ? extends TEntityType> nodeTypes) {
+        TNodeTemplate containerNode = topology.getNodeTemplate(hostId);
+        ArrayList<TNodeTemplate> hostedOnPredecessors = ModelUtilities.getHostedOnPredecessors(topology, containerNode);
+        Optional<TNodeTemplate> springWebApp = hostedOnPredecessors.stream()
+            .filter(node -> ModelUtilities.isOfType(requiredType, node.getType(), nodeTypes))
+            .findFirst();
+
+        IRepository repo = RepositoryFactory.getRepository();
+
+        TNodeType nodeType = repo.getElement(new NodeTypeId(requiredType));
+        TNodeTemplate nodeTempalte = ModelUtilities.instantiateNodeTemplate(nodeType);
+        if (springWebApp.isPresent()) {
+            nodeTempalte = springWebApp.get();
+        } else {
+            TRelationshipTemplate relationshipTemplate = ModelUtilities.instantiateRelationshipTemplate(
+                repo.getElement(new RelationshipTypeId(ToscaBaseTypes.hostedOnRelationshipType)),
+                nodeTempalte,
+                containerNode
+            );
+            nodeTempalte.setX(containerNode.getX());
+            nodeTempalte.setY(String.valueOf(Integer.parseInt(containerNode.getY()) - 160));
+            topology.addNodeTemplate(nodeTempalte);
+            topology.addRelationshipTemplate(relationshipTemplate);
+        }
+        return nodeTempalte;
     }
 
     /**
