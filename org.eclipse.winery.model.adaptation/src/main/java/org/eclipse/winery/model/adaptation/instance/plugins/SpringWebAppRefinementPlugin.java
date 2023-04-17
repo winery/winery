@@ -41,7 +41,7 @@ import static org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefi
 
 public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin {
 
-    private static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
+    public static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
     private final Map<QName, TNodeType> nodeTypes;
 

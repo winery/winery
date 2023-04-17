@@ -43,7 +43,7 @@ import org.eclipse.winery.topologygraph.matching.ToscaPropertyMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
-    private static final QName QNAME_DOCKER_CONTAINER = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
+    public static final QName QNAME_DOCKER_CONTAINER = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
     private static final String PROPERTY_IMAGE_ID = "ImageID";
 
     private final Map<String, ImageRefinementHandler> refinementHandlerByImage = new HashMap<>();
@@ -76,7 +76,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
         List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(QNAME_DOCKER_CONTAINER.getLocalPart()))
-            .collect(Collectors.toList());
+            .toList();
 
         Set<String> discoveredNodeIds = new HashSet<>();
         for (TNodeTemplate curNode : nodesToRefineByImage) {

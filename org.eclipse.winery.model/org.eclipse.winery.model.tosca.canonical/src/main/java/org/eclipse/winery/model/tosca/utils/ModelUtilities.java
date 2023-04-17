@@ -885,6 +885,26 @@ public abstract class ModelUtilities {
 
         return hostedOnSuccessors;
     }
+    
+    public static ArrayList<TNodeTemplate> getHostedOnPredecessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+        ArrayList<TNodeTemplate> hostedOnPredecessors = new ArrayList<>();
+
+        Optional<TRelationshipTemplate> hostedOn;
+
+        do {
+            List<TRelationshipTemplate> incomingRelationshipTemplates = getIncomingRelationshipTemplates(topologyTemplate, nodeTemplate);
+
+            hostedOn = incomingRelationshipTemplates.stream()
+                .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                .findFirst();
+            if (hostedOn.isPresent()) {
+                nodeTemplate = getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.get().getSourceElement().getRef());
+                hostedOnPredecessors.add(nodeTemplate);
+            }
+        } while (hostedOn.isPresent());
+
+        return hostedOnPredecessors;
+    }
 
     /**
      * Returns the referenced TNodeTemplate of a TRelationshipTemplate which internally uses a

@@ -17,7 +17,9 @@ package org.eclipse.winery.model.adaptation.instance;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,14 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.ExecCreateCmdResponse;
+import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientImpl;
+import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -51,27 +61,60 @@ public abstract class InstanceModelUtils {
     public static String vmIP = "VMIP";
     public static String vmSshPort = "VMSSHPort";
 
+    public static String dockerContainerIDProp = "ContainerID";
+    public static String dockerEngineURLProp = "DockerEngineURL";
+
+    public static String getInput = "get_input";
+
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
 
     public static Set<String> getRequiredSSHInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        return getMissingInputs(
+            topology,
+            nodeIdsToBeRefined,
+            vmUser, vmPrivateKey, vmIP, vmSshPort
+        );
+    }
+
+    public static Set<String> getMissingInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, String... props) {
         Set<String> inputs = new HashSet<>();
-        Map<String, String> sshCredentials = getSSHCredentials(topology, nodeIdsToBeRefined);
-        if (sshCredentials.get(vmPrivateKey) == null || sshCredentials.get(vmPrivateKey).isEmpty()
-            || sshCredentials.get(vmPrivateKey).toLowerCase().startsWith("get_input")) {
-            inputs.add(vmPrivateKey);
+        Map<String, String> requiredInputs = getRequiredInputs(topology, nodeIdsToBeRefined, props);
+
+        for (String prop : props) {
+            String input = requiredInputs.get(prop);
+            if (input == null || input.isBlank() || input.toLowerCase().startsWith(getInput)) {
+                inputs.add(prop);
+            }
         }
-        if (sshCredentials.get(vmUser) == null || sshCredentials.get(vmUser).isEmpty()
-            || sshCredentials.get(vmUser).toLowerCase().startsWith("get_input")) {
-            inputs.add(vmUser);
-        }
-        if (sshCredentials.get(vmIP) == null || sshCredentials.get(vmIP).isEmpty()
-            || sshCredentials.get(vmIP).toLowerCase().startsWith("get_input")) {
-            inputs.add(vmIP);
-        }
+
         return inputs;
     }
 
+    public static Set<String> getRequiredDockerTTYInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        return getMissingInputs(
+            topology,
+            nodeIdsToBeRefined,
+            dockerContainerIDProp, dockerEngineURLProp
+        );
+    }
+
+    public static Map<String, String> getDockerTTYInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        return getRequiredInputs(
+            topology,
+            nodeIdsToBeRefined,
+            dockerContainerIDProp, dockerEngineURLProp
+        );
+    }
+
     public static Map<String, String> getSSHCredentials(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        return getRequiredInputs(
+            topology,
+            nodeIdsToBeRefined,
+            vmUser, vmPrivateKey, vmIP, vmSshPort
+        );
+    }
+
+    public static Map<String, String> getRequiredInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, String... props) {
         Map<String, String> properties = new HashMap<>();
 
         topology.getNodeTemplates().stream()
@@ -84,17 +127,9 @@ public abstract class InstanceModelUtils {
                     if (host.getProperties() != null && host.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
                         Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) host.getProperties())
                             .getKVProperties();
-                        kvProperties.forEach((key, value) -> {
-                            if (vmUser.equalsIgnoreCase(key)) {
-                                properties.put(vmUser, value);
-                            } else if (vmPrivateKey.equalsIgnoreCase(key)) {
-                                properties.put(vmPrivateKey, value);
-                            } else if (vmIP.equalsIgnoreCase(key)) {
-                                properties.put(vmIP, value);
-                            } else if (vmSshPort.equalsIgnoreCase(key)) {
-                                properties.put(vmSshPort, value);
-                            }
-                        });
+                        kvProperties.entrySet().stream()
+                            .filter(entry -> Arrays.stream(props).anyMatch(property -> property.equalsIgnoreCase(entry.getKey())))
+                            .forEach(entry -> properties.put(entry.getKey(), entry.getValue()));
                     }
                 }
             });
@@ -214,9 +249,9 @@ public abstract class InstanceModelUtils {
         List<String> output = new ArrayList<>();
 
         // determine whether the host is a Docker Container or a VM
-        boolean docker = isDockerContainer(topology, nodeIdsToBeRefined, types);
+        Optional<TNodeTemplate> dockerContainer = getDockerContainer(topology, nodeIdsToBeRefined, types);
 
-        if (docker) {
+        if (dockerContainer.isPresent()) {
             // todo
         } else {
             Session jschSession = createJschSession(topology, nodeIdsToBeRefined);
@@ -229,10 +264,92 @@ public abstract class InstanceModelUtils {
         return output;
     }
 
-    private static boolean isDockerContainer(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, Map<QName, ? extends TEntityType> types) {
+    public static String executeDockerCommand(String dockerEngineURL, String containerId, String command) throws InterruptedException {
+        logger.info("Executing command on container: {}", command);
+
+        DockerClient dockerClient = getDockerClient(dockerEngineURL);
+
+        ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(containerId)
+            .withTty(true)
+            .withAttachStdout(true)
+            .withAttachStderr(true)
+            .withCmd("/bin/bash", "-c", command)
+            .exec();
+
+        try (AttachContainerCallback callback = dockerClient.execStartCmd(execCreateCmdResponse.getId())
+            .withTty(true)
+            .withDetach(false)
+            .exec(new AttachContainerCallback(containerId))) {
+            callback.awaitCompletion();
+            return callback.builder.toString();
+        } catch (IOException e) {
+            logger.error("Error while executing...", e);
+        }
+
+        return "";
+    }
+
+    public static String getDockerLogs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        Map<String, String> dockerTTYInputs = getDockerTTYInputs(topology, nodeIdsToBeRefined);
+        return getDockerLogs(dockerTTYInputs.get(dockerEngineURLProp), dockerTTYInputs.get(dockerContainerIDProp));
+    }
+
+    public static String getDockerLogs(String dockerEngineURL, String containerId) {
+        DockerClient dockerClient = getDockerClient(dockerEngineURL);
+        StringBuilder logs = new StringBuilder();
+
+        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId);
+        logContainerCmd.withStdOut(true).withStdErr(true);
+        ;
+
+        try {
+            logContainerCmd.exec(new ResultCallback.Adapter<Frame>() {
+                @Override
+                public void onNext(Frame item) {
+                    logs.append(item.toString());
+                }
+            }).awaitCompletion();
+        } catch (InterruptedException e) {
+            logger.error("Interrupted Exception!", e);
+        } finally {
+            try {
+                dockerClient.close();
+            } catch (IOException e) {
+                logger.error("Error closing Docker connection", e);
+            }
+        }
+
+        return logs.toString()
+            .replaceFirst("STDOUT: ", "")
+            .replaceAll("STDOUT: ", "\n");
+    }
+
+    public static DockerClient getDockerClient(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
+        Map<String, String> dockerTTYInputs = getDockerTTYInputs(topology, nodeIdsToBeRefined);
+
+        return getDockerClient(dockerTTYInputs.get(dockerEngineURLProp));
+    }
+
+    private static DockerClient getDockerClient(String dockerEngine) {
+        DefaultDockerClientConfig.Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder()
+            .withDockerHost(dockerEngine)
+            .withDockerTlsVerify(false);
+        DefaultDockerClientConfig config = configBuilder.build();
+
+        ApacheDockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+            .dockerHost(config.getDockerHost())
+            .sslConfig(config.getSSLConfig())
+            // wait for infinity
+            .responseTimeout(Duration.ZERO)
+            .build();
+
+        return DockerClientImpl.getInstance(config, httpClient);
+    }
+
+    public static Optional<TNodeTemplate> getDockerContainer(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, Map<QName, ? extends TEntityType> types) {
         return topology.getNodeTemplates().stream()
             .filter(node -> nodeIdsToBeRefined.contains(node.getId()))
-            .anyMatch(node -> {
+            .filter(node -> {
                 List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, node);
                 hostedOnSuccessors.add(node);
 
@@ -242,7 +359,8 @@ public abstract class InstanceModelUtils {
                         host.getType(),
                         types)
                     );
-            });
+            })
+            .findFirst();
     }
 
     /**
@@ -286,5 +404,38 @@ public abstract class InstanceModelUtils {
         }
 
         return closestMatchToGivenVersion;
+    }
+
+    public static class AttachContainerCallback extends ResultCallback.Adapter<Frame> {
+
+        StringBuilder builder = new StringBuilder();
+        private final String containerId;
+
+        public AttachContainerCallback(String containerId) {
+            this.containerId = containerId;
+        }
+
+        @Override
+        public void onNext(Frame frame) {
+            String result = new String(frame.getPayload());
+
+            // There are linebreaks, we just print everything. Otherwise, works might get ripped apart.
+            System.out.print(result);
+            builder.append(result);
+
+            super.onNext(frame);
+        }
+
+        @Override
+        public void onComplete() {
+            super.onComplete();
+            logger.info("Connection to container \"{}\" is completed!", this.containerId);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            super.onError(throwable);
+            logger.error("An error appeared...", throwable);
+        }
     }
 }

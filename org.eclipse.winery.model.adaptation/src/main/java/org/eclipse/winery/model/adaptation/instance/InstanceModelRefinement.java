@@ -34,6 +34,7 @@ import org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementP
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.TomcatRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.dockerimage.DockerImageRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.dockerimage.DockerLogsRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.DiscoveryPluginDescriptor;
@@ -72,7 +73,8 @@ public class InstanceModelRefinement {
             new PetClinicRefinementPlugin(nodeTypes),
             new SpringWebAppRefinementPlugin(nodeTypes),
             new Ec2AmiRefinementPlugin(nodeTypes),
-            new DockerImageRefinementPlugin(nodeTypes)
+            new DockerImageRefinementPlugin(nodeTypes),
+            new DockerLogsRefinementPlugin(nodeTypes)
         );
     }
 
