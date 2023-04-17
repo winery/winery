@@ -14,6 +14,7 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins.dockerimage;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
@@ -82,6 +84,28 @@ public class LogAnalyzerSpringToMongoDB implements DockerLogsAnalyzer {
                             return dbmsNode;
                         }
                     );
+
+                if (dbHost.getProperties() instanceof TEntityTemplate.WineryKVProperties properties) {
+                    String port = properties.getKVProperties().get("ContainerPort");
+
+                    if (port != null && port.startsWith(InstanceModelUtils.getInput)) {
+                        properties.getKVProperties().put("ContainerPort", dbAddress[1]);
+                    }
+                }
+
+                if (dbms.getProperties() instanceof TEntityTemplate.WineryKVProperties properties) {
+                    String port = properties.getKVProperties().get("Port");
+
+                    if (port == null || port.isBlank() || port.startsWith(InstanceModelUtils.getInput)) {
+                        properties.getKVProperties().put("Port", dbAddress[1]);
+                    }
+                } else {
+                    TEntityTemplate.WineryKVProperties wineryKVProperties = new TEntityTemplate.WineryKVProperties();
+                    LinkedHashMap<String, String> props = new LinkedHashMap<>();
+                    wineryKVProperties.setKVProperties(props);
+                    props.put("Port", dbAddress[1]);
+                    dbms.setProperties(wineryKVProperties);
+                }
 
                 TNodeTemplate db = hostedOnPredecessors.stream()
                     .filter(node -> node.getType().getLocalPart().toLowerCase().startsWith("MongoDB_".toLowerCase()))
