@@ -63,7 +63,7 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
         try {
             List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
                 "/usr/bin/mysql --help | grep ' Ver ' | sed -r 's/(.*)Ver (.*)?, for(.*)/\\2/'",
-                "netstat -tulpen | grep mysqld | awk '{print $4}' | sed -r 's/.*:([0-9]+)$/\\1/'"
+                "mysql -e \"SHOW GLOBAL VARIABLES LIKE 'PORT';\" | grep 'port' | sed -r 's/port(\\s*)(\\d*)/\\2/'"
             );
 
             String mySQL_DBMS_version = outputs.get(0);

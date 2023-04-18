@@ -77,7 +77,8 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     public Set<String> apply(TTopologyTemplate template) {
         List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(OpenToscaBaseTypes.dockerContainerNodeType.getLocalPart()))
+                && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(
+                    VersionUtils.getNameWithoutVersion(OpenToscaBaseTypes.dockerContainerNodeType.getLocalPart())))
             .toList();
 
         Set<String> discoveredNodeIds = new HashSet<>();
