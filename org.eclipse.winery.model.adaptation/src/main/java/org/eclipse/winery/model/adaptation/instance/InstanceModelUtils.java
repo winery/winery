@@ -39,6 +39,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -57,6 +58,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +75,16 @@ public abstract class InstanceModelUtils {
     public static String getInput = "get_input";
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
+
+    @NotNull
+    public static Set<String> getRequiredInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced, Map<QName, TNodeType> nodeTypes) {
+        Optional<TNodeTemplate> dockerContainer = getDockerContainer(template, nodeIdsToBeReplaced, nodeTypes);
+        if (dockerContainer.isPresent()) {
+            return InstanceModelUtils.getRequiredDockerTTYInputs(template, nodeIdsToBeReplaced);
+        } else {
+            return InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
+        }
+    }
 
     public static Set<String> getRequiredSSHInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
         return getMissingInputs(
@@ -258,7 +270,17 @@ public abstract class InstanceModelUtils {
         Optional<TNodeTemplate> dockerContainer = getDockerContainer(topology, nodeIdsToBeRefined, types);
 
         if (dockerContainer.isPresent()) {
-            // todo
+            Map<String, String> dockerTTYInputs = getDockerTTYInputs(topology, nodeIdsToBeRefined);
+
+            try (DockerClient dockerClient = getDockerClient(dockerTTYInputs.get(dockerEngineURLProp))) {
+                for (String command : commands) {
+                    output.add(
+                        executeDockerCommand(dockerClient, dockerTTYInputs.get(dockerContainerIDProp), command)
+                    );
+                }
+            } catch (InterruptedException | IOException e) {
+                logger.error("Execution was interrupted!", e);
+            }
         } else {
             Session jschSession = createJschSession(topology, nodeIdsToBeRefined);
             for (String command : commands) {
@@ -270,16 +292,14 @@ public abstract class InstanceModelUtils {
         return output;
     }
 
-    public static String executeDockerCommand(String dockerEngineURL, String containerId, String command) throws InterruptedException {
+    public static String executeDockerCommand(DockerClient dockerClient, String containerId, String command) throws InterruptedException {
         logger.info("Executing command on container: {}", command);
-
-        DockerClient dockerClient = getDockerClient(dockerEngineURL);
 
         ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(containerId)
             .withTty(true)
             .withAttachStdout(true)
             .withAttachStderr(true)
-            .withCmd("/bin/bash", "-c", command)
+            .withCmd("/bin/sh", "-c", command)
             .exec();
 
         try (AttachContainerCallback callback = dockerClient.execStartCmd(execCreateCmdResponse.getId())
@@ -330,12 +350,6 @@ public abstract class InstanceModelUtils {
             .replaceAll("STDOUT: ", "\n");
     }
 
-    public static DockerClient getDockerClient(TTopologyTemplate topology, List<String> nodeIdsToBeRefined) {
-        Map<String, String> dockerTTYInputs = getDockerTTYInputs(topology, nodeIdsToBeRefined);
-
-        return getDockerClient(dockerTTYInputs.get(dockerEngineURLProp));
-    }
-
     private static DockerClient getDockerClient(String dockerEngine) {
         DefaultDockerClientConfig.Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder()
             .withDockerHost(dockerEngine)
@@ -355,17 +369,18 @@ public abstract class InstanceModelUtils {
     public static Optional<TNodeTemplate> getDockerContainer(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, Map<QName, ? extends TEntityType> types) {
         return topology.getNodeTemplates().stream()
             .filter(node -> nodeIdsToBeRefined.contains(node.getId()))
-            .filter(node -> {
+            .flatMap(node -> {
                 List<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, node);
                 hostedOnSuccessors.add(node);
 
                 return hostedOnSuccessors.stream()
-                    .anyMatch(host -> ModelUtilities.isOfType(
-                        QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer_w1"),
+                    .filter(host -> ModelUtilities.isOfType(
+                        OpenToscaBaseTypes.dockerContainerNodeType,
                         host.getType(),
                         types)
                     );
             })
+            .distinct()
             .findFirst();
     }
 
@@ -454,7 +469,9 @@ public abstract class InstanceModelUtils {
             String result = new String(frame.getPayload());
 
             // There are linebreaks, we just print everything. Otherwise, works might get ripped apart.
-            System.out.print(result);
+            if (logger.isDebugEnabled()) {
+                System.out.print(result);
+            }
             builder.append(result);
 
             super.onNext(frame);

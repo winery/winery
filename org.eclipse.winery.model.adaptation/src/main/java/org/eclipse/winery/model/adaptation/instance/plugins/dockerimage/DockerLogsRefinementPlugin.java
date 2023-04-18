@@ -30,6 +30,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -80,7 +81,7 @@ public class DockerLogsRefinementPlugin extends InstanceModelRefinementPlugin {
     protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
-        TNodeType dockerContainerType = repository.getElement(new NodeTypeId(DockerImageRefinementPlugin.QNAME_DOCKER_CONTAINER));
+        TNodeType dockerContainerType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.dockerContainerNodeType));
         TNodeTemplate container = ModelUtilities.instantiateNodeTemplate(dockerContainerType);
 
         return Collections.singletonList(

@@ -19,8 +19,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -32,7 +30,6 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -55,49 +52,34 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
         Set<String> discoveredNodeIds = new HashSet<>();
 
         List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
-            "sudo find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
+            "find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
         );
 
         String contextPath = outputs.get(0);
 
-        topology.getNodeTemplates().stream()
-            .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
-            .findFirst()
-            .ifPresent(app -> {
-                discoveredNodeIds.add(app.getId());
-                if (app.getProperties() == null) {
-                    app.setProperties(new TEntityTemplate.WineryKVProperties());
-                }
-                if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                    TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
-                    properties.getKVProperties().put("context", contextPath.trim());
-                }
-            });
+        if (contextPath != null && !contextPath.isBlank() && !contextPath.toLowerCase().contains("no such file or directory")) {
+            topology.getNodeTemplates().stream()
+                .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
+                    && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
+                .findFirst()
+                .ifPresent(app -> {
+                    discoveredNodeIds.add(app.getId());
+                    if (app.getProperties() == null) {
+                        app.setProperties(new TEntityTemplate.WineryKVProperties());
+                    }
+                    if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                        TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
+                        properties.getKVProperties().put("context", contextPath.trim());
+                    }
+                });
+        }
 
         return discoveredNodeIds;
     }
 
     @Override
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        if (nodeIdsToBeReplaced.size() == 1) {
-            TNodeTemplate node = template.getNodeTemplate(nodeIdsToBeReplaced.get(0));
-            Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository()
-                .getQNameToElementMapping(NodeTypeId.class);
-            ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(template, node);
-            Optional<TNodeTemplate> dockerContainer = hostedOnSuccessors.stream()
-                .filter(aSuccessor -> ModelUtilities.isOfType(OpenToscaBaseTypes.dockerContainerNodeType,
-                    Objects.requireNonNull(aSuccessor.getType(), "type is null"),
-                    nodeTypes)).findAny();
-            if (dockerContainer.isPresent()) {
-
-            } else {
-                Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-                return sshInputs.isEmpty() ? null : sshInputs;
-            }
-        }
-        Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return sshInputs.isEmpty() ? null : sshInputs;
+        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override

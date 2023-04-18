@@ -35,6 +35,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -43,7 +44,7 @@ import org.eclipse.winery.topologygraph.matching.ToscaPropertyMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
-    public static final QName QNAME_DOCKER_CONTAINER = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
+
     private static final String PROPERTY_IMAGE_ID = "ImageID";
 
     private final Map<String, ImageRefinementHandler> refinementHandlerByImage = new HashMap<>();
@@ -76,7 +77,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     public Set<String> apply(TTopologyTemplate template) {
         List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(QNAME_DOCKER_CONTAINER.getLocalPart()))
+                && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(OpenToscaBaseTypes.dockerContainerNodeType.getLocalPart()))
             .toList();
 
         Set<String> discoveredNodeIds = new HashSet<>();
@@ -114,7 +115,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
-        TNodeType computeType = repository.getElement(new NodeTypeId(QNAME_DOCKER_CONTAINER));
+        TNodeType computeType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.dockerContainerNodeType));
         TNodeTemplate compute = ModelUtilities.instantiateNodeTemplate(computeType);
 
         LinkedHashMap<String, String> computeKvProperties = new LinkedHashMap<>();

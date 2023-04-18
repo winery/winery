@@ -125,12 +125,13 @@ public class InstanceModelRefinement {
         }
 
         boolean pluginsAreAvailable = true;
+        boolean foundNewInformation = false;
         do {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topologyTemplate);
             List<InstanceModelRefinementPlugin> executablePlugins = this.plugins.stream()
                 .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph, discoveryPluginDescriptors))
                 .collect(Collectors.toList());
-            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
+            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins, foundNewInformation);
 
             if (selectedPlugin != null) {
                 DiscoveryPluginDescriptor discoveryPlugin = discoveryPluginDescriptors.stream()
@@ -145,6 +146,9 @@ public class InstanceModelRefinement {
                         return discoveryPluginDescriptor;
                     });
                 Set<String> pluginDiscoveredNodeIds = selectedPlugin.apply(topologyTemplate);
+
+                foundNewInformation = !pluginDiscoveredNodeIds.isEmpty();
+
                 List<String> discoveredIds = new ArrayList<>();
                 discoveredIds.addAll(pluginDiscoveredNodeIds);
                 discoveredIds.addAll(discoveryPlugin.getDiscoveredIds());

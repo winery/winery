@@ -67,7 +67,7 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
 
         TNodeTemplate mySpecialNode = new TNodeTemplate.Builder("mySpecialNode", OpenToscaBaseTypes.OperatingSystem)
             .build();
-        InstanceModelRefinement modelRefinement = new InstanceModelRefinement((template, plugins) ->
+        InstanceModelRefinement modelRefinement = new InstanceModelRefinement((template, plugins, newDetails) ->
             template.getNodeTemplate("mySpecialNode") != null
                 ? null
                 : new InstanceModelRefinementPlugin("noop") {
@@ -103,7 +103,7 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
 
     @Test
     void refineEmpty() {
-        InstanceModelRefinement modelRefinement = new InstanceModelRefinement((template, plugins) -> null);
+        InstanceModelRefinement modelRefinement = new InstanceModelRefinement((template, plugins, newDetails) -> null);
 
         TTopologyTemplate topologyTemplate = modelRefinement.refine(
             new ServiceTemplateId("http://opentosca.org/servicetemplates", "myCoolNotExistingServiceTemplate", false)
@@ -125,7 +125,7 @@ class InstanceModelRefinementTest extends TestWithGitRepoAndSshServer {
                 private int nextPlugin = 0;
 
                 @Override
-                public InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins) {
+                public InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins, boolean detectedInformation) {
                     if (nextPlugin < pluginOrder.length) {
                         String pluginId = pluginOrder[nextPlugin++];
                         Optional<InstanceModelRefinementPlugin> first = plugins.stream()
