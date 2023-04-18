@@ -41,8 +41,7 @@ import org.slf4j.LoggerFactory;
 public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
     public static final QName mySqlDbQName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DB");
-    public static final String COMMAND_RETRIEVE_DB_NAME = "sudo -i mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema'\n" +
-        ", 'sys');\"";
+    public static final String COMMAND_RETRIEVE_DB_NAME = "mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema', 'sys');\"";
     private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
 
     private final Map<QName, TNodeType> nodeTypes;
@@ -65,7 +64,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
         //  mongosh --quiet --eval "db.getName()"
 
-        if (!mySqlDatabases.isEmpty()) {
+        if (mySqlDatabases != null && !mySqlDatabases.isBlank() && !mySqlDatabases.toLowerCase().contains("no such file or directory")) {
             String[] identifiedDBs = mySqlDatabases.split("\\n");
 
             topology.getNodeTemplates().stream()
@@ -77,8 +76,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
                     if (db.getProperties() == null) {
                         db.setProperties(new TEntityTemplate.WineryKVProperties());
                     }
-                    if (db.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                        TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) db.getProperties();
+                    if (db.getProperties() instanceof TEntityTemplate.WineryKVProperties properties) {
                         properties.getKVProperties().put("DBName", identifiedDBs[0]);
                     }
                 });
@@ -89,8 +87,7 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        Set<String> inputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return inputs.isEmpty() ? null : inputs;
+        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override

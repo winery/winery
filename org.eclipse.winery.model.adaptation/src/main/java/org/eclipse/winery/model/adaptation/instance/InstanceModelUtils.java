@@ -284,7 +284,7 @@ public abstract class InstanceModelUtils {
         } else {
             Session jschSession = createJschSession(topology, nodeIdsToBeRefined);
             for (String command : commands) {
-                output.add(executeCommand(jschSession, command));
+                output.add(executeCommand(jschSession, "sudo " + command));
             }
             jschSession.disconnect();
         }

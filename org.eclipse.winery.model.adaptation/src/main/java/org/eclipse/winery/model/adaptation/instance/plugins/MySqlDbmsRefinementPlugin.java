@@ -62,45 +62,47 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
         Set<String> discoveredNodeIds = new HashSet<>();
         try {
             List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
-                "sudo /usr/bin/mysql --help | grep ' Ver ' | sed -r 's/(.*)Ver (.*)?, for(.*)/\\2/'",
-                "sudo netstat -tulpen | grep mysqld | awk '{print $4}' | sed -r 's/.*:([0-9]+)$/\\1/'"
+                "/usr/bin/mysql --help | grep ' Ver ' | sed -r 's/(.*)Ver (.*)?, for(.*)/\\2/'",
+                "netstat -tulpen | grep mysqld | awk '{print $4}' | sed -r 's/.*:([0-9]+)$/\\1/'"
             );
 
             String mySQL_DBMS_version = outputs.get(0);
             String mySQL_DBMS_port = outputs.get(1);
 
-            topology.getNodeTemplates().stream()
-                .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().contains("DBMS".toLowerCase()))
-                .findFirst()
-                .ifPresent(mySQL -> {
-                    WineryVersion wineryVersion = VersionUtils.getVersion(Objects.requireNonNull(mySQL.getType()).getLocalPart());
-                    String[] versionSplit = mySQL_DBMS_version.split("\\s");
-                    String version = versionSplit[0];
-                    logger.info("Found MySQL DBMS version \"{}\"", version);
+            if (mySQL_DBMS_version != null && !mySQL_DBMS_version.isBlank() && !mySQL_DBMS_version.toLowerCase().contains("no such file or directory")) {
+                topology.getNodeTemplates().stream()
+                    .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
+                        && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().contains("DBMS".toLowerCase()))
+                    .findFirst()
+                    .ifPresent(mySQL -> {
+                        WineryVersion wineryVersion = VersionUtils.getVersion(Objects.requireNonNull(mySQL.getType()).getLocalPart());
+                        String[] versionSplit = mySQL_DBMS_version.split("\\s");
+                        String version = versionSplit[0];
+                        logger.info("Found MySQL DBMS version \"{}\"", version);
 
-                    // Case 15.1 Distrib 10.3.38-MariaDB
-                    if (versionSplit.length > 1) {
-                        String[] split = versionSplit[2].split("-");
-                        version = split[0];
-                        if (wineryVersion.getComponentVersion() == null || !wineryVersion.getComponentVersion().contains(version)) {
-                            mySQL.setType(getClosestVersionMatchOfVersion(namespace, mariaDBName, version, this.nodeTypes));
+                        // Case 15.1 Distrib 10.3.38-MariaDB
+                        if (versionSplit.length > 1) {
+                            String[] split = versionSplit[2].split("-");
+                            version = split[0];
+                            if (wineryVersion.getComponentVersion() == null || !wineryVersion.getComponentVersion().contains(version)) {
+                                mySQL.setType(getClosestVersionMatchOfVersion(namespace, mariaDBName, version, this.nodeTypes));
+                            }
+                        } else {
+                            if (wineryVersion.getComponentVersion() == null || !wineryVersion.getComponentVersion().contains(version)) {
+                                mySQL.setType(getClosestVersionMatchOfVersion(namespace, mySQLName, version, this.nodeTypes));
+                            }
                         }
-                    } else {
-                        if (wineryVersion.getComponentVersion() == null || !wineryVersion.getComponentVersion().contains(version)) {
-                            mySQL.setType(getClosestVersionMatchOfVersion(namespace, mySQLName, version, this.nodeTypes));
+                        if (mySQL.getProperties() == null) {
+                            mySQL.setProperties(new TEntityTemplate.WineryKVProperties());
                         }
-                    }
-                    if (mySQL.getProperties() == null) {
-                        mySQL.setProperties(new TEntityTemplate.WineryKVProperties());
-                    }
-                    if (mySQL.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                        TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) mySQL.getProperties();
-                        properties.getKVProperties().put("DBMSPort", mySQL_DBMS_port);
-                    }
+                        if (mySQL.getProperties() instanceof TEntityTemplate.WineryKVProperties properties
+                        && mySQL_DBMS_port != null && !mySQL_DBMS_port.isBlank() && !mySQL_DBMS_port.toLowerCase().contains("no such file or directory")) {
+                            properties.getKVProperties().put("DBMSPort", mySQL_DBMS_port);
+                        }
 
-                    discoveredNodeIds.add(mySQL.getId());
-                });
+                        discoveredNodeIds.add(mySQL.getId());
+                    });
+            }
         } catch (RuntimeException e) {
             logger.error("Error while retrieving Tomcat information...", e);
         }
@@ -110,8 +112,7 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        Set<String> inputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return inputs.isEmpty() ? null : inputs;
+        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override

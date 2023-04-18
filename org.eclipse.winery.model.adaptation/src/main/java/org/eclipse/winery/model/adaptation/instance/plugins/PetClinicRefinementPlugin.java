@@ -113,8 +113,7 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        Set<String> inputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return inputs.isEmpty() ? null : inputs;
+        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override
