@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -885,23 +886,24 @@ public abstract class ModelUtilities {
 
         return hostedOnSuccessors;
     }
-    
+
     public static ArrayList<TNodeTemplate> getHostedOnPredecessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
         ArrayList<TNodeTemplate> hostedOnPredecessors = new ArrayList<>();
 
-        Optional<TRelationshipTemplate> hostedOn;
+        Stack<TNodeTemplate> unprocessed = new Stack<>();
+        unprocessed.push(nodeTemplate);
 
         do {
-            List<TRelationshipTemplate> incomingRelationshipTemplates = getIncomingRelationshipTemplates(topologyTemplate, nodeTemplate);
+            List<TRelationshipTemplate> incomingRelationshipTemplates = getIncomingRelationshipTemplates(topologyTemplate, unprocessed.pop());
 
-            hostedOn = incomingRelationshipTemplates.stream()
+            incomingRelationshipTemplates.stream()
                 .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
-                .findFirst();
-            if (hostedOn.isPresent()) {
-                nodeTemplate = getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.get().getSourceElement().getRef());
-                hostedOnPredecessors.add(nodeTemplate);
-            }
-        } while (hostedOn.isPresent());
+                .map(hostedOn -> getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.getSourceElement().getRef()))
+                .forEach(node -> {
+                    unprocessed.push(node);
+                    hostedOnPredecessors.add(node);
+                });
+        } while (!unprocessed.isEmpty());
 
         return hostedOnPredecessors;
     }

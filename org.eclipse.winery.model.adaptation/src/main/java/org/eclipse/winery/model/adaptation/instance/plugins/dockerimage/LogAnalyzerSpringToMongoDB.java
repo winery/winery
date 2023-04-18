@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins.dockerimage;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,18 +92,13 @@ public class LogAnalyzerSpringToMongoDB implements DockerLogsAnalyzer {
                     }
                 }
 
+                // Else should never happen as we do not work with other kinds of props
                 if (dbms.getProperties() instanceof TEntityTemplate.WineryKVProperties properties) {
                     String port = properties.getKVProperties().get("Port");
 
                     if (port == null || port.isBlank() || port.startsWith(InstanceModelUtils.getInput)) {
                         properties.getKVProperties().put("Port", dbAddress[1]);
                     }
-                } else {
-                    TEntityTemplate.WineryKVProperties wineryKVProperties = new TEntityTemplate.WineryKVProperties();
-                    LinkedHashMap<String, String> props = new LinkedHashMap<>();
-                    wineryKVProperties.setKVProperties(props);
-                    props.put("Port", dbAddress[1]);
-                    dbms.setProperties(wineryKVProperties);
                 }
 
                 TNodeTemplate db = hostedOnPredecessors.stream()

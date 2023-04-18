@@ -49,12 +49,14 @@ public abstract class InstanceModelRefinementPlugin {
     /**
      * Apply the changes for the nodes identified by the matchToBeRefined.
      *
-     * @param template the topology template to be refined
+     * @param topology the topology to be refined
      * @return the ids of the nodes that have been altered by the plugin
      */
-    public abstract Set<String> apply(TTopologyTemplate template);
+    public abstract Set<String> apply(TTopologyTemplate topology);
 
-    public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced);
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
+        return InstanceModelUtils.getRequiredDockerTTYInputs(template, nodeIdsToBeReplaced);
+    }
 
     public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph, List<DiscoveryPluginDescriptor> discoveryPluginDescriptors) {
         List<TTopologyTemplate> detectors = getDetectorGraphs();

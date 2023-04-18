@@ -18,6 +18,8 @@ import javax.xml.namespace.QName;
 
 public class OpenToscaBaseTypes {
 
+    public static final String OT_Namespace = "{http://opentosca.org/nodetypes}";
+
     // region ********** base elements **********
     public static final QName virtualMachineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM");
     public static final QName DockerEngineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}DockerEngine");

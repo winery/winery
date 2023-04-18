@@ -62,8 +62,8 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
-        List<TNodeTemplate> nodesToRefineByAmi = template.getNodeTemplates().stream()
+    public Set<String> apply(TTopologyTemplate topology) {
+        List<TNodeTemplate> nodesToRefineByAmi = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId()) && Objects.equals(node.getType(),
                 COMPUTE_QNAME))
             .collect(Collectors.toList());
@@ -86,9 +86,7 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> determineAdditionalInputs(
-        TTopologyTemplate template,
-        ArrayList<String> nodeIdsToBeReplaced) {
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
         return null;
     }
 

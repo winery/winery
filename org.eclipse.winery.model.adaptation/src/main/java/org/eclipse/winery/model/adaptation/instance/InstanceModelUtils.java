@@ -64,15 +64,18 @@ import org.slf4j.LoggerFactory;
 
 public abstract class InstanceModelUtils {
 
-    public static String vmUser = "VMUserName";
-    public static String vmPrivateKey = "VMPrivateKey";
-    public static String vmIP = "VMIP";
-    public static String vmSshPort = "VMSSHPort";
+    public static final String vmUser = "VMUserName";
+    public static final String vmPrivateKey = "VMPrivateKey";
+    public static final String vmIP = "VMIP";
+    public static final String vmSshPort = "VMSSHPort";
 
-    public static String dockerContainerIDProp = "ContainerID";
-    public static String dockerEngineURLProp = "DockerEngineURL";
+    public static final String dockerContainerIDProp = "ContainerID";
+    public static final String dockerEngineURLProp = "DockerEngineURL";
 
-    public static String getInput = "get_input";
+    public static final String getInput = "get_input";
+
+    public static final String stateProp = "State";
+    public static final String stateRunning = "Running";
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceModelUtils.class);
 
@@ -396,20 +399,28 @@ public abstract class InstanceModelUtils {
 
         TNodeType nodeType = repo.getElement(new NodeTypeId(requiredType));
         TNodeTemplate nodeTempalte = ModelUtilities.instantiateNodeTemplate(nodeType);
+        setStateRunning(nodeTempalte);
+
         if (springWebApp.isPresent()) {
             nodeTempalte = springWebApp.get();
         } else {
-            TRelationshipTemplate relationshipTemplate = ModelUtilities.instantiateRelationshipTemplate(
-                repo.getElement(new RelationshipTypeId(ToscaBaseTypes.hostedOnRelationshipType)),
-                nodeTempalte,
-                containerNode
-            );
-            nodeTempalte.setX(containerNode.getX());
-            nodeTempalte.setY(String.valueOf(Integer.parseInt(containerNode.getY()) - 160));
-            topology.addNodeTemplate(nodeTempalte);
-            topology.addRelationshipTemplate(relationshipTemplate);
+            addNodeAsHostedOnSuccessor(topology, containerNode, nodeTempalte);
         }
         return nodeTempalte;
+    }
+
+    public static void addNodeAsHostedOnSuccessor(TTopologyTemplate topology, TNodeTemplate host, TNodeTemplate node) {
+        TRelationshipTemplate relationshipTemplate = ModelUtilities.instantiateRelationshipTemplate(
+                RepositoryFactory.getRepository().getElement(
+                        new RelationshipTypeId(ToscaBaseTypes.hostedOnRelationshipType)
+                ),
+                node,
+                host
+        );
+        node.setX(host.getX());
+        node.setY(String.valueOf(Integer.parseInt(host.getY()) - 160));
+        topology.addNodeTemplate(node);
+        topology.addRelationshipTemplate(relationshipTemplate);
     }
 
     /**
@@ -453,6 +464,17 @@ public abstract class InstanceModelUtils {
         }
 
         return closestMatchToGivenVersion;
+    }
+
+    public static void setStateRunning(TNodeTemplate nodeTemplate) {
+        TEntityTemplate.Properties dockerEngineProps = nodeTemplate.getProperties();
+        if (dockerEngineProps == null) {
+            dockerEngineProps = new TEntityTemplate.WineryKVProperties();
+            nodeTemplate.setProperties(dockerEngineProps);
+        }
+        if (dockerEngineProps instanceof TEntityTemplate.WineryKVProperties props) {
+            props.getKVProperties().put(stateProp, stateRunning);
+        }
     }
 
     public static class AttachContainerCallback extends ResultCallback.Adapter<Frame> {

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -26,10 +27,14 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -57,29 +62,53 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
 
         String contextPath = outputs.get(0);
 
+        Optional<TNodeTemplate> webAppExsits = topology.getNodeTemplates().stream()
+            .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
+                && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
+            .findFirst();
+
         if (contextPath != null && !contextPath.isBlank() && !contextPath.toLowerCase().contains("no such file or directory")) {
-            topology.getNodeTemplates().stream()
-                .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                    && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
-                .findFirst()
-                .ifPresent(app -> {
-                    discoveredNodeIds.add(app.getId());
-                    if (app.getProperties() == null) {
-                        app.setProperties(new TEntityTemplate.WineryKVProperties());
-                    }
-                    if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                        TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
-                        properties.getKVProperties().put("context", contextPath.trim());
-                    }
-                });
+            webAppExsits.ifPresent(app -> {
+                discoveredNodeIds.add(app.getId());
+                if (app.getProperties() == null) {
+                    app.setProperties(new TEntityTemplate.WineryKVProperties());
+                }
+                if (app.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
+                    TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) app.getProperties();
+                    properties.getKVProperties().put("context", contextPath.trim());
+                }
+            });
+        }
+
+        if (webAppExsits.isPresent()) {
+            TNodeTemplate webApp = webAppExsits.get();
+
+            ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, webApp);
+            if (hostedOnSuccessors.stream()
+                .noneMatch(node -> node.getType().getLocalPart().toLowerCase().startsWith("java_"))) {
+                hostedOnSuccessors.stream()
+                    .filter(node ->
+                        ModelUtilities.isOfType(OpenToscaBaseTypes.dockerContainerNodeType, node.getType(), this.nodeTypes) ||
+                            ModelUtilities.isOfType(ToscaBaseTypes.compute, node.getType(), this.nodeTypes)
+                    ).findFirst()
+                    .flatMap(tNodeTemplate ->
+                        ModelUtilities.getHostedOnPredecessors(topology, tNodeTemplate)
+                            .stream()
+                            .filter(node -> node.getType().getLocalPart().toLowerCase().startsWith("java_"))
+                            .findFirst()
+                    ).ifPresent(javaNode -> {
+                        TRelationshipTemplate relationshipTemplate = ModelUtilities.instantiateRelationshipTemplate(
+                            RepositoryFactory.getRepository().getElement(new RelationshipTypeId(ToscaBaseTypes.dependsOnRelationshipType)),
+                            webApp,
+                            javaNode
+                        );
+                        topology.addRelationshipTemplate(relationshipTemplate);
+                        discoveredNodeIds.add(webApp.getId());
+                    });
+            }
         }
 
         return discoveredNodeIds;
-    }
-
-    @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override

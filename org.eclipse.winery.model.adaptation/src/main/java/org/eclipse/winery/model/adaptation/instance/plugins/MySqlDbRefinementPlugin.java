@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -83,11 +82,6 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
         }
 
         return discoveredNodeIds;
-    }
-
-    @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override

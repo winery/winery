@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins.dockerimage;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -51,17 +50,17 @@ public class DockerLogsRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
 
-        Optional<TNodeTemplate> dockerContainer = InstanceModelUtils.getDockerContainer(template, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes);
+        Optional<TNodeTemplate> dockerContainer = InstanceModelUtils.getDockerContainer(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes);
         if (dockerContainer.isPresent()) {
             TNodeTemplate dockerNodeTemplate = dockerContainer.get();
 
-            String dockerLogs = InstanceModelUtils.getDockerLogs(template, this.matchToBeRefined.nodeIdsToBeReplaced);
+            String dockerLogs = InstanceModelUtils.getDockerLogs(topology, this.matchToBeRefined.nodeIdsToBeReplaced);
 
             for (DockerLogsAnalyzer logsAnalyzer : this.logsAnalyzers) {
-                if (logsAnalyzer.analyzeLog(dockerLogs, template, this.matchToBeRefined.nodeIdsToBeReplaced,
+                if (logsAnalyzer.analyzeLog(dockerLogs, topology, this.matchToBeRefined.nodeIdsToBeReplaced,
                     dockerNodeTemplate.getId(), discoveredNodeIds)
                 ) {
                     discoveredNodeIds.add(dockerNodeTemplate.getId());
@@ -70,11 +69,6 @@ public class DockerLogsRefinementPlugin extends InstanceModelRefinementPlugin {
         }
 
         return discoveredNodeIds;
-    }
-
-    @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        return InstanceModelUtils.getRequiredDockerTTYInputs(template, nodeIdsToBeReplaced);
     }
 
     @Override

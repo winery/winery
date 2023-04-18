@@ -55,13 +55,9 @@ public class LogAnalyzerSpring implements DockerLogsAnalyzer {
                 SpringWebAppRefinementPlugin.springWebApp, this.nodeTypes);
 
             discoveredNodeIds.add(webApp.getId());
-            TEntityTemplate.Properties properties = webApp.getProperties();
-            if (properties == null) {
-                properties = new TEntityTemplate.WineryKVProperties();
-                webApp.setProperties(properties);
-            }
+            InstanceModelUtils.setStateRunning(webApp);
 
-            if (properties instanceof TEntityTemplate.WineryKVProperties props) {
+            if (webApp.getProperties() instanceof TEntityTemplate.WineryKVProperties props) {
                 props.getKVProperties()
                     .put("springVersion", springVersion);
             }

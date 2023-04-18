@@ -74,8 +74,8 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
-        List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
+    public Set<String> apply(TTopologyTemplate topology) {
+        List<TNodeTemplate> nodesToRefineByImage = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(
                     VersionUtils.getNameWithoutVersion(OpenToscaBaseTypes.dockerContainerNodeType.getLocalPart())))
@@ -97,7 +97,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
 
             if (imageId.isPresent() && imageRefinementHandler.isPresent()) {
                 Set<String> handlerDiscoveredNodeIds = imageRefinementHandler.get()
-                    .handleNode(curNode, template, imageId.get());
+                    .handleNode(curNode, topology, imageId.get());
                 discoveredNodeIds.addAll(handlerDiscoveredNodeIds);
             }
         }
@@ -106,9 +106,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> determineAdditionalInputs(
-        TTopologyTemplate template,
-        ArrayList<String> nodeIdsToBeReplaced) {
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
         return null;
     }
 

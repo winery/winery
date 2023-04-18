@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.adaptation.instance.plugins.Ec2AmiRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.JavaRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbmsRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin;
@@ -74,7 +75,8 @@ public class InstanceModelRefinement {
             new SpringWebAppRefinementPlugin(nodeTypes),
             new Ec2AmiRefinementPlugin(nodeTypes),
             new DockerImageRefinementPlugin(nodeTypes),
-            new DockerLogsRefinementPlugin(nodeTypes)
+            new DockerLogsRefinementPlugin(nodeTypes),
+            new JavaRefinementPlugin(nodeTypes)
         );
     }
 

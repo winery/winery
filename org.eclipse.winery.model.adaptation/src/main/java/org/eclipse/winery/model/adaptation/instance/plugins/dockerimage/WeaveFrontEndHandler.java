@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -62,6 +63,7 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
 
         TNodeType nodeJsType = repository.getElement(new NodeTypeId(QNAME_NODEJS_10));
         TNodeTemplate nodeJs = ModelUtilities.instantiateNodeTemplate(nodeJsType);
+        InstanceModelUtils.setStateRunning(nodeJs);
 
         topologyTemplate.addNodeTemplate(nodeJs);
         nodeJs.setX(dockerContainer.getX());
@@ -75,6 +77,7 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
         TNodeType nodeAppType = repository.getElement(new NodeTypeId(QNAME_NODE_APP));
         TNodeTemplate nodeApp = ModelUtilities.instantiateNodeTemplate(nodeAppType);
         nodeApp.setName(dockerContainer.getName());
+        InstanceModelUtils.setStateRunning(nodeApp);
 
         topologyTemplate.addNodeTemplate(nodeApp);
         nodeApp.setX(nodeJs.getX());

@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +97,7 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
                             tomcat.setProperties(new TEntityTemplate.WineryKVProperties());
                         }
                         if (tomcat.getProperties() instanceof TEntityTemplate.WineryKVProperties properties
-                        && tomcatPort != null && !tomcatPort.isBlank() && !tomcatPort.toLowerCase().contains("no such file or directory")) {
+                            && tomcatPort != null && !tomcatPort.isBlank() && !tomcatPort.toLowerCase().contains("no such file or directory")) {
                             properties.getKVProperties().put("Port", tomcatPort);
                         }
                     });
@@ -108,11 +107,6 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
         }
 
         return discoveredNodeIds;
-    }
-
-    @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     @Override
