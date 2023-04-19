@@ -26,6 +26,7 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -35,10 +36,6 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
     private static final String IMAGE_ID_WEAVE_FRONTEND = "weaveworksdemos/front-end:0.3.12";
     private static final String IMAGE_ID_WEAVE_FRONTEND_ALT = "public.ecr.aws/s9j5x8n9/sock-shop-frontend:0.0.5";
     private static final String IMAGE_ID_WEAVE_FRONTEND_LUKAS = "lharzenetter/sockshopfrontend";
-    private static final QName QNAME_ALPINE_CONTAINER = QName.valueOf(
-        "{https://examples.opentosca.org/edmm/nodetypes}Alpine-Container");
-    private static final QName QNAME_NODEJS_10 = QName.valueOf("{http://opentosca.org/nodetypes}NodeJS_10.0");
-    private static final QName QNAME_NODE_APP = QName.valueOf("{http://opentosca.org/nodetypes}NodeJS-App_10.0");
 
     @Override
     public Set<String> getTargetImages() {
@@ -47,7 +44,7 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
 
     @Override
     public Set<QName> getProhibitedTypes() {
-        return Stream.of(QNAME_ALPINE_CONTAINER).collect(Collectors.toSet());
+        return Stream.of(OpenToscaBaseTypes.alpineContainerNodeType).collect(Collectors.toSet());
     }
 
     @Override
@@ -59,9 +56,9 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
         Set<String> discoveredNodeIds = new HashSet<>();
         IRepository repository = RepositoryFactory.getRepository();
 
-        dockerContainer.setType(QNAME_ALPINE_CONTAINER);
+        dockerContainer.setType(OpenToscaBaseTypes.alpineContainerNodeType);
 
-        TNodeType nodeJsType = repository.getElement(new NodeTypeId(QNAME_NODEJS_10));
+        TNodeType nodeJsType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.nodeJS));
         TNodeTemplate nodeJs = ModelUtilities.instantiateNodeTemplate(nodeJsType);
         InstanceModelUtils.setStateRunning(nodeJs);
 
@@ -74,7 +71,7 @@ public class WeaveFrontEndHandler implements ImageRefinementHandler {
             ToscaBaseTypes.hostedOnRelationshipType,
             topologyTemplate);
 
-        TNodeType nodeAppType = repository.getElement(new NodeTypeId(QNAME_NODE_APP));
+        TNodeType nodeAppType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.nodeJSApp));
         TNodeTemplate nodeApp = ModelUtilities.instantiateNodeTemplate(nodeAppType);
         nodeApp.setName(dockerContainer.getName());
         InstanceModelUtils.setStateRunning(nodeApp);

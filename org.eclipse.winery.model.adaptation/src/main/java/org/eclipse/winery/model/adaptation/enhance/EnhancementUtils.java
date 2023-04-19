@@ -293,9 +293,9 @@ public class EnhancementUtils {
         TEntityType entityType = elements.get(givenType);
         for (TEntityType type : RepositoryFactory.getRepository().getParentsAndChild(entityType)) {
             // Only the direct Children can define features.
-            ModelUtilities.getDirectChildrenOf(type.getQName(), elements).forEach((qName, t) -> {
-                if (Objects.nonNull(t.getTags())) {
-                    List<TTag> list = t.getTags();
+            ModelUtilities.getDirectChildrenOf(type.getQName(), elements).forEach((qName, nodeType) -> {
+                if (Objects.nonNull(nodeType.getTags())) {
+                    List<TTag> list = nodeType.getTags();
 
                     // To enable the usage of "technology" and "technologies", we only check for "technolog"
                     String supportedDeploymentTechnologies = list.stream()
