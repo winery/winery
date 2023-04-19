@@ -119,7 +119,7 @@ public class PatternAtlasConsumer {
             JsonNode root = new ObjectMapper().readTree(jsonResponse);
             JsonNode patterns = root.get("_embedded").get("patternModels");
             List<Pattern> patternList = new ArrayList<>(patterns.size());
-            LOGGER.info("Number of Pattern languages: {}", patterns.size());
+            LOGGER.info("Found {} patterns in pattern language \"{}\"", patterns.size(), patternLanguage.name);
 
             for (JsonNode patternNode : patterns) {
                 patternList.add(new Pattern(
@@ -232,7 +232,7 @@ public class PatternAtlasConsumer {
             try {
                 this.iconURL = new URL(iconURL);
             } catch (MalformedURLException exception) {
-                LOGGER.info("For the pattern {} of pattern language {}, no icon was found.", name, patternLanguage.name);
+                LOGGER.info("\tNo icon was found for the pattern \"{}\" of pattern language \"{}\".", name, patternLanguage.name);
             }
             this.namespace = patternLanguage.uri.toString();
             this.patternLanguageId = patternLanguage.id;
