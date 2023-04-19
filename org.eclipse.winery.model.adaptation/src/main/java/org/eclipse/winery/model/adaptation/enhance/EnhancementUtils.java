@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -385,7 +386,7 @@ public class EnhancementUtils {
             if (!featureNames.toString().isEmpty()) {
                 featureNames.append("-");
             }
-            featureNames.append(featureName.replaceAll("\\s", "_"));
+            featureNames.append(featureName.replaceAll("\\s", "-"));
         });
 
         // merge type
@@ -460,7 +461,19 @@ public class EnhancementUtils {
 
             // merge Interfaces
             if (Objects.nonNull(nodeType.getInterfaces()) && !nodeType.getInterfaces().isEmpty()) {
-                baseInterfaces.addAll(nodeType.getInterfaces());
+                for (TInterface anInterface : nodeType.getInterfaces()) {
+                    Optional<TInterface> existingInterface = baseInterfaces.stream()
+                        .filter(iface -> anInterface.getName().equals(iface.getName()))
+                        .findFirst();
+                    if (existingInterface.isPresent()) {
+                        TInterface tInterface = existingInterface.get();
+                        anInterface.getOperations().stream()
+                            .filter(anOp -> tInterface.getOperations().stream().noneMatch(op -> op.getName().equals(anOp.getName())))
+                            .forEach(anOp -> tInterface.getOperations().add(anOp));
+                    } else {
+                        baseInterfaces.add(anInterface);
+                    }
+                }
             }
 
             // merge implementations
