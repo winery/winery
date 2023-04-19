@@ -52,13 +52,10 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
 
     private final Map<String, QName> typeByAmi = new HashMap<>();
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public Ec2AmiRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("ec2ami");
+        super("ec2ami", nodeTypes);
         typeByAmi.put("ami-0af107682aaa86bd0", UBUNTU_20_04_QNAME);
         typeByAmi.put("ami-00105f70a3660f2ae", UBUNTU_18_04_QNAME);
-        this.nodeTypes = nodeTypes;
     }
 
     @Override

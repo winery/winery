@@ -50,11 +50,8 @@ public class TomcatRefinementPlugin extends InstanceModelRefinementPlugin {
     private static final QName tomcat8QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_8-w1");
     private static final QName tomcat9QName = QName.valueOf("{http://opentosca.org/nodetypes}Tomcat_9-w1");
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public TomcatRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("Tomcat");
-        this.nodeTypes = nodeTypes;
+        super("Tomcat", nodeTypes);
     }
 
     @Override

@@ -37,11 +37,9 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 public class DockerLogsRefinementPlugin extends InstanceModelRefinementPlugin {
 
     private List<DockerLogsAnalyzer> logsAnalyzers;
-    private final Map<QName, TNodeType> nodeTypes;
 
     public DockerLogsRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("DockerLogsRefinement");
-        this.nodeTypes = nodeTypes;
+        super("DockerLogsRefinement", nodeTypes);
         this.logsAnalyzers = List.of(
             // leave in this order!
             new LogAnalyzerSpring(nodeTypes),

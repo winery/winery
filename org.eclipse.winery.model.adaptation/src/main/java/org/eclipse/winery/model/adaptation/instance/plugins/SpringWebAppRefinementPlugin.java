@@ -45,11 +45,8 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
 
     public static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public SpringWebAppRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("SpringWebApplication");
-        this.nodeTypes = nodeTypes;
+        super("SpringWebApplication", nodeTypes);
     }
 
     @Override

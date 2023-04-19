@@ -43,11 +43,8 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
     public static final String COMMAND_RETRIEVE_DB_NAME = "mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema', 'sys');\"";
     private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public MySqlDbRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("MySQL-DB");
-        this.nodeTypes = nodeTypes;
+        super("MySQL-DB", nodeTypes);
     }
 
     @Override

@@ -49,11 +49,8 @@ public class MySqlDbmsRefinementPlugin extends InstanceModelRefinementPlugin {
     private static final String mySQLName = "MySQL-DBMS";
     private static final String mariaDBName = "MariaDBMS";
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public MySqlDbmsRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("MySQL-DBMS");
-        this.nodeTypes = nodeTypes;
+        super("MySQL-DBMS", nodeTypes);
     }
 
     @Override

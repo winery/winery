@@ -43,11 +43,8 @@ public class PetClinicRefinementPlugin extends InstanceModelRefinementPlugin {
 
     public static final QName petClinic = QName.valueOf("{https://examples.opentosca.org/edmm/nodetypes}Pet_Clinic_w1");
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public PetClinicRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("PetClinic");
-        this.nodeTypes = nodeTypes;
+        super("PetClinic", nodeTypes);
     }
 
     @Override

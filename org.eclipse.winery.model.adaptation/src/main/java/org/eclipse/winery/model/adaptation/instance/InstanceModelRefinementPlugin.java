@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.DiscoveryPluginDescriptor;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -37,12 +40,15 @@ public abstract class InstanceModelRefinementPlugin {
 
     protected RefineableSubgraph matchToBeRefined;
 
+    protected final Map<QName, TNodeType> nodeTypes;
+
     private final ToscaIsomorphismMatcher isomorphismMatcher;
     private final String id;
     private ArrayList<RefineableSubgraph> subGraphs;
 
-    public InstanceModelRefinementPlugin(String id) {
+    public InstanceModelRefinementPlugin(String id, Map<QName, TNodeType> nodeTypes) {
         this.id = id;
+        this.nodeTypes = nodeTypes;
         this.isomorphismMatcher = new ToscaIsomorphismMatcher();
     }
 
@@ -55,7 +61,7 @@ public abstract class InstanceModelRefinementPlugin {
     public abstract Set<String> apply(TTopologyTemplate topology);
 
     public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        return InstanceModelUtils.getRequiredDockerTTYInputs(template, nodeIdsToBeReplaced);
+        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
     }
 
     public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph, List<DiscoveryPluginDescriptor> discoveryPluginDescriptors) {

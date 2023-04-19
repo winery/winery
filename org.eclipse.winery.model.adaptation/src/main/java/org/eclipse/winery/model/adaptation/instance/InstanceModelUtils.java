@@ -135,7 +135,7 @@ public abstract class InstanceModelUtils {
         );
     }
 
-    public static Map<String, String> getRequiredInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, String... props) {
+    private static Map<String, String> getRequiredInputs(TTopologyTemplate topology, List<String> nodeIdsToBeRefined, String... props) {
         Map<String, String> properties = new HashMap<>();
 
         topology.getNodeTemplates().stream()

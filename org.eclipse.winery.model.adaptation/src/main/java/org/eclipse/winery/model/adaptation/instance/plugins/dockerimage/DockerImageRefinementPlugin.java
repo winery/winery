@@ -50,12 +50,8 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     private final Map<String, ImageRefinementHandler> refinementHandlerByImage = new HashMap<>();
     private final Set<QName> prohibitedTypes;
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public DockerImageRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("docker-image");
-
-        this.nodeTypes = nodeTypes;
+        super("docker-image", nodeTypes);
 
         List<ImageRefinementHandler> handlers = Arrays.asList(
             // new MongoDbHandler(),

@@ -39,11 +39,8 @@ import static org.eclipse.winery.model.adaptation.instance.InstanceModelUtils.ge
 
 public class JavaRefinementPlugin extends InstanceModelRefinementPlugin {
 
-    private final Map<QName, TNodeType> nodeTypes;
-
     public JavaRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
-        super("Java");
-        this.nodeTypes = nodeTypes;
+        super("Java", nodeTypes);
     }
 
     @Override
