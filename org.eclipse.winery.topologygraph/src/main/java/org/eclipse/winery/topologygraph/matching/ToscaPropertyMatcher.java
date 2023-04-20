@@ -74,8 +74,8 @@ public class ToscaPropertyMatcher extends ToscaTypeMatcher {
         return detectorProperties.entrySet().stream()
             .allMatch(entry -> {
                 String val = entry.getValue();
-                if (StringUtils.isEmpty(val)) {
-                    return true; // always match if detector value is empty
+                if (StringUtils.isEmpty(val) || val.startsWith("get_input:")) {
+                    return true; // always match if detector value is empty or can be any user input
                 }
                 // Assumption: properties are simple KV Properties
                 String refProp = candidateProperties.get(entry.getKey());

@@ -389,14 +389,19 @@ public class EnhancementUtils {
             featureNames.append(featureName.replaceAll("\\s", "-"));
         });
 
+        // Ensure that we do not run into reference hell and load a new instance that we can change... 
+        TNodeType featureEnrichedNodeType = repository.getType(nodeTemplate);
+
         // merge type
         String namespace = generateNewGeneratedNamespace(nodeTemplate.getType());
-        TNodeType featureEnrichedNodeType = nodeTypes.get(nodeTemplate.getType());
         featureEnrichedNodeType.setTargetNamespace(namespace);
         featureEnrichedNodeType.setName(
             nodeTemplate.getType().getLocalPart() + "-" + nodeTemplate.getId() + "-" + featureNames
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
         );
+        TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
+        derivedFrom.setType(nodeTemplate.getType());
+        featureEnrichedNodeType.setDerivedFrom(derivedFrom);
 
         // prepare Properties
         if (Objects.isNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())) {

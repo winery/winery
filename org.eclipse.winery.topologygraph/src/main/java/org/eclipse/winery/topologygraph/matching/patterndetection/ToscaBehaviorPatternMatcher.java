@@ -72,7 +72,7 @@ public class ToscaBehaviorPatternMatcher extends ToscaPatternMatcher {
     }
 
     private boolean propertyValuesCompatible(String detectorPropValue, String candidatePropValue) {
-        return (detectorPropValue == null || detectorPropValue.isEmpty())
+        return detectorPropValue == null || detectorPropValue.isEmpty() || detectorPropValue.startsWith("get_input:")
             || detectorPropValue.equalsIgnoreCase(candidatePropValue)
             || (detectorPropValue.equals("*") && (candidatePropValue != null && !candidatePropValue.isEmpty()));
     }
