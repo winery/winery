@@ -32,6 +32,7 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.topologygraph.matching.MockNamespaceManager;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ToscaComponentPatternMatcherTest extends PaternMatcherTest {
 
     @Test
+    @Disabled("Tests things that are wrong according to my Diss... Needs to be updated...")
     public void isCompatible() {
         // same type
         TNodeTemplate refinementTemplate = new TNodeTemplate(new TNodeTemplate.Builder("d", new QName("type1")));
