@@ -12,9 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnDestroy } from '@angular/core';
-import {
-    InstanceModelPlugin, InstanceModelReceiveData, InstanceModelService, SubGraphData
-} from './instanceModel.service';
+import { InstanceModelPlugin, InstanceModelReceiveData, InstanceModelService, SubGraphData } from './instanceModel.service';
 import { PatternRefinementModel } from '../refinement/refinementWebSocket.service';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
@@ -121,6 +119,10 @@ export class InstanceModelComponent implements OnDestroy {
 
     private handleInput(value: InstanceModelReceiveData) {
         this.applicablePlugins = value;
+        if (this.running && !value.foundNewDetails) { // running is only set, when a plugin is executed
+            this.notify.warning('Executing this plugin did not detect new details!');
+        }
+
         this.running = false;
         if (value && value.topologyTemplate) {
             TopologyTemplateUtil.updateTopologyTemplate(this.ngRedux, this.wineryActions, value.topologyTemplate,

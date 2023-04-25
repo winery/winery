@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -36,7 +37,7 @@ public class WeaveCartsHandler implements ImageRefinementHandler {
     private static final String IMAGE_ID_WEAVE_SHIPPING = "weaveworksdemos/shipping:0.4.8";
     private static final QName QNAME_ALPINE_CONTAINER = QName.valueOf(
         "{https://examples.opentosca.org/edmm/nodetypes}Alpine-Container");
-    private static final QName QNAME_JAVA8 = QName.valueOf("{http://opentosca.org/nodetypes}Java8");
+    private static final QName QNAME_JAVA8 = QName.valueOf("{http://opentosca.org/nodetypes}Java_8-w1");
     private static final QName QNAME_SPRING_WEB = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
     @Override
@@ -62,6 +63,7 @@ public class WeaveCartsHandler implements ImageRefinementHandler {
 
         TNodeType javaType = repository.getElement(new NodeTypeId(QNAME_JAVA8));
         TNodeTemplate java = ModelUtilities.instantiateNodeTemplate(javaType);
+        InstanceModelUtils.setStateRunning(java);
 
         topologyTemplate.addNodeTemplate(java);
 
@@ -73,6 +75,7 @@ public class WeaveCartsHandler implements ImageRefinementHandler {
         TNodeType springType = repository.getElement(new NodeTypeId(QNAME_SPRING_WEB));
         TNodeTemplate spring = ModelUtilities.instantiateNodeTemplate(springType);
         spring.setName(dockerContainer.getName());
+        InstanceModelUtils.setStateRunning(spring);
 
         topologyTemplate.addNodeTemplate(spring);
 

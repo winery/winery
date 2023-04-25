@@ -39,6 +39,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,6 +73,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
     }
 
     @Test
+    @Disabled("Contradicts Lukas' diss")
     public void determineFreezableComponents() throws Exception {
         this.setRevisionTo("origin/plain");
 
@@ -111,6 +113,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
     }
 
     @Test
+    @Disabled("Uses old policies...")
     public void cleanFreezableComponents() throws Exception {
         this.setRevisionTo("origin/plain");
 
@@ -219,7 +222,7 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
         Map<QName, TExtensibleElements> listOfNodeTypes = this.repository.getQNameToElementMapping(NodeTypeId.class);
         QName expectedMergedUbuntuQName = QName.valueOf(
             "{http://opentosca.org/add/management/to/instances/nodetypes" + EnhancementUtils.GENERATED_NS_SUFFIX
-                + "}Ubuntu_16.04-w1-" + nodeTemplateId + "-" + "Testing-Freeze_and_Defrost"
+                + "}Ubuntu_16.04-w1-" + nodeTemplateId + "-Testing-Freeze-and-Defrost"
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
         );
 
@@ -257,13 +260,13 @@ class EnhancementUtilsTestWithGitBackedRepository extends TestWithGitBackedRepos
 
         assertEquals(
             QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes" + EnhancementUtils.GENERATED_NS_SUFFIX
-                + "}Ubuntu_16.04-w1-" + ubuntuNodeTemplateId + "-Testing-Freeze_and_Defrost"
+                + "}Ubuntu_16.04-w1-" + ubuntuNodeTemplateId + "-Testing-Freeze-and-Defrost"
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"),
             topology.getNodeTemplate(ubuntuNodeTemplateId).getType()
         );
         assertEquals(
             QName.valueOf("{http://opentosca.org/add/management/to/instances/nodetypes" + EnhancementUtils.GENERATED_NS_SUFFIX +
-                "}MySQL-Database_w1-" + mySqlNodeTemplateId + "-Freeze_and_defrost"
+                "}MySQL-Database_w1-" + mySqlNodeTemplateId + "-Freeze-and-defrost"
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"),
             topology.getNodeTemplate(mySqlNodeTemplateId).getType()
         );

@@ -15,7 +15,7 @@
 package org.eclipse.winery.repository.filebased.management;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -25,15 +25,19 @@ import java.util.List;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
 import org.eclipse.winery.repository.backend.PatternAtlasRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.AbstractFileBasedRepository;
 import org.eclipse.winery.repository.backend.patternAtlas.PatternAtlasConsumer;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PatternAtlasResolver implements IRepositoryResolver {
-    
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatternAtlasResolver.class);
+
     private String patternAtlasApiURL;
     private String patternAtlasUI;
-    
+
     public PatternAtlasResolver(String url, String ui) {
         patternAtlasApiURL = url;
         patternAtlasUI = ui;
@@ -66,16 +70,30 @@ public class PatternAtlasResolver implements IRepositoryResolver {
     }
 
     @Override
-    public PatternAtlasRepository createRepository(File repositoryLocation, String id) throws IOException, GitAPIException, URISyntaxException {
+    public PatternAtlasRepository createRepository(File repositoryLocation, String id) {
         FileBasedRepositoryConfiguration compositeConfiguration = new FileBasedRepositoryConfiguration(Paths.get(repositoryLocation.toString()));
+        AbstractFileBasedRepository repository = RepositoryFactory.createXmlOrYamlRepository(compositeConfiguration, repositoryLocation.toPath(), id);
 
-        PatternAtlasConsumer consumer = PatternAtlasConsumer.getInstance(new URL(this.patternAtlasApiURL));
+        PatternAtlasConsumer consumer;
+        try {
+            consumer = PatternAtlasConsumer.getInstance(new URL(this.patternAtlasApiURL));
+        } catch (URISyntaxException | MalformedURLException e) {
+            LOGGER.error("Invalid PatternAtlas URI provided!");
+            LOGGER.info("Continuing with existing PatternAtlas Repository...");
+            return new PatternAtlasRepository(repository, this.patternAtlasUI);
+        }
+
         List<PatternAtlasConsumer.PatternLanguage> patternLanguages = consumer.getPatternLanguages();
         List<PatternAtlasConsumer.Pattern> patterns = new ArrayList<>();
         for (PatternAtlasConsumer.PatternLanguage language : patternLanguages) {
             List<PatternAtlasConsumer.Pattern> patternsOfPatternLanguage = consumer.getPatternsOfPatternLanguage(language);
             patterns.addAll(patternsOfPatternLanguage);
         }
-        return new PatternAtlasRepository(RepositoryFactory.createXmlOrYamlRepository(compositeConfiguration, repositoryLocation.toPath(), id), patternLanguages, patterns, this.patternAtlasUI);
+        return new PatternAtlasRepository(
+            repository,
+            patternLanguages,
+            patterns,
+            this.patternAtlasUI
+        );
     }
 }
