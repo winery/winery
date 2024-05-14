@@ -28,5 +28,4 @@ public class InstanceStateApiData {
     public String toString() {
         return "state: " + this.state;
     }
-
 }

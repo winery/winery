@@ -14,7 +14,7 @@
 
 import { Action } from 'redux';
 import {
-    HighlightNodesAction, ShowSelectedMappingAction, TopologyRendererActions
+    HighlightNodesAction, SelectedNodesAction, ShowSelectedMappingAction, TopologyRendererActions
 } from '../actions/topologyRenderer.actions';
 
 export enum ResearchPlugin {
@@ -25,7 +25,9 @@ export enum ResearchPlugin {
     GROUP_VIEW = 'GROUP_VIEW',
     MNG_PARTICIPANTS = 'MNG_PARTICIPANTS',
     MULTI_PARTICIPANTS = 'MULTI_PARTICIPANTS',
-    INSTANCE_MODEL_REFINEMENT = 'INSTANCE_MODEL_REFINEMENT'
+    INSTANCE_MODEL_REFINEMENT = 'INSTANCE_MODEL_REFINEMENT',
+    PLACEHOLDER_SUBSTITUTION = 'PLACEHOLDER_SUBSTITUTION',
+    SPLIT_MATCH = 'SPLIT_MATCH'
 }
 
 export interface TopologyRendererState {
@@ -72,6 +74,7 @@ export interface TopologyRendererState {
     };
     activeResearchPlugin: ResearchPlugin;
     nodesToSelect?: string[];
+    selectedNodes?: string[];
 
     mappingType?: string;
 }
@@ -123,6 +126,7 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
  */
 export const TopologyRendererReducer =
     function (lastState: TopologyRendererState = INITIAL_TOPOLOGY_RENDERER_STATE, action: Action): TopologyRendererState {
+
         switch (action.type) {
             // disables all research plugins globally
             case TopologyRendererActions.DISABLE_RESEARCH_PLUGIN:
@@ -140,6 +144,8 @@ export const TopologyRendererReducer =
                         refineTopologyButton: false,
                         refineTopologyWithTestsButton: false,
                         detectPatternsButton: false,
+                        generatePlaceholderSubs: false,
+                        matchTopologyButton: false,
                     },
                     activeResearchPlugin: undefined
                 };
@@ -329,7 +335,8 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         matchTopologyButton: !lastState.buttonsState.matchTopologyButton
-                    }
+                    },
+                    activeResearchPlugin: !lastState.buttonsState.matchTopologyButton ? ResearchPlugin.SPLIT_MATCH : undefined,
                 };
             case TopologyRendererActions.DETECT_PROBLEMS:
                 return {
@@ -407,7 +414,8 @@ export const TopologyRendererReducer =
                     buttonsState: {
                         ...lastState.buttonsState,
                         generatePlaceholderSubs: !lastState.buttonsState.generatePlaceholderSubs
-                    }
+                    },
+                    activeResearchPlugin: ResearchPlugin.PLACEHOLDER_SUBSTITUTION,
                 };
             case TopologyRendererActions.HIGHLIGHT_NODES:
                 const data = <HighlightNodesAction>action;
@@ -418,6 +426,17 @@ export const TopologyRendererReducer =
                     };
                 } else {
                     delete lastState.nodesToSelect;
+                }
+                break;
+            case TopologyRendererActions.SET_SELECTEDNODES:
+                const nodes = <SelectedNodesAction>action;
+                if (nodes.selectedNodes) {
+                    return {
+                        ...lastState,
+                        selectedNodes: nodes.selectedNodes
+                    };
+                } else {
+                    delete lastState.selectedNodes;
                 }
                 break;
             case TopologyRendererActions.DETERMINE_STATEFUL_COMPONENTS:

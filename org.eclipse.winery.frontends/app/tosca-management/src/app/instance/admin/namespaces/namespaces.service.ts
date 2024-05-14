@@ -22,12 +22,10 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 @Injectable()
 export class NamespacesService {
 
-    private readonly path: string;
+    private readonly path = '/admin/namespaces';
 
     constructor(private http: HttpClient,
-                private namespaceService: WineryNamespaceSelectorService,
-                private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+                private namespaceService: WineryNamespaceSelectorService) {
     }
 
     getAllNamespaces(): Observable<NamespaceProperties[]> {

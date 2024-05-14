@@ -13,7 +13,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div>
     <div class="table-component-header">
-        <label>{{ title}}</label>
+        <label>{{ title }} <a *ngIf="titleRouterLink" [routerLink]="titleRouterLink">({{titleRouterLinkText}})</a></label>
         <ng-content></ng-content>
         <div *ngIf="!disableFiltering">
             <label>Search:</label>

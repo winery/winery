@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,31 +11,32 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div class="localLoader" [class.hidden]="!loading">
+<div class="localLoader" [class.hidden]="isInitialized()">
     <winery-loader></winery-loader>
 </div>
 
-<div *ngIf="!loading">
+
+<div *ngIf="isInitialized()">
     <div class="radioWrapper" *wineryRepositoryHideOnFeature="configEnum.Yaml">
         <div class="left">
             <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()"
                    [disabled]="!sharedData?.currentVersion?.editable"
-                   [checked]="resourceApiData.selectedValue === propertiesEnum.None">
+                   [checked]="propertiesDefinitions.selectedValue === propertiesEnum.None">
             <label for="nopropdef" class="cursorpointer">(none)</label>
             <br>
             <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
                    [disabled]="!sharedData?.currentVersion?.editable"
-                   [checked]="resourceApiData.selectedValue === propertiesEnum.Element">
+                   [checked]="propertiesDefinitions.selectedValue === propertiesEnum.Element">
             <label for="xsdelementradio" class="cursorpointer">XML element</label>
             <br>
             <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()"
                    [disabled]="!sharedData?.currentVersion?.editable"
-                   [checked]="resourceApiData.selectedValue === propertiesEnum.Type">
+                   [checked]="propertiesDefinitions.selectedValue === propertiesEnum.Type">
             <label for="xsdtyperadio" class="cursorpointer">XML type</label>
             <br>
             <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
                    [disabled]="!sharedData?.currentVersion?.editable"
-                   [checked]="resourceApiData.selectedValue === propertiesEnum.Custom">
+                   [checked]="propertiesDefinitions.selectedValue === propertiesEnum.Custom">
             <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
         </div>
         <div class="right">
@@ -45,23 +46,50 @@
         </div>
     </div>
     <div>
-        <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
-            || resourceApiData.selectedValue === propertiesEnum.Type)">
+
+        <div *ngIf="(propertiesDefinitions.selectedValue === propertiesEnum.Element
+            || propertiesDefinitions.selectedValue === propertiesEnum.Type)">
             <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)"
                        [active]="[activeElement]"></ng-select>
         </div>
 
-        <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
+        <div *ngIf="propertiesDefinitions.selectedValue === propertiesEnum.Custom">
             <tabset *wineryRepositoryHideOnFeature="configEnum.Yaml">
-                <tab heading="Properties">
+                <tab heading="Property Definitions">
+                    <br/>
+                    <button (click)="show.inherited = !show.inherited"> {{ show.inherited ? "Hide Inheritance Details" : "Show Inheritance Details" }}</button>
+                    <div [hidden]="!show.inherited">
+                        <br/>
+                        <alert type="info" *ngIf="!this.inheritedPropertiesDefinitions.length">
+                            There is no inheritance.
+                        </alert>
+                        <alert type="info" *ngIf="this.inheritedPropertiesDefinitions.length > 1">
+                            The order of the tables are the same as in the inheritance hierarchy.
+                            The highest table corresponds to the highest parent in the inheritance hierarchy.
+                        </alert>
+                        <ng-container *ngFor="let parent of this.inheritedPropertiesDefinitions.reverse(); index as index">
+                            <hr *ngIf="index !== 0"/>
+                            <winery-dynamic-table
+                                [tableTitle]="'Property Definitions from ' + parent.parent"
+                                [titleRouterLink]="getParentRouterLink(parent.parent)"
+                                [dynamicMetadata]="dynamicTableData"
+                                [data]="parent.properties.winerysPropertiesDefinition.propertyDefinitionKVList"
+                                [avoidDuplicateProperties]="['key']"
+                                [disableButtons]="true"
+                            >
+                            </winery-dynamic-table>
+                        </ng-container>
+                        <hr *ngIf="this.inheritedPropertiesDefinitions"/>
+                    </div>
                     <winery-dynamic-table [dynamicMetadata]="dynamicTableData"
-                                          [tableTitle]="tableTitle"
+                                          tableTitle="Effective Property Definitions (including Inheritance)"
                                           [modalTitle]="modalTitle"
-                                          [data]="this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
+                                          [data]="this.propertiesDefinitions.winerysPropertiesDefinition.propertyDefinitionKVList"
                                           [avoidDuplicateProperties]="['key']"
                                           (entryAdded)="onChangeProperty()"
                                           (entryEdited)="onChangeProperty()"
                                           (entryRemoved)="onChangeProperty()"></winery-dynamic-table>
+
                 </tab>
                 <tab heading="Wrapper">
                     <div class="wrapperTab">
@@ -69,12 +97,12 @@
                         <input id="wrapperName"
                                class="form-control"
                                autocomplete=off
-                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
+                               [(ngModel)]="propertiesDefinitions.winerysPropertiesDefinition.elementName">
                     </div>
-                    <div class="wrapperTabButtom">
+                    <div class="wrapperTabButton">
                         <!-- pattern parameter is required to enable form validation -->
                         <winery-namespace-selector
-                            [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace" pattern="^\S*$"
+                            [(ngModel)]="propertiesDefinitions.winerysPropertiesDefinition.namespace" pattern="^\S*$"
                             [useStartNamespace]="false">
                         </winery-namespace-selector>
                     </div>
@@ -223,6 +251,7 @@
     <winery-modal-footer (onOk)="removeConfirmed();"
                          [modalRef]="confirmDeleteModalRef"
                          [closeButtonLabel]="'Cancel'"
+                         [okButtonClass]="'btn-danger'"
                          [okButtonLabel]="'Delete'">
     </winery-modal-footer>
 </ng-template>

@@ -13,9 +13,7 @@
  ********************************************************************************/
 
 import { Injectable } from '@angular/core';
-import {
-    Entity, EntityType, TArtifactType, TDataType, TPolicyType, TTopologyTemplate, VisualEntityType
-} from '../models/ttopology-template';
+import { Entity, EntityType, TArtifactType, TDataType, TPolicyType, TTopologyTemplate, VisualEntityType } from '../models/ttopology-template';
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { urlElement } from '../models/enums';
@@ -23,7 +21,7 @@ import { ServiceTemplateId } from '../models/serviceTemplateId';
 import { ToscaDiff } from '../models/ToscaDiff';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject, concat, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, concat, forkJoin, of, of as ObservableOf } from 'rxjs';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { ErrorHandlerService } from './error-handler.service';
 import { ThreatCreation } from '../models/threatCreation';
@@ -41,6 +39,14 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { DeploymentTechnology } from '../models/deployment-technology';
+import { QNameApiData } from '../../../../tosca-management/src/app/model/qNameApiData';
+import { InstancePlugin } from '../models/instanceModeling';
+
+interface Tag {
+    id: string;
+    name: string;
+    value: string;
+}
 
 /**
  * Responsible for interchanging data between the app and the server.
@@ -318,11 +324,11 @@ export class BackendService {
     /**
      * Splits the template.
      */
-    splitTopology(): Observable<HttpResponse<string>> {
+    splitTopology(): Observable<QNameApiData> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        return this.http.post(this.configuration.elementUrl + '/split/',
+        return this.http.post<QNameApiData>(this.configuration.elementUrl + '/split/',
             {},
-            { headers: headers, observe: 'response', responseType: 'text' }
+            { headers: headers }
         );
     }
 
@@ -468,6 +474,10 @@ export class BackendService {
         this.initEntityType(entityTypes[8], 'unGroupedNodeTypes');
         this.initEntityType(entityTypes[9], 'versionElements');
 
+        if (templateAndVisuals.length === 4) {
+            this.initTags(templateAndVisuals[3]);
+        }
+
         // handle YAML specifics
         if (this.configurationService.isYaml()) {
             this.initEntityType(entityTypes[10], 'dataTypes');
@@ -526,7 +536,7 @@ export class BackendService {
                 //  that would allow us to change this mess to an Observable[TTopologyTemplate, EntityTypesModel, [ToscaDiff, TTopologyTemplate], boolean]
                 //  or even encapsulate that complication into a single type
                 return forkJoin<any, any, boolean>([
-                    forkJoin<TTopologyTemplate, any[], [ToscaDiff, TTopologyTemplate]>([
+                    forkJoin<TTopologyTemplate, any[], [ToscaDiff, TTopologyTemplate], Tag[]>([
                         this.requestTopologyTemplate(),
                         forkJoin([
                             this.requestNodeVisuals(),
@@ -535,6 +545,7 @@ export class BackendService {
                             this.requestPolicyTypesVisuals(),
                         ]),
                         this.requestTopologyDiff(),
+                        this.requestServiceTemplateTags(),
                     ]),
                     forkJoin<any[]>([
                         this.requestGroupedNodeTypes(),
@@ -841,5 +852,32 @@ export class BackendService {
         if (this.configuration) {
             return this.http.get<Visuals>(this.configuration.parentElementUrl + 'mappingVisuals');
         }
+    }
+
+    private requestServiceTemplateTags() {
+        if (this.configuration && this.configuration.elementPath === 'topologytemplate') {
+            return this.http.get<Tag[]>(this.configuration.parentElementUrl + 'tags');
+        }
+        return ObservableOf<Tag[]>([]);
+    }
+
+    private initTags(tags: Tag[]) {
+        let executedPlugins: InstancePlugin[];
+        let deploymentTechnologies: DeploymentTechnology[];
+
+        if (tags) {
+            for (const tag of tags) {
+                if (tag.name === 'jsonDiscoveryPlugins') {
+                    executedPlugins = [];
+                    executedPlugins.push(...JSON.parse(tag.value));
+                }
+                if (tag.name === 'jsonDeploymentTechnologies') {
+                    deploymentTechnologies = [];
+                    deploymentTechnologies.push(...JSON.parse(tag.value));
+                }
+            }
+        }
+
+        this.ngRedux.dispatch(this.wineryActions.setInstanceInformation(executedPlugins, deploymentTechnologies));
     }
 }

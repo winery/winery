@@ -13,13 +13,10 @@
  *******************************************************************************/
 
 export class Repository {
-    name: string;
-    url: string;
-    branch: string;
 
-    constructor(pName= '', pUrl = '', pBranch = '') {
-        this.name = pName;
-        this.url = pUrl;
-        this.branch = pBranch;
+    constructor(public name= '',
+                public url = '',
+                public branch = '',
+                public id = '') {
     }
 }

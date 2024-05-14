@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Component} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'winery-loader',
@@ -22,4 +22,6 @@ import {Component} from '@angular/core';
     ]
 })
 export class WineryLoaderComponent {
+    @Input()
+    loaderSize = 50;
 }

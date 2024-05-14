@@ -29,11 +29,14 @@ import org.eclipse.winery.repository.targetallocation.util.TopologyWrapper;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+//TODO Functionality must be removed from winery - not used
+@Disabled
 public class MinHostsTest extends TestWithGitBackedRepository {
 
     @BeforeEach

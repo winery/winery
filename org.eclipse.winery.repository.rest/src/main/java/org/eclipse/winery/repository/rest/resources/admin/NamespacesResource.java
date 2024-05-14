@@ -104,7 +104,7 @@ public class NamespacesResource extends AbstractAdminResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<NamespaceProperties> getNamespacesAsJSONlist(
+    public List<NamespaceProperties> getNamespaces(
         @ApiParam(value = "if set all namespaces are returned otherwise the list will be filtered by disallowed namespaces", required = false) @QueryParam("all") String allNamespaces) {
         return this.namespaceManager.getAllNamespaces().entrySet().stream()
             .filter(entry -> {

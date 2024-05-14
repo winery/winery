@@ -30,7 +30,9 @@ import { DeploymentArtifactOrPolicyModalData, ModalVariant, ModalVariantAndState
 import { EntitiesModalService, OpenModalEvent } from './entities-modal.service';
 import { urlElement } from '../../models/enums';
 import { TArtifact, TTopologyTemplate } from '../../models/ttopology-template';
-import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { Subscription } from 'rxjs';
 import { QName } from '../../../../../shared/src/app/model/qName';
 
@@ -432,7 +434,7 @@ export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
             nodeId: this.currentNodeData.id,
             newPolicy: policyToBeSavedToRedux
         };
-        if (this.deploymentArtifactOrPolicyModalData.nodeTemplateId.startsWith('con')) {
+        if (this.deploymentArtifactOrPolicyModalData.nodeTemplateId.includes('con_')) {
             this.ngRedux.dispatch(this.actions.setPolicyForRelationship(actionObject));
         } else {
             this.ngRedux.dispatch(this.actions.setPolicy(actionObject));

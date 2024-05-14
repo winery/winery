@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,4 +32,10 @@ export class InterfacesApiData {
     constructor(name = '') {
         this.name = name;
     }
+}
+
+export class InheritedInterface {
+    parentType: string;
+    is_shown = false;
+    interfaces: InterfacesApiData[] = [];
 }

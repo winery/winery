@@ -155,8 +155,8 @@ export class PaletteComponent implements OnInit, OnDestroy {
             {},
             x,
             y,
-            null,
-            null,
+            [],
+            [],
             null,
             null
         );

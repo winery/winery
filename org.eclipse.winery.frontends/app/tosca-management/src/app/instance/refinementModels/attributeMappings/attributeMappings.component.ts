@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SelectData } from '../../../model/selectData';
 import {
     PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData
-} from '../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+} from '../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { InstanceService } from '../../instance.service';
 import { AttributeMapping, AttributeMappingType } from './attributeMapping';
 

@@ -35,7 +35,8 @@ public class MongoDbHandler implements ImageRefinementHandler {
     private static final String IMAGE_ID_WEAVE_USER_DB = "weaveworksdemos/user-db:0.3.0";
     private static final QName QNAME_MONGO_DOCKER_CONTAINER = QName.valueOf(
         "{https://examples.opentosca.org/edmm/nodetypes}Ubuntu-Container");
-    private static final QName QNAME_MONGO_DB = QName.valueOf("{http://opentosca.org/nodetypes}MongoDB-Server_3.2");
+    private static final QName QNAME_MONGO_DBMS = QName.valueOf("{http://opentosca.org/nodetypes}MongoDB-Server_3.2");
+    private static final QName QNAME_MONGO_DB = QName.valueOf("{http://opentosca.org/nodetypes}MongoDB_3.2");
 
     @Override
     public Set<String> getTargetImages() {
@@ -72,18 +73,26 @@ public class MongoDbHandler implements ImageRefinementHandler {
             dockerContainer.setType(type);
         }
 
-        TNodeType mongoType = repository.getElement(new NodeTypeId(QNAME_MONGO_DB));
-        TNodeTemplate mongo = ModelUtilities.instantiateNodeTemplate(mongoType);
+        TNodeType mongoType = repository.getElement(new NodeTypeId(QNAME_MONGO_DBMS));
+        TNodeTemplate mongoDMBS = ModelUtilities.instantiateNodeTemplate(mongoType);
 
-        topologyTemplate.addNodeTemplate(mongo);
+        TNodeType mongoDBType = repository.getElement(new NodeTypeId(QNAME_MONGO_DB));
+        TNodeTemplate mongoDB = ModelUtilities.instantiateNodeTemplate(mongoDBType);
 
-        ModelUtilities.createRelationshipTemplateAndAddToTopology(mongo,
+        topologyTemplate.addNodeTemplate(mongoDMBS);
+        topologyTemplate.addNodeTemplate(mongoDB);
+
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(mongoDMBS,
             dockerContainer,
+            ToscaBaseTypes.hostedOnRelationshipType,
+            topologyTemplate);
+        ModelUtilities.createRelationshipTemplateAndAddToTopology(mongoDB, 
+            mongoDMBS,
             ToscaBaseTypes.hostedOnRelationshipType,
             topologyTemplate);
 
         discoveredNodeIds.add(dockerContainer.getId());
-        discoveredNodeIds.add(mongo.getId());
+        discoveredNodeIds.add(mongoDMBS.getId());
         return discoveredNodeIds;
     }
 }

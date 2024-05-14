@@ -181,9 +181,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
             StartNamespaces.DefaultStartNamespaceYaml.toString() : StartNamespaces.DefaultStartNamespace.toString();
         let storageValue = localStorage.getItem(StartNamespaces.LocalStorageEntry.toString());
         // reset to default if local cache contains a wrong value for the current config (xml or yaml)
-        if (storageValue && storageValue.length > 0
-            && ((isYaml && storageValue.indexOf('http://') !== -1)
-                || (isXml && storageValue.indexOf('http://') === -1))) {
+        if (storageValue && storageValue.length > 0 && ((isYaml && storageValue.indexOf('http://') !== -1))) {
             storageValue = null;
         }
         this.initNamespaceString = !storageValue || storageValue.length === 0 ? defaultNamespace : storageValue;

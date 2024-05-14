@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -162,6 +162,10 @@ export class KvPropertiesComponent implements OnInit, OnDestroy {
         } finally {
             this.checkForErrors();
         }
+    }
+
+    trackByFn(index, item) {
+        return index;
     }
 
     checkAndSetPattern(key: string, value: string): void {

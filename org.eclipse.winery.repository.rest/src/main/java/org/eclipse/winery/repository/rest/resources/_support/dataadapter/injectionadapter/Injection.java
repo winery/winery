@@ -14,24 +14,38 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter;
 
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.namespace.QName;
 
 //@XmlType
 public class Injection {
-    @XmlElement(name = "NodeID")
+    @XmlElement(name = "nodeID")
     protected String nodeID;
-    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-    protected TTopologyTemplate injectedTopologyFragment;
+    @XmlElement(name = "injection")
+    protected QName injection;
+
+    public Injection(String hostedNodeID, QName injectedTopologyFragment) {
+        this.nodeID = hostedNodeID;
+        this.injection = injectedTopologyFragment;
+    }
 
     public Injection() {
     }
 
-    public Injection(String hostedNodeID, TTopologyTemplate injectedTopologyFragment) {
-        this.nodeID = hostedNodeID;
-        this.injectedTopologyFragment = injectedTopologyFragment;
+    public String getNodeID() {
+        return nodeID;
+    }
+
+    public void setNodeID(String nodeID) {
+        this.nodeID = nodeID;
+    }
+
+    public QName getInjection() {
+        return injection;
+    }
+
+    public void setInjection(QName injection) {
+        this.injection = injection;
     }
 }
 

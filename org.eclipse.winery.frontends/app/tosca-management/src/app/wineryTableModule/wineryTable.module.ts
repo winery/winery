@@ -17,6 +17,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {PaginationModule} from 'ngx-bootstrap';
 import {Ng2TableModule} from 'ng2-table';
 import {WineryTableComponent} from './wineryTable.component';
+import { RouterModule } from '@angular/router';
 
 /**
  * This module must be imported in order to use the {@link WineryTableComponent}.
@@ -28,6 +29,7 @@ import {WineryTableComponent} from './wineryTable.component';
         Ng2TableModule,
         BrowserModule,
         FormsModule,
+        RouterModule,
     ],
     exports: [WineryTableComponent],
     declarations: [WineryTableComponent],

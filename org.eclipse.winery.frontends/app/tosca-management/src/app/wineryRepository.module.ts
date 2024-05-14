@@ -52,6 +52,8 @@ import { WineryFeatureToggleModule } from './wineryFeatureToggleModule/winery-fe
 import { DataTypeModule } from './wineryMainModules/dataTypes/dataType.module';
 import { CheService } from '../../../topologymodeler/src/app/services/che.service';
 import { InterfacesService } from '../../../tosca-management/src/app/instance/sharedComponents/interfaces/interfaces.service';
+import { ResearchObjectService } from './instance/serviceTemplates/researchObject/researchObject.service';
+import { WineryPipesModule } from './wineryPipes/wineryPipes.module';
 
 @NgModule({
     imports: [
@@ -62,6 +64,7 @@ import { InterfacesService } from '../../../tosca-management/src/app/instance/sh
         WineryLoaderModule,
         HttpClientModule,
         WineryNotificationModule.forRoot(),
+        WineryPipesModule,
         SectionModule,
         WineryModalModule,
         TooltipModule.forRoot(),
@@ -98,7 +101,8 @@ import { InterfacesService } from '../../../tosca-management/src/app/instance/sh
         ExistService,
         WineryRepositoryConfigurationService,
         InterfacesService,
-        CheService
+        CheService,
+        ResearchObjectService
     ],
     bootstrap: [WineryRepositoryComponent]
 })

@@ -127,11 +127,6 @@
             <version>${project.version}</version>
             <classifier>classes</classifier>
         </dependency>
-        <!-- <dependency>
-            <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.tools.copybaragenerator</artifactId>
-            <version>${project.version}</version>
-        </dependency> -->
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.tools.deployablecomponents</artifactId>
@@ -149,7 +144,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
+                <version>0.8.8</version>
                 <executions>
                     <execution>
                         <id>report-aggregate</id>

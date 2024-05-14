@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -63,11 +65,14 @@ public class ConstraintClauseKV implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConstraintClauseKV that = (ConstraintClauseKV) o;
+        
+        if (list == null && that.list != null || list != null && that.list == null) return false;
+        
         return Objects.equals(key, that.key) &&
             Objects.equals(value, that.value) &&
-            Objects.equals(list, that.list);
+            ModelUtilities.compareUnorderedNullableLists(list, that.list);
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(key, value, list);

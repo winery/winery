@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,7 +22,7 @@ import { WineryTemplate, WineryTopologyTemplate } from '../../../../model/winery
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../../../../model/enums';
 import { Utils } from '../../../../wineryUtils/utils';
 import { SelectItem } from 'ng2-select';
-import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { SelectData } from '../../../../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
 

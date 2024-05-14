@@ -26,17 +26,23 @@
     </div>
     <div class="form-group">
         <label class="control-label">Abstract</label>
-        <select [(ngModel)]="inheritanceApiData.isAbstract" [disabled]="!sharedData?.currentVersion?.editable" class="form-control" style="width: 100px">
+        <select [(ngModel)]="inheritanceApiData.isAbstract" [disabled]="!sharedData?.currentVersion?.editable"
+                class="form-control" style="width: 100px">
             <option [selected]="inheritanceApiData.isAbstract === 'yes'">yes</option>
             <option [selected]="inheritanceApiData.isAbstract === 'no'">no</option>
         </select>
     </div>
     <div class="form-group">
         <label class="control-label">Final</label>
-        <select [(ngModel)]="inheritanceApiData.isFinal" [disabled]="!sharedData?.currentVersion?.editable" class="form-control" style="width: 100px">
+        <select [(ngModel)]="inheritanceApiData.isFinal" [disabled]="!sharedData?.currentVersion?.editable"
+                class="form-control" style="width: 100px">
             <option [selected]="inheritanceApiData.isFinal === 'yes'">yes</option>
             <option [selected]="inheritanceApiData.isFinal === 'no'">no</option>
         </select>
+    </div>
+
+    <div *ngIf="inheritanceApiData.cyclicInheritance" class="alert alert-danger">
+        There is a cyclic inheritance definition!
     </div>
 
     <label class="control-label">Derived From</label>

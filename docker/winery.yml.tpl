@@ -9,10 +9,12 @@ ui:
     patternRefinement: {{ .Env.WINERY_FEATURE_PATTERN_REFINEMENT }}
     problemDetection: {{ .Env.WINERY_FEATURE_PROBLEM_DETECTION }}
     radon: {{ .Env.WINERY_FEATURE_RADON }}
+    researchObject: {{ .Env.WINERY_FEATURE_RESEARCH_OBJECT }}
     splitting: {{ .Env.WINERY_FEATURE_SPLITTING }}
     testRefinement: {{ .Env.WINERY_FEATURE_TEST_REFINEMENT }}
     edmmModeling: {{ .Env.WINERY_FEATURE_EDMM_MODELING }}
     updateTemplates: {{ .Env.WINERY_FEATURE_UPDATE_TEMPLATES }}
+    licenseEngine: {{ .Env.WINERY_FEATURE_LICENSE_ENGINE }}
   endpoints:
     container: http://{{ .Env.CONTAINER_HOSTNAME }}:{{ .Env.CONTAINER_PORT }}
     workflowmodeler: http://{{ .Env.WORKFLOWMODELER_HOSTNAME }}:{{ .Env.WORKFLOWMODELER_PORT }}/winery-workflowmodeler
@@ -22,6 +24,12 @@ ui:
     edmmTransformationTool: http://{{ .Env.EDMM_TRANSFORMATION_HOSTNAME }}:{{ .Env.EDMM_TRANSFORMATION_PORT }}/plugins/check-model-support
     eclipseChe: {{ .Env.CHE_URL_PROTOCOL }}://{{ .Env.CHE_URL }}
     tops: http://{{ .Env.TOPS_HOSTNAME }}:{{ .Env.TOPS_PORT }}
+    deploymentNormalizationAssistant: http://{{ .Env.DNA_HOSTNAME }}:{{ .Env.DNA_PORT }}/{{ .Env.DNA_CONTEXT }}
+    licenseEngine: http://{{ .Env.LICENSE_ENGINE_HOSTNAME }}:{{ .Env.LICENSE_ENGINE_PORT }}/api/v1
+  darus:
+    server: https://{{ .Env.DARUS_HOSTNAME }}
+    apiToken: {{ .Env.DARUS_API_TOKEN }}
+    dataverse: {{ .Env.DARUS_DATAVERSE }}
 repository:
   provider: {{ .Env.WINERY_REPOSITORY_PROVIDER }}
   repositoryRoot: {{ .Env.WINERY_REPOSITORY_PATH }}

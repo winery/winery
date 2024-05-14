@@ -56,14 +56,19 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.10.1</version>
+            <version>${com.fasterxml.jackson}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${org.glassfish.jxb}</version>
-            <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
@@ -145,7 +150,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
-            <artifactId>org.eclipse.winery.model.selfservice</artifactId>
+            <artifactId>org.eclipse.winery.model.extension</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -251,6 +256,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
             <version>8.2.0</version>
@@ -348,6 +358,7 @@
                     <include>winery.properties</include>
                     <include>logback.xml</include>
                     <include>logback-test.xml</include>
+                    <include>darus-template.json</include>
                 </includes>
             </resource>
         </resources>
@@ -429,12 +440,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>org.eclipse.winery.repository.rest*</excludePackageNames>
-                </configuration>
             </plugin>
             <plugin>
                 <!-- Spring Boot Maven Plugin

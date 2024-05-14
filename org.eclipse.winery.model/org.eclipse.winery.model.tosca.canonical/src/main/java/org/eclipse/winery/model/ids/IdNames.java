@@ -44,6 +44,9 @@ public class IdNames {
      */
     public static final String SELF_SERVICE_PORTAL_FILES = IdNames.SELF_SERVICE_PORTAL + "/" + IdNames.FILES_DIRECTORY;
 
+    public static final String RESEARCH_OBJECT_FILES = "RO-Files";
+    public static final String RESEARCH_OBJECT_METADATA = "RO-Metadata";
+
     public static final String CONSTRAINTTYPES = "constrainttypes";
     public static final String NAMESPACES = "namespaces";
     public static final String EDMM_MAPPINGS = "edmmmappings";

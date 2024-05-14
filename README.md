@@ -29,14 +29,14 @@ The source for the documentation can be found in the [docs](docs) directory.
 
 ## Acknowledgements
 
-The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
-Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the the [PlanQK] project (01MK20005N), and the DFG’s Excellence Initiative project [SimTech] (EXC 2075 - 390740016).
-Additional development has been funded by the Federal Ministry for Economic Affairs and Energy projects [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F), as well as by the [DFG] (Deutsche Forschungsgemeinschaft) projects [SustainLife] (641730) and [ADDCompliance] (636503).
+The initial code contribution has been supported by the Federal Ministry for Economic Affairs and Energy as part of the [CloudCycle] project (01MD11023).
+Current development is supported by the [Federal Ministry for Economic Affairs and Climate Action] as part of the [PlanQK] project (01MK20005N), the [DFG] (Deutsche Forschungsgemeinschaft) projects [ReSUS] (425911815) and [IAC²] (314720630), as well as the DFG’s Excellence Initiative project [SimTech] (EXC 2075 - 390740016).
+Additional development has been funded by the Federal Ministry for Economic Affairs and Energy projects [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F), as well as by the DFG projects [SustainLife] (641730) and [ADDCompliance] (636503).
 Further development is also funded by the European Union’s Horizon 2020 project [RADON] (825040).
 
 ## License
 
-Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
+Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.
@@ -49,7 +49,7 @@ which is available at https://www.apache.org/licenses/LICENSE-2.0.
 SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 
   [CloudCycle]: http://www.cloudcycle.org/en
-  [Federal Ministry for Economic Affairs and Energy]: http://www.bmwi.de/EN
+  [Federal Ministry for Economic Affairs and Climate Action]: http://www.bmwk.de/EN
   [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
   [SmartOrchestra]: http://smartorchestra.de/en
   [SePiA.Pro]: http://projekt-sepiapro.de/en
@@ -59,3 +59,5 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   [DFG]: http://www.dfg.de/en
   [PlanQK]: https://planqk.de
   [SimTech]: https://www.simtech.uni-stuttgart.de/
+  [ReSUS]: https://www.iaas.uni-stuttgart.de/en/projects/resus/
+  [IAC²]: https://www.iaas.uni-stuttgart.de/forschung/projekte/iacc/

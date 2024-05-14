@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,4 +15,10 @@ export class SelectData {
     id: string = null;
     text: string = null;
     children?: SelectData[];
+}
+
+
+export class ArtifactTypeSelectData extends SelectData {
+    name?: string;
+    qName: string;
 }

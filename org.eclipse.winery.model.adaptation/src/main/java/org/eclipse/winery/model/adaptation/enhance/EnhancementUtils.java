@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -32,6 +33,8 @@ import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.DeploymentTechnologyDescriptor;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElementWithTags;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -39,6 +42,7 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.constants.OpenToscaInterfaces;
@@ -51,6 +55,7 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.NamespaceProperties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,16 +77,14 @@ public class EnhancementUtils {
         topology.getNodeTemplates().stream()
             .filter(nodeTemplate -> {
                 TNodeType type = nodeTypes.get(nodeTemplate.getType());
-                if (Objects.nonNull(type.getTags())) {
-                    return type.getTags()
-                        .stream()
-                        .anyMatch(
-                            tag -> "stateful".equalsIgnoreCase(tag.getName())
-                                || "isStateful".equalsIgnoreCase(tag.getName())
-                        );
-                }
-
-                return false;
+                return RepositoryFactory.getRepository().getParentsAndChild(type)
+                    .stream()
+                    .map(TExtensibleElementWithTags::getTags)
+                    .filter(Objects::nonNull)
+                    .flatMap(Collection::stream)
+                    .anyMatch(tag ->
+                        "stateful".equalsIgnoreCase(tag.getName())
+                            || "isStateful".equalsIgnoreCase(tag.getName()));
             })
             // avoid duplicate annotations
             .filter(node -> !ModelUtilities.containsPolicyType(node, OpenToscaBaseTypes.statefulComponentPolicyType))
@@ -158,9 +161,9 @@ public class EnhancementUtils {
     // endregion
 
     /**
-     * This method returns the <em>hostedOn</em> RelationshipTemplate (see {@link ToscaBaseTypes#hostedOnRelationshipType})
-     * of the given NodeTemplate in the given Topology. Note: It is assumed that there is only <b>one</b> hostedOn
-     * relation.
+     * This method returns the <em>hostedOn</em> RelationshipTemplate (see
+     * {@link ToscaBaseTypes#hostedOnRelationshipType}) of the given NodeTemplate in the given Topology. Note: It is
+     * assumed that there is only <b>one</b> hostedOn relation.
      *
      * @param topology The topology in which the given node is in.
      * @param node     The node to return the hostedOn relation.
@@ -229,8 +232,8 @@ public class EnhancementUtils {
                     .contains(node.getId()))
                 .map(DeploymentTechnologyDescriptor::getTechnologyId)
                 .collect(Collectors.toList());
-            Map<TNodeType, String> featureChildren =
-                ModelUtilities.getAvailableFeaturesOfType(node.getType(), nodeTypes, nodeDeploymentTechnologies);
+
+            Map<TNodeType, String> featureChildren = getAvailableFeaturesOfType(node.getType(), nodeTypes, nodeDeploymentTechnologies);
             Map<QName, String> applicableFeatures = new HashMap<>();
 
             // Check requirements
@@ -270,6 +273,50 @@ public class EnhancementUtils {
         });
 
         return availableFeatures;
+    }
+
+    /**
+     * Retrieve the available types of the <code>givenType</code> and filter them according to their implementation
+     * based on the underlying <code>deploymentTechnology</code>. If the filtering by the
+     * <code>deploymentTechnology</code> is not required, <code>null</code> should be passed.
+     *
+     * @param givenType              The QName of the type to be investigated.
+     * @param elements               The set of Types available.
+     * @param deploymentTechnologies The underlying deployment technology, the features must comply to.
+     * @param <T>                    The type of the Elements
+     * @return The set of applicable features.
+     */
+    public static <T extends TEntityType> Map<T, String> getAvailableFeaturesOfType(
+        QName givenType, Map<QName, T> elements,
+        List<String> deploymentTechnologies) {
+        HashMap<T, String> features = new HashMap<>();
+
+        TEntityType entityType = elements.get(givenType);
+        for (TEntityType type : RepositoryFactory.getRepository().getParentsAndChild(entityType)) {
+            // Only the direct Children can define features.
+            ModelUtilities.getDirectChildrenOf(type.getQName(), elements).forEach((qName, nodeType) -> {
+                if (Objects.nonNull(nodeType.getTags())) {
+                    List<TTag> list = nodeType.getTags();
+
+                    // To enable the usage of "technology" and "technologies", we only check for "technolog"
+                    String supportedDeploymentTechnologies = list.stream()
+                        .filter(tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase()))
+                        .map(TTag::getValue)
+                        .collect(
+                            Collectors.joining(" "));
+
+                    if (StringUtils.isBlank(supportedDeploymentTechnologies)
+                        || "*".equals(supportedDeploymentTechnologies) || deploymentTechnologies.stream()
+                        .anyMatch(s -> supportedDeploymentTechnologies.toLowerCase().contains(s.toLowerCase()))) {
+                        list.stream()
+                            .filter(tag -> "feature".equalsIgnoreCase(tag.getName()))
+                            .findFirst()
+                            .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+                    }
+                }
+            });
+        }
+        return features;
     }
 
     /**
@@ -325,8 +372,8 @@ public class EnhancementUtils {
      * respective implementations.
      *
      * @param nodeTemplate The NodeTemplate that is updated with the selected features.
-     * @param featureTypes The list of selected features as generated by {@link #getAvailableFeaturesForTopology(TTopologyTemplate,
-     *                     List}.
+     * @param featureTypes The list of selected features as generated by
+     *                     {@link #getAvailableFeaturesForTopology(TTopologyTemplate, List}.
      * @return The mapping of the generated merged NodeType and the QName of the NodeType it replaces.
      */
     public static TNodeType createFeatureNodeType(TNodeTemplate nodeTemplate, Map<QName, String> featureTypes) {
@@ -339,23 +386,28 @@ public class EnhancementUtils {
             if (!featureNames.toString().isEmpty()) {
                 featureNames.append("-");
             }
-            featureNames.append(featureName.replaceAll("\\s", "_"));
+            featureNames.append(featureName.replaceAll("\\s", "-"));
         });
+
+        // Ensure that we do not run into reference hell and load a new instance that we can change... 
+        TNodeType featureEnrichedNodeType = repository.getType(nodeTemplate);
 
         // merge type
         String namespace = generateNewGeneratedNamespace(nodeTemplate.getType());
-        TNodeType featureEnrichedNodeType = nodeTypes.get(nodeTemplate.getType());
         featureEnrichedNodeType.setTargetNamespace(namespace);
         featureEnrichedNodeType.setName(
             nodeTemplate.getType().getLocalPart() + "-" + nodeTemplate.getId() + "-" + featureNames
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"
         );
+        TEntityType.DerivedFrom derivedFrom = new TEntityType.DerivedFrom();
+        derivedFrom.setType(nodeTemplate.getType());
+        featureEnrichedNodeType.setDerivedFrom(derivedFrom);
 
         // prepare Properties
         if (Objects.isNull(featureEnrichedNodeType.getWinerysPropertiesDefinition())) {
             WinerysPropertiesDefinition props = new WinerysPropertiesDefinition();
             props.setPropertyDefinitions(new ArrayList<>());
-            ModelUtilities.replaceWinerysPropertiesDefinition(featureEnrichedNodeType, props);
+            featureEnrichedNodeType.setProperties(props);
         }
         List<PropertyDefinitionKV> baseProperties = featureEnrichedNodeType.getWinerysPropertiesDefinition()
             .getPropertyDefinitions();
@@ -414,7 +466,19 @@ public class EnhancementUtils {
 
             // merge Interfaces
             if (Objects.nonNull(nodeType.getInterfaces()) && !nodeType.getInterfaces().isEmpty()) {
-                baseInterfaces.addAll(nodeType.getInterfaces());
+                for (TInterface anInterface : nodeType.getInterfaces()) {
+                    Optional<TInterface> existingInterface = baseInterfaces.stream()
+                        .filter(iface -> anInterface.getName().equals(iface.getName()))
+                        .findFirst();
+                    if (existingInterface.isPresent()) {
+                        TInterface tInterface = existingInterface.get();
+                        anInterface.getOperations().stream()
+                            .filter(anOp -> tInterface.getOperations().stream().noneMatch(op -> op.getName().equals(anOp.getName())))
+                            .forEach(anOp -> tInterface.getOperations().add(anOp));
+                    } else {
+                        baseInterfaces.add(anInterface);
+                    }
+                }
             }
 
             // merge implementations

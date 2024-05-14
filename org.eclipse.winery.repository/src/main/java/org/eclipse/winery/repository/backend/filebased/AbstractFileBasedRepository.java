@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -80,25 +81,41 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     private final boolean isLocal;
     private final FileSystem fileSystem;
     private final FileSystemProvider provider;
+    
+    private final String id;
 
     /**
      * @param repositoryRoot Root to the repository
      */
-    public AbstractFileBasedRepository(Path repositoryRoot) {
+    public AbstractFileBasedRepository(Path repositoryRoot, String id) {
         Objects.requireNonNull(repositoryRoot);
 
         this.repositoryRoot = repositoryRoot;
 
         this.fileSystem = this.repositoryRoot.getFileSystem();
         this.provider = this.fileSystem.provider();
+        this.id = id;
 
         this.isLocal = this.repositoryRoot.getFileName().toString().equals(Constants.DEFAULT_LOCAL_REPO_NAME);
+        LOGGER.debug("{} initialized with id \"{}\"",  this.getClass().getSimpleName(), id);
         LOGGER.debug("Repository root: {}", this.repositoryRoot);
+    }
+
+    public AbstractFileBasedRepository(Path repositoryRoot) {
+        this(repositoryRoot, Constants.DEFAULT_LOCAL_REPO_NAME);
     }
 
     public void forceDelete(RepositoryFileReference ref) throws IOException {
         Path relativePath = this.fileSystem.getPath(BackendUtils.getPathInsideRepo(ref));
-        Path fileToDelete = this.makeAbsolute(relativePath);
+        Path pathToDelete = this.makeAbsolute(relativePath);
+        if (Files.isDirectory(pathToDelete)) {
+            FileUtils.forceDelete(pathToDelete);
+        } else {
+            forceDeleteFile(pathToDelete, ref);
+        }
+    }
+
+    public void forceDeleteFile(Path fileToDelete, RepositoryFileReference ref) throws IOException {
         try {
             this.provider.delete(fileToDelete);
             // Quick hack for deletion of the mime type information
@@ -549,14 +566,33 @@ public abstract class AbstractFileBasedRepository implements IRepository {
         Files.write(path, content.getBytes());
     }
 
+    public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        Path path = this.ref2AbsolutePath(ref);
+        return Files.walk(path, depth);
+    }
+
+    public Path move(RepositoryFileReference refSource, RepositoryFileReference refTarget) throws IOException {
+        Path pathSource = this.ref2AbsolutePath(refSource);
+        Path pathTarget = this.ref2AbsolutePath(refTarget);
+        return Files.move(pathSource, pathTarget, StandardCopyOption.ATOMIC_MOVE);
+    }
+
+    public void createDir(RepositoryFileReference ref) throws IOException {
+        Path path = this.ref2AbsolutePath(ref);
+        FileUtils.createDirectory(path);
+    }
+
     public void writeInputStreamToPath(Path targetPath, InputStream inputStream) throws IOException {
         // ensure that parent directory exists
         FileUtils.createDirectory(targetPath.getParent());
 
         try {
-            Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
+             LOGGER.debug("Wrote {} bytes to \"{}\"",
+                Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING),
+                targetPath
+            );
         } catch (IllegalStateException e) {
-            LOGGER.debug("Guessing that stream with length 0 is to be written to a file", e);
+            LOGGER.warn("Guessing that stream with length 0 is to be written to a file", e);
             // copy throws an "java.lang.IllegalStateException: Stream already closed" if the InputStream contains 0 bytes
             // For instance, this case happens if SugarCE-6.4.2.zip.removed is tried to be uploaded
             // We work around the Java7 issue and create an empty file
@@ -608,4 +644,9 @@ public abstract class AbstractFileBasedRepository implements IRepository {
     }
 
     public abstract <T extends DefinitionsChildId> SortedSet<T> getDefinitionsChildIds(Class<T> idClass, boolean omitDevelopmentVersions);
+    
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

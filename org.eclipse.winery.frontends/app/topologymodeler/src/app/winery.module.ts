@@ -37,7 +37,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ExistsService } from './services/exists.service';
 import { EntitiesModalService } from './canvas/entities-modal/entities-modal.service';
 import { ImportTopologyService } from './services/import-topology.service';
-import { SplitMatchTopologyService } from './services/split-match-topology.service';
+import { SplitMatchTopologyService } from './sidebars/splitting-matching/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ProblemDetectionComponent } from './problemDetection/problemDetection.component';
@@ -50,7 +50,7 @@ import { PlaceComponentsService } from './services/placement.service';
 import { MultiParticipantsComponent } from './multi-participants/multi-participants.component';
 import { LiveModelingService } from './services/live-modeling.service';
 import { ContainerService } from './services/container.service';
-import { ModalModule, TooltipModule } from 'ngx-bootstrap';
+import { CollapseModule, ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { LiveModelingActions } from './redux/actions/live-modeling.actions';
@@ -67,7 +67,6 @@ import { GroupViewComponent } from './group-view/group-view.component';
 import { TagService } from '../../../tosca-management/src/app/instance/sharedComponents/tag/tag.service';
 import { WineryDynamicTableModule } from '../../../tosca-management/src/app/wineryDynamicTable/wineryDynamicTable.module';
 import { WineryDuplicateValidatorModule } from '../../../tosca-management/src/app/wineryValidators/wineryDuplicateValidator.module';
-import { CollapseModule } from 'ngx-bootstrap';
 import { GroupViewPoliciesComponent } from './group-view/policies/policies.component';
 import { VersionSliderComponent } from './version-slider/version-slider.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
@@ -84,6 +83,12 @@ import { LoggingService } from './services/logging.service';
 import { LiveModelingSidebarModule } from './live-modeling/live-modeling-sidebar.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarModule } from './navbar/navbar.module';
+import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
+import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderSubstitution/placeholderSubstitutionWebSocket.service';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { MatListModule } from '@angular/material';
+import { SplitMatchTopologyComponent } from './sidebars/splitting-matching/split-match-topology.component';
+import { WineryLoaderModule } from '../../../tosca-management/src/app/wineryLoader/wineryLoader.module';
 
 @NgModule({
     declarations: [
@@ -104,6 +109,8 @@ import { NavbarModule } from './navbar/navbar.module';
         ManageParticipantsComponent,
         ResearchPluginsComponent,
         EdmmReplacementRulesComponent,
+        PlaceholderSubstitutionComponent,
+        SplitMatchTopologyComponent
     ],
     exports: [WineryComponent],
     imports: [
@@ -142,7 +149,10 @@ import { NavbarModule } from './navbar/navbar.module';
         AngularResizedEventModule,
         ModalModule.forRoot(),
         LiveModelingSidebarModule,
-        NavbarModule
+        NavbarModule,
+        CdkAccordionModule,
+        MatListModule,
+        WineryLoaderModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },
@@ -174,7 +184,8 @@ import { NavbarModule } from './navbar/navbar.module';
         ReqCapRelationshipService,
         OverlayService,
         TopologyService,
-        LoggingService
+        LoggingService,
+        PlaceholderSubstitutionWebSocketService
     ],
     bootstrap: [WineryComponent]
 })

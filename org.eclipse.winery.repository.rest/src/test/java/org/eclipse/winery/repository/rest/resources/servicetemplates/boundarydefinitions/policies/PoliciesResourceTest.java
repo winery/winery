@@ -39,7 +39,7 @@ public class PoliciesResourceTest extends AbstractResourceTest {
         this.setRevisionTo("3cad4e459a8af6082097eab8f978c80b4f5a512e");
         // TODO make this more resilient against changes in the serialization of the working model
         //  by obtaining the id of the solitary policy with an additional request
-        this.assertDelete("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/1793006451/");
+        this.assertDelete("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/463939892/");
         this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/policies/", "entitytypes/empty_array.json");
     }
 }

@@ -16,8 +16,9 @@ package org.eclipse.winery.repository.filebased.management;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.IRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -33,5 +34,5 @@ public interface IRepositoryResolver {
 
     String getRepositoryName();
 
-    GitBasedRepository createRepository(File repositoryLocation) throws IOException, GitAPIException;
+    IRepository createRepository(File repositoryLocation, String id) throws IOException, GitAPIException, URISyntaxException;
 }
