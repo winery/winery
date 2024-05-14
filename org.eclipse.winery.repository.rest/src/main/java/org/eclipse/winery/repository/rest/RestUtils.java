@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,7 +19,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.security.AccessControlException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmExporter;
 import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -85,6 +84,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -151,7 +151,7 @@ public class RestUtils {
                 // needed for {@link
                 // returnRepoPath(File, String)}
                 Locale.setDefault(Locale.ENGLISH);
-            } catch (AccessControlException e) {
+            } catch (SecurityException e) {
                 // Happens at Google App Engine
                 LOGGER.error("Could not switch locale to English", e);
             }
@@ -294,8 +294,7 @@ public class RestUtils {
         return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
-    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
-
+    private static EdmmExporter createEdmmConverter(boolean useAbsolutPaths) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -304,8 +303,7 @@ public class RestUtils {
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
-        Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
+        Map<QName, EdmmType> oneToOneMappings = edmmManager.getToscaToEdmmMap();
 
         if (nodeTypes.isEmpty()) {
             throw new IllegalStateException("No Node Types defined!");
@@ -313,15 +311,34 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
+        return new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+    }
 
-        return edmmConverter.transform(element);
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+        EdmmExporter converter = createEdmmConverter(useAbsolutPaths);
+
+        return converter.transform(element);
+    }
+
+    public static EntityGraph getEdmmEntityGraph(TTopologyTemplate topology, boolean useAbsolutePaths) {
+        EdmmExporter converter = createEdmmConverter(useAbsolutePaths);
+
+        return converter.transform(topology, null);
+    }
+
+    public static Response getEdmmModel(TTopologyTemplate element, boolean useAbsolutPaths) {
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
+        return getEdmmModelAsYamlResponse(transform);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
-
         EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
 
+        return getEdmmModelAsYamlResponse(transform);
+    }
+
+    private static Response getEdmmModelAsYamlResponse(EntityGraph transform) {
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.edmm.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +31,7 @@ public class ZipUtility {
      * @param zipFilePath the Path of the zip file to unpack
      * @param destDirPath the Path of the directory where we want the unzipped files, if the direcory exists it will be
      *                    overwritten
-     * @return it return destDirPath
+     * @return it returns the destination file path
      */
     public static Path unpack(Path zipFilePath, Path destDirPath) throws IOException {
         if (Files.exists(destDirPath)) {
@@ -40,18 +39,16 @@ public class ZipUtility {
         }
         Files.createDirectory(destDirPath);
 
-        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath.toFile()));
-
-        ZipEntry zipEntry = zipInputStream.getNextEntry();
-        while (zipEntry != null) {
-
-            Path newFile = destDirPath.resolve(zipEntry.getName());
-            Files.createDirectories(newFile.getParent());
-            Files.copy(zipInputStream, newFile);
-            zipEntry = zipInputStream.getNextEntry();
+        try (ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(zipFilePath.toFile().toPath()))) {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                Path newFile = destDirPath.resolve(zipEntry.getName());
+                Files.createDirectories(newFile.getParent());
+                Files.copy(zipInputStream, newFile);
+                zipEntry = zipInputStream.getNextEntry();
+            }
+            zipInputStream.closeEntry();
         }
-        zipInputStream.closeEntry();
-        zipInputStream.close();
 
         return destDirPath;
     }

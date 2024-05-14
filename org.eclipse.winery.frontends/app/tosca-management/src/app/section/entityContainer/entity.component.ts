@@ -77,12 +77,15 @@ export class EntityComponent implements OnInit {
         }
 
         this.showButtons = this.toscaType !== ToscaTypes.Imports;
-        this.showTargetAllocationButton = !this.configurationService.isYaml() && this.toscaType === ToscaTypes.ServiceTemplate;
+        this.showTargetAllocationButton = !this.configurationService.isYaml() && this.toscaType === ToscaTypes.ServiceTemplate
+            && this.configurationService.configuration.features.cloudAllocation;
 
         if (this.maxWidth === 380) {
             this.containerSizeClass = 'smallContainer';
         } else if (this.maxWidth === 440) {
             this.containerSizeClass = 'middleContainerSize';
+        } else if (!this.data.id) {
+            this.containerSizeClass = 'namespaceContainer';
         } else {
             this.containerSizeClass = 'largeContainer';
         }

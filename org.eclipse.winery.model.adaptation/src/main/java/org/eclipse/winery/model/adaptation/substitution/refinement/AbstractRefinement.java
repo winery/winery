@@ -56,7 +56,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
             .map(repository::getElement)
             .collect(Collectors.toList());
     }
-    
+
     public AbstractRefinement(RefinementChooser refinementChooser, List<OTRefinementModel> refinementModels, String versionAppendix) {
         this.refinementChooser = refinementChooser;
         this.versionAppendix = versionAppendix;
@@ -91,7 +91,7 @@ public abstract class AbstractRefinement extends AbstractSubstitution {
                 Iterator<GraphMapping<ToscaNode, ToscaEdge>> matches = isomorphismMatcher.findMatches(detectorGraph, topologyGraph, matcher);
 
                 matches.forEachRemaining(mapping -> {
-                    RefinementCandidate candidate = new RefinementCandidate(prm, mapping, detectorGraph, id[0]++);
+                    RefinementCandidate candidate = new RefinementCandidate(prm, mapping, detectorGraph, id[0]++, matcher.getWarnings());
                     if (isApplicable(candidate, topology)) {
                         candidates.add(candidate);
                     }

@@ -14,7 +14,10 @@
 
 package org.eclipse.winery.topologygraph.matching;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.HasPolicies;
@@ -28,6 +31,8 @@ import org.eclipse.winery.topologygraph.model.ToscaNode;
 public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
 
     private final NamespaceManager namespaceManager;
+
+    private final Map<String, List<String>> warnings = new HashMap<>();
 
     public ToscaPrmPropertyMatcher(NamespaceManager namespaceManager) {
         this.namespaceManager = namespaceManager;
@@ -56,9 +61,17 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
         // if the detector has no patterns attached but the candidate has --> it's a match
         boolean characterizingPatternsCompatible = true;
 
-        if (detectorEntityElement instanceof HasPolicies && candidateEntityElement instanceof HasPolicies) {
-            HasPolicies detectorElement = (HasPolicies) detectorEntityElement;
-            HasPolicies candidate = (HasPolicies) candidateEntityElement;
+        if (detectorEntityElement instanceof HasPolicies detectorElement
+            && candidateEntityElement instanceof HasPolicies candidate) {
+
+            List<TPolicy> unMatchedBehaviorPatterns = new ArrayList<>();
+            if (candidate.getPolicies() != null) {
+                for (TPolicy policy : candidate.getPolicies()) {
+                    if (this.namespaceManager.isPatternNamespace(policy.getPolicyType().getNamespaceURI())) {
+                        unMatchedBehaviorPatterns.add(policy);
+                    }
+                }
+            }
 
             if (Objects.nonNull(detectorElement.getPolicies()) && Objects.nonNull(candidate.getPolicies())) {
                 List<TPolicy> candidatePolicies = candidate.getPolicies();
@@ -72,7 +85,10 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
 
                                     if (typeEquals && Objects.nonNull(detectorPolicy.getPolicyRef())) {
                                         return Objects.nonNull(candidatePolicy.getPolicyRef())
-                                            && candidatePolicy.getPolicyRef().equals(detectorPolicy.getPolicyRef());
+                                            && candidatePolicy.getPolicyRef().equals(detectorPolicy.getPolicyRef())
+                                            && unMatchedBehaviorPatterns.remove(candidatePolicy);
+                                    } else if (typeEquals) {
+                                        unMatchedBehaviorPatterns.remove(candidatePolicy);
                                     }
 
                                     return typeEquals;
@@ -89,8 +105,21 @@ public class ToscaPrmPropertyMatcher extends ToscaPropertyMatcher {
                         this.namespaceManager.isPatternNamespace(detectorPolicy.getPolicyType().getNamespaceURI())
                     );
             }
+
+            if (!unMatchedBehaviorPatterns.isEmpty()) {
+                unMatchedBehaviorPatterns.forEach(policy -> {
+                    List<String> matchingWarnings = this.warnings.computeIfAbsent(candidateEntityElement.getId(), k -> new ArrayList<>());
+                    matchingWarnings.add("The Behavior Pattern \"" + policy.getPolicyType().getLocalPart() + "\" named \"" + policy.getName()
+                        + "\" was not matched by this PRM and will not be refined!");
+                });
+            }
         }
 
         return characterizingPatternsCompatible;
+    }
+
+    @Override
+    public Map<String, List<String>> getWarnings() {
+        return this.warnings;
     }
 }
