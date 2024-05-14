@@ -104,7 +104,7 @@ jobs:
           mv org.eclipse.winery.repository.rest/target/winery.war winery.war
           ls -al
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: amd64,arm64,arm
       - name: Set variables
