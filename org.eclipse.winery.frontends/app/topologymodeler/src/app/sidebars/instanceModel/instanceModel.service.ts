@@ -31,6 +31,7 @@ export interface InstanceModelPlugin {
 export interface InstanceModelReceiveData {
     topologyTemplate: TTopologyTemplate;
     plugins: InstanceModelPlugin[];
+    foundNewDetails: boolean;
 }
 
 export interface SendData {

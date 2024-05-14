@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -50,7 +51,7 @@ public class PatternAtlasRepository extends AbstractFileBasedRepository {
     private final AbstractFileBasedRepository repository;
 
     public PatternAtlasRepository(AbstractFileBasedRepository repository, List<PatternAtlasConsumer.PatternLanguage> languages,
-                                  List<PatternAtlasConsumer.Pattern> patterns, String patternAtlasUI) throws IOException {
+                                  List<PatternAtlasConsumer.Pattern> patterns, String patternAtlasUI) {
         super(repository.getRepositoryRoot(), repository.getId());
         this.repository = repository;
         this.uiUrl = patternAtlasUI;
@@ -66,10 +67,14 @@ public class PatternAtlasRepository extends AbstractFileBasedRepository {
         cloneMissingPatterns(patterns);
     }
 
+    public PatternAtlasRepository(AbstractFileBasedRepository repository, String patternAtlasUI) {
+        this(repository, Collections.emptyList(), Collections.emptyList(), patternAtlasUI);
+    }
+
     /**
      * Will clone any missing patterns. If no patterns are missing, nothing is done.
      */
-    private void cloneMissingPatterns(List<PatternAtlasConsumer.Pattern> patterns) throws IOException {
+    private void cloneMissingPatterns(List<PatternAtlasConsumer.Pattern> patterns) {
         for (PatternAtlasConsumer.Pattern pattern : patterns) {
             if (pattern.getDeploymentModelingStructurePattern()) {
                 NodeTypeId id = new NodeTypeId(pattern.getNamespace(), pattern.getName(), false);
@@ -86,31 +91,35 @@ public class PatternAtlasRepository extends AbstractFileBasedRepository {
         }
     }
 
-    private void create(EntityTypeId id, PatternAtlasConsumer.Pattern pattern) throws IOException {
-        if (id instanceof NodeTypeId) {
-            this.repository.setElement(id, pattern.toTNodeType());
-        }
-        if (id instanceof PolicyTypeId) {
-            this.repository.setElement(id, pattern.toPolicyType());
-        }
-        RepositoryFileReference readMeReference = new RepositoryFileReference(id, "README.md");
-        this.repository.putContentToFile(readMeReference, generateReadMe(pattern), MediaType.TEXT_PLAIN);
-
-        if (pattern.getIconURL() != null) {
-            RepositoryFileReference logoReference = new RepositoryFileReference(id, Paths.get("appearance"), Filename.FILENAME_BIG_ICON);
-
-            try (CloseableHttpClient client = HttpClients.createDefault()) {
-                try (CloseableHttpResponse execute = client.execute(new HttpGet(pattern.getIconURL().toURI()))) {
-                    LOGGER.debug("Status of downloading File was {}", execute.getEntity());
-                    this.repository.putContentToFile(
-                        logoReference,
-                        execute.getEntity().getContent(),
-                        MediaType.image("png")
-                    );
-                }
-            } catch (URISyntaxException e) {
-                LOGGER.error("Error while downloading Pattern Icon!", e);
+    private void create(EntityTypeId id, PatternAtlasConsumer.Pattern pattern) {
+        try {
+            if (id instanceof NodeTypeId) {
+                this.repository.setElement(id, pattern.toTNodeType());
             }
+            if (id instanceof PolicyTypeId) {
+                this.repository.setElement(id, pattern.toPolicyType());
+            }
+            RepositoryFileReference readMeReference = new RepositoryFileReference(id, "README.md");
+            this.repository.putContentToFile(readMeReference, generateReadMe(pattern), MediaType.TEXT_PLAIN);
+
+            if (pattern.getIconURL() != null) {
+                RepositoryFileReference logoReference = new RepositoryFileReference(id, Paths.get("appearance"), Filename.FILENAME_BIG_ICON);
+
+                try (CloseableHttpClient client = HttpClients.createDefault()) {
+                    try (CloseableHttpResponse execute = client.execute(new HttpGet(pattern.getIconURL().toURI()))) {
+                        LOGGER.debug("Status of downloading File was {}", execute.getEntity());
+                        this.repository.putContentToFile(
+                            logoReference,
+                            execute.getEntity().getContent(),
+                            MediaType.image("png")
+                        );
+                    }
+                } catch (URISyntaxException e) {
+                    LOGGER.error("Error while downloading Pattern Icon!", e);
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error("Error while creating Pattern!", e);
         }
     }
 

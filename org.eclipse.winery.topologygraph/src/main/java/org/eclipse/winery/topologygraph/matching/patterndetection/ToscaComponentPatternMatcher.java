@@ -17,13 +17,8 @@ package org.eclipse.winery.topologygraph.matching.patterndetection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
 import org.eclipse.winery.model.tosca.extensions.OTPermutationMapping;
@@ -51,40 +46,18 @@ public class ToscaComponentPatternMatcher extends ToscaPatternMatcher {
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
         return (super.isCompatible(left, right)
-            || (!isStayingElement(left) && (shareSupertype(left, right) || componentPatternsCompatible(left, right))));
+            || (isNoStayingElement(left) && componentPatternsCompatible(left, right)));
     }
 
     @Override
     public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
         return (super.isCompatible(left, right)
-            || (!isStayingElement(left) && (shareSupertype(left, right) || componentPatternsCompatible(left, right))));
+            || (isNoStayingElement(left) && componentPatternsCompatible(left, right)));
     }
 
-    protected boolean isStayingElement(ToscaEntity detector) {
-        return prm.getStayMappings() != null && prm.getStayMappings().stream()
-            .anyMatch(mapping -> mapping.getDetectorElement().getId().equals(detector.getId()));
-    }
-
-    protected boolean shareSupertype(ToscaEntity left, ToscaEntity right) {
-        if (isLinkedToComponentPattern(left)) {
-            return false;
-        }
-        Set<QName> leftTypes = left.getTypes().stream()
-            .map(TEntityType::getQName)
-            .collect(Collectors.toSet());
-        Set<QName> rightTypes = right.getTypes().stream()
-            .map(TEntityType::getQName)
-            .collect(Collectors.toSet());
-
-        // the elements are compatible if they share a common supertype
-        leftTypes.retainAll(rightTypes);
-        return !leftTypes.isEmpty()
-            && behaviorPatternsCompatible(left, right);
-    }
-
-    protected boolean isLinkedToComponentPattern(ToscaEntity detector) {
-        return prm.getPermutationMappings() != null && prm.getPermutationMappings().stream()
-            .anyMatch(mapping -> mapping.getDetectorElement().getId().equals(detector.getId()));
+    protected boolean isNoStayingElement(ToscaEntity detector) {
+        return prm.getStayMappings() == null || prm.getStayMappings().stream()
+            .noneMatch(mapping -> mapping.getDetectorElement().getId().equals(detector.getId()));
     }
 
     protected boolean componentPatternsCompatible(ToscaEntity left, ToscaEntity right) {
@@ -101,7 +74,7 @@ public class ToscaComponentPatternMatcher extends ToscaPatternMatcher {
         List<OTPermutationMapping> detectorMappings = prm.getPermutationMappings().stream()
             .filter(mapping -> isOneToOne(mapping, prm)
                 && mapping.getDetectorElement().getId().equals(detectorElement.getId()))
-            .collect(Collectors.toList());
+            .toList();
         if (detectorMappings.isEmpty()) {
             return false;
         }
@@ -116,7 +89,7 @@ public class ToscaComponentPatternMatcher extends ToscaPatternMatcher {
                     .filter(mapping -> isOneToOne(mapping, otherPrm)
                         && super.isCompatible(mapping.getDetectorElement(), candidateElement)
                         && mapping.getRefinementElement().getType().equals(refinementElement.getType()))
-                    .collect(Collectors.toList());
+                    .toList();
 
                 if (!matchingDetectorMappings.isEmpty()) {
                     componentPatternCandidates.get(prm).add(new ComponentPatternCandidate(

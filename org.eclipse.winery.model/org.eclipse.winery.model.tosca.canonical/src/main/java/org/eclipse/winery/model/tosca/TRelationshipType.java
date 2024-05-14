@@ -258,8 +258,13 @@ public class TRelationshipType extends TEntityType {
         private ValidTarget validTarget;
         private List<QName> validTargetList;
 
+        @Deprecated
         public Builder(String name) {
             super(name);
+        }
+
+        public Builder(QName id) {
+            super(id);
         }
 
         public Builder(TEntityType entityType) {

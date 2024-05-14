@@ -42,7 +42,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.generators.ia.Generator;
-import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
@@ -272,7 +271,12 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         }
         if (StringUtils.isEmpty(apiData.autoGenerateIA)) {
             // No IA generation
-            return new IAGenerationReport(URI.create(EncodingUtil.URLencode(apiData.artifactName)).toURL());
+
+            if (artifactTemplateId != null) {
+                return new IAGenerationReport(URI.create(RestUtils.getAbsoluteURL(artifactTemplateId)).toURL());
+            }
+
+            return new IAGenerationReport();
         } else {
             LOGGER.debug("\nArtifact API Data: ArtifactName:{},\nArtifactTemplate: {},\n ArtifactTemplateName: {}\n ArtifactType: {},\n InterfaceName: {},\nOperationName: {}", apiData.artifactName, apiData.artifactTemplate, apiData.artifactTemplateName, apiData.artifactType, apiData.interfaceName, apiData.operationName);
             // after everything was created, we fire up the artifact generation
@@ -330,7 +334,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             LOGGER.debug("Could not convert URI to URL", e2);
             throw new MalformedURLException("Could not convert URI to URL");
         }
-        
+
         IAGenerationReport result = new IAGenerationReport();
         String name = this.generateName(typeId, interfaceName);
         Generator gen = Generator.getGenerator(artifactType, tInterface, javaPackage, artifactTemplateFilesUrl, name, workingDir, operation);
@@ -345,7 +349,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
-        
+
         // clean up
         FileUtils.forceDelete(workingDir);
 
@@ -354,13 +358,14 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         result.artifactTemplate = uriInfo.getBaseUri().resolve(Util.getUrlPath(artifactTemplateId)).toURL();
         return result;
     }
-    
+
     private static class IAGenerationReport {
         public String warning = "";
         public URL artifactTemplate;
-        
+
         public IAGenerationReport() {
         }
+
         public IAGenerationReport(URL artifactTemplate) {
             this.artifactTemplate = artifactTemplate;
         }

@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import {
-    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit,
-    QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren
+    AfterViewInit, Component, ElementRef, HostListener, Input, KeyValueDiffers, NgZone, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges,
+    ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { EntityType, TNodeTemplate, TRelationshipTemplate, VisualEntityType } from '../models/ttopology-template';
@@ -53,9 +53,7 @@ import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { ReqCapRelationshipService } from '../services/req-cap-relationship.service';
 import { TPolicy } from '../models/policiesModalData';
 import { ManageTopologyService } from '../services/manage-topology.service';
-import {
-    WineryRepositoryConfigurationService
-} from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { RequirementDefinitionModel } from '../models/requirementDefinitonModel';
 import { CapabilityDefinitionModel } from '../models/capabilityDefinitionModel';
 import { WineryRowData } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.component';
@@ -64,15 +62,11 @@ import { PolicyService } from '../services/policy.service';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { TopologyModelerConfiguration } from '../models/topologyModelerConfiguration';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
-import {
-    AttributeMappingType
-} from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
+import { AttributeMappingType } from '../../../../tosca-management/src/app/instance/refinementModels/attributeMappings/attributeMapping';
 // tslint:disable-next-line:max-line-length
 import { DetailsSidebarState } from '../sidebars/node-details/node-details-sidebar';
 import { KvProperty } from '../../../../tosca-management/src/app/model/keyValueItem';
-import {
-    WineryNamespaceSelectorService
-} from '../../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
+import { WineryNamespaceSelectorService } from '../../../../tosca-management/src/app/wineryNamespaceSelector/wineryNamespaceSelector.service';
 
 @Component({
     selector: 'winery-canvas',
@@ -2472,7 +2466,8 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         if (this.jsPlumbBindConnection === false) {
             this.jsPlumbBindConnection = true;
             this.newJsPlumbInstance.bind('connection', info => {
-                const sourceElement = info.sourceId.substring(0, info.sourceId.indexOf('_E'));
+                // the info-element contains the node's id with an "_Endpoint" suffix, thus parse the actual ID...
+                const sourceElement = info.sourceId.substring(0, info.sourceId.lastIndexOf('_Endpoint'));
                 const currentTypeValid = this.entityTypes.relationshipTypes.some((relType) => relType.qName === this.selectedRelationshipType.qName);
                 const currentSourceIdValid = this.allNodeTemplates.some((node) => node.id === sourceElement);
                 if (sourceElement && currentTypeValid && currentSourceIdValid) {

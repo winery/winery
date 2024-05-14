@@ -1,0 +1,95 @@
+---
+components:
+  MySQL_DBMS:
+    operations:
+      start: C:\tosca-definitions\modeling-repository/artifacttemplates/https%3A%2F%2Fedmm.uni-stuttgart.de%2Fartifacttemplates/MySQL_DBMS-Start/files/start.sh
+      create: C:\tosca-definitions\modeling-repository/artifacttemplates/https%3A%2F%2Fedmm.uni-stuttgart.de%2Fartifacttemplates/MySQL_DBMS-Create/files/create.sh
+    relations:
+      - hosted_on: Compute
+    type: mysql_dbms
+    properties:
+      port: '3306'
+      root_password: petclinic
+      name: dbms
+      version: '8'
+  Compute:
+    type: compute
+    properties:
+      public_key: empty
+      key_name: id_rsa
+      os_family: linux
+      name: ubuntu_db
+      public_address: 193.196.52.76
+      machine_image: ubuntu
+      instance_type: large
+      private_key_path: ~/.ssh/id_rsa
+    artifacts:
+      - provider: C:\tosca-definitions\modeling-repository/artifacttemplates/https%3A%2F%2Fedmm.uni-stuttgart.de%2Fartifacttemplates/Ubuntu-OpenStack-Provider/files/openstack.json
+  MySQL_Database:
+    operations:
+      configure: C:\tosca-definitions\modeling-repository/artifacttemplates/https%3A%2F%2Fedmm.uni-stuttgart.de%2Fartifacttemplates/MySQL_Database-Configure/files/configure.sh
+    relations:
+      - hosted_on: MySQL_DBMS
+    type: mysql_database
+    properties:
+      password: petclinic
+      name: db
+      schema_name: petclinic
+      user: pc
+    artifacts:
+      - sql: C:\tosca-definitions\modeling-repository/artifacttemplates/https%3A%2F%2Fedmm.uni-stuttgart.de%2Fartifacttemplates/Petclinic-Schema/files/schema.sql
+relation_types:
+  depends_on:
+    extends: null
+  hosted_on:
+    extends: depends_on
+multi_id: '12345'
+component_types:
+  compute:
+    extends: base
+    properties:
+      public_key:
+        type: string
+      key_name:
+        type: string
+      os_family:
+        type: string
+      machine_image:
+        type: string
+      instance_type:
+        type: string
+  database:
+    extends: base
+    properties:
+      password:
+        type: string
+      schema_name:
+        type: string
+      user:
+        type: string
+  dbms:
+    extends: software_component
+    properties:
+      port:
+        type: integer
+      root_password:
+        type: string
+  software_component:
+    extends: base
+  mysql_dbms:
+    extends: dbms
+    properties:
+      port:
+        type: integer
+      root_password:
+        type: string
+      version:
+        type: string
+  mysql_database:
+    extends: database
+version: edm_1_0
+orchestration_technology:
+  terraform:
+    - Compute
+    - MySQL_DBMS
+    - MySQL_Database
