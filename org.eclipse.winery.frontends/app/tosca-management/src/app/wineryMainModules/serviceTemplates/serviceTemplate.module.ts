@@ -38,6 +38,7 @@ import { ThreatAssessmentComponent } from '../../instance/serviceTemplates/threa
 import { InputOutputParametersComponent } from '../../instance/serviceTemplates/inputOutputParameters/inputOutputParameters.component';
 import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
 import { ParametersModule } from '../../instance/sharedComponents/parameters/parameters.module';
+import { ResearchObjectModule } from '../../instance/serviceTemplates/researchObject/researchObject.module';
 
 @NgModule({
     imports: [
@@ -62,6 +63,7 @@ import { ParametersModule } from '../../instance/sharedComponents/parameters/par
         WineryLicenseModule,
         WineryDuplicateValidatorModule,
         ParametersModule,
+        ResearchObjectModule,
     ],
     declarations: [
         PlansComponent,

@@ -20,14 +20,15 @@ import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertyRenameComponent } from './instanceHeader/propertyRename/propertyRename.component';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertModule, BsDropdownModule } from 'ngx-bootstrap';
 import { WineryAddVersionModule } from '../wineryVersionModule/wineryVersion.module';
 import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-feature-toggle.module';
 import { AttributesModule } from './sharedComponents/attributes/attributes.module';
 import { InterfaceDefinitionsModule } from './sharedComponents/interfaceDefinitions/interfaceDefinitions.module';
 import { ParametersModule } from './sharedComponents/parameters/parameters.module';
+import { MatDialogModule, MatProgressBarModule } from '@angular/material';
+import { DetectionComponent } from './refinementModels/detection/detection.component';
 
 @NgModule({
     imports: [
@@ -45,12 +46,15 @@ import { ParametersModule } from './sharedComponents/parameters/parameters.modul
         AttributesModule,
         InterfaceDefinitionsModule,
         ParametersModule,
+        MatDialogModule,
+        MatProgressBarModule,
     ],
     exports: [InstanceComponent],
     declarations: [
         InstanceComponent,
         InstanceHeaderComponent,
         PropertyRenameComponent,
+        DetectionComponent
     ],
     providers: [],
 })

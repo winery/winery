@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,8 +18,8 @@ import { ExistService } from '../../../wineryUtils/existService';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesService } from './interfaces.service';
-import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
+import { IAReport, InterfacesService } from './interfaces.service';
+import { InheritedInterface, InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InterfaceParameter } from '../../../model/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
@@ -31,6 +31,8 @@ import { WineryVersion } from '../../../model/wineryVersion';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Interfaces } from './interfaces';
+import { ArtifactTypeSelectData } from '../../../model/selectData';
+import { WineryArtifactService } from '../wineryArtifacts/artifact.service';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -43,25 +45,27 @@ import { Interfaces } from './interfaces';
     ],
 })
 export class InterfacesComponent implements OnInit {
+    _loading = {
 
-    loading = false;
+        getPropertiesDefinitions: false,
+        getInheritedPropertiesDefinitions: false,
+        getMergedPropertiesDefinitions: false,
+    };
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
-
+    inheritedInterfacesData: InheritedInterface[];
     operations: InterfaceOperationApiData[] = null;
     inputParameters: InterfaceParameter[] = null;
     outputParameters: InterfaceParameter[] = null;
     selectedInterface: InterfacesApiData = null;
     selectedOperation: InterfaceOperationApiData = null;
-
     modalTitle: string;
     elementToRemove: string;
     validatorObject: WineryValidatorObject;
     @ViewChild('addIntOpModal') addIntOpModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addElementForm') addElementForm: NgForm;
-
     @ViewChild('generateImplModal') generateImplModal: ModalDirective;
     @ViewChild('itemList') interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
@@ -72,10 +76,12 @@ export class InterfacesComponent implements OnInit {
     implementationNamespace: string = null;
     implementation: GenerateData = new GenerateData();
     artifactTemplate: GenerateData = new GenerateData();
+    artifactTypes: ArtifactTypeSelectData[];
+    modalOpen: boolean;
 
     constructor(private service: InterfacesService, private notify: WineryNotificationService,
                 public sharedData: InstanceService, private existService: ExistService,
-                private route: Router) {
+                private artifactService: WineryArtifactService, private route: Router) {
     }
 
     ngOnInit() {
@@ -84,6 +90,15 @@ export class InterfacesComponent implements OnInit {
                 data => this.handleInterfacesApiData(data),
                 error => this.handleError(error)
             );
+        this.service.getInheritedInterfaces()
+            .subscribe(
+                data => this.handleInheritedInterfaceData(data),
+                error => this.handleError(error)
+            );
+        this.artifactService.getAllArtifactTypes().subscribe(
+            res => this.handleArtifactTypeData(res),
+            error => this.handleError(error)
+        );
         this.toscaType = this.sharedData.toscaComponent.toscaType;
         this.isServiceTemplate = this.toscaType === ToscaTypes.ServiceTemplate;
     }
@@ -193,9 +208,12 @@ export class InterfacesComponent implements OnInit {
     showGenerateImplementationModal(): void {
         this.artifactTemplate.name = this.sharedData.toscaComponent.localNameWithoutVersion
             + '-' + this.sharedData.currentVersion.toString()
-            + '-' + this.selectedInterface.name.replace(/\W/g, '-')
+            + '-' + this.getSelectedInterfaceOrOperationName()
             + '-IA';
-
+        this.artifactTemplate.selectedInterface = this.selectedInterface;
+        if (this.selectedOperation) {
+            this.artifactTemplate.selectedOperation = this.selectedOperation;
+        }
         let artifactTemplateNamespace = this.sharedData.toscaComponent.namespace;
         if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
             artifactTemplateNamespace = this.sharedData.toscaComponent.namespace
@@ -209,15 +227,6 @@ export class InterfacesComponent implements OnInit {
         this.artifactTemplate.toscaType = ToscaTypes.ArtifactTemplate;
 
         this.generateArtifactApiData = new GenerateArtifactApiData();
-        const packageName = this.getPackageNameFromNamespace();
-
-        let javaPackageName = packageName;
-        if (packageName.includes('nodetypes')) {
-            javaPackageName = packageName.replace('nodetypes', 'nodetypeimplementations');
-        } else if (packageName.includes('relationshiptypes')) {
-            javaPackageName = packageName.replace('relationshiptypes', 'relationshiptypeimplementations');
-        }
-        this.generateArtifactApiData.javaPackage = javaPackageName;
 
         this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
@@ -246,7 +255,13 @@ export class InterfacesComponent implements OnInit {
         this.generateArtifactApiData.artifactTemplateName = this.artifactTemplate.name;
         this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
-        // Fix this prevent weired renaming by backend
+        if (this.artifactTemplate.selectedOperation.name === this.removeNSFromName(this.artifactTemplate.selectedInterface.name)) {
+            // Implement whole interface
+            this.generateArtifactApiData.operationName = 'interface';
+        } else {
+            this.generateArtifactApiData.operationName = this.artifactTemplate.selectedOperation.name;
+        }
+        // Fix this prevent weird renaming by backend
         this.generateArtifactApiData.artifactTemplate = null;
         // Save the current interfaces & operations first in order to prevent inconsistencies.
         this.save();
@@ -255,6 +270,7 @@ export class InterfacesComponent implements OnInit {
     // endregion
 
     // region ########## Generate Lifecycle Interface ##########
+
     generateLifecycleInterface(): void {
         const lifecycle = new InterfacesApiData();
         if (this.toscaType === ToscaTypes.RelationshipType && this.route.url.endsWith('/interfaces')) {
@@ -293,6 +309,7 @@ export class InterfacesComponent implements OnInit {
     // endregion
 
     // region ######### Checker ##########
+
     checkImplementationExists(): void {
         if (!this.implementationNamespace.endsWith('/')) {
             this.existService.check(backendBaseURL + '/'
@@ -334,7 +351,6 @@ export class InterfacesComponent implements OnInit {
     }
 
     save() {
-        this.loading = true;
         this.service.save(this.interfacesData)
             .subscribe(
                 () => this.handleSave(),
@@ -342,22 +358,80 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
+    isLoading = () => Utils.isLoading(this._loading);
+
+    toggleDiv(parentInterface: InheritedInterface) {
+        parentInterface.is_shown = !parentInterface.is_shown;
+    }
+
+    processUrl(parentType: string) {
+        const process = parentType.replace('{', '').split('}');
+        process[0] = Utils.nodeTypeURL(parentType);
+        return process;
+    }
+
+    overrideInterface(inh: InterfacesApiData) {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        if (!filteredInterface) {
+            const clone = JSON.parse(JSON.stringify(inh));
+            this.interfacesData.push(clone);
+        }
+    }
+
+    interfaceDoesNotExist(inh: InterfacesApiData): boolean {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        return !filteredInterface;
+    }
+
+    overrideOperation(inh: InterfacesApiData, op: InterfaceOperationApiData) {
+        const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+        if (!filteredInterface) {
+            const clone = JSON.parse(JSON.stringify(inh));
+            const operationClone: InterfaceOperationApiData = JSON.parse(JSON.stringify(op));
+            clone.operations = [operationClone];
+            this.interfacesData.push(clone);
+        } else {
+            const clone = JSON.parse(JSON.stringify(op));
+            filteredInterface.operations.push(clone);
+        }
+    }
+
+    operationDoesNotExists(inh: InterfacesApiData, op: InterfaceOperationApiData): boolean {
+        if (this.interfaceDoesNotExist(inh)) {
+            return true;
+        } else {
+            const filteredInterface: InterfacesApiData = this.interfacesData.find((value) => value.name === inh.name);
+            const filteredOperation: InterfaceOperationApiData = filteredInterface.operations.find((oper) => op.name === oper.name);
+            return !filteredOperation;
+        }
+    }
+
+    handleCancel() {
+        this.modalOpen = false;
+    }
+
     // endregion
 
     // region ########## Private Methods ##########
+
     private handleInterfacesApiData(data: InterfacesApiData[]) {
         this.interfacesData = data ? data : [];
-        this.loading = false;
+
+    }
+
+    private handleInheritedInterfaceData(data: InheritedInterface[]) {
+
+        this.inheritedInterfacesData = data ? data : [];
+
     }
 
     private handleSave() {
-        this.loading = false;
         this.notify.success('Changes saved!');
 
         // If there is a generation of implementations in progress, generate those now.
         if (this.generating) {
+            this.implementation.name += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.implementation.version.toString();
             if (this.implementation.createComponent) {
-                this.implementation.name += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.implementation.version.toString();
                 this.service.createImplementation(this.implementation.name, this.implementation.namespace)
                     .subscribe(
                         data => this.handleGeneratedImplementation(data),
@@ -372,34 +446,16 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleError(error: HttpErrorResponse) {
-        this.loading = false;
         this.generating = false;
         this.notify.error(error.error);
-    }
-
-    private getPackageNameFromNamespace(): string {
-        // to only get the relevant information, without the 'http://'
-        const namespaceArray = this.sharedData.toscaComponent.namespace.split('/').slice(2);
-        const domainArray = namespaceArray[0].split('.');
-
-        let javaPackage = '';
-        for (let i = domainArray.length - 1; i >= 0; i--) {
-            if (javaPackage.length > 0) {
-                javaPackage += '.';
-            }
-            javaPackage += domainArray[i];
-        }
-        for (let i = 1; i < namespaceArray.length; i++) {
-            javaPackage += '.' + namespaceArray[i];
-        }
-
-        return javaPackage;
     }
 
     private handleGeneratedImplementation(data?: any) {
         if (this.artifactTemplate.createComponent) {
             this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName = this.artifactTemplate.name;
             this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
+            this.generateArtifactApiData.artifactType = this.artifactTemplate.artifactTypeQName;
+
             this.service.createArtifactTemplate(this.implementation.name, this.implementation.namespace, this.generateArtifactApiData)
                 .subscribe(
                     (response) => this.handleGeneratedArtifact(response),
@@ -414,7 +470,8 @@ export class InterfacesComponent implements OnInit {
         }
     }
 
-    private handleGeneratedArtifact(response: HttpResponse<string>) {
+    private handleGeneratedArtifact(response: HttpResponse<IAReport>) {
+        const report: IAReport = response.body;
         let message = '';
         if (this.toscaType === ToscaTypes.NodeType) {
             // backend return a path to the created artifacttemplate in the form: http://localhost:8080/winery/
@@ -425,8 +482,30 @@ export class InterfacesComponent implements OnInit {
         }
         this.generating = false;
         this.generateImplModal.hide();
-        this.notify.success(message, 'Successfully created Artifact!', { enableHTML: true });
+        if (report.warning !== undefined && report.warning.length > 0) {
+            this.notify.warning(report.warning);
+        } else {
+            this.notify.success(message, 'Successfully created Artifact!', { enableHTML: true });
+        }
     }
 
     // endregion
+
+    private handleArtifactTypeData(res: any) {
+        this.artifactTypes = res;
+    }
+
+    private getSelectedInterfaceOrOperationName() {
+        // If there is only one operation, or none is selected, we just implement the whole interface. As such, we name the ArtifactTemplate accordingly.
+        if (this.selectedInterface.operations.length === 1 || !this.selectedOperation) {
+            return this.removeNSFromName(this.selectedInterface.name);
+        }
+        return this.removeNSFromName(this.selectedOperation.name);
+    }
+
+    private removeNSFromName(name: string) {
+        // Assumption: the actual interface name does not contain any '/'
+        // Also works if there is no NS prefixing the name
+        return name.substr(name.lastIndexOf('/') + 1);
+    }
 }

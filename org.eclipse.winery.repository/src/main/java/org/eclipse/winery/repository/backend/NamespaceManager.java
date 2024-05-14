@@ -107,7 +107,7 @@ public interface NamespaceManager {
     @NonNull NamespaceProperties getNamespaceProperties(String namespace);
 
     /**
-     * Add new properties for a namespace if it does not exist yet. Otherwise no action will be performed.
+     * Add new properties for a namespace if it does not exist yet. Otherwise, no action will be performed.
      *
      * @param namespace the namespace to be added
      */

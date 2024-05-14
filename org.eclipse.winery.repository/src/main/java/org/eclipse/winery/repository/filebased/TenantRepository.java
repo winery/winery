@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.FileBasedRepositoryConfiguration;
@@ -133,8 +134,28 @@ public class TenantRepository implements IWrappingRepository {
     }
 
     @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        getRepository().putContentToFile(ref, inputStream);
+    }
+
+    @Override
     public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
         getRepository().putContentToFile(ref, inputStream, mediaType);
+    }
+
+    @Override
+    public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        return getRepository().getAllDirsAndFiles(ref, depth);
+    }
+
+    @Override
+    public void createDir(RepositoryFileReference ref) throws IOException {
+        getRepository().createDir(ref);
+    }
+
+    @Override
+    public Path move(RepositoryFileReference sourceRef, RepositoryFileReference targetRef) throws IOException {
+        return getRepository().move(sourceRef, targetRef);
     }
 
     @Override
@@ -275,6 +296,11 @@ public class TenantRepository implements IWrappingRepository {
     @Override
     public Path getRepositoryRoot() {
         return getRepository().getRepositoryRoot();
+    }
+
+    @Override
+    public String getId() {
+        return null;
     }
 
     @Override

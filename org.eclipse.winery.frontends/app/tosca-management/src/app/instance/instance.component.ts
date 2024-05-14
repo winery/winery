@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,9 @@ import { Utils } from '../wineryUtils/utils';
 import { WineryVersion } from '../model/wineryVersion';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubMenuItem } from '../model/subMenuItem';
+import { QName } from '../../../../shared/src/app/model/qName';
+import { backendBaseURL } from '../configuration';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -55,6 +58,7 @@ export class InstanceComponent implements OnDestroy {
                 private router: Router,
                 private service: InstanceService,
                 private notify: WineryNotificationService,
+                private config: WineryRepositoryConfigurationService,
                 private existService: ExistService) {
         this.routeSub = this.route
             .data
@@ -82,7 +86,7 @@ export class InstanceComponent implements OnDestroy {
                                 compData => this.handleComponentData(compData)
                             );
                         this.getVersionInfo();
-                        if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
+                        if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate && this.config.configuration.features.edmmModeling) {
                             this.getToscaLightCompatibility();
                         }
                     } else {
@@ -117,29 +121,35 @@ export class InstanceComponent implements OnDestroy {
     }
 
     private handleComponentData(data: WineryInstance) {
-        this.typeUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaComponent.toscaType);
+        this.service.setInstance(data);
 
-        if (this.typeUrl) {
-            this.typeUrl = '/' + this.typeUrl;
-            const tempOrImpl = data.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
-            let qName: string[];
+        const toscaType = Utils.getTypeOfTemplateOrImplementation(this.toscaComponent.toscaType);
+        if (toscaType) {
+            const component = data.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
+            let entityType: QName;
 
-            if (tempOrImpl.type) {
-                qName = tempOrImpl.type.slice(1).split('}');
+            if (component.type) {
+                entityType = new QName(component.type);
                 this.typeOf = 'Type: ';
-            } else if (tempOrImpl.nodeType) {
-                qName = tempOrImpl.nodeType.slice(1).split('}');
-                this.typeOf = 'Implementation for ';
-            } else if (tempOrImpl.relationshipType) {
-                qName = tempOrImpl.relationshipType.slice(1).split('}');
+            }
+
+            if (component.nodeType) {
+                entityType = new QName(component.nodeType);
                 this.typeOf = 'Implementation for ';
             }
 
-            if (qName.length === 2) {
-                this.typeUrl += '/' + encodeURIComponent(qName[0]) + '/' + qName[1];
-                this.typeId = qName[1];
-            } else {
-                this.typeUrl = null;
+            if (component.relationshipType) {
+                entityType = new QName(component.relationshipType);
+                this.typeOf = 'Implementation for ';
+            }
+
+            if (entityType) {
+                const typeFrontendUrl = Utils.getFrontendPath(toscaType, entityType.nameSpace, entityType.localName);
+                const typeBackendUrl = Utils.getBackendUrl(backendBaseURL, toscaType, entityType.nameSpace, entityType.localName);
+
+                this.typeUrl = typeFrontendUrl;
+                this.typeId = entityType.localName;
+                this.service.setType(this.typeUrl, typeBackendUrl);
             }
         }
 

@@ -21,18 +21,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -51,18 +50,18 @@ public class ProviderRepository {
      * @return All node templates available for the given targetLocation.
      */
 
-    public List<TTopologyTemplate> getAllTopologyFragmentsForLocationAndOfferingCapability(String targetLocation, TRequirement requirement) {
+    public List<TServiceTemplate> getAllTopologyFragmentsForLocationAndOfferingCapability(String targetLocation, TRequirement requirement) {
         QName reqTypeQName = requirement.getType();
         RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
         QName requiredCapabilityType = RepositoryFactory.getRepository().getElement(reqTypeId).getRequiredCapabilityType();
 
         return getAllTopologyFragmentsForLocation(targetLocation).stream()
             .filter(tf ->
-                tf.getNodeTemplates().stream()
-                    .filter(nt -> nt.getCapabilities() != null)
-                    .anyMatch(nt -> nt.getCapabilities().stream()
-                        .anyMatch(cap -> cap.getType().equals(requiredCapabilityType))
-                    )
+                getNodesWithOpenCapabilities(tf.getTopologyTemplate()) != null)
+            .filter(tf -> getNodesWithOpenCapabilities(tf.getTopologyTemplate()).stream()
+                .anyMatch(nt -> nt.getCapabilities().stream()
+                    .anyMatch(cap -> cap.getType().equals(requiredCapabilityType))
+                )
             )
             .collect(Collectors.toList());
     }
@@ -72,15 +71,15 @@ public class ProviderRepository {
      *
      * @return the matching fragments if any exists, empty list else
      */
-    public List<TTopologyTemplate> getTopologyFragments(String targetLocation, List<TRequirement> requirements) {
+    public List<TServiceTemplate> getTopologyFragments(String targetLocation, List<TRequirement> requirements) {
         if (targetLocation == null || requirements == null || requirements.isEmpty()) {
             return new ArrayList<>();
         }
-        Map<TRequirement, List<TTopologyTemplate>> fragmentsForRequirement = new HashMap<>();
+        Map<TRequirement, List<TServiceTemplate>> fragmentsForRequirement = new HashMap<>();
         List<TRequirement> mergedReqs = mergeByType(requirements);
 
         for (TRequirement requirement : mergedReqs) {
-            List<TTopologyTemplate> fragments =
+            List<TServiceTemplate> fragments =
                 getAllTopologyFragmentsForLocationAndOfferingCapability(targetLocation, requirement);
             // all requirements have to have at least one possible fragment
             if (fragments.isEmpty()) {
@@ -97,9 +96,10 @@ public class ProviderRepository {
      * Only get fragments which contain one node template.
      */
     public List<TTopologyTemplate> getPaaSFragments(String targetLabel, List<TRequirement> requirements) {
-        List<TTopologyTemplate> fragments = getTopologyFragments(targetLabel, requirements);
-        fragments.removeIf(tt -> tt.getNodeTemplates().size() != 1);
-        return fragments;
+        List<TServiceTemplate> fragments = getTopologyFragments(targetLabel, requirements);
+
+        return fragments.stream().filter(tt -> tt.getTopologyTemplate().getNodeTemplates().size() != 1).map(st -> st.getTopologyTemplate())
+            .collect(Collectors.toList());
     }
 
     private List<TRequirement> mergeByType(List<TRequirement> requirements) {
@@ -109,17 +109,19 @@ public class ProviderRepository {
         return new ArrayList<>(removeDuplicates.values());
     }
 
-    private List<TTopologyTemplate> getIntersection(Collection<List<TTopologyTemplate>> fragments) {
+    private List<TServiceTemplate> getIntersection(Collection<List<TServiceTemplate>> fragments) {
         // get fragments fulfilling all requirements
-        Iterator<List<TTopologyTemplate>> iterator = fragments.iterator();
-        Set<TTopologyTemplate> intersection = new HashSet<>(iterator.next());
+        Iterator<List<TServiceTemplate>> iterator = fragments.iterator();
+        HashSet<TServiceTemplate> set = new HashSet<>();
+        ArrayList<TServiceTemplate> result = new ArrayList<>();
         while (iterator.hasNext()) {
-            intersection.retainAll(iterator.next());
+            set.retainAll(iterator.next());
         }
-        return new ArrayList<>(intersection);
+        result.addAll(set);
+        return result;
     }
 
-    public List<TTopologyTemplate> getAllTopologyFragmentsForLocation(String targetLocation) {
+    public List<TServiceTemplate> getAllTopologyFragmentsForLocation(String targetLocation) {
         String namespaceStr;
         if ("*".equals(targetLocation)) {
             namespaceStr = NS_NAME_START;
@@ -131,8 +133,9 @@ public class ProviderRepository {
             // get all service templates in the namespace
             .filter(id -> id.getNamespace().getDecoded().toLowerCase().startsWith(namespaceStr))
             // get all contained node templates
-            .flatMap(id -> {
-                TTopologyTemplate topologyTemplate = RepositoryFactory.getRepository().getElement(id).getTopologyTemplate();
+            .map(id -> {
+                TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(id);
+                TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
                 if (topologyTemplate != null) {
                     List<TNodeTemplate> matchedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
                         .filter(t -> t instanceof TNodeTemplate)
@@ -144,57 +147,17 @@ public class ProviderRepository {
                     );
                 }
 
-                return getAllTopologyFragmentsFromServiceTemplate(topologyTemplate).stream();
+                return serviceTemplate;
             })
             .collect(Collectors.toList());
     }
 
-    private List<TTopologyTemplate> getAllTopologyFragmentsFromServiceTemplate(TTopologyTemplate topologyTemplate) {
+    private List<TNodeTemplate> getNodesWithOpenCapabilities(TTopologyTemplate topologyTemplate) {
 
-        List<TTopologyTemplate> topologyFragments = new ArrayList<>();
-
-        Splitting helperFunctions = new Splitting();
-        List<TNodeTemplate> nodeTemplatesWithoutIncomingRelationship = helperFunctions.getNodeTemplatesWithoutIncomingHostedOnRelationships(topologyTemplate);
-        List<TNodeTemplate> visitedNodeTemplates = new ArrayList<>();
-
-        //It can only be one topology fragment contained in the service template
-        if (nodeTemplatesWithoutIncomingRelationship.size() == 1) {
-            String targetLabel = ModelUtilities.getTargetLabel(nodeTemplatesWithoutIncomingRelationship.get(0))
-                .orElse("unknown");
-            topologyTemplate.getDocumentation().add(
-                new TDocumentation.Builder()
-                    .addContent("Stack of Node Template " + nodeTemplatesWithoutIncomingRelationship.get(0).getId()
-                        + " from Provider Repository " + targetLabel)
-                    .build()
-            );
-            topologyFragments.add(topologyTemplate);
-        } else {
-            for (TNodeTemplate nodeWithoutIncomingRel : nodeTemplatesWithoutIncomingRelationship) {
-                if (!visitedNodeTemplates.contains(nodeWithoutIncomingRel)) {
-                    String targetLabel = ModelUtilities.getTargetLabel(nodeWithoutIncomingRel)
-                        .orElse("unknown");
-                    TTopologyTemplate topologyFragment = new TTopologyTemplate.Builder()
-                        .addDocumentation(
-                            new TDocumentation.Builder()
-                                .addContent("Stack of Node Template " + nodeWithoutIncomingRel.getId()
-                                    + " from Provider Repository " + targetLabel)
-                                .build()
-                        )
-                        .build();
-                    topologyFragment.getNodeTemplateOrRelationshipTemplate()
-                        .addAll(
-                            breadthFirstSearch(nodeWithoutIncomingRel, topologyTemplate)
-                        );
-                    topologyFragments.add(topologyFragment);
-
-                    topologyFragment.getNodeTemplateOrRelationshipTemplate().stream()
-                        .filter(et -> et instanceof TNodeTemplate)
-                        .map(TNodeTemplate.class::cast)
-                        .forEach(visitedNodeTemplates::add);
-                }
-            }
-        }
-        return topologyFragments;
+        return topologyTemplate.getNodeTemplates().stream()
+            .filter(nt -> nt.getCapabilities() != null && !nt.getCapabilities().isEmpty())
+            .filter(nt -> ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, nt).isEmpty())
+            .collect(Collectors.toList());
     }
 
     private List<TEntityTemplate> breadthFirstSearch(TNodeTemplate nodeTemplate, TTopologyTemplate topologyTemplate) {

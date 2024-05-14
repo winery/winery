@@ -18,39 +18,10 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SectionData } from '../../../section/sectionData';
 import { ToscaTypes } from '../../../model/enums';
-
-export enum EdmmType {
-    // component types
-    COMPUTE = 'compute',
-    DATABASE = 'database',
-    DBMS = 'dbms',
-    MYSQL_DATABASE = 'mysql_database',
-    MYSQL_DBMS = 'mysql_dbms',
-    SOFTWARE_COMPONENT = 'software_component',
-    TOMCAT = 'tomcat',
-    WEB_APPLICATION = 'web_application',
-    WEB_SERVER = 'web_server',
-    PLATFORM = 'platform"',
-    PAAS = 'paas',
-    DBAAS = 'dbaas',
-    AWS_BEANSTALK = 'aws_beanstalk',
-    AWS_AURORA = 'aws_aurora',
-    SAAS = 'saas',
-    AUTH0 = 'auth0',
-    GO = 'go',
-    MOM = 'mom',
-    RABBITMQ = 'rabbitmq',
-    MONGODB = 'mongodb',
-    MONGODB_SCHEMA = 'mongodb_schema',
-
-    // relation types
-    CONNECTS_TO = 'connects_to',
-    DEPENDS_ON = 'depends_on',
-    HOSTED_ON = 'hosted_on'
-}
+import { EdmmTypesService } from '../edmmTypes/edmmTypes.service';
 
 export class EdmmMappingItem {
-    edmmType: EdmmType;
+    edmmType: string;
     toscaType: string;
 }
 
@@ -64,7 +35,7 @@ export class EdmmMappingsService {
         this.path = backendBaseURL + decodeURIComponent(this.route.url);
     }
 
-    getTypes(type: ToscaTypes): Observable<SectionData[]> {
+    getToscaTypes(type: ToscaTypes): Observable<SectionData[]> {
         return this.http.get<SectionData[]>(backendBaseURL + '/' + type + '/');
     }
 
@@ -73,7 +44,6 @@ export class EdmmMappingsService {
     }
 
     updateEdmmMapping(mappings: EdmmMappingItem[]): Observable<EdmmMappingItem[]> {
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.put<EdmmMappingItem[]>(this.path, mappings);
     }
 

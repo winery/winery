@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { TNodeTemplate } from '../../models/ttopology-template';
 import { NgRedux } from '@angular-redux/store';
@@ -30,7 +30,7 @@ import { ReqCapModalType, ShowReqCapModalEventData } from '../toscatype-table/sh
 /**
  * This Handles Information about the node capabilities
  */
-export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
+export class CapabilitiesComponent implements OnChanges, OnDestroy {
 
     readonly tableTypes = TableType;
 
@@ -38,7 +38,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() readonly: boolean;
     @Input() currentNodeData: any;
 
-    capabilities: any[] = [];
+    capabilities: CapabilityModel[] = [];
     capabilitiesExist: boolean;
     entityTypes: EntityTypesModel;
     nodeTemplate: TNodeTemplate;
@@ -59,6 +59,9 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
             if (this.currentNodeData.nodeTemplate.capabilities) {
                 this.capabilities = this.currentNodeData.nodeTemplate.capabilities;
                 this.capabilitiesExist = true;
+            } else {
+                this.capabilities = [];
+                this.capabilitiesExist = false;
             }
         }
     }
@@ -74,7 +77,7 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     /**
-     * Propagates the click event to node.component, where the capabilities modal gets opened.
+     * Propagates the click event to node component, where the capabilities modal gets opened.
      * @param event the id of the capability that was clicked.
      */
     public toggleModal(event: ShowReqCapModalEventData) {
@@ -98,9 +101,6 @@ export class CapabilitiesComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         this.toggleModalHandler.emit(this.currentNodeData);
-    }
-
-    ngOnInit() {
     }
 
     /**

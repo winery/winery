@@ -32,7 +32,13 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-public class EdmmUtils {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class EdmmUtils {
+
+    public static final String IMPORTED_EDMM_NAMESPACE = "https://opentosca.org/edmm/imported/";
+    private static final Logger LOGGER = LoggerFactory.getLogger(EdmmUtils.class);
 
     public static Map<String, Object> checkToscaLightCompatibility(TServiceTemplate serviceTemplate) {
         ToscaLightChecker toscaLightChecker = getToscaLightChecker();
@@ -53,10 +59,9 @@ public class EdmmUtils {
 
         Map<QName, TRelationshipType> relationshipTypes = repository.getQNameToElementMapping(RelationshipTypeId.class);
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
-        Map<QName, EdmmType> typeMap = EdmmManager.forRepository(repository).getTypeMap();
-        Map<QName, EdmmType> oneToOneMap = EdmmManager.forRepository(repository).getOneToOneMap();
+        Map<QName, EdmmType> oneToOneMap = EdmmManager.forRepository(repository).getToscaToEdmmMap();
 
-        return new ToscaLightChecker(nodeTypes, relationshipTypes, typeMap, oneToOneMap);
+        return new ToscaLightChecker(nodeTypes, relationshipTypes, oneToOneMap);
     }
 
     public static Map<QName, TServiceTemplate> getAllToscaLightCompliantModels() {
@@ -69,5 +74,36 @@ public class EdmmUtils {
             .stream()
             .filter(entry -> toscaLightChecker.isToscaLightCompliant(entry.getValue()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public static String normalizeQName(QName qName) {
+        return qName.toString()
+            .replace("{", "")
+            .replace("}", "__")
+            .replace("/", "--")
+            .replace(':', '+');
+    }
+
+    /**
+     * Tries to generate a QName from a type name. Thereby, two underscores are treated as the separation between a
+     * potential namespace and the ID
+     *
+     * @param typeName the name of the EDMM type
+     * @return a QName
+     */
+    public static QName getQNameFromType(String typeName, String namespaceSuffix) {
+        if (typeName.contains("__")) {
+            return QName.valueOf(
+                "{" +
+                    typeName.replace('+', ':')
+                        .replace("__", "}")
+                        .replace("--", "/")
+            );
+        }
+
+        return new QName(
+            IMPORTED_EDMM_NAMESPACE + namespaceSuffix,
+            typeName
+        );
     }
 }

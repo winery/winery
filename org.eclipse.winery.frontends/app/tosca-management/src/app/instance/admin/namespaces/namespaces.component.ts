@@ -19,26 +19,36 @@ import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicate
 import { NamespaceProperties } from '../../../model/namespaceProperties';
 import { ModalDirective } from 'ngx-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RepositoryService } from '../repository/repository.service';
+import { Repository } from '../repository/repository';
+import { Utils } from '../../../wineryUtils/utils';
 
 @Component({
     selector: 'winery-instance-namespaces',
     templateUrl: 'namespaces.component.html',
-    providers: [WineryNamespaceSelectorService, NamespacesService],
+    providers: [WineryNamespaceSelectorService, NamespacesService, RepositoryService],
 })
 export class NamespacesComponent implements OnInit {
 
-    loading = true;
+    _loading = {
+        loadingNamespaces: false,
+        loadingRepositories: false,
+        saving: false,
+    };
+
     modalTitle: string;
     addButtonTitle: string;
     adminNamespaces: Array<NamespaceProperties> = [];
     newNamespace: NamespaceProperties;
     validatorObjectPrefix: WineryValidatorObject;
     validatorObjectNamespace: WineryValidatorObject;
+    repositories: Repository[];
 
     columns = [
         { title: 'Prefix', name: 'prefix' },
         { title: 'Namespace', name: 'namespace' },
         { title: 'Description', name: 'readableName' },
+        { title: 'Repository', name: 'repositoryId' },
         { title: 'Pattern NS', name: 'patternCollection' },
         { title: 'Secure NS', name: 'secureCollection' }
     ];
@@ -48,23 +58,46 @@ export class NamespacesComponent implements OnInit {
     @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: NamespacesService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                private repositoryService: RepositoryService) {
     }
 
-    getNamespaces() {
+    loading = () => Utils.isLoading(this._loading);
+
+    getData() {
+        this._loading.loadingNamespaces = true;
+        this._loading.loadingRepositories = true;
+
         this.service.getAllNamespaces().subscribe(
             data => {
                 this.adminNamespaces = data;
                 this.validatorObjectNamespace = new WineryValidatorObject(this.adminNamespaces, 'namespace');
                 this.validatorObjectPrefix = new WineryValidatorObject(this.adminNamespaces, 'prefix');
-                this.loading = false;
+                this._loading.loadingNamespaces = false;
             },
-            error => this.notify.error(error.toString())
+            error => {
+                this.notify.error(error.toString());
+                this._loading.loadingNamespaces = false;
+            }
+        );
+        this.repositoryService.getAllRepositories().subscribe(
+            data => {
+                this.repositories = data.map(
+                    (repo: Repository) => new Repository(repo.name, repo.url, repo.branch,
+                        repo.id ? repo.id : repo.name.replace(/\W/g, '')
+                    )
+                );
+                this._loading.loadingRepositories = false;
+            },
+            error => {
+                this.notify.error(error.toString());
+                this._loading.loadingRepositories = false;
+            }
         );
     }
 
     ngOnInit() {
-        this.getNamespaces();
+        this.getData();
     }
 
     addNamespace() {
@@ -87,7 +120,7 @@ export class NamespacesComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.newNamespace = new NamespaceProperties(null, null, '', false, false);
+        this.newNamespace = new NamespaceProperties(null, null, '', false, false, 'workspace');
         this.validatorObjectPrefix.isActive = true;
         this.modalTitle = 'Add new Namespace';
         this.addButtonTitle = 'Add';
@@ -103,7 +136,8 @@ export class NamespacesComponent implements OnInit {
             data.prefix,
             data.readableName,
             data.patternCollection,
-            data.secureCollection
+            data.secureCollection,
+            data.repositoryId
         );
         this.validatorObjectPrefix.isActive = false;
         this.addModal.show();
@@ -118,9 +152,20 @@ export class NamespacesComponent implements OnInit {
 
     save() {
         this.service.postNamespaces(this.adminNamespaces).subscribe(
-            () => this.handleSave(),
-            error => this.handleError(error)
+            () => {
+                this._loading.saving = false;
+                this.notify.success('Saved changes on server', 'Success');
+                this.getData();
+            },
+            error => {
+                this._loading.saving = false;
+                this.handleError(error);
+            }
         );
+    }
+
+    repositoriesSelected(event: Repository) {
+        this.newNamespace.repositoryId = event ? event.id : null;
     }
 
     /**
@@ -136,11 +181,6 @@ export class NamespacesComponent implements OnInit {
         }
     }
 
-    private handleSave() {
-        this.handleSuccess();
-        this.getNamespaces();
-    }
-
     /**
      * Sets loading to false and shows error notification.
      *
@@ -148,16 +188,5 @@ export class NamespacesComponent implements OnInit {
      */
     private handleError(error: HttpErrorResponse): void {
         this.notify.error(error.message, 'Error');
-    }
-
-    /**
-     * Set loading to false and show success notification.
-     *
-     */
-    private handleSuccess(): void {
-        this.loading = false;
-
-        this.notify.success('Saved changes on server', 'Success');
-
     }
 }

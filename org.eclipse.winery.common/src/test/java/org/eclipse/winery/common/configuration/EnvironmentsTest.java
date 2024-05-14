@@ -15,6 +15,7 @@
 package org.eclipse.winery.common.configuration;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.junit.jupiter.api.AfterAll;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -99,6 +101,26 @@ public class EnvironmentsTest {
         assertEquals("swarmgatewaytesturl", accountabilityConfig.getSwarmGatewayUrl());
     }
 
+    @Test
+    public void testGetDaRefinementConfigurations() {
+        DARefinementConfigurationObject daRefinement = Environments.getInstance().getDaRefinementConfigurationObject();
+        assertNotNull(daRefinement);
+
+        Map<String, DARefinementConfigurationObject.DARefinementService> refinementServices = daRefinement.getRefinementServices();
+        assertNotNull(refinementServices);
+        DARefinementConfigurationObject.DARefinementService quantumTranslator = refinementServices.get("quantumQiskitTranslator");
+        assertNotNull(quantumTranslator);
+
+        assertEquals("http://localhost:7896/qiskit", quantumTranslator.url);
+        assertTrue(quantumTranslator.canRefine.from.contains("qiskit"));
+        assertTrue(quantumTranslator.canRefine.to.contains("pyquil"));
+        assertTrue(quantumTranslator.canRefine.to.contains("qiskit"));
+        assertEquals(
+            "This service is able to transform a generic qiskit quantum algorithm to a pyQuil alogorithm for execution on a Rigetti machine.\n",
+            quantumTranslator.description
+        );
+    }
+
     /**
      * This test checks for the correct repositoryRoot, which is set in the config file.
      */
@@ -160,10 +182,5 @@ public class EnvironmentsTest {
         assertTrue(result.getFeatures().get("test1"));
         assertFalse(result.getFeatures().get("test2"));
         assertNull(result.getFeatures().get("test3"));
-    }
-
-    @AfterAll
-    static void reset() {
-        Environment.getInstance().copyDefaultConfigFile();
     }
 }

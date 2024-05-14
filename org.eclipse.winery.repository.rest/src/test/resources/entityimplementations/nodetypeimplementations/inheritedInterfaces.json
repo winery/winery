@@ -1,0 +1,20 @@
+[
+    {
+        "id": "http://opentosca.org/interfaces/lifecycle",
+        "text": "http://opentosca.org/interfaces/lifecycle",
+        "operations": [
+            "configure",
+            "install",
+            "start",
+            "stop",
+            "uninstall"
+        ]
+    },
+    {
+        "id": "secondInterface",
+        "text": "secondInterface",
+        "operations": [
+            "test"
+        ]
+    }
+]

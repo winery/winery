@@ -25,4 +25,6 @@ public class ToscaBaseTypes {
     public static final QName archiveArtifactType = QName.valueOf("{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ArchiveArtifact");
     
     public static final QName webserver = QName.valueOf("{http://docs.oasis-open.org/tosca/ToscaNormativeTypes/nodetypes}WebServer");
+    
+    public static final QName compute = QName.valueOf("{http://docs.oasis-open.org/tosca/ToscaNormativeTypes/nodetypes}Compute");
 }

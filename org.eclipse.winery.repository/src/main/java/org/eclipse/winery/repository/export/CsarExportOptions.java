@@ -23,9 +23,14 @@ public class CsarExportOptions {
     private boolean addToProvenance;
 
     /**
-     * Indicates that the exported CSAR will resolve all external dependencies an attach them as DAs.
+     * Indicates that the exported CSAR will resolve all external dependencies and attach them as DAs.
      */
     private boolean includeDependencies;
+
+    /**
+     * Indicates that the exported CSAR will contain all research object related files.
+     */
+    private boolean asRoar;
 
     public boolean isAddToProvenance() {
         return addToProvenance;
@@ -41,5 +46,13 @@ public class CsarExportOptions {
 
     public void setIncludeDependencies(boolean includeDependencies) {
         this.includeDependencies = includeDependencies;
+    }
+
+    public boolean isAsRoar() {
+        return asRoar;
+    }
+
+    public void setAsRoar(boolean asRoar) {
+        this.asRoar = asRoar;
     }
 }

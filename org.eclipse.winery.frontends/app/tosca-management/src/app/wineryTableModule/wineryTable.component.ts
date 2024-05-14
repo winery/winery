@@ -119,6 +119,8 @@ export class WineryTableComponent implements OnInit, DoCheck {
 
     @ViewChild('tableContainer') tableContainer: any;
     @Input() title: string;
+    @Input() titleRouterLink?: any[] | string;
+    @Input() titleRouterLinkText = 'Link';
     @Input() itemsPerPage = 10;
     @Input() maxSize = 5;
     @Input() numPages = 1;

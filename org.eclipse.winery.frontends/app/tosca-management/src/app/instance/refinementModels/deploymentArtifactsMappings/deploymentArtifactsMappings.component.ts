@@ -90,6 +90,12 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
                 '',
                 [Validators.required],
             ),
+            new DynamicDropdownData<string>(
+                'targetArtifactType',
+                'Target DA Type',
+                this.artifactTypesTableData,
+                1,
+            ),
             new DynamicTextData(
                 'id',
                 'ID',
@@ -110,6 +116,7 @@ export class DeploymentArtifactsMappingsComponent implements OnInit {
         newMapping.detectorElement = mapping.detectorElement;
         newMapping.refinementElement = mapping.refinementElement;
         newMapping.artifactType = mapping.artifactType;
+        newMapping.targetArtifactType = mapping.targetArtifactType;
 
         this.service.addDeploymentArtifactMappings(newMapping)
             .subscribe(

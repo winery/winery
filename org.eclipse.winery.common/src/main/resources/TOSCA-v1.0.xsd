@@ -329,6 +329,13 @@
        <xs:attribute name="typeRef" type="xs:QName" use="required"/>
       </xs:complexType>
      </xs:element>
+     <xs:element name="Interfaces" minOccurs="0">
+      <xs:complexType>
+       <xs:sequence>
+        <xs:element name="Interface" type="tInterface" maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:complexType>
+     </xs:element>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -925,6 +932,7 @@
   <xs:attribute name="detectorNode" type="xs:string" use="required"/>
   <xs:attribute name="refinementNode" type="xs:string" use="required"/>
   <xs:attribute name="artifactType" type="xs:QName" use="required"/>
+  <xs:attribute name="targetArtifactType" type="xs:QName"/>
  </xs:complexType>
  <xs:complexType name="otBehaviorPatternMapping">
   <xs:sequence>

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2020 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2020-2023 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -24,7 +24,7 @@
         <th>
             Values
         </th>
-    <tr *ngFor="let key of nodeProperties | keysPipe">
+    <tr *ngFor="let key of nodeProperties | keysPipe; let i = index; trackBy: trackByFn">
         <td class="">{{key.key}}</td>
         <td class="">
                 <textarea

@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.edmm.model.EdmmMappingItem;
 import org.eclipse.winery.edmm.model.EdmmType;
 
+import io.github.edmm.model.relation.HostedOn;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,11 +35,12 @@ class JsonBasedEdmmManagerTest {
 
         assertNotNull(manager.getOneToOneMappings());
         assertEquals(3, manager.getOneToOneMappings().size());
-        assertNotNull(manager.getTypeMappings());
-        assertEquals(2, manager.getTypeMappings().size());
+
+        assertNotNull(manager.getEdmmTypes());
+        assertEquals(3, manager.getEdmmTypes().size());
 
         EdmmMappingItem item = manager.getOneToOneMappings().get(0);
         assertEquals(QName.valueOf("{https://ex.org/test/tosca}hostedOn"), item.toscaType);
-        assertEquals(EdmmType.HOSTED_ON, item.edmmType);
+        assertEquals(EdmmType.fromEntityClass(HostedOn.class), item.edmmType);
     }
 }

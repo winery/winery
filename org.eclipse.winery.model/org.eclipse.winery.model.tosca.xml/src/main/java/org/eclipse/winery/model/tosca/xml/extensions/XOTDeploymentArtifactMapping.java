@@ -27,25 +27,39 @@ public class XOTDeploymentArtifactMapping extends XOTPrmMapping {
     @XmlAttribute(name = "artifactType", required = true)
     private QName artifactType;
 
+    @XmlAttribute(name = "targetArtifactType")
+    private QName targetArtifactType;
+
     @Deprecated // required for XML deserialization
-    public XOTDeploymentArtifactMapping() { }
+    public XOTDeploymentArtifactMapping() {
+    }
 
     public XOTDeploymentArtifactMapping(Builder builder) {
         super(builder);
         this.artifactType = builder.artifactType;
+        this.targetArtifactType = builder.targetArtifactType;
     }
 
     public QName getArtifactType() {
         return artifactType;
     }
 
+    public QName getTargetArtifactType() {
+        return targetArtifactType;
+    }
+
     public void setArtifactType(QName artifactType) {
         this.artifactType = artifactType;
+    }
+
+    public void setTargetArtifactType(QName targetArtifactType) {
+        this.targetArtifactType = targetArtifactType;
     }
 
     public static class Builder extends XOTPrmMapping.Builder<Builder> {
 
         private QName artifactType;
+        private QName targetArtifactType;
 
         public Builder(String id) {
             super(id);
@@ -53,6 +67,11 @@ public class XOTDeploymentArtifactMapping extends XOTPrmMapping {
 
         public Builder setArtifactType(QName artifactType) {
             this.artifactType = artifactType;
+            return self();
+        }
+
+        public Builder setTargetArtifactType(QName targetArtifactType) {
+            this.targetArtifactType = targetArtifactType;
             return self();
         }
 

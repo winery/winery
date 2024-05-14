@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,7 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { WineryNamespaceSelectorModule } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
 import { WineryPipesModule } from '../../../wineryPipes/wineryPipes.module';
-import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.moudle';
+import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.module';
 import { ArtifactsComponent } from './artifacts.component';
 import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQNameSelector.module';
 import { ArtifactsService } from './artifacts.service';

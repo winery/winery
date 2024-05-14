@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 public class EdmmResourceTest extends AbstractResourceTest {
 
+    private static final String REVISION = "7ba859b04ba1487b1778fa44b8d45aa1d31528b1";
     private static final String TRANSFORM = "edmm/transform";
     private static final String CHECK_MODEL = "edmm/check-model-support";
     private static final String PETCLINIC_TOPOLOGY_CLOUD = "servicetemplates/https%253A%252F%252Fedmm.uni-stuttgart.de%252Fservicetemplates/PetClinic-Cloud/";
@@ -31,20 +32,20 @@ public class EdmmResourceTest extends AbstractResourceTest {
 
     @Test
     public void testSupportForPetclinicCloud() throws Exception {
-        this.setRevisionTo("c606d96aeee4dc086e018fb30fb0198a74384f06");
+        this.setRevisionTo(REVISION);
         this.assertGet(PETCLINIC_TOPOLOGY_CLOUD + CHECK_MODEL, "edmm/petclinic-cloud.check-model-support.json");
     }
 
     @Test
     @Disabled("For some reason the result looks sometimes differently")
     public void testSupportForPetclinicIaas() throws Exception {
-        this.setRevisionTo("c606d96aeee4dc086e018fb30fb0198a74384f06");
+        this.setRevisionTo(REVISION);
         this.assertGet(PETCLINIC_TOPOLOGY_IAAS + CHECK_MODEL, "edmm/petclinic-iaas.check-model-support.json");
     }
 
     @Test
     public void testOneToOneMapForPetclinicIaas() throws Exception {
-        this.setRevisionTo("c606d96aeee4dc086e018fb30fb0198a74384f06");
+        this.setRevisionTo(REVISION);
         this.assertGet(PETCLINIC_TOPOLOGY_IAAS + "edmm/one-to-one-map", "edmm/petclinic-iaas.one-to-one-map.json");
     }
 

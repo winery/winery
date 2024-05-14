@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,6 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesD
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -556,10 +556,18 @@ public abstract class ModelUtilities {
         WinerysPropertiesDefinition propDef = nodeType.getWinerysPropertiesDefinition();
         if (propDef != null && propDef.getPropertyDefinitions() != null) {
             Map<String, String> properties = new HashMap<>();
-            propDef.getPropertyDefinitions().forEach(propertyDefinition ->
-                properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue())
+            propDef.getPropertyDefinitions().forEach(propertyDefinition -> {
+                    if (propertyDefinition.getDefaultValue() != null)
+                        properties.put(propertyDefinition.getKey(), propertyDefinition.getDefaultValue());
+                    else {
+                        properties.put(propertyDefinition.getKey(), "");
+                    }
+                }
+
             );
             TEntityTemplate.WineryKVProperties tProps = new TEntityTemplate.WineryKVProperties();
+            tProps.setNamespace(propDef.getNamespace());
+            tProps.setElementName(propDef.getElementName());
             tProps.setKVProperties(new LinkedHashMap<>(properties));
             builder.setProperties(tProps);
         }
@@ -603,6 +611,27 @@ public abstract class ModelUtilities {
 
     public static Optional<String> getParticipant(TNodeTemplate nodeTemplate) {
         return getOtherAttributeValue(nodeTemplate, QNAME_PARTICIPANT);
+    }
+
+    public static void setParticipant(TNodeTemplate nodeTemplate, String participant) {
+        Objects.requireNonNull(nodeTemplate);
+        Objects.requireNonNull(participant);
+        Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
+        otherAttributes.put(QNAME_PARTICIPANT, participant);
+    }
+
+    public static List<TNodeTemplate> getNodeTemplatesOfParticipant(String participantName, List<TNodeTemplate> nodeTemplates) {
+
+        return nodeTemplates.stream().filter(nt -> getParticipant(nt).isPresent())
+            .filter(nt -> getParticipant(nt).get().equals(participantName)).collect(Collectors.toList());
+    }
+
+    public static String getOwnerParticipantOfServiceTemplate(TServiceTemplate serviceTemplate) {
+        if (serviceTemplate.getTags() != null &&
+            serviceTemplate.getTags().stream().anyMatch(t -> t.getName().equals("participant"))) {
+            return serviceTemplate.getTags().stream().filter(t -> t.getName().equals("participant")).findFirst().get().getValue();
+        }
+        return null;
     }
 
     private static Optional<String> getOtherAttributeValue(TNodeTemplate nodeTemplate, QName otherAttribute) {
@@ -775,8 +804,7 @@ public abstract class ModelUtilities {
         return item;
     }
 
-    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends
-        TEntityType> elements) {
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends TEntityType> elements) {
         if (!givenType.equals(requiredType)) {
             TEntityType entityType = elements.get(givenType);
             if (Objects.isNull(entityType) || Objects.isNull(entityType.getDerivedFrom())) {
@@ -793,7 +821,7 @@ public abstract class ModelUtilities {
         TEntityType entityType = elements.get(givenType);
         if (Objects.nonNull(entityType)) {
             elements.forEach((qName, type) -> {
-                if (!qName.equals(givenType) && isOfType(givenType, qName, elements)) {
+                if (isOfType(givenType, qName, elements)) {
                     children.put(qName, type);
                 }
             });
@@ -801,44 +829,17 @@ public abstract class ModelUtilities {
         return children;
     }
 
-    /**
-     * Retrieve the available types of the <code>givenType</code> and filter them according to their implementation
-     * based on the underlying <code>deploymentTechnology</code>. If the filtering by the
-     * <code>deploymentTechnology</code> is not required, <code>null</code> should be passed.
-     *
-     * @param givenType              The QName of the type to be investigated.
-     * @param elements               The set of Types available.
-     * @param deploymentTechnologies The underlying deployment technology, the features must comply to.
-     * @param <T>                    The type of the Elements
-     * @return The set of applicable features.
-     */
-    public static <T extends
-        TEntityType> Map<T, String> getAvailableFeaturesOfType(
-        QName givenType, Map<QName, T> elements,
-        List<String> deploymentTechnologies) {
-        HashMap<T, String> features = new HashMap<>();
-        getChildrenOf(givenType, elements).forEach((qName, t) -> {
-            if (Objects.nonNull(t.getTags())) {
-                List<TTag> list = t.getTags();
-
-                // To enable the usage of "technology" and "technologies", we only check for "technolog"
-                String supportedDeploymentTechnologies = list.stream()
-                    .filter(tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase()))
-                    .map(TTag::getValue)
-                    .collect(
-                        Collectors.joining(" "));
-
-                if (StringUtils.isBlank(supportedDeploymentTechnologies)
-                    || "*".equals(supportedDeploymentTechnologies) || deploymentTechnologies.stream()
-                    .anyMatch(s -> supportedDeploymentTechnologies.toLowerCase().contains(s.toLowerCase()))) {
-                    list.stream()
-                        .filter(tag -> "feature".equalsIgnoreCase(tag.getName()))
-                        .findFirst()
-                        .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+    public static <T extends TEntityType> Map<QName, T> getDirectChildrenOf(QName givenType, Map<QName, T> elements) {
+        HashMap<QName, T> children = new HashMap<>();
+        TEntityType entityType = elements.get(givenType);
+        if (Objects.nonNull(entityType)) {
+            elements.forEach((qName, type) -> {
+                if (!qName.equals(givenType) && type.getDerivedFrom() != null && type.getDerivedFrom().getType().equals(givenType)) {
+                    children.put(qName, type);
                 }
-            }
-        });
-        return features;
+            });
+        }
+        return children;
     }
 
     public static <T extends TEntityType> boolean isFeatureType(QName givenType, Map<QName, T> elements) {
@@ -884,6 +885,27 @@ public abstract class ModelUtilities {
         } while (hostedOn.isPresent());
 
         return hostedOnSuccessors;
+    }
+
+    public static ArrayList<TNodeTemplate> getHostedOnPredecessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+        ArrayList<TNodeTemplate> hostedOnPredecessors = new ArrayList<>();
+
+        Stack<TNodeTemplate> unprocessed = new Stack<>();
+        unprocessed.push(nodeTemplate);
+
+        do {
+            List<TRelationshipTemplate> incomingRelationshipTemplates = getIncomingRelationshipTemplates(topologyTemplate, unprocessed.pop());
+
+            incomingRelationshipTemplates.stream()
+                .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                .map(hostedOn -> getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.getSourceElement().getRef()))
+                .forEach(node -> {
+                    unprocessed.push(node);
+                    hostedOnPredecessors.add(node);
+                });
+        } while (!unprocessed.isEmpty());
+
+        return hostedOnPredecessors;
     }
 
     /**
@@ -1008,6 +1030,38 @@ public abstract class ModelUtilities {
         );
     }
 
+    public static void addRequirement(TNodeTemplate node, QName requirementType, String name) {
+        addRequirement(node, requirementType, name, name);
+    }
+
+    public static void addRequirement(TNodeTemplate node, QName requirementType, String name, String id) {
+        List<TRequirement> requirements = node.getRequirements();
+        if (Objects.isNull(requirements)) {
+            requirements = new ArrayList<>();
+            node.setRequirements(requirements);
+        }
+
+        requirements.add(
+            new TRequirement.Builder(id, name, requirementType).build()
+        );
+    }
+
+    public static void addCapability(TNodeTemplate node, QName capabilityType, String name) {
+        addCapability(node, capabilityType, name, name);
+    }
+
+    public static void addCapability(TNodeTemplate node, QName capabilityType, String name, String id) {
+        List<TCapability> capabilities = node.getCapabilities();
+        if (Objects.isNull(capabilities)) {
+            capabilities = new ArrayList<>();
+            node.setCapabilities(capabilities);
+        }
+
+        capabilities.add(
+            new TCapability.Builder(id, capabilityType, name).build()
+        );
+    }
+
     public static boolean containsPolicyType(TNodeTemplate node, QName policyType) {
         return Objects.nonNull(node.getPolicies()) &&
             node.getPolicies().stream()
@@ -1040,5 +1094,82 @@ public abstract class ModelUtilities {
                 }
             })
             .orElseGet(ArrayList::new);
+    }
+
+    /**
+     * Merge properties definitions. Only winery properties definitions are considered. The first element in the list is
+     * the lowest in the inheritance hierarchy.
+     */
+    public static <T extends TEntityType> List<PropertyDefinitionKV> mergePropertiesDefinitions(List<T> entityTypes) {
+        List<PropertyDefinitionKV> propertyDefinitions = new ArrayList<>();
+
+        for (int i = 0; i < entityTypes.size(); i++) {
+            TEntityType entityType = entityTypes.get(i);
+            WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+
+            // Continue if current entity type does not have any properties definitions
+            if (winerysPropertiesDefinition == null) {
+                continue;
+            }
+
+            // Continue if current entity type does not have any properties definitions
+            List<PropertyDefinitionKV> winerysPropertiesDefinitions = winerysPropertiesDefinition.getPropertyDefinitions();
+            if (winerysPropertiesDefinitions == null) {
+                continue;
+            }
+
+            // Add property definition to list if not already added by a previous entity type
+            for (PropertyDefinitionKV entityTypePropertyDefinition : winerysPropertiesDefinitions) {
+                boolean exists = false;
+                for (PropertyDefinitionKV propertyDefinition : propertyDefinitions) {
+                    if (Objects.equals(propertyDefinition.getKey(), entityTypePropertyDefinition.getKey())) {
+                        if (i == 1) {
+                            propertyDefinition.setDerivedFromStatus("OVERRIDE");
+                        }
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    entityTypePropertyDefinition.setDerivedFromType(entityType.getQName());
+
+                    if (i == 0) {
+                        entityTypePropertyDefinition.setDerivedFromStatus("SELF");
+                    } else {
+                        entityTypePropertyDefinition.setDerivedFromStatus("INHERITED");
+                    }
+
+                    propertyDefinitions.add(entityTypePropertyDefinition);
+                }
+            }
+        }
+
+        return propertyDefinitions;
+    }
+
+    public static <T extends TEntityType> WinerysPropertiesDefinition getEffectiveWineryPropertyDefinitions(List<T> hierarchy) {
+        List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
+
+        // Convention defines that the first element in the list is the child
+        T child = hierarchy.get(0);
+
+        // Create new WPD
+        WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        winerysPropertiesDefinition.setElementName(child.getName());
+        winerysPropertiesDefinition.setNamespace(child.getTargetNamespace());
+        winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
+
+        return winerysPropertiesDefinition;
+    }
+
+    /**
+     * Check if two lists are the same. Order does not matter. Null is handled as empty list.
+     */
+    public static <T> boolean compareUnorderedNullableLists(List<T> first, List<T> second) {
+        if (first == null) first = new ArrayList<T>();
+        if (second == null) second = new ArrayList<T>();
+
+        return first.containsAll(second) && first.size() == second.size();
     }
 }

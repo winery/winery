@@ -18,6 +18,7 @@ export class DeploymentArtifactMapping extends RefinementMappings {
     public static readonly idPrefix = 'artifactMap';
 
     public artifactType: string;
+    public targetArtifactType: string;
 
     constructor(id: number) {
         super(id);

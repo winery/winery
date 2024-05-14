@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -14,7 +14,7 @@
 <div class="top" [class.twolines]="needTwoLines">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon" alt="Icon of the Node Type.">
     <img *ngIf="toscaLightCompatibilityData?.isToscaLightCompatible" src="../../../assets/images/toscaLight.png"
-         class="toscaLightCompatible" alt="This Service Tempalte is TOSCALight compatible.">
+         class="toscaLightCompatible" alt="This Service Template is TOSCALight compatible.">
     <div class="informationContainer">
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
                                 [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
@@ -23,6 +23,16 @@
     </div>
     <div class="managementButtons row" *ngIf="showManagementButtons">
         <button class="btn btn-danger" (click)="openDeleteConfirmationModel()">Delete</button>
+        <button *ngIf="this.configurationService.configuration.features.normalization" class="btn btn-info"
+                (click)="sendToDeploymentNormalizerAssistant()">
+            <span [hidden]="contactingNormalization">Normalize</span>
+            <winery-loader [loaderSize]="20" [hidden]="!contactingNormalization"></winery-loader>
+        </button>
+        <button
+            *ngIf="this.configurationService.configuration.features.researchObject && toscaComponent.toscaType === toscaTypes.ServiceTemplate"
+            class="btn btn-info"
+            (click)="openRoarUploadConfirmationModel()">Upload ROAR
+        </button>
         <button *wineryRepositoryShowOnFeature="'radon'" (click)="openChe()" class="btn btn-info">
             Open in IDE
         </button>
@@ -41,7 +51,8 @@
                         <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR</a>
                     </li>
                     <li *ngIf="toscaComponent.toscaType === toscaTypes.ServiceTemplate">
-                        <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with Dependencies</a>
+                        <a target="_blank" href="{{ toscaComponent.includeDependencies }}">CSAR (XML) with
+                            Dependencies</a>
                     </li>
                     <li *ngIf="accountabilityEnabled">
                         <a target="_blank" href="{{ toscaComponent.provenanceCsarPath }}">Provenance CSAR</a>
@@ -54,6 +65,13 @@
                             <a (click)="showErrorReport()">Show TOSCA Light Error Report</a>
                         </ng-template>
                     </li>
+                    <ng-container *ngIf="toscaComponent.toscaType === toscaTypes.ServiceTemplate && researchObject">
+                        <li class="divider dropdown-divider"></li>
+                        <li>
+                            <a target="_blank" href="{{ toscaComponent.asRoar }}">ROAR (Research Object
+                                Archive)</a>
+                        </li>
+                    </ng-container>
                 </ul>
             </div>
         </ng-template>
@@ -104,9 +122,54 @@
         </p>
     </winery-modal-body>
     <winery-modal-footer (onOk)="deleteConfirmed.emit();" [modalRef]="deleteConfirmationModalRef"
-                         [closeButtonLabel]="'Cancel'"
+                         [closeButtonLabel]="'Cancel'" [okButtonClass]="'btn-danger'"
                          [okButtonLabel]="'Delete'">
     </winery-modal-footer>
+</ng-template>
+
+<ng-template #roarConfirmUploadModal>
+    <winery-modal-header [modalRef]="roarUploadConfirmationModalRef"
+                         [title]="'Upload ROAR'">
+    </winery-modal-header>
+    <ng-container *ngIf="!uploadingRoar">
+        <winery-modal-body>
+            <p> Does the ROAR contain personal data according to Art. 4 GDPR ? </p>
+        </winery-modal-body>
+        <winery-modal-footer [showDefaultButtons]="false">
+            <div style="display: flex">
+                <ng-container *ngFor="let option of privacyOptions;let i=index">
+                    <button class="btn btn-info"
+                            (click)="uploadRoarToDarus(option)">{{option}}</button>
+                    <span style="flex: 1 1 auto" *ngIf="i!=privacyOptions.length-1"></span>
+                </ng-container>
+            </div>
+        </winery-modal-footer>
+    </ng-container>
+    <ng-container *ngIf="uploadingRoar">
+        <winery-modal-body>
+            <p> Uploading the ROAR to dataverse <span
+                style="font-weight:bold;">{{this.configurationService.configuration.darus.dataverse}}</span>
+                at <span style="font-weight:bold;">{{this.configurationService.configuration.darus.server}}</span>
+                <span *ngIf="!(uploadingRoarFinished || uploadRoarError)"> ...</span>
+                <span *ngIf="uploadingRoarFinished"> finished!</span>
+                <span *ngIf="uploadRoarError"> failed!</span>
+            </p>
+            <br>
+            <p *ngIf="uploadingRoarFinished">{{roarLocation}}</p>
+            <p *ngIf="uploadRoarError" style="color: red">{{uploadRoarError}}</p>
+            <mat-progress-bar mode="indeterminate"
+                              *ngIf="!uploadingRoarFinished && !uploadRoarError"></mat-progress-bar>
+        </winery-modal-body>
+        <winery-modal-footer *ngIf="uploadingRoarFinished || uploadRoarError" [showDefaultButtons]="false">
+            <div style="display: flex">
+                <button class="btn btn-info" *ngIf="uploadingRoarFinished"
+                        (click)="closeRoarUploadConfirmationModel(true)">Open in New Tab
+                </button>
+                <span style="flex: 1 1 auto"></span>
+                <button class="btn btn-default" (click)="closeRoarUploadConfirmationModel(false)">OK</button>
+            </div>
+        </winery-modal-footer>
+    </ng-container>
 </ng-template>
 
 <ng-template #toscaLightCompatibilityModal>

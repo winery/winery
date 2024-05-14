@@ -63,6 +63,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     elementToRemove: SectionData;
     overwriteValue = false;
     validateInput = false;
+    edmmImport = false;
     isAccountabilityCheckEnabled = false;
 
     importMetadata: ImportMetaInformation;
@@ -190,7 +191,8 @@ export class SectionComponent implements OnInit, OnDestroy {
             url: this.fileUploadUrl,
             additionalParameter: {
                 overwrite: this.overwriteValue,
-                validate: this.validateInput
+                validate: this.validateInput,
+                edmm: this.edmmImport
             }
         });
     }

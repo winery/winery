@@ -15,6 +15,7 @@
 package org.eclipse.winery.repository.filebased.management;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import java.util.SortedSet;
 
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -38,7 +40,7 @@ public class RepositoryResolverTest extends TestWithGitBackedRepository {
 
     @BeforeEach
     public void initResolver() {
-        Optional<IRepositoryResolver> optResolver = RepositoryResolverFactory.getResolver(url);
+        Optional<IRepositoryResolver> optResolver = RepositoryResolverFactory.getResolver(url, false);
         optResolver.ifPresent(repositoryResolver -> resolver = repositoryResolver);
     }
 
@@ -73,19 +75,19 @@ public class RepositoryResolverTest extends TestWithGitBackedRepository {
         Path resolverRepositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
 
         try {
-            GitBasedRepository resolverRepository = resolver.createRepository(resolverRepositoryPath.toFile());
+            IRepository resolverRepository = resolver.createRepository(resolverRepositoryPath.toFile(), "test-repository");
             assertEquals(59, resolverRepository.getNamespaceManager().getAllNamespaces().size());
 
             SortedSet<NodeTypeId> allNodeTypes = resolverRepository.getAllDefinitionsChildIds(NodeTypeId.class);
             assertEquals(45, allNodeTypes.size());
-        } catch (IOException | GitAPIException ex) {
+        } catch (IOException | GitAPIException | URISyntaxException ex) {
             ex.getStackTrace();
         }
     }
 
     @Test
     public void testEmptyRepository() {
-        Optional<IRepositoryResolver> resolver = RepositoryResolverFactory.getResolver("https:/1337/github.com/winry/test-repo");
+        Optional<IRepositoryResolver> resolver = RepositoryResolverFactory.getResolver("https:/1337/github.com/winry/test-repo", false);
         assertFalse(resolver.isPresent());
     }
 }

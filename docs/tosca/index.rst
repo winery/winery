@@ -1,4 +1,4 @@
-.. Copyright (c) 2020 Contributors to the Eclipse Foundation
+.. Copyright (c) 2020-2022 Contributors to the Eclipse Foundation
 
 .. See the NOTICE file(s) distributed with this work for additional
 .. information regarding copyright ownership.
@@ -15,6 +15,21 @@
 
 Notes on TOSCA
 **************
+
+The *Topology and Orchestration Specification for Cloud Applications (TOSCA)* is a standard defined by the OASIS organization.
+It defines a language to model (cloud) applications to automate their provisioning and management.
+Thereby, TOSCA is vendor and technology independent and aims at defining applications in a portable and interoperable manner.
+
+In general, there are two different flavours built in to TOSCA:
+(i) declarative modeling and
+(ii) imperative modeling.
+While the traditional, declarative way to model an application is in the form of a *Topology Template*, i.e., a graph that describes the application's components and their relations,
+it also supports imperative workflows that exactly state the tasks and their order in which they have to be processed.
+However, since we can automatically generate the imperative workflows based on the declarative model, Winery focuses mainly on the creation of the component's types,
+i.e., *Node Types*, and whole applications, i.e., *Service Templates* that add additional meta-information and wrap a *Topology Template*.
+
+For more details about the standard, go to the specifications as linked below.
+For more documentation about how to model an application using Winery and the OpenTOSCA ecosystem, see <../user/xml/index.rst>. 
 
 Recommended Readings
 ====================

@@ -58,7 +58,7 @@ public class MultiRepositoryTest extends RepositoryTest{
      * Helper method to place a dummy repositories.json dependency file into the test directory.
      * Also reconfigures the Factory to a MultiRepository.
      */
-    void writeDependencyFile() {
+    public static void writeDependencyFile() {
         File dependencyFile = Paths.get(Environments.getInstance().getRepositoryConfig().getRepositoryRoot(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES).toFile();
         try (FileWriter writer = new FileWriter(dependencyFile)) {
             writer.write("[\n" +

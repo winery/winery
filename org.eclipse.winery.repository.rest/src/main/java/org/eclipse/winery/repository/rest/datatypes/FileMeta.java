@@ -18,9 +18,9 @@ import java.io.IOException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.winery.common.Constants;
-import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.common.RepositoryFileReference;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 import org.apache.commons.io.FilenameUtils;
@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * based on https://github.com/blueimp/jQuery-File-Upload/wiki/Google-App-Engine-Java
+ * based on <a href="https://github.com/blueimp/jQuery-File-Upload/wiki/Google-App-Engine-Java">...</a>
  * <p>
  * The getters are named according to the requirements of the template in jquery-file-upload-full.jsp
  */
@@ -57,21 +57,15 @@ public class FileMeta {
         try {
             this.size = RepositoryFactory.getRepository().getSize(ref);
         } catch (IOException e) {
-            FileMeta.LOGGER.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             this.size = 0;
         }
         this.url = RestUtils.getAbsoluteURL(ref);
         this.deleteUrl = this.url;
-        this.thumbnailUrl = Environments.getInstance().getUiConfig().getEndpoints().get("repositoryApiUrl") + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
-    }
-
-    /**
-     * @param ref       the reference to get information from
-     * @param URLprefix the string which should be prepended the actual URL. Including the "/"
-     */
-    public FileMeta(RepositoryFileReference ref, String URLprefix) {
-        this(ref);
-        this.url = URLprefix + this.url;
+        this.thumbnailUrl = Environments.getInstance().getUiConfig().getApiEndpoint()
+            + Constants.PATH_MIMETYPEIMAGES
+            + FilenameUtils.getExtension(this.name)
+            + Constants.SUFFIX_MIMETYPEIMAGES;
     }
 
     /**
