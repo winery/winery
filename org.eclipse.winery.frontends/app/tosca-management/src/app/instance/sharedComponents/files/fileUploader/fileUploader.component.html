@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2022-2023 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -61,9 +61,9 @@
     <tbody>
     <tr *ngFor="let item of uploader.queue">
         <td><strong>{{item?.file?.name}}</strong></td>
-        <td *ngIf="item.isUploading || item.isUploaded; else current">{{item.formData.path || '\\'}}</td>
+        <td *ngIf="item.isUploading || item.isUploaded; else current">{{item.formData.path || '/'}}</td>
         <ng-template #current>
-            <td>{{currentPath || '\\'}}</td>
+            <td>{{currentPath || '/'}}</td>
         </ng-template>
         <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size / 1024 / 1024 | number:'.2' }} MB</td>
         <td *ngIf="uploader.options.isHTML5">

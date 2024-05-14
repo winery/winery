@@ -152,6 +152,7 @@
         </p>
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         [okButtonClass]="'btn-danger'"
                          (onOk)="modalTitle === 'Interface' ? removeInterface() : removeOperation();">
     </winery-modal-footer>
 </winery-modal>

@@ -36,7 +36,7 @@ public abstract class AbstractWebSocket {
     @OnOpen
     public void onOpen(Session session) throws IOException {
         this.session = session;
-        logger.info("Opened consistency check web-socket with id: " + session.getId());
+        logger.info("Opened {} with id {} ", this.getClass().getSimpleName(), session.getId());
 
         this.onOpen();
     }

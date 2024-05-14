@@ -89,16 +89,10 @@ public class PropertiesDefinitionResource {
         // Get complete inheritance hierarchy
         List<TEntityType> hierarchy = RepositoryFactory.getRepository().getParentsAndChild(this.getEntityType());
 
-        // Merge properties definitions
-        List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
-
-        // Create new WPD
-        WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
-        winerysPropertiesDefinition.setElementName(this.getEntityType().getName());
-        winerysPropertiesDefinition.setNamespace(this.getEntityType().getTargetNamespace());
-        winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
-
-        return new PropertiesDefinitionResourceApiData(this.getEntityType().getProperties(), winerysPropertiesDefinition);
+        return new PropertiesDefinitionResourceApiData(
+            this.getEntityType().getProperties(),
+            ModelUtilities.getEffectiveWineryPropertyDefinitions(hierarchy)
+        );
     }
 
     /**

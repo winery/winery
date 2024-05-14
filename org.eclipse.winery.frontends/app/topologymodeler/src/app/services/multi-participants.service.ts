@@ -46,7 +46,7 @@ export class MultiParticipantsService {
             + '/'
             + encodeURIComponent(this.backendService.configuration.id)
             + '/placeholdersubstitution';
-        console.log(url);
+
         return this.httpClient.post(
             url,
             { headers: this.httpHeaders, observe: 'response', responseType: 'json' }

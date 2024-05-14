@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,7 +29,7 @@ import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { XaasPackagerComponent } from './xaasPackager/xaasPackager.component';
-import { WineryAddModule } from '../wineryAddComponentModule/addComponent.moudle';
+import { WineryAddModule } from '../wineryAddComponentModule/addComponent.module';
 import { TargetAllocationModule } from '../wineryTargetAllocation/targetAllocation.module';
 import { EntityComponent } from './entityContainer/entity.component';
 import { TagInputModule } from 'ngx-chips';

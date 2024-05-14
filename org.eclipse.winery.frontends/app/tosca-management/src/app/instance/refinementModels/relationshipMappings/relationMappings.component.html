@@ -19,6 +19,7 @@
                           [modalTitle]="modalTitle"
                           [data]="relationshipMappings"
                           (entryAdded)="save($event)"
+                          (entryEdited)="save($event)"
                           (entryRemoved)="remove($event)">
     </winery-dynamic-table>
 </ng-template>
