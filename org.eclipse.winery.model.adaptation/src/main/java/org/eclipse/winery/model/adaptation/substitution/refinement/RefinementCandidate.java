@@ -15,6 +15,9 @@
 package org.eclipse.winery.model.adaptation.substitution.refinement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.extensions.OTRefinementModel;
@@ -35,12 +38,29 @@ public class RefinementCandidate {
     private final ToscaGraph detectorGraph;
     private final int id;
 
+    private final Map<String, List<String>> warnings = new HashMap<>();
+
     public RefinementCandidate(OTRefinementModel refinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
                                ToscaGraph detectorGraph, int id) {
+        this(refinementModel, graphMapping, detectorGraph, id, new HashMap<>());
+    }
+
+    public RefinementCandidate(OTRefinementModel refinementModel, GraphMapping<ToscaNode, ToscaEdge> graphMapping,
+                               ToscaGraph detectorGraph, int id, Map<String, List<String>> warnings) {
         this.refinementModel = Objects.requireNonNull(refinementModel);
         this.graphMapping = Objects.requireNonNull(graphMapping);
         this.detectorGraph = Objects.requireNonNull(detectorGraph);
         this.id = id;
+        this.getNodeIdsToBeReplaced().forEach(nodeId -> {
+            if (warnings.containsKey(nodeId)) {
+                this.warnings.put(nodeId, warnings.get(nodeId));
+            }
+        });
+        this.getRelIdsToBeReplaced().forEach(relationId -> {
+            if (warnings.containsKey(relationId)) {
+                this.warnings.put(relationId, warnings.get(relationId));
+            }
+        });
     }
 
     @NonNull
@@ -57,9 +77,12 @@ public class RefinementCandidate {
         return detectorGraph;
     }
 
-    @NonNull
     public int getId() {
         return id;
+    }
+
+    public Map<String, List<String>> getWarnings() {
+        return warnings;
     }
 
     public ArrayList<String> getNodeIdsToBeReplaced() {
@@ -67,6 +90,16 @@ public class RefinementCandidate {
 
         this.detectorGraph.vertexSet().forEach(toscaNode ->
             ids.add(graphMapping.getVertexCorrespondence(toscaNode, false).getTemplate().getId())
+        );
+
+        return ids;
+    }
+
+    public ArrayList<String> getRelIdsToBeReplaced() {
+        ArrayList<String> ids = new ArrayList<>();
+
+        this.detectorGraph.edgeSet().forEach(toscaEdge ->
+            ids.add(graphMapping.getEdgeCorrespondence(toscaEdge, false).getTemplate().getId())
         );
 
         return ids;

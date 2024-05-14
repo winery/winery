@@ -99,7 +99,7 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
         for (OTPrmMapping mapping : getAllMappings(refinementModel)) {
             TRelationshipTemplate.Builder builder = new TRelationshipTemplate.Builder(
                 "con_" + mapping.getId(),
-                QName.valueOf("{http://opentosca.org/prmMappingTypes}" + mapping.getId().substring(0, mapping.getId().indexOf("_"))),
+                getMappingType(mapping),
                 new TNodeTemplate(mapping.getDetectorElement().getId()),
                 new TNodeTemplate(mapping.getRefinementElement().getId())
             );
@@ -107,12 +107,17 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
             if (mapping instanceof OTPermutationMapping) {
                 builder.setName("PermutationMapping");
             }
-            if (mapping instanceof OTRelationMapping) {
+            if (mapping instanceof OTRelationMapping relationMapping) {
                 builder.setName("RelationshipMapping");
                 LinkedHashMap<String, String> kvproperties = new LinkedHashMap<>();
-                kvproperties.put("direction", ((OTRelationMapping) mapping).getDirection().value());
-                kvproperties.put("applicableRelationshipType", ((OTRelationMapping) mapping).getRelationType().toString());
-                kvproperties.put("validEndpointType", ((OTRelationMapping) mapping).getValidSourceOrTarget().toString());
+
+                kvproperties.put("direction", relationMapping.getDirection().value());
+                kvproperties.put("applicableRelationshipType", relationMapping.getRelationType().toString());
+
+                if (relationMapping.getValidSourceOrTarget() != null) {
+                    kvproperties.put("validEndpointType", relationMapping.getValidSourceOrTarget().toString());
+                }
+
                 TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
                 properties.setKVProperties(kvproperties);
                 builder.setProperties(properties);
@@ -130,20 +135,25 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
                 properties.setKVProperties(kvproperties);
                 builder.setProperties(properties);
             }
-            if (mapping instanceof OTDeploymentArtifactMapping) {
+            if (mapping instanceof OTDeploymentArtifactMapping artifactMapping) {
                 builder.setName("DeploymentArtifactMapping");
                 LinkedHashMap<String, String> kvproperties = new LinkedHashMap<>();
-                kvproperties.put("requiredDeploymentArtifactType", ((OTDeploymentArtifactMapping) mapping).getArtifactType().toString());
+                kvproperties.put("requiredDeploymentArtifactType", artifactMapping.getArtifactType().toString());
                 TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
                 properties.setKVProperties(kvproperties);
                 builder.setProperties(properties);
             }
-            if (mapping instanceof OTBehaviorPatternMapping) {
+            if (mapping instanceof OTBehaviorPatternMapping behaviorPatternMapping) {
                 builder.setName("BehaviorPatternMapping");
+
                 LinkedHashMap<String, String> kvproperties = new LinkedHashMap<>();
-                kvproperties.put("refinementProperty", ((OTBehaviorPatternMapping) mapping).getProperty().getKey());
-                kvproperties.put("refinementPropertyValue", ((OTBehaviorPatternMapping) mapping).getProperty().getValue());
-                kvproperties.put("behaviorPattern", ((OTBehaviorPatternMapping) mapping).getBehaviorPattern());
+                kvproperties.put("behaviorPattern", behaviorPatternMapping.getBehaviorPattern());
+
+                if (behaviorPatternMapping.getProperty() != null) {
+                    kvproperties.put("refinementProperty", behaviorPatternMapping.getProperty().getKey());
+                    kvproperties.put("refinementPropertyValue", behaviorPatternMapping.getProperty().getValue());
+                }
+
                 TEntityTemplate.WineryKVProperties properties = new TEntityTemplate.WineryKVProperties();
                 properties.setKVProperties(kvproperties);
                 builder.setProperties(properties);
@@ -151,6 +161,26 @@ public class RefinementTopologyTemplateResource extends TopologyTemplateResource
             TRelationshipTemplate templateForMapping = new TRelationshipTemplate(builder);
             prmModellingTopologyTemplate.addRelationshipTemplate(templateForMapping);
         }
+    }
+
+    private QName getMappingType(OTPrmMapping mapping) {
+        String localPart = "";
+
+        if (mapping instanceof OTStayMapping) {
+            localPart = "StayMapping";
+        } else if (mapping instanceof OTRelationMapping) {
+            localPart = "RelationshipMapping";
+        } else if (mapping instanceof OTAttributeMapping) {
+            localPart = "AttributeMapping";
+        } else if (mapping instanceof OTPermutationMapping) {
+            localPart = "PermutationMapping";
+        } else if (mapping instanceof OTBehaviorPatternMapping) {
+            localPart = "BehaviorPatternMapping";
+        } else if (mapping instanceof OTDeploymentArtifactMapping) {
+            localPart = "DeploymentArtifactMapping";
+        }
+
+        return new QName("http://opentosca.org/prmMappingTypes", localPart);
     }
 
     private List<OTPrmMapping> getAllMappings(OTRefinementModel refinementModel) {

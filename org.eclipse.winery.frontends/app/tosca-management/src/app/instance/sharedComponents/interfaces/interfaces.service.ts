@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,6 +21,11 @@ import { backendBaseURL } from '../../../configuration';
 import { Utils } from '../../../wineryUtils/utils';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+
+export class IAReport {
+    warning: string;
+    artifactTemplateURL: string;
+}
 
 @Injectable()
 export class InterfacesService {
@@ -104,15 +109,15 @@ export class InterfacesService {
     }
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
-                           generateArtifactApiData: GenerateArtifactApiData): Observable<HttpResponse<string>> {
+                           generateArtifactApiData: GenerateArtifactApiData): Observable<HttpResponse<IAReport>> {
         this.setImplementationsUrl();
         const url = backendBaseURL + '/' + this.implementationsUrl + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'
             + implementationName + '/implementationartifacts/';
         return this.http
-            .post(
+            .post<IAReport>(
                 url,
                 generateArtifactApiData,
-                { headers: this.header, observe: 'response', responseType: 'text' }
+                { headers: this.header, observe: 'response', responseType: 'json' }
             );
     }
 

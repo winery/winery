@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -185,6 +185,7 @@
         </p>
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         [okButtonClass]="'btn-danger'"
                          (onOk)="onRemoveElement()"></winery-modal-footer>
 </winery-modal>
 
@@ -192,20 +193,17 @@
     <winery-modal-header [title]="'Generate Implementation Artifact'"></winery-modal-header>
     <winery-modal-body>
         <form *ngIf="!generating; else loadingGeneration" #generateForm="ngForm">
-            <div class="form-group">
-                <label for="javaPackage" class="control-label">Java Package</label>
-                <input type="text" name="javaPackage" [(ngModel)]="generateArtifactApiData.javaPackage"
-                       required id="javaPackage"
-                       class="form-control">
-            </div>
             <winery-component-exists [generateData]="implementation" [modalRef]="generateImplModal">
             </winery-component-exists>
             <p>
                 There is no check for the name of the implementation artifact. The artifact template name will be reused
                 as implementation artifact name without any further check.
             </p>
-            <winery-component-exists [generateData]="artifactTemplate" [modalRef]="generateImplModal">
-            </winery-component-exists>
+            <div *ngIf="artifactTypes && artifactTemplate.selectedInterface">
+                <winery-component-exists [generateData]="artifactTemplate" [modalRef]="generateImplModal"
+                                         [artifactTypes]="artifactTypes">
+                </winery-component-exists>
+            </div>
         </form>
         <ng-template #loadingGeneration>
             <winery-loader></winery-loader>
@@ -215,6 +213,7 @@
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Generate'"
         [disableOkButton]="!(implementation.createComponent || artifactTemplate.createComponent)"
-        (onOk)="generateImplementationArtifact()">
+        (onOk)="generateImplementationArtifact()"
+        (onCancel)="handleCancel()">
     </winery-modal-footer>
 </winery-modal>

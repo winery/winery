@@ -14,18 +14,43 @@
 
 package org.eclipse.winery.topologygraph.matching;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public class ToscaTypeMatcher implements IToscaMatcher {
 
+    private final boolean ignoreVersions;
+
+    public ToscaTypeMatcher() {
+        this(false);
+    }
+
+    public ToscaTypeMatcher(boolean ignoreVersion) {
+        this.ignoreVersions = ignoreVersion;
+    }
+
     @Override
     public boolean isCompatible(ToscaNode left, ToscaNode right) {
-        return right.getNodeTypes().stream().anyMatch(type -> left.getActualType().getQName().equals(type.getQName()));
+        return right.getNodeTypes().stream()
+            .anyMatch(type -> typesCompatible(left.getActualType().getQName(), type.getQName()));
     }
 
     @Override
     public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
-        return right.getRelationshipTypes().stream().anyMatch(type -> left.getActualType().getQName().equals(type.getQName()));
+        return right.getRelationshipTypes().stream()
+            .anyMatch(type -> typesCompatible(left.getActualType().getQName(), type.getQName()));
+    }
+    
+    private boolean typesCompatible(QName leftQName, QName rightQName) {
+        if (ignoreVersions) {
+            return leftQName.getNamespaceURI().equals(rightQName.getNamespaceURI()) &&
+                VersionUtils.getNameWithoutVersion(leftQName.getLocalPart()).equals(
+                    VersionUtils.getNameWithoutVersion(rightQName.getLocalPart())
+                );
+        }
+        return leftQName.equals(rightQName);
     }
 }

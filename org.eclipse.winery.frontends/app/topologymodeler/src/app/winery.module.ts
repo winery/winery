@@ -50,7 +50,7 @@ import { PlaceComponentsService } from './services/placement.service';
 import { MultiParticipantsComponent } from './multi-participants/multi-participants.component';
 import { LiveModelingService } from './services/live-modeling.service';
 import { ContainerService } from './services/container.service';
-import { ModalModule, TooltipModule } from 'ngx-bootstrap';
+import { CollapseModule, ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { ReqCapRelationshipService } from './services/req-cap-relationship.service';
 import { WineryTableModule } from '../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
 import { LiveModelingActions } from './redux/actions/live-modeling.actions';
@@ -67,7 +67,6 @@ import { GroupViewComponent } from './group-view/group-view.component';
 import { TagService } from '../../../tosca-management/src/app/instance/sharedComponents/tag/tag.service';
 import { WineryDynamicTableModule } from '../../../tosca-management/src/app/wineryDynamicTable/wineryDynamicTable.module';
 import { WineryDuplicateValidatorModule } from '../../../tosca-management/src/app/wineryValidators/wineryDuplicateValidator.module';
-import { CollapseModule } from 'ngx-bootstrap';
 import { GroupViewPoliciesComponent } from './group-view/policies/policies.component';
 import { VersionSliderComponent } from './version-slider/version-slider.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
@@ -89,6 +88,7 @@ import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderS
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { MatListModule } from '@angular/material';
 import { SplitMatchTopologyComponent } from './sidebars/splitting-matching/split-match-topology.component';
+import { WineryLoaderModule } from '../../../tosca-management/src/app/wineryLoader/wineryLoader.module';
 
 @NgModule({
     declarations: [
@@ -151,7 +151,8 @@ import { SplitMatchTopologyComponent } from './sidebars/splitting-matching/split
         LiveModelingSidebarModule,
         NavbarModule,
         CdkAccordionModule,
-        MatListModule
+        MatListModule,
+        WineryLoaderModule
     ],
     providers: [
         // { provide: ToastOptions, useClass: WineryCustomOption },

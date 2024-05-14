@@ -22,19 +22,20 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -43,18 +44,19 @@ import org.eclipse.winery.topologygraph.matching.ToscaPropertyMatcher;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
-    private static final QName QNAME_DOCKER_CONTAINER = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
+
     private static final String PROPERTY_IMAGE_ID = "ImageID";
 
     private final Map<String, ImageRefinementHandler> refinementHandlerByImage = new HashMap<>();
     private final Set<QName> prohibitedTypes;
 
-    public DockerImageRefinementPlugin() {
-        super("docker-image");
+    public DockerImageRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
+        super("docker-image", nodeTypes);
 
-        List<ImageRefinementHandler> handlers = Arrays.asList(new MongoDbHandler(),
+        List<ImageRefinementHandler> handlers = Arrays.asList(
+            // new MongoDbHandler(),
             new WeaveGoHandler(),
-            new WeaveCartsHandler(),
+            // new WeaveCartsHandler(),
             new WeaveFrontEndHandler());
 
         handlers
@@ -68,11 +70,12 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
-        List<TNodeTemplate> nodesToRefineByImage = template.getNodeTemplates().stream()
+    public Set<String> apply(TTopologyTemplate topology) {
+        List<TNodeTemplate> nodesToRefineByImage = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
-                && Objects.equals(node.getType(), QNAME_DOCKER_CONTAINER))
-            .collect(Collectors.toList());
+                && VersionUtils.getNameWithoutVersion(node.getType().getLocalPart()).equals(
+                    VersionUtils.getNameWithoutVersion(OpenToscaBaseTypes.dockerContainerNodeType.getLocalPart())))
+            .toList();
 
         Set<String> discoveredNodeIds = new HashSet<>();
         for (TNodeTemplate curNode : nodesToRefineByImage) {
@@ -90,7 +93,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
 
             if (imageId.isPresent() && imageRefinementHandler.isPresent()) {
                 Set<String> handlerDiscoveredNodeIds = imageRefinementHandler.get()
-                    .handleNode(curNode, template, imageId.get());
+                    .handleNode(curNode, topology, imageId.get());
                 discoveredNodeIds.addAll(handlerDiscoveredNodeIds);
             }
         }
@@ -99,9 +102,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> determineAdditionalInputs(
-        TTopologyTemplate template,
-        ArrayList<String> nodeIdsToBeReplaced) {
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
         return null;
     }
 
@@ -109,7 +110,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
     protected List<TTopologyTemplate> getDetectorGraphs() {
         IRepository repository = RepositoryFactory.getRepository();
 
-        TNodeType computeType = repository.getElement(new NodeTypeId(QNAME_DOCKER_CONTAINER));
+        TNodeType computeType = repository.getElement(new NodeTypeId(OpenToscaBaseTypes.dockerContainerNodeType));
         TNodeTemplate compute = ModelUtilities.instantiateNodeTemplate(computeType);
 
         LinkedHashMap<String, String> computeKvProperties = new LinkedHashMap<>();
@@ -134,7 +135,7 @@ public class DockerImageRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     protected IToscaMatcher getToscaMatcher() {
-        return new ToscaPropertyMatcher(true) {
+        return new ToscaPropertyMatcher(true, true) {
             @Override
             public boolean isCompatible(
                 ToscaNode left,

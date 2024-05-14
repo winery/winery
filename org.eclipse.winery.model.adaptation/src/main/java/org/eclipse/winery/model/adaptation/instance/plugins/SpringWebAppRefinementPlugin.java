@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,43 +27,45 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.OpenToscaBaseTypes;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-
-import com.jcraft.jsch.Session;
 
 import static org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin.petClinic;
 
 public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin {
 
-    private static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
+    public static final QName springWebApp = QName.valueOf("{http://opentosca.org/nodetypes}SpringWebApp_w1");
 
-    public SpringWebAppRefinementPlugin() {
-        super("SpringWebApplication");
+    public SpringWebAppRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
+        super("SpringWebApplication", nodeTypes);
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
-        Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
-        String contextPath = InstanceModelUtils.executeCommand(
-            session,
-            "sudo find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
+
+        List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
+            "find /opt/tomcat/latest/webapps -name *.war -not -path \"*docs/*\" | sed -r 's/.*\\/(.+)\\.war/\\1/'"
         );
 
-        session.disconnect();
+        String contextPath = outputs.get(0);
 
-        template.getNodeTemplates().stream()
+        Optional<TNodeTemplate> webAppExsits = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                 && (springWebApp.equals(node.getType()) || petClinic.equals(node.getType())))
-            .findFirst()
-            .ifPresent(app -> {
+            .findFirst();
+
+        if (contextPath != null && !contextPath.isBlank() && !contextPath.toLowerCase().contains("no such file or directory")) {
+            webAppExsits.ifPresent(app -> {
                 discoveredNodeIds.add(app.getId());
                 if (app.getProperties() == null) {
                     app.setProperties(new TEntityTemplate.WineryKVProperties());
@@ -74,30 +75,37 @@ public class SpringWebAppRefinementPlugin extends InstanceModelRefinementPlugin 
                     properties.getKVProperties().put("context", contextPath.trim());
                 }
             });
+        }
 
-        return discoveredNodeIds;
-    }
+        if (webAppExsits.isPresent()) {
+            TNodeTemplate webApp = webAppExsits.get();
 
-    @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        if (nodeIdsToBeReplaced.size() == 1) {
-            TNodeTemplate node = template.getNodeTemplate(nodeIdsToBeReplaced.get(0));
-            Map<QName, TNodeType> nodeTypes = RepositoryFactory.getRepository()
-                .getQNameToElementMapping(NodeTypeId.class);
-            ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(template, node);
-            Optional<TNodeTemplate> dockerContainer = hostedOnSuccessors.stream()
-                .filter(aSuccessor -> ModelUtilities.isOfType(OpenToscaBaseTypes.dockerContainerNodeType,
-                    Objects.requireNonNull(aSuccessor.getType(), "type is null"),
-                    nodeTypes)).findAny();
-            if (dockerContainer.isPresent()) {
-
-            } else {
-                Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-                return sshInputs.isEmpty() ? null : sshInputs;
+            ArrayList<TNodeTemplate> hostedOnSuccessors = ModelUtilities.getHostedOnSuccessors(topology, webApp);
+            if (hostedOnSuccessors.stream()
+                .noneMatch(node -> node.getType().getLocalPart().toLowerCase().startsWith("java_"))) {
+                hostedOnSuccessors.stream()
+                    .filter(node ->
+                        ModelUtilities.isOfType(OpenToscaBaseTypes.dockerContainerNodeType, node.getType(), this.nodeTypes) ||
+                            ModelUtilities.isOfType(ToscaBaseTypes.compute, node.getType(), this.nodeTypes)
+                    ).findFirst()
+                    .flatMap(tNodeTemplate ->
+                        ModelUtilities.getHostedOnPredecessors(topology, tNodeTemplate)
+                            .stream()
+                            .filter(node -> node.getType().getLocalPart().toLowerCase().startsWith("java_"))
+                            .findFirst()
+                    ).ifPresent(javaNode -> {
+                        TRelationshipTemplate relationshipTemplate = ModelUtilities.instantiateRelationshipTemplate(
+                            RepositoryFactory.getRepository().getElement(new RelationshipTypeId(ToscaBaseTypes.dependsOnRelationshipType)),
+                            webApp,
+                            javaNode
+                        );
+                        topology.addRelationshipTemplate(relationshipTemplate);
+                        discoveredNodeIds.add(webApp.getId());
+                    });
             }
         }
-        Set<String> sshInputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return sshInputs.isEmpty() ? null : sshInputs;
+
+        return discoveredNodeIds;
     }
 
     @Override
