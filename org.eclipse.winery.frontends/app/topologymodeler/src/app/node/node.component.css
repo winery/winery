@@ -18,7 +18,6 @@ div.node {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    z-index: 60;
     font-size: small;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     background: #ffffff;
@@ -40,6 +39,7 @@ div.pattern {
     border-radius: 9%;
     width: 75px;
     height: 75px;
+    z-index: 10;
 }
 
 .patternImage {
@@ -208,6 +208,13 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     position: relative;
     max-width: 30px;
     max-height: 30px;
+}
+
+.deploymentTech {
+    position: absolute;
+    top: 3px;
+    float: right;
+    left: 185px;
 }
 
 .newVersionTriangle {

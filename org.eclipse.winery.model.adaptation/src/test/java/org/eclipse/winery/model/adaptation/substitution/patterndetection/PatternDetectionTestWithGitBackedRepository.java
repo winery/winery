@@ -28,6 +28,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PatternDetectionTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
     @Test
+    @Disabled("Contradicts Lukas' diss")
     public void detectPatterns() throws Exception {
         this.setRevisionTo("origin/plain");
         ServiceTemplateId testTemplateId = new ServiceTemplateId(

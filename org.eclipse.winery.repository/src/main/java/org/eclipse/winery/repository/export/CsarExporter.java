@@ -562,6 +562,16 @@ public class CsarExporter {
 
     private void addRoarFiles(ServiceTemplateId serviceTemplateId, Map<CsarContentProperties, CsarEntry> refMap) {
         ResearchObjectDirectoryId roarDir = new ResearchObjectDirectoryId(serviceTemplateId);
+
+        repository.getContainedFiles(roarDir)
+            .forEach(repositoryFileReference -> {
+                if (repositoryFileReference.getSubDirectory().isEmpty()) {
+                    String file = IdNames.RESEARCH_OBJECT_METADATA + "/" + BackendUtils.getFilenameAndSubDirectory(repositoryFileReference);
+                    CsarContentProperties csarContentProperties = new CsarContentProperties(file);
+                    refMap.put(csarContentProperties, new RepositoryRefBasedCsarEntry(repository, repositoryFileReference));
+                }
+            });
+
         ResearchObjectFilesDirectoryId roarFilesDirectoryId = new ResearchObjectFilesDirectoryId(roarDir);
         repository.getContainedFiles(roarFilesDirectoryId)
             .forEach(repositoryFileReference -> {

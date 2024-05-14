@@ -52,15 +52,15 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
 
     private final Map<String, QName> typeByAmi = new HashMap<>();
 
-    public Ec2AmiRefinementPlugin() {
-        super("ec2ami");
+    public Ec2AmiRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
+        super("ec2ami", nodeTypes);
         typeByAmi.put("ami-0af107682aaa86bd0", UBUNTU_20_04_QNAME);
         typeByAmi.put("ami-00105f70a3660f2ae", UBUNTU_18_04_QNAME);
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
-        List<TNodeTemplate> nodesToRefineByAmi = template.getNodeTemplates().stream()
+    public Set<String> apply(TTopologyTemplate topology) {
+        List<TNodeTemplate> nodesToRefineByAmi = topology.getNodeTemplates().stream()
             .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId()) && Objects.equals(node.getType(),
                 COMPUTE_QNAME))
             .collect(Collectors.toList());
@@ -83,9 +83,7 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
     }
 
     @Override
-    public Set<String> determineAdditionalInputs(
-        TTopologyTemplate template,
-        ArrayList<String> nodeIdsToBeReplaced) {
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
         return null;
     }
 
@@ -110,6 +108,6 @@ public class Ec2AmiRefinementPlugin extends InstanceModelRefinementPlugin {
 
     @Override
     protected IToscaMatcher getToscaMatcher() {
-        return new ToscaPropertyMatcher(true);
+        return new ToscaPropertyMatcher(true, true);
     }
 }

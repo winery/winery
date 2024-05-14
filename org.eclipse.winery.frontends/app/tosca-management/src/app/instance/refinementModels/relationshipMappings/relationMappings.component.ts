@@ -132,8 +132,13 @@ export class RelationMappingsComponent implements OnInit {
 
     save(mapping: RelationMapping) {
         this.loading = true;
-        const id = this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix);
-        const newMapping = new RelationMapping(id);
+        let newMapping = mapping;
+
+        if (!mapping.id) {
+            newMapping = new RelationMapping(
+                this.service.getNewMappingsId(this.relationshipMappings, RelationMapping.idPrefix)
+            );
+        }
         newMapping.detectorElement = mapping.detectorElement;
         newMapping.refinementElement = mapping.refinementElement;
         newMapping.direction = mapping.direction;
