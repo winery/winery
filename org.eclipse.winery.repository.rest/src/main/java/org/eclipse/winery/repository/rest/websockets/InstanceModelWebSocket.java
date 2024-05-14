@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -92,13 +91,12 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
     }
 
     @Override
-    public InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins) {
+    public InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins, boolean detectedInformation) {
         if (plugins != null) {
             try {
-                DataToSend dataToSend = new DataToSend();
-                dataToSend.plugins = plugins;
-                dataToSend.topologyTemplate = template;
-                this.sendAsync(dataToSend);
+                this.sendAsync(
+                    new DataToSend(template, plugins, detectedInformation)
+                );
 
                 this.runPlugin = new CompletableFuture<>();
                 ReceivedData data = this.runPlugin.get();
@@ -129,8 +127,17 @@ public class InstanceModelWebSocket extends AbstractWebSocket implements Instanc
 
     public static class DataToSend {
         public TTopologyTemplate topologyTemplate;
-        public Set<String> requiredUserInputs;
         public List<InstanceModelRefinementPlugin> plugins;
+        public boolean foundNewDetails;
+
+        public DataToSend(TTopologyTemplate topologyTemplate, List<InstanceModelRefinementPlugin> plugins, boolean foundNewDetails) {
+            this.topologyTemplate = topologyTemplate;
+            this.plugins = plugins;
+            this.foundNewDetails = foundNewDetails;
+        }
+
+        public DataToSend() {
+        }
     }
 
     public enum WebSocketTasks {

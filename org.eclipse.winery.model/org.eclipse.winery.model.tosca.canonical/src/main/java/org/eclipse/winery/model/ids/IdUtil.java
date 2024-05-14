@@ -134,7 +134,7 @@ public class IdUtil {
         // The package handling is in {@link org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)}
         String res;
         if (GenericImportId.class.isAssignableFrom(idClass)) {
-            // this fires if idClass is a sub class from ImportCollectionId
+            // this fires if idClass is a subclass from ImportCollectionId
             // special treatment for imports
             res = "imports/";
             if (XSDImportId.class.isAssignableFrom(idClass)) {

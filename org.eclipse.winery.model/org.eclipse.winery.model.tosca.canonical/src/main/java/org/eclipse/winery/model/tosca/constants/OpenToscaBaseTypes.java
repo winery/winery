@@ -18,6 +18,8 @@ import javax.xml.namespace.QName;
 
 public class OpenToscaBaseTypes {
 
+    public static final String OT_Namespace = "{http://opentosca.org/nodetypes}";
+
     // region ********** base elements **********
     public static final QName virtualMachineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}VM");
     public static final QName DockerEngineNodeType = QName.valueOf("{http://opentosca.org/baseelements/nodetypes}DockerEngine");
@@ -28,20 +30,45 @@ public class OpenToscaBaseTypes {
     
     public static final QName ubuntuNodeTypeImpl = QName.valueOf("{http://opentosca.org/nodetypeimplementations}Ubuntu-VM");
     public static final QName ubuntuNodeType = QName.valueOf("{http://opentosca.org/nodetypes}Ubuntu-VM");
-    public static final QName dockerContainerNodeType = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer");
+    public static final QName dockerContainerNodeType = QName.valueOf("{http://opentosca.org/nodetypes}DockerContainer_w1");
     public static final QName dockerContainerArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}DockerContainerArtifact");
+    public  static final QName alpineContainerNodeType = QName.valueOf("{http://opentosca.org/nodetypes}Alpine-Container_w1");
+
+    public static final QName nodeJS = QName.valueOf("{http://opentosca.org/nodetypes}NodeJS_10-w1");
+    public static final QName nodeJSApp = QName.valueOf("{http://opentosca.org/nodetypes}NodeJS-App_10-w1");
 
     // region ********** secure elements **********
     public static final QName secureProxyContainer = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxyContainer");
     public static final QName secureProxy = QName.valueOf("{http://opentosca.org/secureelements/nodetypes}SecureProxy");
     // endregion
+    
+    //region ********** messaging elements **********
+    //TODO: Check if these Types are correct for final version
+    public static final QName publisherProxy = QName.valueOf("{http://opentosca.org/patternsolutions/nodetypes}PublisherProxy");
+    public static final QName subscriberProxy = QName.valueOf("{http://opentosca.org/patternsolutions/nodetypes}SubscriberProxy");
+    public static final QName topic = QName.valueOf("{http://opentosca.org/nodetypes}Topic");
+    public static final QName topicReqType = QName.valueOf("{http://opentosca.org/requirementtypes}MessageBroker");
+    public static final QName proxyReqType = QName.valueOf("{http://opentosca.org/requirementtypes}Java11Runtime");
+    public static final QName proxyPythonReqType = QName.valueOf("{http://opentosca.org/requirementtypes}Python3");
+    public static final QName abstractJava11DriverTemplate = QName.valueOf("{http://opentosca.org/driverinjection/artifacttemplates}Abstract-Java11Driver");
+    public static final QName abstractPython3DriverTemplate = QName.valueOf("{http://opentosca.org/driverinjection/artifacttemplates}Abstract-Python3-8Driver");
+    public static final QName topicConnectsTo = QName.valueOf("{http://opentosca.org/driverinjection/relationshiptypes}ConnectsToTopic");
+    public static final QName httpConnectsTo = QName.valueOf("{http://opentosca.org/problemdetection/relationshiptypes}HTTPConnectsTo");
+
+    public static final QName subscriberProxyDA = QName.valueOf("{http://opentosca.org/patternsolutions/artifacttemplatess}SubscriberProxy_DA");
+    public static final QName publisherProxyDA = QName.valueOf("{http://opentosca.org/patternsolutions/artifacttemplatess}PublisherProxy_DA");
+    //endregion
+    
+    //region ********** multiparticipant-placeholder **********
+    public static final String placeholderTypeNamespace = "http://opentosca/multiparticipant/placeholdertypes";
+    //endregion
 
     // region ********** freeze and defrost **********
     public static final QName stateArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}State");
     public static final QName isoArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}ISO");
     public static final QName cloudImageArtifactType = QName.valueOf("{http://opentosca.org/artifacttypes}CloudImage");
-    public static final QName statefulComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}StatefulComponent");
-    public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/policytypes}FreezableComponent");
+    public static final QName statefulComponentPolicyType = QName.valueOf("{https://patternpedia.org/patternLanguages/cloudComputingPatterns}Stateful-Component");
+    public static final QName freezableComponentPolicyType = QName.valueOf("{http://opentosca.org/management/features/policytypes}FreezableComponent");
     // endregion
 
     // region ********** management features **********

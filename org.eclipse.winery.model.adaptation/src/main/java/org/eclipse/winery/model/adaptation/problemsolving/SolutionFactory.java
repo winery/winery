@@ -16,6 +16,7 @@ package org.eclipse.winery.model.adaptation.problemsolving;
 
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.IpSecAlgorithm;
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.NoOpAlgorithm;
+import org.eclipse.winery.model.adaptation.problemsolving.algorithms.PubSubProxyAlgorithm;
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.SecureContainerProxyAlgorithm;
 import org.eclipse.winery.model.adaptation.problemsolving.algorithms.SecureVmProxyAlgorithm;
 
@@ -29,6 +30,8 @@ public class SolutionFactory {
                 return new SecureContainerProxyAlgorithm();
             case "securevmproxy":
                 return new SecureVmProxyAlgorithm();
+            case "pubsubproxys":
+                return new PubSubProxyAlgorithm();
             default:
                 return new NoOpAlgorithm();
         }

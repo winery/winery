@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,7 +19,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.security.AccessControlException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,12 +51,11 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmExporter;
 import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -71,10 +69,10 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TInterface;
@@ -86,6 +84,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -129,8 +128,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
- * more. For instance, resource functionality. Utility functionality for the repository is contained at {@link
- * BackendUtils}
+ * more. For instance, resource functionality. Utility functionality for the repository is contained at
+ * {@link BackendUtils}
  */
 public class RestUtils {
 
@@ -152,7 +151,7 @@ public class RestUtils {
                 // needed for {@link
                 // returnRepoPath(File, String)}
                 Locale.setDefault(Locale.ENGLISH);
-            } catch (AccessControlException e) {
+            } catch (SecurityException e) {
                 // Happens at Google App Engine
                 LOGGER.error("Could not switch locale to English", e);
             }
@@ -295,8 +294,7 @@ public class RestUtils {
         return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
-    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
-
+    private static EdmmExporter createEdmmConverter(boolean useAbsolutPaths) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -305,8 +303,7 @@ public class RestUtils {
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
-        Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
+        Map<QName, EdmmType> oneToOneMappings = edmmManager.getToscaToEdmmMap();
 
         if (nodeTypes.isEmpty()) {
             throw new IllegalStateException("No Node Types defined!");
@@ -314,15 +311,34 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
+        return new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+    }
 
-        return edmmConverter.transform(element);
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+        EdmmExporter converter = createEdmmConverter(useAbsolutPaths);
+
+        return converter.transform(element);
+    }
+
+    public static EntityGraph getEdmmEntityGraph(TTopologyTemplate topology, boolean useAbsolutePaths) {
+        EdmmExporter converter = createEdmmConverter(useAbsolutePaths);
+
+        return converter.transform(topology, null);
+    }
+
+    public static Response getEdmmModel(TTopologyTemplate element, boolean useAbsolutPaths) {
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
+        return getEdmmModelAsYamlResponse(transform);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
-
         EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
 
+        return getEdmmModelAsYamlResponse(transform);
+    }
+
+    private static Response getEdmmModelAsYamlResponse(EntityGraph transform) {
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
@@ -383,14 +399,14 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(id);
+        return Environments.getInstance().getUiConfig().getApiEndpoint() + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(ref);
+        return Environments.getInstance().getUiConfig().getApiEndpoint() + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {

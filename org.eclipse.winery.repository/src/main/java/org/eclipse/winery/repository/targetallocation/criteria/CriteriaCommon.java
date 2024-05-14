@@ -112,6 +112,6 @@ public abstract class CriteriaCommon extends Criteria {
                                                                         List<PermutationHelper> permutation);
 
     protected void split(TopologyWrapper topology) throws SplittingException {
-        topology.setTopology(splitting.split(topology.getTopology()));
+        //topology.setTopology(splitting.split(topology.getTopology()));
     }
 }

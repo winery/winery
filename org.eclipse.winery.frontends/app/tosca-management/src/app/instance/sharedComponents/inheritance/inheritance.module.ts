@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,7 +22,7 @@ import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQN
 import { SelectModule } from 'ng2-select';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.moudle';
+import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.module';
 
 @NgModule({
     imports: [

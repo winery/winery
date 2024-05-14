@@ -59,12 +59,21 @@ public abstract class TestWithGitBackedRepository {
      * @throws RuntimeException wraps an Exception
      */
     public TestWithGitBackedRepository() {
-        this(RepositoryConfigurationObject.RepositoryProvider.FILE);
+        this(RepositoryConfigurationObject.RepositoryProvider.FILE, "https://github.com/winery/test-repository");
+    }
+
+    public TestWithGitBackedRepository(String remoteUrl) {
+        this(RepositoryConfigurationObject.RepositoryProvider.FILE, remoteUrl);
     }
 
     protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider) {
-        this.repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
-        String remoteUrl = "https://github.com/winery/test-repository.git";
+        this(provider, "https://github.com/winery/test-repository");
+    }
+
+    protected TestWithGitBackedRepository(RepositoryConfigurationObject.RepositoryProvider provider, String remoteUrl) {
+        String[] splitName = remoteUrl.split("/");
+        String repositoryName = splitName[splitName.length - 1];
+        this.repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve(repositoryName);
 
         try {
             LOGGER.debug("Testing with repository directory {}", repositoryPath);
@@ -83,7 +92,12 @@ public abstract class TestWithGitBackedRepository {
                     .setDirectory(repositoryPath.toFile())
                     .call();
             } else {
-                Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
+                Repository gitRepo;
+                if (Files.exists(repositoryPath.resolve("repositories.json"))) {
+                    gitRepo = builder.setWorkTree(repositoryPath.resolve("workspace").toFile()).setMustExist(false).build();
+                } else {
+                    gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
+                }
                 this.git = new Git(gitRepo);
                 try {
                     this.git.fetch().call();

@@ -54,8 +54,6 @@ public class Prefs implements ServletContextListener {
      * Constructor for Unit testing ONLY!
      * <p>
      * <emph>Do not call! (except from Unit testing code)</emph>
-     *
-     * @param initializeRepository true if the repository should be initialized as provided in winery.properties
      */
     public Prefs(boolean initializeRepository) throws Exception {
         this();
@@ -89,6 +87,8 @@ public class Prefs implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext context = servletContextEvent.getServletContext();
         Objects.requireNonNull(context);
+
+        System.setProperty("line.separator", "\n");
 
         try {
             this.doRepositoryInitialization();
