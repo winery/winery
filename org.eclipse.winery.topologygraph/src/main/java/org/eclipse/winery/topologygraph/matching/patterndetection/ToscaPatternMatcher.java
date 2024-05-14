@@ -29,9 +29,6 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.topologygraph.matching.ToscaPrmPropertyMatcher;
-import org.eclipse.winery.topologygraph.model.ToscaEdge;
-import org.eclipse.winery.topologygraph.model.ToscaEntity;
-import org.eclipse.winery.topologygraph.model.ToscaNode;
 
 public abstract class ToscaPatternMatcher extends ToscaPrmPropertyMatcher {
 
@@ -47,37 +44,8 @@ public abstract class ToscaPatternMatcher extends ToscaPrmPropertyMatcher {
         this.entityTypes.putAll(repository.getQNameToElementMapping(RelationshipTypeId.class));
     }
 
-    @Override
-    public boolean isCompatible(ToscaNode left, ToscaNode right) {
-        // By convention, the left node is always the element to search in right.
-        TEntityTemplate detectorElement = left.getTemplate();
-        TEntityTemplate candidateElement = right.getTemplate();
-        return isCompatible(detectorElement, candidateElement);
-    }
-
-    @Override
-    public boolean isCompatible(ToscaEdge left, ToscaEdge right) {
-        // By convention, the left node is always the element to search in right.
-        TEntityTemplate detectorElement = left.getTemplate();
-        TEntityTemplate candidateElement = right.getTemplate();
-        return isCompatible(detectorElement, candidateElement);
-    }
-
     protected boolean isCompatible(TEntityTemplate left, TEntityTemplate right) {
         return ModelUtilities.isOfType(left.getType(), right.getType(), entityTypes)
-            && behaviorPatternsCompatible(left, right);
-    }
-
-    protected boolean behaviorPatternsCompatible(ToscaEntity left, ToscaEntity right) {
-        // By convention, the left node is always the element to search in right.
-        TEntityTemplate detectorElement = left.getTemplate();
-        TEntityTemplate candidateElement = right.getTemplate();
-        return behaviorPatternsCompatible(detectorElement, candidateElement);
-    }
-
-    protected boolean behaviorPatternsCompatible(TEntityTemplate left, TEntityTemplate right) {
-        // behavior patterns have to be equal
-        return characterizingPatternsCompatible(left, right)
-            && characterizingPatternsCompatible(right, left);
+            && characterizingPatternsCompatible(left, right);
     }
 }

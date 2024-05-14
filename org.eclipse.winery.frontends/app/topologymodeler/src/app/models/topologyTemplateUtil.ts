@@ -26,7 +26,6 @@ import { InheritanceUtils } from './InheritanceUtils';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { TPolicy } from './policiesModalData';
 import * as _ from 'lodash';
-import { TNode } from '@angular/core/src/render3/interfaces/node';
 
 export abstract class TopologyTemplateUtil {
 
@@ -119,7 +118,7 @@ export abstract class TopologyTemplateUtil {
             }
             // look for missing capabilities and add them
             const capDefs: CapabilityDefinitionModel[] = InheritanceUtils.getEffectiveCapabilityDefinitionsOfNodeType(node.type, types);
-            if (!node.capabilities ) {
+            if (!node.capabilities) {
                 node.capabilities = [];
             }
             capDefs.forEach((def) => {
@@ -169,8 +168,8 @@ export abstract class TopologyTemplateUtil {
             otherAttributes,
             node.x,
             node.y,
-            node.capabilities ? node.capabilities :  [] ,
-            node.requirements ? node.requirements :  [],
+            node.capabilities ? node.capabilities : [],
+            node.requirements ? node.requirements : [],
             node.deploymentArtifacts ? node.deploymentArtifacts : [],
             node.policies ? node.policies : [],
             node.artifacts ? node.artifacts : [],
@@ -320,8 +319,8 @@ export abstract class TopologyTemplateUtil {
             return true;
         }
 
-        return typeof o1 === 'object' && Object.keys(o1).length > 0
-            ? Object.keys(o1).length === Object.keys(o2).length
+        return typeof o1 === 'object' && typeof o2 === 'object'
+            && Object.keys(o1).length > 0 ? Object.keys(o1).length === Object.keys(o2).length
             && Object.keys(o1).every((p) => {
                 return this.objectsEquals(o1[p], o2[p]);
             })
@@ -368,10 +367,10 @@ export abstract class TopologyTemplateUtil {
 
     static findLastSavedRelationshipTemplate(lastSavedTopology: TTopologyTemplate, currentRelationshipTemplate: TRelationshipTemplate): TRelationshipTemplate {
         return lastSavedTopology.relationshipTemplates.find((relationshipTemplate) => {
-            return relationshipTemplate.sourceElement.ref === currentRelationshipTemplate.sourceElement.ref &&
-            relationshipTemplate.targetElement.ref === currentRelationshipTemplate.targetElement.ref &&
-            relationshipTemplate.type === currentRelationshipTemplate.type;
-        }
+                return relationshipTemplate.sourceElement.ref === currentRelationshipTemplate.sourceElement.ref &&
+                    relationshipTemplate.targetElement.ref === currentRelationshipTemplate.targetElement.ref &&
+                    relationshipTemplate.type === currentRelationshipTemplate.type;
+            }
         );
     }
 

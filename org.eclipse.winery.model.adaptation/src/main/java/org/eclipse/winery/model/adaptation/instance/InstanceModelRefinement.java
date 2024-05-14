@@ -19,20 +19,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.adaptation.instance.plugins.Ec2AmiRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.JavaRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.MySqlDbmsRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.PetClinicRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.SpringWebAppRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.TomcatRefinementPlugin;
 import org.eclipse.winery.model.adaptation.instance.plugins.dockerimage.DockerImageRefinementPlugin;
+import org.eclipse.winery.model.adaptation.instance.plugins.dockerimage.DockerLogsRefinementPlugin;
+import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.DiscoveryPluginDescriptor;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -55,17 +62,21 @@ public class InstanceModelRefinement {
 
     private final InstanceModelPluginChooser pluginChooser;
     private final List<InstanceModelRefinementPlugin> plugins;
+    private final Map<QName, TNodeType> nodeTypes;
 
     public InstanceModelRefinement(InstanceModelPluginChooser chooser) {
         this.pluginChooser = chooser;
+        this.nodeTypes = RepositoryFactory.getRepository().getQNameToElementMapping(NodeTypeId.class);
         this.plugins = Arrays.asList(
-            new TomcatRefinementPlugin(),
-            new MySqlDbRefinementPlugin(),
-            new MySqlDbmsRefinementPlugin(),
-            new PetClinicRefinementPlugin(),
-            new SpringWebAppRefinementPlugin(),
-            new Ec2AmiRefinementPlugin(),
-            new DockerImageRefinementPlugin()
+            new TomcatRefinementPlugin(nodeTypes),
+            new MySqlDbRefinementPlugin(nodeTypes),
+            new MySqlDbmsRefinementPlugin(nodeTypes),
+            new PetClinicRefinementPlugin(nodeTypes),
+            new SpringWebAppRefinementPlugin(nodeTypes),
+            new Ec2AmiRefinementPlugin(nodeTypes),
+            new DockerImageRefinementPlugin(nodeTypes),
+            new DockerLogsRefinementPlugin(nodeTypes),
+            new JavaRefinementPlugin(nodeTypes)
         );
     }
 
@@ -116,12 +127,13 @@ public class InstanceModelRefinement {
         }
 
         boolean pluginsAreAvailable = true;
+        boolean foundNewInformation = false;
         do {
             ToscaGraph topologyGraph = ToscaTransformer.createTOSCAGraph(topologyTemplate);
             List<InstanceModelRefinementPlugin> executablePlugins = this.plugins.stream()
-                .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph))
+                .filter(plugin -> plugin.isApplicable(topologyTemplate, topologyGraph, discoveryPluginDescriptors))
                 .collect(Collectors.toList());
-            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins);
+            InstanceModelRefinementPlugin selectedPlugin = pluginChooser.selectPlugin(topologyTemplate, executablePlugins, foundNewInformation);
 
             if (selectedPlugin != null) {
                 DiscoveryPluginDescriptor discoveryPlugin = discoveryPluginDescriptors.stream()
@@ -136,6 +148,9 @@ public class InstanceModelRefinement {
                         return discoveryPluginDescriptor;
                     });
                 Set<String> pluginDiscoveredNodeIds = selectedPlugin.apply(topologyTemplate);
+
+                foundNewInformation = !pluginDiscoveredNodeIds.isEmpty();
+
                 List<String> discoveredIds = new ArrayList<>();
                 discoveredIds.addAll(pluginDiscoveredNodeIds);
                 discoveredIds.addAll(discoveryPlugin.getDiscoveredIds());

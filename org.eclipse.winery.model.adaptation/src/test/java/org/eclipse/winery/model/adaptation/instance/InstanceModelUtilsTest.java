@@ -61,7 +61,7 @@ class InstanceModelUtilsTest extends TestWithGitRepoAndSshServer {
         Set<String> sshProps = InstanceModelUtils.getRequiredSSHInputs(serviceTemplate.getTopologyTemplate(), Collections.singletonList("OperatingSystem_0"));
 
         assertNotNull(sshProps);
-        assertEquals(3, sshProps.size());
+        assertEquals(4, sshProps.size());
     }
 
     @Test

@@ -29,6 +29,7 @@ import { ConfigurationComponent } from '../../instance/admin/accountability/conf
 import { ProvenanceComponent } from '../../instance/admin/accountability/provenance/provenance.component';
 import { FeatureConfigurationComponent } from '../../instance/admin/configuration/configuration.component';
 import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMappings.component';
+import { EdmmTypesComponent } from '../../instance/admin/edmmTypes/edmmTypes.component';
 
 const toscaType = ToscaTypes.Admin;
 
@@ -58,6 +59,7 @@ const adminRoutes: Routes = [
             { path: 'configuration', component: FeatureConfigurationComponent },
             { path: '1to1edmmmappings', component: EdmmMappingsComponent },
             { path: 'edmmtypemappings', component: EdmmMappingsComponent },
+            { path: 'edmmtypes', component: EdmmTypesComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full' }
         ]
     },

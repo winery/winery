@@ -41,8 +41,8 @@ public abstract class SubstitutionUtils {
      *                  corresponding <code>DefinitionsChildId</code>
      * @param <R>       the class of the templates
      * @param <T>       the class of the types
-     * @return a map containing a mapping between substitutable templates and their available sub types which can be
-     * used during the substitution
+     * @return a map containing a mapping between substitutable templates and their available subtypes which can be used
+     * during the substitution
      */
     public static <R extends HasType, T extends HasInheritance> Map<R, List<Subtypes<T>>> collectSubstitutableTemplates(List<R> templates, Map<QName, T> types) {
         Map<R, List<Subtypes<T>>> substitutableTypes = new HashMap<>();

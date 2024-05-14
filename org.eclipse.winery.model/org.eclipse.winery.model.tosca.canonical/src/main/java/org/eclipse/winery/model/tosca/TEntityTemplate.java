@@ -211,6 +211,10 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         public void setKVProperties(@NonNull LinkedHashMap<String, String> KVProperties) {
             this.KVProperties = KVProperties;
         }
+        
+        public void addProperty(String key, String value) {
+            this.KVProperties.put(key, value);
+        }
 
         @Nullable
         public String getNamespace() {

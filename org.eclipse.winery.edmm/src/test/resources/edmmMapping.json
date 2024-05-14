@@ -13,14 +13,7 @@
             "edmmType": "tomcat"
         }
     ],
-    "edmmTypeMapping": [
-        {
-            "toscaType": "{https://ex.org/test/tosca}ubuntu",
-            "edmmType": "compute"
-        },
-        {
-            "toscaType": "{https://ex.org/test/tosca}apache2.4",
-            "edmmType": "web_server"
-        }
+    "edmmTypes": [
+        "hosted_on", "connects_to", "tomcat"
     ]
 }

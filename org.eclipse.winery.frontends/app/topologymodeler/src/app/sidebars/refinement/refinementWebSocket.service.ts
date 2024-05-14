@@ -14,9 +14,7 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { TTopologyTemplate } from '../../models/ttopology-template';
-import {
-    AbstractRefinementWebSocketService, RefinementTasks, RefinementWebSocketData
-} from './abstractRefinementWebSocket.service';
+import { AbstractRefinementWebSocketService, RefinementTasks, RefinementWebSocketData } from './abstractRefinementWebSocket.service';
 
 export interface RefinementElement {
     refinementCandidates: PatternRefinementModel[];
@@ -37,6 +35,10 @@ export interface PatternRefinementModel {
     refinementModel: {
         name: string;
         targetNamespace: string;
+    };
+
+    warnings: {
+        [key: string]: string[]
     };
 }
 
