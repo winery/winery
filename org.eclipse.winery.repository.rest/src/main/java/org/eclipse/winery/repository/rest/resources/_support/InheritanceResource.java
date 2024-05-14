@@ -52,7 +52,8 @@ public class InheritanceResource {
      * {
      * "isAbstract": "no",
      * "isFinal": "yes",
-     * "derivedFrom": "[QName]"
+     * "derivedFrom": "[QName]",
+     * "cyclicInheritance": true
      * }
      */
     @GET

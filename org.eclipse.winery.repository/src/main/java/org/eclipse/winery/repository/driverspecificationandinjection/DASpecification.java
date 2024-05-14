@@ -32,6 +32,7 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.ToscaBaseTypes;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -82,10 +83,10 @@ public class DASpecification {
      *
      */
     public static Set<Pair<TRelationshipTemplate, TNodeTemplate>> getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode
-    (TNodeTemplate nodeTemplate, TDeploymentArtifact deploymentArtifact, TTopologyTemplate topologyTemplate) {
+    (TNodeTemplate nodeTemplate, TDeploymentArtifact deploymentArtifact, TTopologyTemplate topologyTemplate) throws DriverInjectionException {
 
         // key is the node template the nodeTemplate is directly connected to this is the indicator from which connection the concrete DA is coming from
-        // value is the node template which has a concrete DA attached to substitute the abstract DA of the nodeTemplate
+        // / value is the node template which has a concrete DA attached to substitute the abstract DA of the nodeTemplate
         Set<Pair<TRelationshipTemplate, TNodeTemplate>> nodeTemplateWithConcreteDAAndDirectlyConnectedNode = new HashSet<>();
         List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
 
@@ -111,9 +112,8 @@ public class DASpecification {
             List<TRelationshipTemplate> outgoingRelationshipTemplates = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate)
                 .stream()
                 .filter(outgoingRelation -> {
-                    TRelationshipType.ValidTarget validTarget = getBasisRelationshipType(outgoingRelation.getType()).getValidTarget();
-                    return validTarget != null
-                        && validTarget.getTypeRef().getLocalPart().equalsIgnoreCase("Container");
+                    TRelationshipType relationshipType = getBasisRelationshipType(outgoingRelation.getType());
+                    return relationshipType.getQName().equals(ToscaBaseTypes.hostedOnRelationshipType);
                 })
                 .collect(Collectors.toList());
 

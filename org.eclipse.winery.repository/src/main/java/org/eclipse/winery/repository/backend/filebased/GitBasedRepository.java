@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
@@ -142,7 +143,8 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
      * @throws NoWorkTreeException thrown if the directory is not a git work tree
      */
     public GitBasedRepository(GitBasedRepositoryConfiguration repositoryConfiguration, AbstractFileBasedRepository repository) throws IOException, NoWorkTreeException, GitAPIException {
-        super(repository.getRepositoryRoot());
+        super(repository.getRepositoryRoot(), repository.getId());
+
         this.configuration = repositoryConfiguration;
         this.repository = repository;
 
@@ -202,7 +204,8 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
     /**
      * This method registers an Object on the repositories {@link EventBus}
      *
-     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     * @param eventListener an objects that contains methods annotated with the
+     *                      @{@link com.google.common.eventbus.Subscribe}
      */
     public void registerForEvents(Object eventListener) {
         this.eventBus.register(eventListener);
@@ -211,7 +214,8 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
     /**
      * This method unregisters an Object on the repositories {@link EventBus}
      *
-     * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+     * @param eventListener an objects that contains methods annotated with the
+     *                      @{@link com.google.common.eventbus.Subscribe}
      */
     public void unregisterForEvents(Object eventListener) {
         this.eventBus.register(eventListener);
@@ -406,6 +410,26 @@ public class GitBasedRepository extends AbstractFileBasedRepository implements I
         } catch (GitAPIException e) {
             LOGGER.trace(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void putContentToFile(RepositoryFileReference ref, InputStream inputStream) throws IOException {
+        repository.putContentToFile(ref, inputStream);
+    }
+
+    @Override
+    public Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        return repository.getAllDirsAndFiles(ref, depth);
+    }
+
+    @Override
+    public Path move(RepositoryFileReference refSource, RepositoryFileReference refTarget) throws IOException {
+        return repository.move(refSource, refTarget);
+    }
+
+    @Override
+    public void createDir(RepositoryFileReference ref) throws IOException {
+        repository.createDir(ref);
     }
 
     @Override

@@ -1,0 +1,115 @@
+{
+    "datasetVersion": {
+        "metadataBlocks": {
+            "citation": {
+                "fields": [
+                    {
+                        "value": "<title>",
+                        "typeClass": "primitive",
+                        "multiple": false,
+                        "typeName": "title"
+                    },
+                    {
+                        "value": [
+                            {
+                                "authorName": {
+                                    "value": "<author>",
+                                    "typeClass": "primitive",
+                                    "multiple": false,
+                                    "typeName": "authorName"
+                                }
+                            }
+                        ],
+                        "typeClass": "compound",
+                        "multiple": true,
+                        "typeName": "author"
+                    },
+                    {
+                        "value": [
+                            {
+                                "datasetContactEmail": {
+                                    "typeClass": "primitive",
+                                    "multiple": false,
+                                    "typeName": "datasetContactEmail",
+                                    "value": "<contact>"
+                                }
+                            }
+                        ],
+                        "typeClass": "compound",
+                        "multiple": true,
+                        "typeName": "datasetContact"
+                    },
+                    {
+                        "value": [
+                            {
+                                "dsDescriptionValue": {
+                                    "value": "<description>",
+                                    "multiple": false,
+                                    "typeClass": "primitive",
+                                    "typeName": "dsDescriptionValue"
+                                }
+                            }
+                        ],
+                        "typeClass": "compound",
+                        "multiple": true,
+                        "typeName": "dsDescription"
+                    },
+                    {
+                        "value": [
+                            "<subjects>"
+                        ],
+                        "typeClass": "controlledVocabulary",
+                        "multiple": true,
+                        "typeName": "subject"
+                    },
+                    {
+                        "typeName": "publication",
+                        "multiple": true,
+                        "typeClass": "compound",
+                        "value": [
+                            {
+                                "publicationCitation": {
+                                    "typeName": "publicationCitation",
+                                    "multiple": false,
+                                    "typeClass": "primitive",
+                                    "value": "<citation>"
+                                },
+                                "publicationIDType": {
+                                    "typeName": "publicationIDType",
+                                    "multiple": false,
+                                    "typeClass": "controlledVocabulary",
+                                    "value": "<idType>"
+                                },
+                                "publicationIDNumber": {
+                                    "typeName": "publicationIDNumber",
+                                    "multiple": false,
+                                    "typeClass": "primitive",
+                                    "value": "<id>"
+                                },
+                                "publicationURL": {
+                                    "typeName": "publicationURL",
+                                    "multiple": false,
+                                    "typeClass": "primitive",
+                                    "value": "<url>"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "displayName": "Citation Metadata"
+            },
+            "privacy": {
+                "displayName": "Privacy Metadata",
+                "name": "privacy",
+                "fields": [
+                    {
+                        "typeName": "privData",
+                        "multiple": false,
+                        "typeClass": "controlledVocabulary",
+                        "value": "<privData>"
+                    }
+                ]
+            }
+        }
+    }
+}

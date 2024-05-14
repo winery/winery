@@ -57,11 +57,11 @@
         <github.global.server>github</github.global.server>
         <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.surefire.version>3.0.0-M5</maven.surefire.version>
-        <maven.checkstyle.version>3.1.1</maven.checkstyle.version>
+        <maven.checkstyle.version>3.2.1</maven.checkstyle.version>
         <checkstyle.addons.version>6.0.1</checkstyle.addons.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -70,7 +70,7 @@
 
         <!-- versions of all used libraries -->
         <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
-        <com.fasterxml.jackson>2.10.1</com.fasterxml.jackson>
+        <com.fasterxml.jackson>2.13.2</com.fasterxml.jackson>
         <de.danielbechler.java-object-diff>0.95</de.danielbechler.java-object-diff>
         <io.github.adr.e-adr.version>1.0.0</io.github.adr.e-adr.version>
         <org.apache.commons.configuration>2.3</org.apache.commons.configuration>
@@ -85,10 +85,10 @@
         <commons-codec>1.11</commons-codec>
         <org.xmlunit>2.6.4</org.xmlunit>
         <org.skyscreamer.jsonassert>1.5.0</org.skyscreamer.jsonassert>
-        <io.rest-assured>3.0.2</io.rest-assured>
+        <io.rest-assured>5.3.0</io.rest-assured>
         <xerces.xercesImpl.version>2.12.0</xerces.xercesImpl.version>
         <snakeyaml.version>1.25</snakeyaml.version>
-        <edmm.version>1.0.18</edmm.version>
+        <edmm.version>7f550a1915</edmm.version>
         <tika.version>1.26</tika.version>
 
         <!-- grouped libraries -->
@@ -100,7 +100,7 @@
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <junit.platform.version>1.3.2</junit.platform.version>
 
-        <jersey.version>2.30.1</jersey.version>
+        <jersey.version>2.37</jersey.version>
         <org.eclipse.persistence>2.7.6</org.eclipse.persistence>
     </properties>
     <profiles>
@@ -117,14 +117,13 @@
                 <module>org.eclipse.winery.compliance</module>
                 <module>org.eclipse.winery.crawler</module>
                 <module>org.eclipse.winery.edmm</module>
-                <module>org.eclipse.winery.frontends</module>
                 <module>org.eclipse.winery.generators.ia</module>
                 <module>org.eclipse.winery.highlevelrestapi</module>
                 <module>org.eclipse.winery.model</module>
                 <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
-                <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.extension</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
@@ -133,6 +132,7 @@
                 <module>org.eclipse.winery.topologygraph</module>
                 <module>org.eclipse.winery.tools.copybaragenerator</module>
                 <module>org.eclipse.winery.tools.deployablecomponents</module>
+                <module>org.eclipse.winery.frontends</module>
             </modules>
         </profile>
         <profile>
@@ -157,7 +157,7 @@
                 <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
                 <module>org.eclipse.winery.model.csar.toscametafile</module>
-                <module>org.eclipse.winery.model.selfservice</module>
+                <module>org.eclipse.winery.model.extension</module>
                 <module>org.eclipse.winery.model.threatmodeling</module>
                 <module>org.eclipse.winery.reporting</module>
                 <module>org.eclipse.winery.repository</module>
@@ -174,7 +174,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
+                <version>0.8.8</version>
                 <configuration>
                     <append>${jacoco.append}</append>
                     <destFile>${jacoco.reportPath}</destFile>
@@ -205,7 +205,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.4.1</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>

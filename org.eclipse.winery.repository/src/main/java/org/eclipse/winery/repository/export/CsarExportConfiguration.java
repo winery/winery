@@ -32,6 +32,11 @@ public enum CsarExportConfiguration {
     INCLUDE_DEPENDENCIES,
 
     /**
+     * Indicates that the CSAR should contain all research object related files.
+     */
+    INCLUDE_ROAR_FILES,
+
+    /**
      * 
      */
     REPOSITORY_URI,

@@ -31,13 +31,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class RepositoryTest {
+
     protected static final Logger LOGGER = LoggerFactory.getLogger(MultiRepositoryManagerTest.class);
     static String workspaceRepositoryRoot;
     static boolean workspaceRepositoryTenant;
 
     /**
-     * This sets the repository root to a test directory where the multirepository will be temporarily be initialized.
-     * This additionaly saves the workspace repository root to set it back later.
+     * This sets the repository root to a test directory where the multi repository will be temporarily be initialized.
+     * This additionally saves the workspace repository root to set it back later.
      */
     @BeforeAll
     static void getRepositoryRootBeforeTestAndSetUpTestRoot() {

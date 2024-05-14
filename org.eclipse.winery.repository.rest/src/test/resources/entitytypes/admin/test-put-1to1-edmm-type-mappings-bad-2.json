@@ -1,0 +1,11 @@
+[ {
+    "edmmType" : "software_component",
+    "toscaType" : "{https://edmm.uni-stuttgart.de/nodetypes}Software_Component"
+}, {
+    "edmmType" : "web_application",
+    "toscaType" : "{https://edmm.uni-stuttgart.de/nodetypes}Web_Application"
+},{
+    "edmmType" : "sauron",
+    "toscaType" : "{https://edmm.uni-stuttgart.de/nodetypes}Software_Component"
+}
+]

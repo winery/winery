@@ -28,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.common.configuration.DARefinementConfigurationObject;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.configuration.RepositoryConfigurationObject;
 import org.eclipse.winery.common.configuration.UiConfigurationObject;
@@ -47,8 +48,8 @@ import org.eclipse.winery.repository.rest.resources.admin.types.che.Server;
 import org.eclipse.winery.repository.rest.resources.admin.types.che.WorkspaceResponse;
 import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.apache.http.HttpResponse;
@@ -114,6 +115,13 @@ public class AdminTopResource {
     }
 
     @GET
+    @Path("translationServices")
+    @Produces(MediaType.APPLICATION_JSON)
+    public DARefinementConfigurationObject getTranslationServices() {
+        return Environments.getInstance().getDaRefinementConfigurationObject();
+    }
+
+    @GET
     @Path("repository-config")
     @Produces(MediaType.APPLICATION_JSON)
     public RepositoryConfigurationResponse getRepositoryConfig() {
@@ -164,6 +172,16 @@ public class AdminTopResource {
         Environments.save(changedConfiguration);
         Environments.save(Environments.getInstance().getRepositoryConfig());
         return Environments.getInstance().getUiConfig();
+    }
+
+    @PUT
+    @Path("translationServices")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public DARefinementConfigurationObject setTranslationServices(DARefinementConfigurationObject changedConfiguration) {
+        Environments.save(changedConfiguration);
+        Environments.save(Environments.getInstance().getDaRefinementConfigurationObject());
+        return Environments.getInstance().getDaRefinementConfigurationObject();
     }
 
     @POST
@@ -222,11 +240,11 @@ public class AdminTopResource {
 
     @Path("1to1edmmmappings")
     public EdmmMappingsResource get1to1EdmmMappingsResource() {
-        return new EdmmMappingsResource(EdmmMappingsResource.Type.ONE_TO_ONE);
+        return new EdmmMappingsResource();
     }
 
-    @Path("edmmtypemappings")
-    public EdmmMappingsResource getEdmmTypeMappingsResource() {
-        return new EdmmMappingsResource(EdmmMappingsResource.Type.EXTENDS);
+    @Path("edmmtypes")
+    public EdmmTypesResource getEdmmTypesResource() {
+        return new EdmmTypesResource();
     }
 }

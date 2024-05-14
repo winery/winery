@@ -18,7 +18,6 @@ div.node {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    z-index: 60;
     font-size: small;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     background: #ffffff;
@@ -37,15 +36,15 @@ div.node:hover {
 }
 
 div.pattern {
-    border-top-right-radius: 50%;
-    border-bottom-right-radius: 50%;
-    width: 80px;
-    height: 80px;
+    border-radius: 9%;
+    width: 75px;
+    height: 75px;
+    z-index: 10;
 }
 
 .patternImage {
-    margin-top: 10px;
-    margin-left: 3px;
+    margin-top: 8px;
+    margin-left: 4px;
     max-width: 50px;
     max-height: 50px;
 }
@@ -200,7 +199,8 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
 
 .policyIconsAnnotation {
     position: absolute;
-    top: -27px
+    top: -27px;
+    width: max-content;
 }
 
 .policyAnnotation {
@@ -208,6 +208,13 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     position: relative;
     max-width: 30px;
     max-height: 30px;
+}
+
+.deploymentTech {
+    position: absolute;
+    top: 3px;
+    float: right;
+    left: 185px;
 }
 
 .newVersionTriangle {

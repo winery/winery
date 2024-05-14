@@ -27,6 +27,8 @@ import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-f
 import { AttributesModule } from './sharedComponents/attributes/attributes.module';
 import { InterfaceDefinitionsModule } from './sharedComponents/interfaceDefinitions/interfaceDefinitions.module';
 import { ParametersModule } from './sharedComponents/parameters/parameters.module';
+import { MatDialogModule, MatProgressBarModule } from '@angular/material';
+import { DetectionComponent } from './refinementModels/detection/detection.component';
 
 @NgModule({
     imports: [
@@ -44,12 +46,15 @@ import { ParametersModule } from './sharedComponents/parameters/parameters.modul
         AttributesModule,
         InterfaceDefinitionsModule,
         ParametersModule,
+        MatDialogModule,
+        MatProgressBarModule,
     ],
     exports: [InstanceComponent],
     declarations: [
         InstanceComponent,
         InstanceHeaderComponent,
         PropertyRenameComponent,
+        DetectionComponent
     ],
     providers: [],
 })

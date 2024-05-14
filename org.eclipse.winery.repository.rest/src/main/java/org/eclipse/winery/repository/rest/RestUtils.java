@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2012-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.security.AccessControlException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientBuilder;
@@ -50,12 +51,11 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Constants;
 import org.eclipse.winery.common.configuration.Environments;
-import org.eclipse.winery.common.configuration.UiConfigurationObject;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.edmm.EdmmManager;
-import org.eclipse.winery.edmm.model.EdmmConverter;
+import org.eclipse.winery.edmm.model.EdmmExporter;
 import org.eclipse.winery.edmm.model.EdmmType;
 import org.eclipse.winery.model.ids.GenericId;
 import org.eclipse.winery.model.ids.Namespace;
@@ -69,20 +69,22 @@ import org.eclipse.winery.model.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -107,6 +109,7 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsR
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
+import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
@@ -125,8 +128,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
- * more. For instance, resource functionality. Utility functionality for the repository is contained at {@link
- * BackendUtils}
+ * more. For instance, resource functionality. Utility functionality for the repository is contained at
+ * {@link BackendUtils}
  */
 public class RestUtils {
 
@@ -148,7 +151,7 @@ public class RestUtils {
                 // needed for {@link
                 // returnRepoPath(File, String)}
                 Locale.setDefault(Locale.ENGLISH);
-            } catch (AccessControlException e) {
+            } catch (SecurityException e) {
                 // Happens at Google App Engine
                 LOGGER.error("Could not switch locale to English", e);
             }
@@ -237,13 +240,14 @@ public class RestUtils {
                 // check which options are chosen
                 if (options.isAddToProvenance()) {
                     // We wait for the accountability layer to confirm the transaction
-                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output)
-                        .get();
+                    String result = exporter.writeCsarAndSaveManifestInProvenanceLayer(resource.getId(), output).get();
                     LOGGER.debug("Stored state in accountability layer in transaction " + result);
                 } else if (options.isIncludeDependencies() && resource.getId() instanceof ServiceTemplateId) {
                     SelfContainmentPackager packager = new SelfContainmentPackager(RepositoryFactory.getRepository());
                     DefinitionsChildId selfContainedVersion = packager.createSelfContainedVersion(resource.getId());
                     exporter.writeSelfContainedCsar(RepositoryFactory.getRepository(), selfContainedVersion, output, exportConfiguration);
+                } else if (options.isAsRoar() && resource.getId() instanceof ServiceTemplateId) {
+                    exporter.writeRoarCsar(resource.getId(), output, exportConfiguration);
                 } else {
                     exporter.writeCsar(resource.getId(), output, exportConfiguration);
                 }
@@ -254,15 +258,9 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
-            resource.getXmlId().getEncoded(),
-            Constants.SUFFIX_CSAR);
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"", resource.getXmlId().getEncoded(), Constants.SUFFIX_CSAR);
 
-        return Response.ok()
-            .header("Content-Disposition", contentDisposition)
-            .type(MimeTypes.MIMETYPE_ZIP)
-            .entity(so)
-            .build();
+        return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
     public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
@@ -291,19 +289,12 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        String contentDisposition = String.format("attachment;filename=\"%s%s\"",
-            resource.getXmlId().getEncoded(),
-            Constants.SUFFIX_CSAR);
+        String contentDisposition = String.format("attachment;filename=\"%s%s\"", resource.getXmlId().getEncoded(), Constants.SUFFIX_CSAR);
 
-        return Response.ok()
-            .header("Content-Disposition", contentDisposition)
-            .type(MimeTypes.MIMETYPE_ZIP)
-            .entity(so)
-            .build();
+        return Response.ok().header("Content-Disposition", contentDisposition).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
-    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
-
+    private static EdmmExporter createEdmmConverter(boolean useAbsolutPaths) {
         IRepository repository = RepositoryFactory.getRepository();
 
         Map<QName, TNodeType> nodeTypes = repository.getQNameToElementMapping(NodeTypeId.class);
@@ -312,8 +303,7 @@ public class RestUtils {
         Map<QName, TRelationshipTypeImplementation> relationshipTypeImplementations = repository.getQNameToElementMapping(RelationshipTypeImplementationId.class);
         Map<QName, TArtifactTemplate> artifactTemplates = repository.getQNameToElementMapping(ArtifactTemplateId.class);
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        Map<QName, EdmmType> oneToOneMappings = edmmManager.getOneToOneMap();
-        Map<QName, EdmmType> typeMappings = edmmManager.getTypeMap();
+        Map<QName, EdmmType> oneToOneMappings = edmmManager.getToscaToEdmmMap();
 
         if (nodeTypes.isEmpty()) {
             throw new IllegalStateException("No Node Types defined!");
@@ -321,23 +311,38 @@ public class RestUtils {
             throw new IllegalStateException("No Relationship Types defined!");
         }
 
-        EdmmConverter edmmConverter = new EdmmConverter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations,
-            artifactTemplates, typeMappings, oneToOneMappings, useAbsolutPaths);
+        return new EdmmExporter(nodeTypes, relationshipTypes, nodeTypeImplementations, relationshipTypeImplementations, artifactTemplates, oneToOneMappings, useAbsolutPaths);
+    }
 
-        return edmmConverter.transform(element);
+    public static EntityGraph getEdmmEntityGraph(TServiceTemplate element, boolean useAbsolutPaths) {
+        EdmmExporter converter = createEdmmConverter(useAbsolutPaths);
+
+        return converter.transform(element);
+    }
+
+    public static EntityGraph getEdmmEntityGraph(TTopologyTemplate topology, boolean useAbsolutePaths) {
+        EdmmExporter converter = createEdmmConverter(useAbsolutePaths);
+
+        return converter.transform(topology, null);
+    }
+
+    public static Response getEdmmModel(TTopologyTemplate element, boolean useAbsolutPaths) {
+        EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
+
+        return getEdmmModelAsYamlResponse(transform);
     }
 
     public static Response getEdmmModel(TServiceTemplate element, boolean useAbsolutPaths) {
-
         EntityGraph transform = getEdmmEntityGraph(element, useAbsolutPaths);
 
+        return getEdmmModelAsYamlResponse(transform);
+    }
+
+    private static Response getEdmmModelAsYamlResponse(EntityGraph transform) {
         StringWriter stringWriter = new StringWriter();
         transform.generateYamlOutput(stringWriter);
 
-        return Response.ok()
-            .type(MimeTypes.MIMETYPE_YAML)
-            .entity(stringWriter.toString())
-            .build();
+        return Response.ok().type(MimeTypes.MIMETYPE_YAML).entity(stringWriter.toString()).build();
     }
 
     /**
@@ -364,9 +369,7 @@ public class RestUtils {
                 throw new WebApplicationException(e);
             }
         };
-        String sb = "attachment;filename=\"" +
-            name +
-            "\"";
+        String sb = "attachment;filename=\"" + name + "\"";
         return Response.ok().header("Content-Disposition", sb).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
     }
 
@@ -396,14 +399,14 @@ public class RestUtils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(id);
+        return Environments.getInstance().getUiConfig().getApiEndpoint() + "/" + Util.getUrlPath(id);
     }
 
     /**
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Environments.getInstance().getUiConfig().getEndpoints().get(UiConfigurationObject.apiUrlKey) + "/" + Util.getUrlPath(ref);
+        return Environments.getInstance().getUiConfig().getApiEndpoint() + "/" + Util.getUrlPath(ref);
     }
 
     public static URI getAbsoluteURI(GenericId id) {
@@ -484,10 +487,7 @@ public class RestUtils {
      * Checks whether a given resource (with absolute URL!) is available with a HEAD request on it.
      */
     public static boolean isResourceAvailable(String path) {
-        Response response = ClientBuilder.newClient()
-            .target(path)
-            .request()
-            .head();
+        Response response = ClientBuilder.newClient().target(path).request().head();
 
         return response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL);
     }
@@ -657,9 +657,9 @@ public class RestUtils {
     /**
      * Persists the given object
      */
-    public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
+    public static Response persist(Object object, RepositoryFileReference data_xml_ref, String mimeType) {
         try {
-            BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
+            BackendUtils.persist(object, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType), RepositoryFactory.getRepository());
         } catch (IOException e) {
             LOGGER.debug("Could not persist resource", e);
             throw new WebApplicationException(e);
@@ -898,10 +898,7 @@ public class RestUtils {
             return Response.serverError();
         }
         // set filename
-        ContentDisposition contentDisposition = ContentDisposition.type("attachment")
-            .fileName(ref.getFileName())
-            .modificationDate(new Date(lastModified.toMillis()))
-            .build();
+        ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
         res.header("Content-Disposition", contentDisposition);
         res.header("Cache-Control", "max-age=0");
         return res;
@@ -938,6 +935,33 @@ public class RestUtils {
         return putContentToFile(ref, inputStream, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
     }
 
+    public static Stream<Path> getAllDirsAndFiles(RepositoryFileReference ref, int depth) throws IOException {
+        return RepositoryFactory.getRepository().getAllDirsAndFiles(ref, depth);
+    }
+
+    public static Response move(RepositoryFileReference refSource, RepositoryFileReference refTarget) {
+        if (!RepositoryFactory.getRepository().exists(refSource)) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        try {
+            RepositoryFactory.getRepository().move(refSource, refTarget);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.noContent().build();
+    }
+
+    public static Response createDir(RepositoryFileReference ref) {
+        try {
+            RepositoryFactory.getRepository().createDir(ref);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+        return Response.noContent().build();
+    }
+
     /**
      * Updates the color if the color is not yet existent
      *
@@ -969,13 +993,11 @@ public class RestUtils {
 
     public static List<NamespaceAndDefinedLocalNamesForAngular> convert(List<NamespaceAndDefinedLocalNames> list) {
         return list.stream().map(namespaceAndDefinedLocalNames -> {
-            List<LocalNameForAngular> names = namespaceAndDefinedLocalNames.getDefinedLocalNames()
-                .stream().map(localName -> {
-                    final String id = "{" + namespaceAndDefinedLocalNames.getNamespace().getDecoded() + "}" + localName;
-                    return new LocalNameForAngular(id, localName);
-                }).collect(Collectors.toList());
-            return new NamespaceAndDefinedLocalNamesForAngular(
-                namespaceAndDefinedLocalNames.getNamespace(), names);
+            List<LocalNameForAngular> names = namespaceAndDefinedLocalNames.getDefinedLocalNames().stream().map(localName -> {
+                final String id = "{" + namespaceAndDefinedLocalNames.getNamespace().getDecoded() + "}" + localName;
+                return new LocalNameForAngular(id, localName);
+            }).collect(Collectors.toList());
+            return new NamespaceAndDefinedLocalNamesForAngular(namespaceAndDefinedLocalNames.getNamespace(), names);
         }).collect(Collectors.toList());
     }
 
@@ -1045,36 +1067,28 @@ public class RestUtils {
 
     public static <X extends DefinitionsChildId> List<QNameApiData> getAllElementsReferencingGivenType(Class<X> clazz, QName qNameOfTheType) {
         final QNameConverter adapter = new QNameConverter();
-        return RepositoryFactory.getRepository()
-            .getAllElementsReferencingGivenType(clazz, qNameOfTheType)
-            .stream()
-            .map(id -> adapter.marshal(id.getQName()))
-            .collect(Collectors.toList());
+        return RepositoryFactory.getRepository().getAllElementsReferencingGivenType(clazz, qNameOfTheType).stream().map(id -> adapter.marshal(id.getQName())).collect(Collectors.toList());
     }
 
-    public static List<ComponentId> getListOfIds(Set<? extends DefinitionsChildId> allDefinitionsChildIds,
-                                                 boolean includeFullDefinitions, boolean includeVersions) {
-        return allDefinitionsChildIds.stream()
-            .sorted()
-            .map(id -> {
-                String name = id.getXmlId().getDecoded();
-                TDefinitions definitions = null;
-                WineryVersion version = null;
-                if (Util.instanceSupportsNameAttribute(id.getClass())) {
-                    TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
-                    if (element instanceof IHasName) {
-                        name = ((IHasName) element).getName();
-                    }
+    public static List<ComponentId> getListOfIds(Set<? extends DefinitionsChildId> allDefinitionsChildIds, boolean includeFullDefinitions, boolean includeVersions) {
+        return allDefinitionsChildIds.stream().sorted().map(id -> {
+            String name = id.getXmlId().getDecoded();
+            TDefinitions definitions = null;
+            WineryVersion version = null;
+            if (Util.instanceSupportsNameAttribute(id.getClass())) {
+                TExtensibleElements element = RepositoryFactory.getRepository().getElement(id);
+                if (element instanceof IHasName) {
+                    name = ((IHasName) element).getName();
                 }
-                if (includeFullDefinitions) {
-                    definitions = getFullComponentData(id);
-                }
-                if (includeVersions) {
-                    version = VersionUtils.getVersion(id.getXmlId().getDecoded());
-                }
-                return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
-            })
-            .collect(Collectors.toList());
+            }
+            if (includeFullDefinitions) {
+                definitions = getFullComponentData(id);
+            }
+            if (includeVersions) {
+                version = VersionUtils.getVersion(id.getXmlId().getDecoded());
+            }
+            return new ComponentId(id.getXmlId().getDecoded(), name, id.getNamespace().getDecoded(), id.getQName(), definitions, version);
+        }).collect(Collectors.toList());
     }
 
     public static TDefinitions getFullComponentData(DefinitionsChildId id) {
@@ -1086,5 +1100,20 @@ public class RestUtils {
 
         return null;
     }
-    
+
+    public static List<InterfacesSelectApiData> getInterfacesSelectApiData(List<TInterface> interfaceList) {
+        List<InterfacesSelectApiData> list = new ArrayList<>();
+        for (TInterface item : interfaceList) {
+            list.add(convertInterfaceToSelectApiData(item));
+        }
+        return list;
+    }
+
+    public static InterfacesSelectApiData convertInterfaceToSelectApiData(TInterface notContainedInterface) {
+        List<String> ops = new ArrayList<>();
+        for (TOperation op : notContainedInterface.getOperations()) {
+            ops.add(op.getName());
+        }
+        return new InterfacesSelectApiData(notContainedInterface.getName(), ops);
+    }
 }

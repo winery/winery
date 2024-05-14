@@ -1,0 +1,65 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+
+<winery-file-manager #fileManager
+                     [pathToElementsMap]="pathToElementsMap"
+                     (folderCreated)="createNewFolder($event)"
+                     (elementDeleted)="delete($event)"
+                     (elementUpdated)="move($event)"
+                     (updateRequested)="getAllDirsAndFiles()">
+</winery-file-manager>
+<br><br>
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-description>
+                File Uploader
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <winery-file-uploader
+            [currentPath]="fileManager.currentPath"
+            (updateRequested)="getAllDirsAndFiles()">
+        </winery-file-uploader>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-description>
+                GitHub Downloader
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field class="urlField">
+            <input #repoURL matInput placeholder="Repository URL">
+        </mat-form-field>
+        <mat-form-field>
+            <input #branch matInput placeholder="Branch (optional)">
+        </mat-form-field>
+        <button class="downloadButton" mat-raised-button color="primary"
+                [disabled]="downloaderStatus===STATUS[0] || !correctURL(repoURL.value)"
+                (click)="download(repoURL.value, branch.value, fileManager.currentPath)">
+            Download
+        </button>
+        <mat-icon class="finished" *ngIf="downloaderStatus===STATUS[1]">check</mat-icon>
+        <mat-icon class="error" *ngIf="downloaderStatus===STATUS[2]">cancel</mat-icon>
+        <mat-progress-bar mode="indeterminate" *ngIf="downloaderStatus===STATUS[0]"></mat-progress-bar>
+        <div class="warn" *ngIf="!correctURL(repoURL.value) && repoURL.value.length > 0">
+            Has to start with "https://github.com/"
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>
+<br>

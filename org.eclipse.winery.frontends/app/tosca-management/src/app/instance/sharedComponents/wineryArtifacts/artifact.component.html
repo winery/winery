@@ -38,6 +38,7 @@
     </winery-modal-body>
     <winery-modal-footer (onOk)="removeConfirmed();"
                          [closeButtonLabel]="'Cancel'"
+                         [okButtonClass]="'btn-danger'"
                          [okButtonLabel]="'Delete'">
     </winery-modal-footer>
 </winery-modal>
@@ -95,9 +96,8 @@
                     <label>
                         <input type="radio" name="artifactTemplateCreation" value="createArtifactTemplate"
                                checked="checked" id="createArtifactTemplateInput" [(ngModel)]="selectedRadioButton"
-                               (click)="onCreateArtifactTemplateClicked()"/>Create
-                        Artifact
-                        Template
+                               (click)="onCreateArtifactTemplateClicked()"/>
+                        Create Artifact Template
                     </label>
                     <p class="help-block">Check if you want to upload <strong>new</strong> files, you do not want to
                         reuse existing files and you do not point to an image library.</p>
@@ -105,16 +105,16 @@
                 <div class="radio">
                     <label>
                         <input type="radio" name="artifactTemplateCreation" value="linkArtifactTemplate"
-                               [(ngModel)]="selectedRadioButton">Link Artifact
-                        Template
+                               [(ngModel)]="selectedRadioButton">
+                        Link Artifact Template
                     </label>
                     <p class="help-block">Check if you want to reuse existing files.</p>
                 </div>
                 <div class="radio">
                     <label>
                         <input type="radio" name="artifactTemplateCreation" value="skipArtifactTemplate"
-                               [(ngModel)]="selectedRadioButton">Do not create
-                        an artifact template
+                               [(ngModel)]="selectedRadioButton">
+                        Do not create an Artifact Template
                     </label>
                     <p class="help-block">Check if you want to point to an image library.</p>
                 </div>
@@ -134,9 +134,8 @@
                 [width]="'none'"
                 (selectedValueChanged)="onSelectedArtifactTemplateChanged($event.value)">
             </winery-qname-selector>
-            <div class="form-group-grouping typeimplementation">
-                <winery-add-component-data-component *ngIf="selectedRadioButton === 'createArtifactTemplate'"
-                                                     #addComponentData
+            <div class="form-group-grouping" *ngIf="selectedRadioButton === 'createArtifactTemplate'">
+                <winery-add-component-data-component #addComponentData
                                                      [toscaType]="toscaType"
                                                      [types]="types"
                                                      [typeRequired]="typeRequired"
@@ -207,6 +206,7 @@
         </p>
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         [okButtonClass]="'btn-danger'"
                          (onOk)="onRemoveElement()">
     </winery-modal-footer>
 </winery-modal>

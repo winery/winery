@@ -35,6 +35,7 @@ export class RepositoryComponent implements OnInit {
     validatorObjectUrl: WineryValidatorObject;
     validatorObjectBranch: WineryValidatorObject;
     columns = [
+        { title: 'ID', name: 'id' },
         { title: 'Name', name: 'name' },
         { title: 'Git Repository', name: 'url' },
         { title: 'Branch', name: 'branch' }

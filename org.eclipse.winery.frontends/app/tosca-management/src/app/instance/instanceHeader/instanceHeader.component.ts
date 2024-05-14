@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,12 +19,16 @@ import { ToscaComponent } from '../../model/toscaComponent';
 import { ToscaTypes } from '../../model/enums';
 import { WineryVersion } from '../../model/wineryVersion';
 import { InstanceService, ToscaLightCompatibilityData } from '../instance.service';
-import { WineryRepositoryConfigurationService } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import {
+    WineryRepositoryConfigurationService
+} from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem } from '../../model/subMenuItem';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { CheService } from '../../../../../topologymodeler/src/app/services/che.service';
 import { backendBaseURL } from '../../configuration';
+import { DeploymentNormalizationAnalyzerService } from './deploymentNormalizationAnalyzer.service';
+import { ResearchObjectArchiveUploaderService } from './researchObjectArchiveUploader.service';
 
 @Component({
     selector: 'winery-instance-header',
@@ -33,7 +37,9 @@ import { backendBaseURL } from '../../configuration';
         './instanceHeader.component.css'
     ],
     providers: [
-        RemoveWhiteSpacesPipe
+        RemoveWhiteSpacesPipe,
+        DeploymentNormalizationAnalyzerService,
+        ResearchObjectArchiveUploaderService,
     ],
 })
 
@@ -51,6 +57,7 @@ export class InstanceHeaderComponent implements OnInit {
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: TemplateRef<any>;
     @ViewChild('toscaLightCompatibilityModal') toscaLightCompatibilityModel: TemplateRef<any>;
+    @ViewChild('roarConfirmUploadModal') roarConfirmUploadModal: TemplateRef<any>;
 
     needTwoLines = false;
     selectedTab: string;
@@ -59,17 +66,28 @@ export class InstanceHeaderComponent implements OnInit {
     showEdmmExport: boolean;
     requiresTabFix = false;
     radon: boolean;
+    researchObject: boolean;
     toscaTypes = ToscaTypes;
 
     toscaLightCompatibilityErrorReportModalRef: BsModalRef;
     toscaLightErrorKeys: string[];
     deleteConfirmationModalRef: BsModalRef;
+    roarUploadConfirmationModalRef: BsModalRef;
+
+    contactingNormalization = false;
+    uploadingRoar = false;
+    uploadingRoarFinished = false;
+    roarLocation: string;
+    uploadRoarError: string;
+    privacyOptions: Array<string> = ['no', 'yes, but anonymized', 'yes, but pseudonymized', 'yes'];
 
     constructor(private router: Router, public sharedData: InstanceService,
                 public configurationService: WineryRepositoryConfigurationService,
                 private modalService: BsModalService,
                 private notify: WineryNotificationService,
-                private che: CheService) {
+                private che: CheService,
+                private dna: DeploymentNormalizationAnalyzerService,
+                private roUploader: ResearchObjectArchiveUploaderService) {
     }
 
     ngOnInit(): void {
@@ -99,6 +117,7 @@ export class InstanceHeaderComponent implements OnInit {
         }
 
         this.radon = this.configurationService.configuration.features.radon;
+        this.researchObject = this.configurationService.configuration.features.researchObject;
     }
 
     removeConfirmed() {
@@ -131,6 +150,67 @@ export class InstanceHeaderComponent implements OnInit {
                     }
                 }
             });
+    }
+
+    sendToDeploymentNormalizerAssistant() {
+        if (!this.contactingNormalization) {
+            this.contactingNormalization = true;
+            this.dna.startNormalization(this.toscaComponent)
+                .subscribe(
+                    (location) => {
+                        this.contactingNormalization = false;
+                        if (location) {
+                            window.open(location, '_blank');
+                        } else {
+                            this.notify.error('Response did not contain a valid location!');
+                        }
+                    },
+                    () => this.contactingNormalization = false
+                );
+        }
+    }
+
+    openRoarUploadConfirmationModel() {
+        if (this.roUploader.daRusInformationComplete()) {
+            this.roarUploadConfirmationModalRef = this.modalService.show(this.roarConfirmUploadModal);
+        }
+    }
+
+    uploadRoarToDarus(privacyOption: string) {
+        this.uploadingRoar = true;
+        this.roUploader.metadataComplete().subscribe((missingFields) => {
+                if (missingFields.length === 0) {
+                    this.uploadROAR(privacyOption);
+                } else {
+                    this.uploadRoarError = 'Missing Metadata fields: ' + missingFields;
+                    this.notify.error('Missing Metadata fields: ' + missingFields);
+                }
+            }
+        );
+    }
+
+    uploadROAR(privacyOption: string) {
+        this.roUploader.uploadROAR(this.toscaComponent, privacyOption).subscribe(
+            (datasetURL) => {
+                this.handleSuccess('The ROAR has been uploaded successfully!');
+                this.uploadingRoarFinished = true;
+                this.roarLocation = datasetURL;
+            },
+            (error) => {
+                this.uploadRoarError = error.error;
+                this.handleError(error);
+            }
+        );
+    }
+
+    closeRoarUploadConfirmationModel(openRoar: boolean) {
+        this.roarUploadConfirmationModalRef.hide();
+        if (openRoar) {
+            window.open(this.roarLocation, '_blank');
+        }
+        this.uploadingRoarFinished = false;
+        this.uploadingRoar = false;
+        this.uploadRoarError = '';
     }
 
     private handleSuccess(message: string) {

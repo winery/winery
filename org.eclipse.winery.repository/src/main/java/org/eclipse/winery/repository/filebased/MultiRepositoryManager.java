@@ -41,7 +41,7 @@ public class MultiRepositoryManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiRepositoryManager.class);
 
     /**
-     * Copies the the list of repositories into the repository root. Reconfigures the factory so that on the next get it
+     * Copies the list of repositories into the repository root. Reconfigures the factory so that on the next get it
      * will return a MultiRepository
      *
      * @param repositoryList The list of repositories that is copied to the root

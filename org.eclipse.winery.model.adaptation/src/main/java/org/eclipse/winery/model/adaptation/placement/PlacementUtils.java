@@ -131,14 +131,13 @@ public class PlacementUtils {
             ServiceTemplateId placementId = new ServiceTemplateId(serviceTemplateId.getNamespace().getDecoded(),
                 VersionSupport.getNewComponentVersionId(serviceTemplateId, "placement"), false);
             repo.forceDelete(placementId);
-            TServiceTemplate placementServiceTemplate = new TServiceTemplate();
-            placementServiceTemplate.setTargetNamespace(serviceTemplateId.getNamespace().getDecoded());
-            placementServiceTemplate.setTopologyTemplate(topology);
-            placementServiceTemplate.setName(placementId.getXmlId().getDecoded());
-            placementServiceTemplate.setId(placementServiceTemplate.getName());
+            TServiceTemplate placementServiceTemplate = new TServiceTemplate.Builder(placementId.getXmlId().getDecoded(), topology)
+                .setName(placementId.getXmlId().getDecoded())
+                .setTargetNamespace(serviceTemplateId.getNamespace().getDecoded())
+                .build();
 
             // resolve open requirements until the topology is completed
-            while (topology != null && !splitting.getOpenRequirements(topology).isEmpty()) {
+            while (topology != null && !splitting.getOpenRequirements(placementServiceTemplate).isEmpty()) {
                 // add a target label to the topology based on the provider and location assignment
                 assignNodesToTargetLabels(topology);
                 placementServiceTemplate.setTopologyTemplate(topology);
@@ -157,7 +156,7 @@ public class PlacementUtils {
             // returned completed topology
             return topology;
         } catch (Exception e) {
-            LOGGER.debug("Exception while completing topology: {}", e.getMessage());
+            LOGGER.error("Exception while completing topology: {}", e.getMessage());
             return topology;
         }
     }

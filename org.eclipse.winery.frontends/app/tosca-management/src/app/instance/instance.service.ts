@@ -76,6 +76,9 @@ export class InstanceService {
                     if (this.configurationService.configuration.features.nfv) {
                         subMenu.push(SubMenuItems.threatModeling);
                     }
+                    if (this.configurationService.configuration.features.researchObject) {
+                        subMenu.push(SubMenuItems.researchObject);
+                    }
                 }
                 break;
             case ToscaTypes.RelationshipType:
@@ -149,7 +152,11 @@ export class InstanceService {
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure,
                     SubMenuItems.graficPrmModelling, SubMenuItems.relationMappings, SubMenuItems.attributeMappings,
                     SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings, SubMenuItems.permutationMappings,
-                    SubMenuItems.permutations, SubMenuItems.behaviorPatternMappings, SubMenuItems.xml];
+                    SubMenuItems.permutations, SubMenuItems.behaviorPatternMappings];
+                if (this.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
+                    subMenu.push(SubMenuItems.detectionModel);
+                }
+                subMenu.push(SubMenuItems.xml);
                 break;
             case ToscaTypes.TestRefinementModel:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.graficPrmModelling,
@@ -170,7 +177,7 @@ export class InstanceService {
                     subMenu.push(SubMenuItems.accountability);
                 }
                 if (this.configurationService.configuration.features.edmmModeling) {
-                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypeMappings);
+                    subMenu.push(SubMenuItems.oneToOneEDMMMappings, SubMenuItems.edmmTypes);
                 }
         }
 

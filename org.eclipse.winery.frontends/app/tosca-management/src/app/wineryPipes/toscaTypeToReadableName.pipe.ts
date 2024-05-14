@@ -19,9 +19,12 @@ import {Utils} from '../wineryUtils/utils';
     name: 'toscaTypeToReadableName'
 })
 export class ToscaTypeToReadableNamePipe implements PipeTransform {
-    transform(value: ToscaTypes): string {
+    transform(value: ToscaTypes | string, plural = false): string {
         if (value) {
-            return Utils.getToscaTypeNameFromToscaType(value);
+            return Utils.getToscaTypeNameFromToscaType(
+                Utils.getToscaTypeFromString(value),
+                plural
+            );
         } else {
             return '';
         }

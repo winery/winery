@@ -153,6 +153,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>winery</finalName>
+        <finalName>winery-cli</finalName>
     </build>
 </project>

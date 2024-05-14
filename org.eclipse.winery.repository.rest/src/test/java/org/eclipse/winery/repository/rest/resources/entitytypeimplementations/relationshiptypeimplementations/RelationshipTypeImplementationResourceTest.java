@@ -31,7 +31,7 @@ public class RelationshipTypeImplementationResourceTest extends AbstractResource
     }
 
     @Test
-    public void getServicetemplate() throws Exception {
+    public void getRelationshipTypeImplementation() throws Exception {
         this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
         this.assertGet(ENTITY_TYPE, BAOBAB_JSON_PATH);
     }
@@ -50,6 +50,13 @@ public class RelationshipTypeImplementationResourceTest extends AbstractResource
     }
 
     @Test
+    public void getInterfaces() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("relationshiptypeimplementations/http%253A%252F%252Fwww.example.org%252Ftosca%252Frelationshiptypeimplementations/ConcreteRelationshipType-Implementation_w1-wip1/implementationartifacts/interfaces/",
+            "entityimplementations/relationshiptypeimplementations/inheritedInterfaces.json");
+    }
+    
+    @Test
     public void putInheritanceData() throws Exception {
         this.setRevisionTo("aae0a874dd18cfed6abf4e33cb06f78a5a22b861");
         this.assertPut("relationshiptypeimplementations/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypeimplementations%252Ffruits/attendTo_implementation/inheritance/",
@@ -57,5 +64,12 @@ public class RelationshipTypeImplementationResourceTest extends AbstractResource
         this.assertGet("relationshiptypeimplementations/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypeimplementations%252Ffruits/attendTo_implementation/xml/",
             "entityimplementations/relationshiptypeimplementations/attendTo_inheritance.xml");
 
+    }
+
+    @Test
+    public void getInterfacesOfAssociatedTypeWithInheritance() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("nodetypeimplementations/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypeimplementations/ConcreteTypeOverridingInterfaceOperations-Implementation_w1-wip1/implementationartifacts/interfaces/",
+            "entityimplementations/nodetypeimplementations/inheritedInterfaces.json");
     }
 }

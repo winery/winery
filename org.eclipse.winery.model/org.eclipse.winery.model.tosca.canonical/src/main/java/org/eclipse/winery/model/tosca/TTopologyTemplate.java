@@ -140,9 +140,9 @@ public class TTopologyTemplate extends TExtensibleElements {
 
     public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-                        nodeTemplates.stream().map(TEntityTemplate.class::cast),
-                        this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
-                .collect(Collectors.toList());
+            nodeTemplates.stream().map(TEntityTemplate.class::cast),
+            this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -171,9 +171,9 @@ public class TTopologyTemplate extends TExtensibleElements {
 
     public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
         this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-                        this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
-                        relationshipTemplates.stream().map(TEntityTemplate.class::cast))
-                .collect(Collectors.toList());
+            this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
+            relationshipTemplates.stream().map(TEntityTemplate.class::cast))
+            .collect(Collectors.toList());
     }
 
     /**

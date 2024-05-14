@@ -1,0 +1,42 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021-2022 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+
+<div *ngIf="!loading">
+    <br>
+    <label class="control-label" for="publicationCitation">Publication Citation</label>
+    <input class="form-control" id="publicationCitation" name="publicationCitation" [(ngModel)]="data.citation">
+    <br>
+    <label class="control-label">Publication ID Type</label>
+    <div>
+        <ng-select [items]="items"
+                   [(ngModel)]="idType"
+                   placeholder="Select ID Type">
+        </ng-select>
+    </div>
+    <br>
+    <label class="control-label" for="publicationID">Publication ID</label>
+    <input class="form-control" id="publicationID" name="publicationID" [(ngModel)]="data.id">
+    <br>
+    <label class="control-label" for="publicationUrl">Publication URL</label>
+    <input class="form-control" id="publicationUrl" name="publicationUrl" [(ngModel)]="data.url">
+    <br>
+    <div>
+        <button class="btn btn-primary" (click)="saveResearchObjectPublication()" name="save">
+            Save
+        </button>
+    </div>
+</div>

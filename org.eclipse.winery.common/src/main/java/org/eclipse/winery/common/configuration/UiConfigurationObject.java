@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019-2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2022 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory;
 import static org.eclipse.winery.common.configuration.RepositoryConfigurationObject.RepositoryProvider.YAML;
 
 /**
- * This Class is used to create a JSON Object that is structured like the winery.yaml file. Therefore this class is a
+ * This Class is used to create a JSON Object that is structured like the winery.yaml file. Therefore, this class is a
  * structural copy of that file.
  */
 public class UiConfigurationObject extends AbstractConfigurationObject {
 
-    public static String apiUrlKey = "repositoryApiUrl";
+    private static final String apiUrlKey = "repositoryApiUrl";
 
     private static final Logger logger = LoggerFactory.getLogger(UiConfigurationObject.class);
 
@@ -41,9 +41,11 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
     private static final String featurePrefix = key + ".features.";
     private static final String endpointPrefix = key + ".endpoints.";
     private static final String repositoryPrefix = ".repository.";
+    private static final String darusPrefix = key + ".darus.";
 
     private Map<String, Boolean> features;
     private Map<String, String> endpoints;
+    private Map<String, String> darus;
     private Map<String, String> git;
 
     /**
@@ -70,8 +72,23 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         return endpoints;
     }
 
+    public Map<String, String> getDarus() {
+        return darus;
+    }
+
     public Map<String, String> getGit() {
         return git;
+    }
+
+    public String getApiEndpoint() {
+        String apiEndpoint = this.endpoints.get(apiUrlKey);
+
+        if (apiEndpoint == null) {
+            // set to default
+            apiEndpoint = "http://localhost:8080/winery";
+        }
+
+        return apiEndpoint;
     }
 
     @Override
@@ -87,6 +104,8 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
             });
         this.endpoints.keySet()
             .forEach(property -> configuration.setProperty(endpointPrefix + property, this.endpoints.get(property)));
+        this.darus.keySet()
+            .forEach(property -> configuration.setProperty(darusPrefix + property, this.darus.get(property)));
         Environment.getInstance().save();
     }
 
@@ -95,11 +114,14 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
         this.configuration = configuration;
         Map<String, Boolean> features = new HashMap<>();
         Map<String, String> endpoints = new HashMap<>();
+        Map<String, String> darus = new HashMap<>();
         Map<String, String> git = new HashMap<>();
         Iterator<String> featureIterator = this.configuration.getKeys(featurePrefix);
         Iterator<String> endpointIterator = this.configuration.getKeys(endpointPrefix);
+        Iterator<String> darusIterator = this.configuration.getKeys(darusPrefix);
         featureIterator.forEachRemaining(key -> features.put(key.replace(featurePrefix, ""), this.configuration.getBoolean((key))));
         endpointIterator.forEachRemaining(key -> endpoints.put(key.replace(endpointPrefix, ""), this.configuration.getString(key)));
+        darusIterator.forEachRemaining(key -> darus.put(key.replace(darusPrefix, ""), this.configuration.getString(key)));
         git.put("clientId", this.configuration.getString("repository.git.clientID"));
         git.put("accessToken", this.configuration.getString("repository.git.accessToken"));
         git.put("tokenType", this.configuration.getString("repository.git.tokenType"));
@@ -117,6 +139,7 @@ public class UiConfigurationObject extends AbstractConfigurationObject {
 
         this.features = features;
         this.endpoints = endpoints;
+        this.darus = darus;
         this.git = git;
     }
 

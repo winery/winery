@@ -27,10 +27,8 @@
         <run.HttpPort>9090</run.HttpPort>
         <winery.upload.url>IA_ARTIFACT_TEMPLATE_UPLOAD_URL</winery.upload.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <winery.version>3.0.0-SNAPSHOT</winery.version>
-        <spring.version>3.0.7.RELEASE</spring.version>
+        <spring.version>6.0.19</spring.version>
         <cxf.version>2.7.6</cxf.version>
     </properties>
 

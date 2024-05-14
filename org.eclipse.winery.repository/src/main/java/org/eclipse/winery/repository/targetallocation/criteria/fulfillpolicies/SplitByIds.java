@@ -44,7 +44,7 @@ public class SplitByIds {
 
     public void split() throws SplittingException {
         prepareSplit();
-        splitting.split(topology.getTopology());
+        //splitting.split(topology.getTopology());
         resetTargetLabels();
     }
 

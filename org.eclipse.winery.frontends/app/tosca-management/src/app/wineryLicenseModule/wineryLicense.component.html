@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2022 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,50 +11,196 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div *ngIf="!licenseAvailable">
-    <div class="flash">
-        This {{ toscaType | toscaTypeToReadableName }} has no license.
-        <button class="btn btn-sm btn-primary flash-action" [disabled]="!sharedData?.currentVersion?.editable"
-                (click)="licenseAvailable=true;isEditable=true;">
-            Add a LICENSE
-        </button>
-    </div>
+<link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+/>
+
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
 </div>
 
-<div *ngIf="!isEditable && licenseAvailable">
-    <div class="right" style="width: 100%; margin-bottom: 11px; ">
-        <button class="btn fa fa-pencil" aria-hidden="true" name="edit" style="float: right;"
-                [disabled]="!sharedData?.currentVersion?.editable"
-                (click)="isEditable = true;"></button>
+<div *ngIf="!loading">
+    <div *ngIf="!licenseAvailable">
+        <div class="flash">
+            This {{ toscaType | toscaTypeToReadableName }} has no license.
+            <button class="btn btn-sm btn-primary flash-action" [disabled]="!sharedData?.currentVersion?.editable"
+                    (click)="licenseAvailable=true;isEditable=true;">
+                Add a LICENSE
+            </button>
+        </div>
     </div>
-    <textarea readonly tabIndex="-1" style="width: 95%;height: 500px; resize: none;">{{licenseText}}</textarea>
-</div>
 
-<div *ngIf="isEditable">
-    <div class="btn-group" dropdown style="margin-bottom: 2px;">
-        <button type="button" class="btn btn-default">
-            Choose a license: <span class="license-label">{{ licenseType }}</span>
-        </button>
-        <button type="button" dropdownToggle class="btn btn-default dropdown-toggle dropdown-toggle-split">
-            <span class="caret"></span>
-            <span class="sr-only">Split button!</span>
-        </button>
-        <ul *dropdownMenu class="dropdown-menu" role="menu">
-            <li *ngFor="let item of options" role="presentation">
-                <button role="menuitem" class=" btn btn-link dropdown-item" (click)="dropdownAction(item)">{{ item }}
+    <div *ngIf="!isEditable && licenseAvailable">
+        <div class="right" style="margin-bottom: 20px">
+            <button class="btn fa fa-pencil" aria-hidden="true" name="edit"
+                    [disabled]="!sharedData?.currentVersion?.editable"
+                    (click)="isEditable = true;"> Edit
+            </button>
+        </div>
+        <textarea readonly tabIndex="-1">{{currentLicenseText}}</textarea>
+    </div>
+
+    <div *ngIf="isEditable">
+
+        <div style="display: flex">
+            <div class="btn-left">
+                <form autocomplete="off">
+                    <mat-form-field class="select" appearance="none" (click)="checkLicensesAvailability()">
+                        <mat-select (openedChange)="myInput.focus()" class="dropdown" [value]="licenseType"
+                                    placeholder="Choose a license:">
+                            <input #myInput matInput type="text"
+                                   (keyup)="search($event.target)" autocomplete="off" placeholder="search">
+                            <mat-divider></mat-divider>
+                            <mat-option *ngFor="let item of selectedOptions" [value]="item"
+                                        (click)="dropdownAction(item);showForm=false">
+                                {{item}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+                <div [class.hidden]="!loadingLicense" style="align-self: center">
+                    <winery-loader loaderSize="30"></winery-loader>
+                </div>
+            </div>
+
+            <div class="btn-right">
+                <button class="btn btn-sm btn-primary middle" (click)="reset()" *ngIf="licenseEngine">
+                    Check License
                 </button>
-            </li>
-        </ul>
-    </div>
+                <button class="btn fa fa-floppy-o" aria-hidden="true" name="save"
+                        [disabled]="!currentLicenseText || showForm"
+                        (click)="saveConfirm()"> Save
+                </button>
+                <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="cancelEdit()"> Cancel</button>
+            </div>
+        </div>
 
-    <div class="right">
-        <button class="btn fa fa-floppy-o" aria-hidden="true" name="save" (click)="saveLicenseFile()"> Save</button>
-        <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="cancelEdit()"> Cancel</button>
-    </div>
-    <textarea style="width: 95%; height: 500px; resize: none; font-family: monospace"
-              [(ngModel)]="licenseText"></textarea>
+        <textarea [(ngModel)]="currentLicenseText" *ngIf="!showForm"></textarea>
 
+        <div *ngIf="showForm" style="clear: both">
+            <mat-horizontal-stepper [linear]="true" #stepper>
+                <mat-step completed="false">
+                    <form [formGroup]="firstFormGroup">
+                        <ng-template matStepLabel>Fetch and Analyze Licenses</ng-template>
+                        <div class="inputFields">
+                            <mat-form-field style="width: 65%; font-size: 15px">
+                                <input matInput formControlName="link" required>
+                                <mat-placeholder class="placeholder">Repository URL</mat-placeholder>
+                            </mat-form-field>
+                            <mat-form-field style="width: 35%; font-size: 15px">
+                                <input matInput formControlName="branch">
+                                <mat-placeholder class="placeholder">Branch <span style="font-size: 12px">(if omitted, default branch is used)</span>
+                                </mat-placeholder>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="loadingbar">
+                            <mat-progress-bar mode="indeterminate"
+                                              *ngIf="!isFailed()"></mat-progress-bar>
+                            <mat-progress-bar mode="determinate" value="50" color="warn"
+                                              *ngIf="isFailed()"></mat-progress-bar>
+                            <div style="float: right">Status: {{getStatus()}}</div>
+                            <br>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" (click)="onSubmitTemplateBased()"
+                                    [disabled]="loadingbar || !firstFormGroup.valid"> Next
+                            </button>
+                            <button style="margin-left: 12px" class="btn btn-primary" (click)="reset()"
+                                    *ngIf="isFailed()">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                </mat-step>
+                <mat-step completed="false">
+                    <form [formGroup]="secondFormGroup">
+                        <ng-template matStepLabel>Check Compatibility</ng-template>
+                        <br>
+                        <mat-label style="font-size: 15px">{{foundLicenses}}</mat-label>
+                        <br><br>
+                        <div *ngIf="loadingbar">
+                            <mat-progress-bar mode="indeterminate"
+                                              *ngIf="compatibleLicenses?.length === 0"></mat-progress-bar>
+                            <mat-progress-bar mode="determinate" value="50" color="warn"
+                                              *ngIf="!compatibleLicenses"></mat-progress-bar>
+                            <div style="float: right" *ngIf="!compatibleLicenses">Unable to find a compatible license!
+                            </div>
+                            <br>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" matStepperPrevious (click)="back()">Back</button>
+                            <button style="margin-left: 12px" class="btn btn-primary"
+                                    (click)="onSubmitCheckCompatibility()" [disabled]="loadingbar">Next
+                            </button>
+                        </div>
+                    </form>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Select License</ng-template>
+                    <br>
+                    <mat-expansion-panel *ngFor="let license of compatibleLicenses" style="margin-bottom: 10px;">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title style="justify-content: center">
+                                {{license.name}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <p><u>Notes</u></p>
+                        <p style="margin-left: 15px">{{license.notes ? license.notes : "None"}}</p>
+                        <br>
+                        <u>Further information</u>
+                        <mat-nav-list>
+                            <a mat-list-item href="{{link}}" target="_blank"
+                               *ngFor="let link of license.furtherInformation" style="font-size: 13px"> {{ link }}
+                                <span style="margin-left: 10px;"><mat-icon
+                                    style="font-size: 20px;">open_in_new</mat-icon></span>
+                            </a>
+                        </mat-nav-list>
+                        <mat-action-row>
+                            <button mat-stroked-button color="primary" (click)="selectLicense(license.id)">
+                                <b>Select {{ license.id }}</b>
+                            </button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+                    <br>
+                    <button class="btn btn-primary" matStepperPrevious (click)="back()">Back</button>
+                    <button class="btn btn-primary" (click)="stepper.reset(); reset()" style="margin-left: 12px">Reset
+                    </button>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </div>
+
+        <ng-template #confirmSaveModal>
+            <winery-modal-header [modalRef]="confirmSaveModalRef"
+                                 [title]="'Are you sure you want to save the license text without modifying it?'">
+            </winery-modal-header>
+            <winery-modal-body>
+                <p>
+                    Depending on the selected license, some fields, such as the date or copyright holders, must be set!
+                </p>
+            </winery-modal-body>
+            <winery-modal-footer (onOk)="saveLicenseFile();" [modalRef]="confirmSaveModalRef"
+                                 [closeButtonLabel]="'No (Edit)'"
+                                 [okButtonLabel]="'Yes (Save)'">
+            </winery-modal-footer>
+        </ng-template>
+
+        <ng-template #confirmDownloadModal>
+            <winery-modal-header [modalRef]="confirmDownloadModalRef"
+                                 [title]="'Do you want to download the license file?'">
+            </winery-modal-header>
+            <winery-modal-body>
+                <p>
+                    The license text was stored in the ROAR.
+                    If the license text should also be added to your code repository, e.g., GitHub, it can be downloaded
+                    now.
+                </p>
+            </winery-modal-body>
+            <winery-modal-footer (onOk)="downloadFile();" [modalRef]="confirmDownloadModalRef"
+                                 [closeButtonLabel]="'No'"
+                                 [okButtonLabel]="'Yes (Download)'">
+            </winery-modal-footer>
+        </ng-template>
+
+    </div>
 </div>
-
-
-

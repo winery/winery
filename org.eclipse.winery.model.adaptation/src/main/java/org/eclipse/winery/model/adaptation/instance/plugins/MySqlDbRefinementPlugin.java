@@ -14,10 +14,10 @@
 
 package org.eclipse.winery.model.adaptation.instance.plugins;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,37 +34,36 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-import com.jcraft.jsch.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
 
     public static final QName mySqlDbQName = QName.valueOf("{http://opentosca.org/nodetypes}MySQL-DB");
-    public static final String COMMAND_RETRIEVE_DB_NAME = "sudo -i mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema'\n" +
-        ", 'sys');\"";
+    public static final String COMMAND_RETRIEVE_DB_NAME = "mysql -sN -e \"SELECT schema_name from INFORMATION_SCHEMA.SCHEMATA  WHERE schema_name NOT IN('information_schema', 'mysql', 'performance_schema', 'sys');\"";
     private static final Logger logger = LoggerFactory.getLogger(MySqlDbRefinementPlugin.class);
 
-    public MySqlDbRefinementPlugin() {
-        super("MySQL-DB");
+    public MySqlDbRefinementPlugin(Map<QName, TNodeType> nodeTypes) {
+        super("MySQL-DB", nodeTypes);
     }
 
     @Override
-    public Set<String> apply(TTopologyTemplate template) {
+    public Set<String> apply(TTopologyTemplate topology) {
         Set<String> discoveredNodeIds = new HashSet<>();
-        Session session = InstanceModelUtils.createJschSession(template, this.matchToBeRefined.nodeIdsToBeReplaced);
-        String mySqlDatabases = InstanceModelUtils.executeCommand(
-            session,
+
+        List<String> outputs = InstanceModelUtils.executeCommands(topology, this.matchToBeRefined.nodeIdsToBeReplaced, this.nodeTypes,
             COMMAND_RETRIEVE_DB_NAME
         );
+
+        String mySqlDatabases = outputs.get(0);
         logger.info("Found MySqlDatabases: {}", mySqlDatabases);
 
-        session.disconnect();
+        //  mongosh --quiet --eval "db.getName()"
 
-        if (!mySqlDatabases.isEmpty()) {
+        if (mySqlDatabases != null && !mySqlDatabases.isBlank() && !mySqlDatabases.toLowerCase().contains("no such file or directory")) {
             String[] identifiedDBs = mySqlDatabases.split("\\n");
 
-            template.getNodeTemplates().stream()
+            topology.getNodeTemplates().stream()
                 .filter(node -> this.matchToBeRefined.nodeIdsToBeReplaced.contains(node.getId())
                     && Objects.requireNonNull(node.getType()).getLocalPart().toLowerCase().startsWith(mySqlDbQName.getLocalPart().toLowerCase()))
                 .findFirst()
@@ -73,20 +72,13 @@ public class MySqlDbRefinementPlugin extends InstanceModelRefinementPlugin {
                     if (db.getProperties() == null) {
                         db.setProperties(new TEntityTemplate.WineryKVProperties());
                     }
-                    if (db.getProperties() instanceof TEntityTemplate.WineryKVProperties) {
-                        TEntityTemplate.WineryKVProperties properties = (TEntityTemplate.WineryKVProperties) db.getProperties();
+                    if (db.getProperties() instanceof TEntityTemplate.WineryKVProperties properties) {
                         properties.getKVProperties().put("DBName", identifiedDBs[0]);
                     }
                 });
         }
 
         return discoveredNodeIds;
-    }
-
-    @Override
-    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
-        Set<String> inputs = InstanceModelUtils.getRequiredSSHInputs(template, nodeIdsToBeReplaced);
-        return inputs.isEmpty() ? null : inputs;
     }
 
     @Override
