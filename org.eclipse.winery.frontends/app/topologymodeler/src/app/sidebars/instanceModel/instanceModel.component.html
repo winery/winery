@@ -39,11 +39,12 @@
                     <ul>
                         <li *ngFor="let input of inputs">
                             <label for="{{ input + 'inputVar' }}" class="control-label">{{ input }}</label>
-                            <input id="{{ input + 'inputVar' }}" name="{{ input }}"
+                            <textarea id="{{ input + 'inputVar' }}" name="{{ input }}"
                                    [(ngModel)]="inputMap[input]"
                                    class="form-control"
                                    type="text"
-                                   required/>
+                                   required>
+                            </textarea>
                         </li>
                     </ul>
                     <button class="btn btn-primary" (click)="sendRequest()"

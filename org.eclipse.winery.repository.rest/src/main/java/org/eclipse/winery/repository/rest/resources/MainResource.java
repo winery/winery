@@ -39,6 +39,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.configuration.Environments;
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.edmm.EdmmUtils;
+import org.eclipse.winery.edmm.model.EdmmImporter;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -243,10 +244,16 @@ public class MainResource {
         @FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
         @ApiParam(value = "true: content of CSAR overwrites existing content. false (default): existing content is kept") @FormDataParam("overwrite") Boolean overwrite,
         @ApiParam(value = "true: validates the hash of the manifest file with the one stored in the accountability layer") @FormDataParam("validate") Boolean validate,
+        @ApiParam(value = "true: interprets the file as an EDMM deployment model and transforms it to TOSCA") @FormDataParam("edmm") Boolean edmm,
         @Context UriInfo uriInfo) {
         LocalDateTime start = LocalDateTime.now();
         // @formatter:on
 
+        if (edmm != null && edmm) {
+            new EdmmImporter().importFromStream(uploadedInputStream, fileDetail.getFileName(), overwrite);
+            return Response.noContent().build();
+        }
+        
         CsarImporter importer;
         IRepository repository = RepositoryFactory.getRepository();
         if (Environments.getInstance().getUiConfig().getFeatures().get(YAML.toString())) {

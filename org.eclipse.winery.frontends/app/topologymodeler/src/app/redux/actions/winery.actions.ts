@@ -14,9 +14,7 @@
 
 import { Action, ActionCreator } from 'redux';
 import { Injectable } from '@angular/core';
-import {
-    OTParticipant, TArtifact, TGroupDefinition, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate
-} from '../../models/ttopology-template';
+import { OTParticipant, TArtifact, TGroupDefinition, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { TPolicy } from '../../models/policiesModalData';
 import { Visuals } from '../../models/visuals';
@@ -25,6 +23,7 @@ import { EntityTypesModel } from '../../models/entityTypesModel';
 import { NodeTemplateInstanceStates } from '../../models/enums';
 import { RequirementModel } from '../../models/requirementModel';
 import { CapabilityModel } from '../../models/capabilityModel';
+import { InstanceDeploymentTechnology, InstancePlugin } from '../../models/instanceModeling';
 
 export interface SendPaletteOpenedAction extends Action {
     paletteOpened: boolean;
@@ -257,6 +256,11 @@ export interface SetNodeWorkingAction extends Action {
     };
 }
 
+export interface SetInstanceInformationAction extends Action {
+    plugins: InstancePlugin[];
+    deploymentTechs: InstanceDeploymentTechnology[];
+}
+
 /**
  * Winery Actions
  */
@@ -304,6 +308,7 @@ export class WineryActions {
     static SET_NODE_INSTANCE_STATE = 'SET_NODE_INSTANCE_STATE';
     static SET_NODE_WORKING = 'SET_NODE_WORKING';
     static ASSIGN_DEPLOYMENT_TECHNOLOGY = 'ASSIGN_DEPLOYMENT_TECHNOLOGY';
+    static SET_INSTANCE_INFORMATION = 'SET_INSTANCE_INFORMATION';
 
     addEntityTypes: ActionCreator<AddEntityTypesAction> = ((entityTypes) => ({
         type: WineryActions.ADD_ENTITY_TYPES,
@@ -501,24 +506,29 @@ export class WineryActions {
         ((nodeId: string, valid: boolean) => ({
             type: WineryActions.SET_NODE_VALIDITY,
             nodeValidity: {
-                nodeId: nodeId,
-                valid: valid
+                nodeId,
+                valid
             }
         }));
     setNodeInstanceState: ActionCreator<SetNodeInstanceStateAction> =
         ((nodeId: string, state: NodeTemplateInstanceStates) => ({
             type: WineryActions.SET_NODE_INSTANCE_STATE,
             nodeInstanceState: {
-                nodeId: nodeId,
-                state: state
+                nodeId,
+                state
             }
         }));
     setNodeWorking: ActionCreator<SetNodeWorkingAction> =
         ((nodeId: string, working: boolean) => ({
             type: WineryActions.SET_NODE_WORKING,
             nodeWorking: {
-                nodeId: nodeId,
-                working: working
+                nodeId,
+                working
             }
         }));
+    setInstanceInformation: ActionCreator<SetInstanceInformationAction> = ((plugins: InstancePlugin[], deploymentTechs: InstanceDeploymentTechnology[]) => ({
+        type: WineryActions.SET_INSTANCE_INFORMATION,
+        plugins,
+        deploymentTechs,
+    }));
 }
