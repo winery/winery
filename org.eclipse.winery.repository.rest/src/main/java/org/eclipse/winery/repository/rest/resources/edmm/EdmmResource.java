@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,7 +15,6 @@ package org.eclipse.winery.repository.rest.resources.edmm;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,6 +48,7 @@ import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -84,10 +85,21 @@ public class EdmmResource {
     private static final String LIFECYCLE_NAME = "http://opentosca.org/interfaces/lifecycle";
     private static final String[] LIFECYCLE = {"create", "configure", "start", "stop", "delete"};
 
-    private final TServiceTemplate element;
+    private final TTopologyTemplate element;
 
     public EdmmResource(TServiceTemplate element) {
+        this(element.getTopologyTemplate());
+    }
+
+    public EdmmResource(TTopologyTemplate element) {
         this.element = element;
+    }
+
+    @GET
+    @Path("export")
+    @Produces()
+    public Response exportEdmm(@QueryParam(value = "edmmUseAbsolutePaths") String edmmUseAbsolutePaths) {
+        return RestUtils.getEdmmModel(this.element, edmmUseAbsolutePaths != null);
     }
 
     @GET
@@ -168,7 +180,7 @@ public class EdmmResource {
     public Response getOneToOneMap() {
         IRepository repository = RepositoryFactory.getRepository();
         EdmmManager edmmManager = EdmmManager.forRepository(repository);
-        Map<QName, EdmmType> oneToOneMap = edmmManager.getOneToOneMap();
+        Map<QName, EdmmType> oneToOneMap = edmmManager.getToscaToEdmmMap();
 
         Map<String, String> reverseOneToOneMap = new HashMap<>();
         for (Map.Entry<QName, EdmmType> entry : oneToOneMap.entrySet()) {
@@ -185,7 +197,7 @@ public class EdmmResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("create-placeholders-scripts")
-    public Response createPlaceholders(String componentType, @Context UriInfo uriInfo) throws IOException {
+    public Response createPlaceholders(String componentType, @Context UriInfo uriInfo, @Context HttpServletResponse response) throws Exception {
 
         // adding the interface to the component node type
         NodeTypeResource nodeTypeResource = new NodeTypesResource().getComponentInstanceResource(EncodingUtil.URLencode(NODE_TYPES), componentType);
@@ -251,7 +263,7 @@ public class EdmmResource {
                         artifactApiData.artifactTemplate.equals(implementationArtifact.getArtifactRef().toString());
                 });
             if (!implementationResourceExists) {
-                nodeTypeImplementationResource.getImplementationArtifacts().generateArtifact(artifactApiData, uriInfo);
+                nodeTypeImplementationResource.getImplementationArtifacts().generateArtifact(artifactApiData, uriInfo, response);
             }
         }
         return Response.status(Response.Status.CREATED).build();

@@ -38,13 +38,20 @@
             <div class="center">Relationship Types</div>
             <div class="right"></div>
         </a>
+        <a class="styledTabMenuButton" *ngIf="selectedOtherComponent && selectedOtherComponent.length > 0"
+           [routerLink]="['/' + selectedOtherComponent]"
+           [routerLinkActive]="['selected']">
+            <div class="left"></div>
+            <div class="center">{{ selectedOtherComponent | toscaTypeToReadableName:'true' }}</div>
+            <div class="right"></div>
+        </a>
         <a class="styledTabMenuButton"
            [routerLink]="['/other']"
-           [class.selected]="otherActive" title="{{ selectedOtherComponent }}">
+           [class.selected]="otherActive">
             <div class="left"></div>
             <div class="center"
                  style="max-width: 310px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
-                Other Elements{{ !selectedOtherComponent ? '' : ': ' + selectedOtherComponent }}
+                Other Elements
             </div>
             <div class="right"></div>
         </a>

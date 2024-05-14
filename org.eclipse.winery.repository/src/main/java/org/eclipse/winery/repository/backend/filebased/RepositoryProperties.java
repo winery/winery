@@ -22,6 +22,9 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
     private String url;
     private String branch;
 
+    private String ui;
+    private boolean patternAtlas = false;
+
     private String id;
 
     public RepositoryProperties() {
@@ -39,6 +42,13 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
         this.name = name;
         this.url = url;
         this.branch = branch;
+    }
+    
+    public RepositoryProperties(String name, String url, boolean patternAtlasFlag) {
+
+        this.name = name;
+        this.url = url;
+        this.patternAtlas = patternAtlasFlag;
     }
 
     public String getName() {
@@ -65,6 +75,14 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
         this.branch = branch;
     }
 
+    public boolean getPatternAtlas() {
+        return patternAtlas;
+    }
+
+    public void setPatternAtlas(boolean patternAtlas) {
+        this.patternAtlas = patternAtlas;
+    }
+
     public String getId() {
         return id;
     }
@@ -72,7 +90,15 @@ public class RepositoryProperties implements Serializable, Comparable<Repository
     public void setId(String id) {
         this.id = id;
     }
+    
+    public String getUi() {
+        return ui;
+    }
 
+    public void setUi(String ui) {
+        this.ui = ui;
+    }
+    
     @Override
     public int compareTo(RepositoryProperties o) {
         int compareTo = this.name.compareTo(o.name);

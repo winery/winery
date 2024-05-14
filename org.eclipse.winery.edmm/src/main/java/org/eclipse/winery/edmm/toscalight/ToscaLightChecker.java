@@ -35,11 +35,14 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.filebased.RepositoryUtils;
 
+import io.github.edmm.model.relation.ConnectsTo;
+import io.github.edmm.model.relation.DependsOn;
+import io.github.edmm.model.relation.HostedOn;
+
 public class ToscaLightChecker {
 
     private final Map<QName, TNodeType> nodeTypes;
     private final Map<QName, TRelationshipType> relationshipTypes;
-    private final Map<QName, EdmmType> edmmTypeMappings;
     private final Map<QName, EdmmType> oneToOneMappings;
     private QName hostedOn;
     private QName connectsTo;
@@ -49,23 +52,21 @@ public class ToscaLightChecker {
 
     public ToscaLightChecker(Map<QName, TNodeType> nodeTypes,
                              Map<QName, TRelationshipType> relationshipTypes,
-                             Map<QName, EdmmType> edmmTypeMappings,
                              Map<QName, EdmmType> oneToOneMappings) {
         this.nodeTypes = nodeTypes;
         this.relationshipTypes = relationshipTypes;
-        this.edmmTypeMappings = edmmTypeMappings;
         this.oneToOneMappings = oneToOneMappings;
 
         this.oneToOneMappings.entrySet().stream()
-            .filter(entry -> entry.getValue().equals(EdmmType.DEPENDS_ON))
+            .filter(entry -> entry.getValue().equals(EdmmType.fromEntityClass(DependsOn.class)))
             .findFirst()
             .ifPresent(entry -> this.dependsOn = entry.getKey());
         this.oneToOneMappings.entrySet().stream()
-            .filter(entry -> entry.getValue().equals(EdmmType.CONNECTS_TO))
+            .filter(entry -> entry.getValue().equals(EdmmType.fromEntityClass(ConnectsTo.class)))
             .findFirst()
             .ifPresent(entry -> this.connectsTo = entry.getKey());
         this.oneToOneMappings.entrySet().stream()
-            .filter(entry -> entry.getValue().equals(EdmmType.HOSTED_ON))
+            .filter(entry -> entry.getValue().equals(EdmmType.fromEntityClass(HostedOn.class)))
             .findFirst()
             .ifPresent(entry -> this.hostedOn = entry.getKey());
     }
@@ -160,7 +161,9 @@ public class ToscaLightChecker {
             || ModelUtilities.isOfType(this.connectsTo, type, this.relationshipTypes)
             || ModelUtilities.isOfType(this.dependsOn, type, this.relationshipTypes))) {
             this.addErrorToList(type, "Relation Type does not inherit from",
-                EdmmType.DEPENDS_ON, EdmmType.HOSTED_ON, EdmmType.DEPENDS_ON, "or connectsTo and, thus,");
+                EdmmType.fromEntityClass(ConnectsTo.class),
+                EdmmType.fromEntityClass(HostedOn.class),
+                EdmmType.fromEntityClass(DependsOn.class), " and, thus,");
         }
 
         // todo ?
