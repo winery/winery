@@ -173,7 +173,7 @@ export class EntityContainerComponent implements OnInit {
         // Thus, we need to subtract 1 from all version instances.
         let childrenCount = this.data.versionInstances.length - 1;
 
-        // If we show the differences dialog, we add the size of the dialog.
+        // If we show the differences' dialog, we add the size of the dialog.
         let children = 0;
         let directChildrenShowingTheirContent = 0;
         let containersShowingDiff = 0;

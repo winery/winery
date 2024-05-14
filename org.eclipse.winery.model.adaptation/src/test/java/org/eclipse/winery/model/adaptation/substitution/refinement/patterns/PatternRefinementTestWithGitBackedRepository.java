@@ -20,11 +20,15 @@ import java.util.stream.Collectors;
 
 import org.eclipse.winery.model.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.adaptation.substitution.refinement.RefinementCandidate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBackedRepository {
@@ -107,5 +111,103 @@ public class PatternRefinementTestWithGitBackedRepository extends TestWithGitBac
         assertEquals(2, nodeIdsToBeReplaced.size());
         assertTrue(nodeIdsToBeReplaced.contains("NodeTypeWithTwoKVProperties_3"));
         assertTrue(nodeIdsToBeReplaced.contains("Infrastructure-As-A-Service_w1_3"));
+    }
+
+    @Test
+    public void applyMoreConcreteRelationRedirect() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        TServiceTemplate serviceTemplate = repository.getElement(new ServiceTemplateId(
+            "http://winery.opentosca.org/test/concrete/servicetemplates",
+            "Pattern-basedDeplymentModel_complexRelationMapping-w1-wip1",
+            false
+        ));
+
+        TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+        assertNotNull(topologyTemplate);
+        
+        new PatternRefinement().refineTopology(topologyTemplate);
+        
+        assertNotNull(topologyTemplate.getNodeTemplateOrRelationshipTemplate());
+        assertEquals(12, topologyTemplate.getNodeTemplateOrRelationshipTemplate().size());
+        
+        assertNotNull(topologyTemplate.getNodeTemplate("rs_Tomcat_8.5-w1_0"));
+        assertNotNull(topologyTemplate.getNodeTemplate("rs_Ubuntu_w1-wip1_0"));
+        assertNotNull(topologyTemplate.getNodeTemplate("ThirdPattern_w1"));
+        assertNotNull(topologyTemplate.getNodeTemplate("FifthPattern_w1"));
+        assertNotNull(topologyTemplate.getNodeTemplate("NodeTypeInheritingFromAbstractType_1-w1-wip1_0"));
+        assertNotNull(topologyTemplate.getNodeTemplate("NodeTypeInheritingFromAbstractType_1-w1-wip1_1"));
+
+        TRelationshipTemplate patternOnUbuntu = topologyTemplate.getRelationshipTemplate("con_HostedOn_1");
+        assertNotNull(patternOnUbuntu);
+        assertEquals("rs_Ubuntu_w1-wip1_0", patternOnUbuntu.getTargetElement().getRef().getId());
+        assertEquals("FifthPattern_w1", patternOnUbuntu.getSourceElement().getRef().getId());
+        
+        TRelationshipTemplate ubuntuOnPattern = topologyTemplate.getRelationshipTemplate("con_HostedOn_2");
+        assertNotNull(ubuntuOnPattern);
+        assertEquals("rs_Ubuntu_w1-wip1_0", ubuntuOnPattern.getSourceElement().getRef().getId());
+        assertEquals("ThirdPattern_w1", ubuntuOnPattern.getTargetElement().getRef().getId());
+        
+        TRelationshipTemplate tomcatOnUbuntu = topologyTemplate.getRelationshipTemplate("rs_con_HostedOn_0");
+        assertNotNull(tomcatOnUbuntu);
+        assertEquals("rs_Ubuntu_w1-wip1_0", tomcatOnUbuntu.getTargetElement().getRef().getId());
+        assertEquals("rs_Tomcat_8.5-w1_0", tomcatOnUbuntu.getSourceElement().getRef().getId());
+        
+        TRelationshipTemplate compOneOnTomcat = topologyTemplate.getRelationshipTemplate("con_HostedOn_0");
+        assertNotNull(compOneOnTomcat);
+        assertEquals("NodeTypeInheritingFromAbstractType_1-w1-wip1_0", compOneOnTomcat.getSourceElement().getRef().getId());
+        assertEquals("rs_Tomcat_8.5-w1_0", compOneOnTomcat.getTargetElement().getRef().getId());
+        
+        TRelationshipTemplate compTwoOnTomcat = topologyTemplate.getRelationshipTemplate("con_HostedOn_3");
+        assertNotNull(compTwoOnTomcat);
+        assertEquals("NodeTypeInheritingFromAbstractType_1-w1-wip1_1", compTwoOnTomcat.getSourceElement().getRef().getId());
+        assertEquals("rs_Tomcat_8.5-w1_0", compTwoOnTomcat.getTargetElement().getRef().getId());
+
+        TRelationshipTemplate compOnetoPattern = topologyTemplate.getRelationshipTemplate("con_ConnectsTo_0");
+        assertNotNull(compOnetoPattern);
+        assertEquals("NodeTypeInheritingFromAbstractType_1-w1-wip1_0", compOnetoPattern.getSourceElement().getRef().getId());
+        assertEquals("FifthPattern_w1", compOnetoPattern.getTargetElement().getRef().getId());
+    }
+
+    @Test
+    public void testStyingElementWithSameIdInRefinementStructureAndRefinedTopology() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        TServiceTemplate serviceTemplate = repository.getElement(new ServiceTemplateId(
+            "http://winery.opentosca.org/test/concrete/servicetemplates",
+            "Pattern-basedDeploymentModelWithTwoSameSubgraphs_staying-same-id-w1-wip1",
+            false
+        ));
+
+        TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+        assertNotNull(topologyTemplate);
+
+        new PatternRefinement((candidates, refinementServiceTemplate, currentTopology) -> {
+            for (RefinementCandidate candidate : candidates) {
+                if (candidate.getRefinementModel().getName().equals("ProblemWithStayingElementSameId_w1-wip1")) {
+                    return candidate; 
+                }
+            }
+            throw new RuntimeException("Did not find expected RefinementCandidate!");
+        }).refineTopology(topologyTemplate);
+
+        TRelationshipTemplate ubuntuHostedOnCloud_0 = topologyTemplate.getRelationshipTemplate("con_HostedOn_0");
+        assertNotNull(ubuntuHostedOnCloud_0);
+        assertEquals("Ubuntu_w1-wip1_0", ubuntuHostedOnCloud_0.getSourceElement().getRef().getId());
+        assertEquals("rs_CloudProvider1_w1-wip1_0", ubuntuHostedOnCloud_0.getTargetElement().getRef().getId());
+
+        TRelationshipTemplate newUbuntuHostedOnCloud_1 = topologyTemplate.getRelationshipTemplate("rs_con_HostedOn_0");
+        assertNotNull(newUbuntuHostedOnCloud_1);
+        assertEquals("rs_Ubuntu_w1-wip1_0", newUbuntuHostedOnCloud_1.getSourceElement().getRef().getId());
+        assertEquals("rs_CloudProvider1_w1-wip1_1", newUbuntuHostedOnCloud_1.getTargetElement().getRef().getId());
+        
+        long ingoingRelationsAtStayingElement = topologyTemplate.getRelationshipTemplates().stream()
+            .filter(relation -> "rs_CloudProvider1_w1-wip1_1".equals(relation.getTargetElement().getRef().getId()))
+            .count();
+        assertEquals(1, ingoingRelationsAtStayingElement);
+        long ingoingRelationsAtElementWithSameIdAsStayingRefinedElement = topologyTemplate.getRelationshipTemplates().stream()
+            .filter(relation -> "rs_CloudProvider1_w1-wip1_0".equals(relation.getTargetElement().getRef().getId()))
+            .count();
+        assertEquals(1, ingoingRelationsAtElementWithSameIdAsStayingRefinedElement);
     }
 }

@@ -249,7 +249,7 @@ public class MainResource {
         LocalDateTime start = LocalDateTime.now();
         // @formatter:on
 
-        if (edmm) {
+        if (edmm != null && edmm) {
             new EdmmImporter().importFromStream(uploadedInputStream, fileDetail.getFileName(), overwrite);
             return Response.noContent().build();
         }

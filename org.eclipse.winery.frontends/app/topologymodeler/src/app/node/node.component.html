@@ -36,6 +36,24 @@
             <img *ngFor="let policyIcon of policyIcons" [src]="policyIcon.imageUrl" class="policyAnnotation"
              alt="Policy icon" tooltip="{{ policyIcon.policyType }}">
         </div>
+        
+<!--        <div *ngIf="instanceInformation?.discoveredBy">-->
+<!--            discovered-->
+<!--        </div>-->
+        <div *ngIf="instanceInformation?.deploymentTech" class="deploymentTech">
+            <img *ngIf="instanceInformation.deploymentTech === 'kubernetes'"
+                 alt="Kubernetes"
+                 src="https://www.linuxfoundation.org/hs-fs/hubfs/trademark-kubernetes-icon-correct-140x140-1.png?width=62&name=trademark-kubernetes-icon-correct-140x140-1.png"
+            class="policyAnnotation">
+            <img *ngIf="instanceInformation.deploymentTech === 'puppet'"
+                 alt="Puppet"
+                 src="https://static-00.iconduck.com/assets.00/file-type-puppet-icon-333x512-rln688e4.png"
+            class="policyAnnotation">
+            <img *ngIf="instanceInformation.deploymentTech === 'terraform'"
+                 alt="Terraform"
+                 src="https://static-00.iconduck.com/assets.00/file-type-terraform-icon-455x512-csyun60o.png"
+            class="policyAnnotation">
+        </div>
 
         <div *ngIf="newerVersions?.length !== 0">
             <i *wineryRepositoryFeatureToggle="configEnum.updateTemplates"
@@ -135,9 +153,9 @@
             <div class="endpointContainer center-block row" style="border: 0; box-shadow: none"
                  *ngIf="connectorEndpointVisible && !readonly"
                  (mouseover)="makeSource()">
-                <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}
-                     (mousedown)="passCurrentType($event)">
+                <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}>
                     <button *ngFor="let rel of entityTypes.relationshipTypes"
+                            (mousedown)="passCurrentType(rel)"
                             type="button" class="btn btn-sm btn-outline-secondary btn-block"
                             [style.color]="rel.color"
                             style="font-size: x-small;">

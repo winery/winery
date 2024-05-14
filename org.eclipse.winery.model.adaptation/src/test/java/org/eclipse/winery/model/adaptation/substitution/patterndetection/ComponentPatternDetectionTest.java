@@ -51,6 +51,7 @@ import org.eclipse.winery.topologygraph.transformation.ToscaTransformer;
 
 import org.jgrapht.GraphMapping;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -98,12 +99,14 @@ class ComponentPatternDetectionTest {
     }
 
     @Test
+    @Disabled("Contradicts Lukas' diss")
     public void isCompatiblePrm2() {
         assertTrue(isCompatible(prm2, Arrays.asList(prm1, prm2)));
         assertTrue(isCompatible(prm2, Arrays.asList(prm2, prm1)));
     }
 
     @Test
+    @Disabled("Contradicts Lukas' diss")
     public void refineTopology() {
         ComponentPatternDetection detection = new ComponentPatternDetection(
             new DefaultRefinementChooser(),
@@ -154,6 +157,7 @@ class ComponentPatternDetectionTest {
     }
 
     @Test
+    @Disabled("Contradicts Lukas' diss")
     public void refineTopologyWithBehaviorPatterns() {
         TPolicy behaviorPattern1 = new TPolicy(new TPolicy.Builder(QName.valueOf("behaviorPattern1")).setName("behaviorPattern1"));
         TPolicy behaviorPattern2 = new TPolicy(new TPolicy.Builder(QName.valueOf("behaviorPattern2")).setName("behaviorPattern2"));

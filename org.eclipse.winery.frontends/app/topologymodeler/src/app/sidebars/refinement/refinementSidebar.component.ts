@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { PatternRefinementModel, RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
 import { BackendService } from '../../services/backend.service';
 import { NgRedux } from '@angular-redux/store';
@@ -21,6 +21,7 @@ import { WineryActions } from '../../redux/actions/winery.actions';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { EntityTypesModel } from '../../models/entityTypesModel';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-refinement',
@@ -34,12 +35,18 @@ import { EntityTypesModel } from '../../models/entityTypesModel';
 })
 export class RefinementSidebarComponent implements OnDestroy {
 
+    public object = Object;
+
     @Input() refinementType: string;
 
     refinementIsRunning: boolean;
     refinementIsLoading: boolean;
     refinementIsDone: boolean;
     prmCandidates: PatternRefinementModel[];
+
+    @ViewChild('confirmRefineModal') confirmRefineModal: ModalDirective;
+    confirmCandidate: PatternRefinementModel;
+
 
     private entityTypes: EntityTypesModel;
 
@@ -68,6 +75,15 @@ export class RefinementSidebarComponent implements OnDestroy {
 
     prmChosen(event: MouseEvent, candidate: PatternRefinementModel) {
         event.stopPropagation();
+        if (candidate.warnings && Object.keys(candidate.warnings).length > 0) {
+            this.confirmRefineModal.show();
+            this.confirmCandidate = candidate;
+        } else {
+            this.candidateConfirmed(candidate);
+        }
+    }
+
+    candidateConfirmed(candidate: PatternRefinementModel) {
         this.webSocketService.refineWith(candidate);
         this.refinementIsLoading = true;
     }

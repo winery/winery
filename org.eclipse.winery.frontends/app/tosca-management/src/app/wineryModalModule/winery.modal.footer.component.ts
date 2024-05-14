@@ -27,6 +27,7 @@ export class WineryModalFooterComponent {
     @Input() hideOkButton = false;
     @Input() disableOkButton = false;
     @Input() hideOnOk = true;
+    @Input() okButtonClass = 'btn-primary';
     @Output() onOk = new EventEmitter<any>();
     @Output() onCancel = new EventEmitter<any>();
 
