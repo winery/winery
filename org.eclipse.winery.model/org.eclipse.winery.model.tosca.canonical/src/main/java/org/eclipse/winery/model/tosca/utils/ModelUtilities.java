@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,6 @@ import org.eclipse.winery.model.tosca.extensions.kvproperties.WinerysPropertiesD
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -804,8 +804,7 @@ public abstract class ModelUtilities {
         return item;
     }
 
-    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends
-        TEntityType> elements) {
+    public static boolean isOfType(QName requiredType, QName givenType, Map<QName, ? extends TEntityType> elements) {
         if (!givenType.equals(requiredType)) {
             TEntityType entityType = elements.get(givenType);
             if (Objects.isNull(entityType) || Objects.isNull(entityType.getDerivedFrom())) {
@@ -822,7 +821,7 @@ public abstract class ModelUtilities {
         TEntityType entityType = elements.get(givenType);
         if (Objects.nonNull(entityType)) {
             elements.forEach((qName, type) -> {
-                if (!qName.equals(givenType) && isOfType(givenType, qName, elements)) {
+                if (isOfType(givenType, qName, elements)) {
                     children.put(qName, type);
                 }
             });
@@ -830,44 +829,17 @@ public abstract class ModelUtilities {
         return children;
     }
 
-    /**
-     * Retrieve the available types of the <code>givenType</code> and filter them according to their implementation
-     * based on the underlying <code>deploymentTechnology</code>. If the filtering by the
-     * <code>deploymentTechnology</code> is not required, <code>null</code> should be passed.
-     *
-     * @param givenType              The QName of the type to be investigated.
-     * @param elements               The set of Types available.
-     * @param deploymentTechnologies The underlying deployment technology, the features must comply to.
-     * @param <T>                    The type of the Elements
-     * @return The set of applicable features.
-     */
-    public static <T extends
-        TEntityType> Map<T, String> getAvailableFeaturesOfType(
-        QName givenType, Map<QName, T> elements,
-        List<String> deploymentTechnologies) {
-        HashMap<T, String> features = new HashMap<>();
-        getChildrenOf(givenType, elements).forEach((qName, t) -> {
-            if (Objects.nonNull(t.getTags())) {
-                List<TTag> list = t.getTags();
-
-                // To enable the usage of "technology" and "technologies", we only check for "technolog"
-                String supportedDeploymentTechnologies = list.stream()
-                    .filter(tag -> tag.getName().toLowerCase().contains("deploymentTechnolog".toLowerCase()))
-                    .map(TTag::getValue)
-                    .collect(
-                        Collectors.joining(" "));
-
-                if (StringUtils.isBlank(supportedDeploymentTechnologies)
-                    || "*".equals(supportedDeploymentTechnologies) || deploymentTechnologies.stream()
-                    .anyMatch(s -> supportedDeploymentTechnologies.toLowerCase().contains(s.toLowerCase()))) {
-                    list.stream()
-                        .filter(tag -> "feature".equalsIgnoreCase(tag.getName()))
-                        .findFirst()
-                        .ifPresent(tTag -> features.put(elements.get(qName), tTag.getValue()));
+    public static <T extends TEntityType> Map<QName, T> getDirectChildrenOf(QName givenType, Map<QName, T> elements) {
+        HashMap<QName, T> children = new HashMap<>();
+        TEntityType entityType = elements.get(givenType);
+        if (Objects.nonNull(entityType)) {
+            elements.forEach((qName, type) -> {
+                if (!qName.equals(givenType) && type.getDerivedFrom() != null && type.getDerivedFrom().getType().equals(givenType)) {
+                    children.put(qName, type);
                 }
-            }
-        });
-        return features;
+            });
+        }
+        return children;
     }
 
     public static <T extends TEntityType> boolean isFeatureType(QName givenType, Map<QName, T> elements) {
@@ -913,6 +885,27 @@ public abstract class ModelUtilities {
         } while (hostedOn.isPresent());
 
         return hostedOnSuccessors;
+    }
+
+    public static ArrayList<TNodeTemplate> getHostedOnPredecessors(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+        ArrayList<TNodeTemplate> hostedOnPredecessors = new ArrayList<>();
+
+        Stack<TNodeTemplate> unprocessed = new Stack<>();
+        unprocessed.push(nodeTemplate);
+
+        do {
+            List<TRelationshipTemplate> incomingRelationshipTemplates = getIncomingRelationshipTemplates(topologyTemplate, unprocessed.pop());
+
+            incomingRelationshipTemplates.stream()
+                .filter(relation -> relation.getType().equals(ToscaBaseTypes.hostedOnRelationshipType))
+                .map(hostedOn -> getNodeTemplateFromRelationshipSourceOrTarget(topologyTemplate, hostedOn.getSourceElement().getRef()))
+                .forEach(node -> {
+                    unprocessed.push(node);
+                    hostedOnPredecessors.add(node);
+                });
+        } while (!unprocessed.isEmpty());
+
+        return hostedOnPredecessors;
     }
 
     /**
@@ -1154,19 +1147,19 @@ public abstract class ModelUtilities {
 
         return propertyDefinitions;
     }
-    
+
     public static <T extends TEntityType> WinerysPropertiesDefinition getEffectiveWineryPropertyDefinitions(List<T> hierarchy) {
         List<PropertyDefinitionKV> propertyDefinitions = ModelUtilities.mergePropertiesDefinitions(hierarchy);
 
         // Convention defines that the first element in the list is the child
         T child = hierarchy.get(0);
-        
+
         // Create new WPD
         WinerysPropertiesDefinition winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         winerysPropertiesDefinition.setElementName(child.getName());
         winerysPropertiesDefinition.setNamespace(child.getTargetNamespace());
         winerysPropertiesDefinition.setPropertyDefinitions(propertyDefinitions);
-        
+
         return winerysPropertiesDefinition;
     }
 

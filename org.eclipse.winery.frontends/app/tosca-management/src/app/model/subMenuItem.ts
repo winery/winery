@@ -48,7 +48,7 @@ export class SubMenuItems {
     static readonly deploymentArtifacts: SubMenuItem = {
         displayName: 'Deployment Artifacts', urlFragment: 'deploymentartifacts'
     };
-    static readonly detector: SubMenuItem = { displayName: 'Detector', urlFragment: 'detector' };
+    static readonly detector: SubMenuItem = { displayName: 'Pattern Structure', urlFragment: 'detector' };
     static readonly documentation: SubMenuItem = { displayName: 'Documentation', urlFragment: 'documentation' };
     static readonly edmmTypes: SubMenuItem = { displayName: 'EDMM Types', urlFragment: 'edmmtypes' };
     static readonly files: SubMenuItem = { displayName: 'Files', urlFragment: 'files' };
@@ -83,7 +83,7 @@ export class SubMenuItems {
     };
     static readonly readme: SubMenuItem = { displayName: 'README', urlFragment: 'readme' };
     static readonly refinementStructure: SubMenuItem = {
-        displayName: 'Refinement Structure', urlFragment: 'refinementstructure'
+        displayName: 'Solution Structure', urlFragment: 'refinementstructure'
     };
     static readonly relationMappings: SubMenuItem = {
         displayName: 'Relation Mappings', urlFragment: 'relationmappings'
@@ -144,5 +144,8 @@ export class SubMenuItems {
     static readonly attributes: SubMenuItem = { displayName: 'Attribute Definitions', urlFragment: 'attributes' };
     static readonly interfacedefinitions: SubMenuItem = {
         displayName: 'Interfaces', urlFragment: 'interfacedefinitions'
+    };
+    static readonly detectionModel: SubMenuItem = {
+        displayName: 'Detection Model', urlFragment: 'detectionmodel'
     };
 }
