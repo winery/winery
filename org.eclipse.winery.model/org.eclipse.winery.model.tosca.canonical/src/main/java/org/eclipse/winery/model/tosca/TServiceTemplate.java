@@ -172,13 +172,21 @@ public class TServiceTemplate extends HasIdAndTags implements HasName, HasTarget
         private String targetNamespace;
         private QName substitutableNodeType;
 
+        @Deprecated
         public Builder(String id) {
             super(id);
             topologyTemplate = null;
         }
 
+        @Deprecated
         public Builder(String id, TTopologyTemplate topologyTemplate) {
             super(id);
+            this.topologyTemplate = topologyTemplate;
+        }
+        
+        public Builder(String id, String targetNamespace, TTopologyTemplate topologyTemplate) {
+            super(id);
+            this.targetNamespace = targetNamespace;
             this.topologyTemplate = topologyTemplate;
         }
 

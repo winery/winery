@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -75,6 +75,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.NewVersionListElemen
 import org.eclipse.winery.repository.rest.resources.apiData.PropertyDiffList;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.UpdateInfo;
+import org.eclipse.winery.repository.rest.resources.edmm.EdmmResource;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.targetallocation.Allocation;
 import org.eclipse.winery.repository.targetallocation.util.AllocationRequest;
@@ -174,6 +175,11 @@ public class TopologyTemplateResource {
         return Response.noContent().build();
     }
 
+    @Path("edmm")
+    public EdmmResource getTopologyTemplateAsEdmm() {
+        return new EdmmResource(this.topologyTemplate);
+    }
+
     @Path("nodetemplates/")
     public NodeTemplatesResource getNodeTemplatesResource() {
         // FIXME: onDelete will not work as we have a copy of the original list. We have to add a "listener" to remove at the list and route that remove to the original list
@@ -253,7 +259,7 @@ public class TopologyTemplateResource {
         ResourceResult result = new ResourceResult();
         result.setStatus(Response.Status.CREATED);
         result.setMessage(new QNameApiData(splitServiceTemplateId));
-        
+
         return result.getResponse();
     }
 

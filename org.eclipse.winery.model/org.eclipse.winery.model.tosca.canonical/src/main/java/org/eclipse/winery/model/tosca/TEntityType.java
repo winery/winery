@@ -604,8 +604,14 @@ public abstract class TEntityType extends TExtensibleElementWithTags implements 
         private String targetNamespace;
         private List<AttributeDefinition> attributeDefinitions;
 
+        @Deprecated
         public Builder(String name) {
             this.name = name;
+        }
+
+        public Builder(QName id) {
+            this.name = id.getLocalPart();
+            this.targetNamespace = id.getNamespaceURI();
         }
 
         public Builder(TEntityType entityType) {
@@ -650,6 +656,10 @@ public abstract class TEntityType extends TExtensibleElementWithTags implements 
             }
             this.properties = properties;
             return self();
+        }
+
+        public PropertiesDefinition getProperties() {
+            return properties;
         }
 
         public T setAbstract(boolean abstractValue) {

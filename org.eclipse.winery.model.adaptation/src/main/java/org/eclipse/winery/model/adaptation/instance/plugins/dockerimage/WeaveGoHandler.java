@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.adaptation.instance.InstanceModelUtils;
 import org.eclipse.winery.model.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -63,6 +64,7 @@ public class WeaveGoHandler implements ImageRefinementHandler {
         TNodeType goAppType = repository.getElement(new NodeTypeId(QNAME_GO_APP));
         TNodeTemplate goApp = ModelUtilities.instantiateNodeTemplate(goAppType);
         goApp.setName(dockerContainer.getName());
+        InstanceModelUtils.setStateRunning(goApp);
 
         topologyTemplate.addNodeTemplate(goApp);
 

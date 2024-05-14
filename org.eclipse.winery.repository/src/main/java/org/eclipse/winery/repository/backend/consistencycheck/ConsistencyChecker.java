@@ -282,7 +282,7 @@ public class ConsistencyChecker {
         }
     }
 
-    private void checkPropertiesValidation(DefinitionsChildId id) {
+    private void checkPropertiesValidation(DefinitionsChildId id, IRepository repository) {
         if (!(id instanceof EntityTemplateId)) {
             return;
         }
@@ -314,10 +314,15 @@ public class ConsistencyChecker {
             return;
         }
         TEntityTemplate.Properties definedProps = entityTemplate.getProperties();
-        if (requiresProperties(entityType) && definedProps == null) {
+
+        ArrayList<TEntityType> typeHierarchy = repository.getParentsAndChild(entityType);
+        boolean requiresProperties = typeHierarchy.stream()
+            .anyMatch(type -> type.getProperties() != null);
+
+        if (requiresProperties && definedProps == null) {
             printAndAddError(id, "Properties required, but no properties defined");
             return;
-        } else if (!requiresProperties(entityType) && definedProps != null) {
+        } else if (!requiresProperties && definedProps != null) {
             printAndAddError(id, "No properties required by type, but properties were defined on template");
             return;
         } else if (definedProps == null) {
@@ -349,8 +354,9 @@ public class ConsistencyChecker {
                 validate(repositoryFileReference, any, id);
             }
         } else if (definedProps instanceof TEntityTemplate.WineryKVProperties) {
-            final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+            final WinerysPropertiesDefinition winerysPropertiesDefinition = ModelUtilities.getEffectiveWineryPropertyDefinitions(typeHierarchy);
             Map<String, String> kvProperties = ((TEntityTemplate.WineryKVProperties) definedProps).getKVProperties();
+
             if (kvProperties.isEmpty()) {
                 printAndAddError(id, "Properties required, but no properties set (kvproperties case)");
                 return;
@@ -373,10 +379,6 @@ public class ConsistencyChecker {
             // FIXME todo
             LOGGER.debug("YAML Properties checking is not yet implemented!");
         }
-    }
-
-    private static boolean requiresProperties(TEntityType type) {
-        return type.getProperties() != null;
     }
 
     private void checkId(DefinitionsChildId id, Map<QName, TDefinitions> allQNameToDefinitionMapping) {
@@ -536,7 +538,7 @@ public class ConsistencyChecker {
             checkId(id, allQNameToDefinitionMapping);
             checkXmlSchemaValidation(id);
             checkReferencedQNames(id, allQNameToDefinitionMapping);
-            checkPropertiesValidation(id);
+            checkPropertiesValidation(id, repository);
             if (id instanceof ServiceTemplateId) {
                 checkServiceTemplate((ServiceTemplateId) id);
             }

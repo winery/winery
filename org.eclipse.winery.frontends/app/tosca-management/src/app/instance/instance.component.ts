@@ -27,6 +27,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SubMenuItem } from '../model/subMenuItem';
 import { QName } from '../../../../shared/src/app/model/qName';
 import { backendBaseURL } from '../configuration';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -57,6 +58,7 @@ export class InstanceComponent implements OnDestroy {
                 private router: Router,
                 private service: InstanceService,
                 private notify: WineryNotificationService,
+                private config: WineryRepositoryConfigurationService,
                 private existService: ExistService) {
         this.routeSub = this.route
             .data
@@ -84,7 +86,7 @@ export class InstanceComponent implements OnDestroy {
                                 compData => this.handleComponentData(compData)
                             );
                         this.getVersionInfo();
-                        if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
+                        if (this.toscaComponent.toscaType === ToscaTypes.ServiceTemplate && this.config.configuration.features.edmmModeling) {
                             this.getToscaLightCompatibility();
                         }
                     } else {

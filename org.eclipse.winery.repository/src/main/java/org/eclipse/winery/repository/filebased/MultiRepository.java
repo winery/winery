@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -98,7 +99,7 @@ public class MultiRepository implements IWrappingRepository {
 
             File localRepoPath = new File(repositoryRoot.toString(), Constants.DEFAULT_LOCAL_REPO_NAME);
             this.dependantRepositories = new File(repositoryRoot.toString(), Filename.FILENAME_JSON_MUTLI_REPOSITORIES);
-            readRepositoriesConfig();
+            loadRepositoriesFromConfig();
 
             GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(
                 false,
@@ -269,7 +270,7 @@ public class MultiRepository implements IWrappingRepository {
     List<RepositoryProperties> getRepositoriesFromFile() {
         if (repoContainsConfigFile()) {
             try {
-                readRepositoriesConfig();
+                loadRepositoriesFromConfig();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -281,12 +282,12 @@ public class MultiRepository implements IWrappingRepository {
      * Loads the repositories from the repositories.json file into the repositories list. Then clones the repositories
      * from the repositories list.
      */
-    private void readRepositoriesConfig() throws IOException {
+    private void loadRepositoriesFromConfig() throws IOException {
         if (repoContainsConfigFile()) {
             LOGGER.info("Found Repositories file");
             this.repositoriesList = loadConfiguration(this.dependantRepositories);
             MultiRepositoryManager multiRepositoryManager = new MultiRepositoryManager();
-
+            
             if (!multiRepositoryManager.isMultiRepositoryFileStructureEstablished(this.repositoryRoot)) {
                 multiRepositoryManager.createMultiRepositoryFileStructure(
                     this.repositoryRoot,
@@ -374,12 +375,10 @@ public class MultiRepository implements IWrappingRepository {
      */
     private void createRepository(RepositoryProperties repo) {
         IRepositoryResolver resolver = null;
-        Optional<IRepositoryResolver> resolverOptional = RepositoryResolverFactory.getResolver(repo.getUrl(), repo.getBranch());
-        if (resolverOptional.isPresent()) {
+        Optional<IRepositoryResolver> resolverOptional = RepositoryResolverFactory.getResolver(repo.getUrl(), repo.getBranch(), repo.getPatternAtlas(), repo.getUi());
+        
+        if (resolverOptional.isPresent() && !RepositoryUtils.checkRepositoryDuplicate(repo.getUrl(), this)) {
             resolver = resolverOptional.get();
-        }
-
-        if (resolver != null && !RepositoryUtils.checkRepositoryDuplicate(repo.getUrl(), this)) {
             try {
                 String ownerDirectory = URLEncoder.encode(resolver.getRepositoryMaintainerUrl(), "UTF-8");
                 Path ownerRoot = this.repositoryRoot.resolve(ownerDirectory);
@@ -397,7 +396,7 @@ public class MultiRepository implements IWrappingRepository {
                     loadRepositoriesByList(loadConfiguration(configurationFile));
                 }
                 fixNamespaces(newSubRepository);
-            } catch (IOException | GitAPIException e) {
+            } catch (IOException | GitAPIException | URISyntaxException e) {
                 LOGGER.error("Error while creating the repository structure", e);
             }
         }

@@ -14,16 +14,13 @@
 
 import { Action } from 'redux';
 import {
-    AddEntityTypesAction, AssignDeploymentTechnologyAction, AssignParticipantAction, ChangeYamlPoliciesAction,
-    DecMaxInstances, DecMinInstances, DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction,
-    DeleteRelationshipAction, DeleteYamlArtifactAction, HideNavBarAndPaletteAction, IncMaxInstances, IncMinInstances,
-    SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction, SendLiveModelingSidebarOpenedAction,
-    SendPaletteOpenedAction, SetCapabilityAction, SetDeploymentArtifactAction, SetLastSavedJsonTopologyAction,
-    SetNodeInstanceStateAction, SetNodePropertyValidityAction, SetNodeVisuals, SetNodeWorkingAction, SetPolicyAction,
-    SetPropertyAction, SetRequirementAction, SetTargetLocation, SetUnsavedChangesAction, SetYamlArtifactAction,
-    SidebarChangeNodeName, SidebarMaxInstanceChanges, SidebarMinInstanceChanges, SidebarStateAction,
-    UpdateGroupDefinitionAction, UpdateNodeCoordinatesAction, UpdateParticipantsAction, UpdateRelationshipNameAction,
-    WineryActions
+    AddEntityTypesAction, AssignDeploymentTechnologyAction, AssignParticipantAction, ChangeYamlPoliciesAction, DecMaxInstances, DecMinInstances,
+    DeleteDeploymentArtifactAction, DeleteNodeAction, DeletePolicyAction, DeleteRelationshipAction, DeleteYamlArtifactAction, HideNavBarAndPaletteAction,
+    IncMaxInstances, IncMinInstances, SaveNodeTemplateAction, SaveRelationshipAction, SendCurrentNodeIdAction, SendLiveModelingSidebarOpenedAction,
+    SendPaletteOpenedAction, SetCapabilityAction, SetDeploymentArtifactAction, SetInstanceInformationAction, SetLastSavedJsonTopologyAction,
+    SetNodeInstanceStateAction, SetNodePropertyValidityAction, SetNodeVisuals, SetNodeWorkingAction, SetPolicyAction, SetPropertyAction, SetRequirementAction,
+    SetTargetLocation, SetUnsavedChangesAction, SetYamlArtifactAction, SidebarChangeNodeName, SidebarMaxInstanceChanges, SidebarMinInstanceChanges,
+    SidebarStateAction, UpdateGroupDefinitionAction, UpdateNodeCoordinatesAction, UpdateParticipantsAction, UpdateRelationshipNameAction, WineryActions
 } from '../actions/winery.actions';
 import { TArtifact, TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from '../../models/ttopology-template';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
@@ -31,6 +28,7 @@ import { Visuals } from '../../models/visuals';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { DetailsSidebarState } from '../../sidebars/node-details/node-details-sidebar';
 import { EntityTypesModel } from '../../models/entityTypesModel';
+import { InstanceDeploymentTechnology, InstancePlugin } from '../../models/instanceModeling';
 
 export interface WineryState {
     currentPaletteOpenedState: boolean;
@@ -43,6 +41,10 @@ export interface WineryState {
     liveModelingSidebarOpenedState: boolean;
     lastSavedJsonTopology: TTopologyTemplate;
     unsavedChanges: boolean;
+    instanceInformation?: {
+        plugins: InstancePlugin[],
+        deploymentTechs: InstanceDeploymentTechnology[]
+    };
 }
 
 export const INITIAL_WINERY_STATE: WineryState = {
@@ -701,6 +703,21 @@ export const WineryReducer =
                                 nodeTemplate.generateNewNodeTemplateWithUpdatedAttribute('working', nodeWorking.working)
                                 : nodeTemplate
                             )
+                    }
+                };
+            case WineryActions.SET_INSTANCE_INFORMATION:
+                const instanceInfo = (<SetInstanceInformationAction>action);
+                let techs = instanceInfo.deploymentTechs;
+
+                if (!techs) {
+                    techs = lastState.instanceInformation ? lastState.instanceInformation.deploymentTechs : [];
+                }
+
+                return {
+                    ...lastState,
+                    instanceInformation: {
+                        deploymentTechs: techs,
+                        plugins: instanceInfo.plugins
                     }
                 };
             default:
