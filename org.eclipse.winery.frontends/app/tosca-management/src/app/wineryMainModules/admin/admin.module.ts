@@ -40,6 +40,8 @@ import { ProvenanceComponent } from '../../instance/admin/accountability/provena
 import { FeatureConfigurationComponent } from '../../instance/admin/configuration/configuration.component';
 import { WineryFeatureToggleModule } from '../../wineryFeatureToggleModule/winery-feature-toggle.module';
 import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMappings.component';
+import { EdmmTypesComponent } from '../../instance/admin/edmmTypes/edmmTypes.component';
+import { EdmmTypesService } from '../../instance/admin/edmmTypes/edmmTypes.service';
 
 @NgModule({
     imports: [
@@ -76,8 +78,9 @@ import { EdmmMappingsComponent } from '../../instance/admin/edmmMappings/edmmMap
         FeatureConfigurationComponent,
         ProvenanceComponent,
         EdmmMappingsComponent,
+        EdmmTypesComponent
     ],
-    providers: [ConfigurationService, AccountabilityService]
+    providers: [ConfigurationService, AccountabilityService, EdmmTypesService]
 
 })
 export class AdminModule {

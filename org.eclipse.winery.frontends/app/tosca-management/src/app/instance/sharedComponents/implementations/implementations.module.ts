@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,7 +26,7 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { ImplementationsComponent } from './implementations.component';
 import { WineryPipesModule } from '../../../wineryPipes/wineryPipes.module';
-import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.moudle';
+import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.module';
 
 @NgModule({
     imports: [

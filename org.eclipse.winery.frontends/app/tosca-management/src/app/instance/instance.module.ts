@@ -28,6 +28,7 @@ import { AttributesModule } from './sharedComponents/attributes/attributes.modul
 import { InterfaceDefinitionsModule } from './sharedComponents/interfaceDefinitions/interfaceDefinitions.module';
 import { ParametersModule } from './sharedComponents/parameters/parameters.module';
 import { MatDialogModule, MatProgressBarModule } from '@angular/material';
+import { DetectionComponent } from './refinementModels/detection/detection.component';
 
 @NgModule({
     imports: [
@@ -53,6 +54,7 @@ import { MatDialogModule, MatProgressBarModule } from '@angular/material';
         InstanceComponent,
         InstanceHeaderComponent,
         PropertyRenameComponent,
+        DetectionComponent
     ],
     providers: [],
 })

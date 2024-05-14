@@ -240,11 +240,11 @@ public class AdminTopResource {
 
     @Path("1to1edmmmappings")
     public EdmmMappingsResource get1to1EdmmMappingsResource() {
-        return new EdmmMappingsResource(EdmmMappingsResource.Type.ONE_TO_ONE);
+        return new EdmmMappingsResource();
     }
 
-    @Path("edmmtypemappings")
-    public EdmmMappingsResource getEdmmTypeMappingsResource() {
-        return new EdmmMappingsResource(EdmmMappingsResource.Type.EXTENDS);
+    @Path("edmmtypes")
+    public EdmmTypesResource getEdmmTypesResource() {
+        return new EdmmTypesResource();
     }
 }

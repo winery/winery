@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,12 +27,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
@@ -42,7 +42,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.version.VersionUtils;
 import org.eclipse.winery.generators.ia.Generator;
-import org.eclipse.winery.model.ids.EncodingUtil;
 import org.eclipse.winery.model.ids.Namespace;
 import org.eclipse.winery.model.ids.XmlId;
 import org.eclipse.winery.model.ids.definitions.ArtifactTemplateId;
@@ -103,35 +102,28 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         this.resWithNamespace = res;
     }
 
-    /**
-     * @return TImplementationArtifact | TDeploymentArtifact (XML) | URL of generated IA zip (in case of autoGenerateIA)
-     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Creates a new implementation/deployment artifact. If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
     @SuppressWarnings("unchecked")
-    public Response generateArtifact(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {
+    public IAGenerationReport generateArtifact(GenerateArtifactApiData apiData, @Context UriInfo uriInfo, @Context final HttpServletResponse response) throws Exception {
         // we assume that the parent ComponentInstance container exists
 
         final IRepository repository = RepositoryFactory.getRepository();
-
         if (StringUtils.isEmpty(apiData.artifactName)) {
-            return Response.status(Status.BAD_REQUEST).entity("Empty artifactName").build();
+            throw new IllegalArgumentException("Empty artifactName");
         }
         if (StringUtils.isEmpty(apiData.artifactType)) {
             if (StringUtils.isEmpty(apiData.artifactTemplateName) || StringUtils.isEmpty(apiData.artifactTemplateNamespace)) {
                 if (StringUtils.isEmpty(apiData.artifactTemplate)) {
-                    return Response.status(Status.BAD_REQUEST).entity("No artifact type given and no template given. Cannot guess artifact type").build();
+                    throw new IllegalArgumentException("No artifact type given and no template given. Cannot guess artifact type");
                 }
             }
         }
 
         if (!StringUtils.isEmpty(apiData.autoGenerateIA)) {
-            if (StringUtils.isEmpty(apiData.javaPackage)) {
-                return Response.status(Status.BAD_REQUEST).entity("no java package name supplied for IA auto generation.").build();
-            }
             if (StringUtils.isEmpty(apiData.interfaceName)) {
-                return Response.status(Status.BAD_REQUEST).entity("no interface name supplied for IA auto generation.").build();
+                throw new IllegalArgumentException("No interface name supplied for IA auto generation.");
             }
         }
 
@@ -156,7 +148,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             } catch (Exception e) {
                 // FIXME: currently we allow a single element only. However, the content should be internally wrapped by an (arbitrary) XML element as the content will be nested in the artifact element, too
                 LOGGER.debug("Invalid content", e);
-                return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+                throw e;
             }
         }
 
@@ -175,7 +167,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             if (StringUtils.isEmpty(apiData.artifactType)) {
                 // derive the type from the artifact template
                 if (artifactTemplateId == null) {
-                    return Response.status(Status.NOT_ACCEPTABLE).entity("No artifactTemplate and no artifactType provided. Deriving the artifactType is not possible.").build();
+                    throw new IllegalArgumentException("No artifactTemplate and no artifactType provided. Deriving the artifactType is not possible.");
                 }
                 @NonNull final QName type = repository.getElement(artifactTemplateId).getType();
                 artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, type);
@@ -187,7 +179,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             // do the artifact template auto creation magic
 
             if (StringUtils.isEmpty(apiData.artifactType)) {
-                return Response.status(Status.BAD_REQUEST).entity("Artifact template auto creation requested, but no artifact type supplied.").build();
+                throw new IllegalArgumentException("Artifact template auto creation requested, but no artifact type supplied.");
             }
 
             artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, apiData.artifactType);
@@ -272,12 +264,23 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
         // TODO: Check for error, and in case one found return it
         RestUtils.persist(super.res);
 
+        response.setStatus(Status.CREATED.getStatusCode());
+        try {
+            response.flushBuffer();
+        } catch (Exception e) {
+        }
         if (StringUtils.isEmpty(apiData.autoGenerateIA)) {
             // No IA generation
-            return Response.created(URI.create(EncodingUtil.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
+
+            if (artifactTemplateId != null) {
+                return new IAGenerationReport(URI.create(RestUtils.getAbsoluteURL(artifactTemplateId)).toURL());
+            }
+
+            return new IAGenerationReport();
         } else {
+            LOGGER.debug("\nArtifact API Data: ArtifactName:{},\nArtifactTemplate: {},\n ArtifactTemplateName: {}\n ArtifactType: {},\n InterfaceName: {},\nOperationName: {}", apiData.artifactName, apiData.artifactTemplate, apiData.artifactTemplateName, apiData.artifactType, apiData.interfaceName, apiData.operationName);
             // after everything was created, we fire up the artifact generation
-            return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId);
+            return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId, apiData.artifactType, apiData.operationName);
         }
     }
 
@@ -307,21 +310,20 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
      * Generates the implementation artifact using the implementation artifact generator. Also sets the properties
      * according to the requirements of OpenTOSCA.
      */
-    private Response generateImplementationArtifact(String interfaceName, String javaPackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId) {
-
+    private IAGenerationReport generateImplementationArtifact(String interfaceName, String javaPackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId, String artifactType, String operation) throws Exception {
         assert (this instanceof ImplementationArtifactsResource);
         IRepository repository = RepositoryFactory.getRepository();
 
         QName type = RestUtils.getType(this.res);
         EntityTypeId typeId = getTypeId(type).orElseThrow(IllegalStateException::new);
-        TInterface i = findInterface(typeId, interfaceName).orElseThrow(IllegalStateException::new);
+        TInterface tInterface = findInterface(typeId, interfaceName).orElseThrow(IllegalStateException::new);
 
         Path workingDir;
         try {
             workingDir = Files.createTempDirectory("winery");
         } catch (IOException e2) {
             LOGGER.debug("Could not create temporary directory", e2);
-            return Response.serverError().entity("Could not create temporary directory").build();
+            throw new IOException("Could not create temporary directory");
         }
 
         URI artifactTemplateFilesUri = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(artifactTemplateId)).resolve("files");
@@ -330,23 +332,21 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
             artifactTemplateFilesUrl = artifactTemplateFilesUri.toURL();
         } catch (MalformedURLException e2) {
             LOGGER.debug("Could not convert URI to URL", e2);
-            return Response.serverError().entity("Could not convert URI to URL").build();
+            throw new MalformedURLException("Could not convert URI to URL");
         }
 
+        IAGenerationReport result = new IAGenerationReport();
         String name = this.generateName(typeId, interfaceName);
-        Generator gen = new Generator(i, javaPackage, artifactTemplateFilesUrl, name, workingDir.toFile());
+        Generator gen = Generator.getGenerator(artifactType, tInterface, javaPackage, artifactTemplateFilesUrl, name, workingDir, operation);
         Path targetPath;
         try {
-            targetPath = gen.generateProject();
-        } catch (Exception e) {
-            LOGGER.debug("IA generator failed", e);
-            return Response.serverError().entity("IA generator failed").build();
-        }
-
-        DirectoryId fileDir = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
-        try {
+            targetPath = gen.generateArtifact();
+            DirectoryId fileDir = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
             BackendUtils.importDirectory(targetPath, repository, fileDir);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException iaEx) {
+            LOGGER.debug("IA stub generation failed", iaEx);
+            result.warning = "IA stub generation failed, as selected artifact type does not support interface level generation.";
+        } catch (Exception e) {
             throw new WebApplicationException(e);
         }
 
@@ -355,8 +355,20 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
         this.storeProperties(artifactTemplateId, typeId, name);
 
-        URI url = uriInfo.getBaseUri().resolve(Util.getUrlPath(artifactTemplateId));
-        return Response.created(url).build();
+        result.artifactTemplate = uriInfo.getBaseUri().resolve(Util.getUrlPath(artifactTemplateId)).toURL();
+        return result;
+    }
+
+    private static class IAGenerationReport {
+        public String warning = "";
+        public URL artifactTemplate;
+
+        public IAGenerationReport() {
+        }
+
+        public IAGenerationReport(URL artifactTemplate) {
+            this.artifactTemplate = artifactTemplate;
+        }
     }
 
     private Optional<EntityTypeId> getTypeId(QName type) {

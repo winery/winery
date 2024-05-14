@@ -75,34 +75,40 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>1.5</version>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-xjc-plugin</artifactId>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>selfservice</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>xsdtojava</goal>
                         </goals>
                         <configuration>
-                            <schemaDirectory>${project.basedir}/src/main/resources/selfservice</schemaDirectory>
-                            <packageName>org.eclipse.winery.model.selfservice</packageName>
-                            <staleFile>${project.build.directory}/jaxb2/.xjcStaleFlag1</staleFile>
-                            <clearOutputDir>false</clearOutputDir>
+                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <xsdOptions>
+                                <xsdOption>
+                                    <xsd>${project.basedir}/src/main/resources/SelfServiceModel.xsd</xsd>
+                                    <packagename>org.eclipse.winery.model.selfservice</packagename>
+                                </xsdOption>
+                            </xsdOptions>
                         </configuration>
                     </execution>
                     <execution>
                         <id>researchobject</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>xsdtojava</goal>
                         </goals>
                         <configuration>
-                            <schemaDirectory>${project.basedir}/src/main/resources/researchobject</schemaDirectory>
-                            <packageName>org.eclipse.winery.model.researchobject</packageName>
-                            <staleFile>${project.build.directory}/jaxb2/.xjcStaleFlag2</staleFile>
-                            <clearOutputDir>false</clearOutputDir>
+                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <xsdOptions>
+                                <xsdOption>
+                                    <xsd>${project.basedir}/src/main/resources/ResearchObjectModel.xsd</xsd>
+                                    <packagename>org.eclipse.winery.model.researchobject</packagename>
+                                </xsdOption>
+                            </xsdOptions>
                         </configuration>
                     </execution>
                 </executions>

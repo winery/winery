@@ -7,6 +7,7 @@ public class DeploymentTechnologyDescriptor {
     private String id;
     private String technologyId;
     private List<String> managedIds;
+    private List<String> discoveredIds;
     private Map<String, String> properties;
 
     public String getId() {
@@ -39,5 +40,13 @@ public class DeploymentTechnologyDescriptor {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public List<String> getDiscoveredIds() {
+        return discoveredIds;
+    }
+
+    public void setDiscoveredIds(List<String> discoveredIds) {
+        this.discoveredIds = discoveredIds;
     }
 }
