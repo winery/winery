@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -121,19 +121,21 @@ public class ResearchObjectResource {
     @Produces( {MediaType.APPLICATION_JSON, MediaType.TEXT_XML, MediaType.APPLICATION_XML})
     public Map<String, List<FileOrFolderElementApiData>> getDirsAndFiles() {
         Map<String, List<FileOrFolderElementApiData>> map = new HashMap<>();
-        int depth = this.filesPath.getNameCount();
         try {
             RestUtils.getAllDirsAndFiles(files_ref, Integer.MAX_VALUE).filter(file -> !file.equals(this.filesPath)).forEach(file -> {
-                    String path = file.subpath(depth - 1, file.getNameCount() - 1).toString().replaceFirst(files_ref.getFileName(), "");
-                    if (map.containsKey(path)) {
-                        map.get(path).add(new FileOrFolderElementApiData(file));
-                    } else {
-                        ArrayList<FileOrFolderElementApiData> list = new ArrayList<>();
-                        list.add(new FileOrFolderElementApiData(file));
-                        map.put(path, list);
-                    }
+                String path = "";
+                java.nio.file.Path parentPath = this.filesPath.relativize(file).getParent();
+                if (parentPath != null) {
+                    path = "/" + parentPath.toString().replace("\\", "/");
                 }
-            );
+                if (map.containsKey(path)) {
+                    map.get(path).add(new FileOrFolderElementApiData(file));
+                } else {
+                    ArrayList<FileOrFolderElementApiData> list = new ArrayList<>();
+                    list.add(new FileOrFolderElementApiData(file));
+                    map.put(path, list);
+                }
+            });
         } catch (IOException e) {
             LOGGER.error("Failed to get the files stored on the disk. Reason {}", e.getMessage());
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,13 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnChanges, Output, SimpleChanges, ViewChild, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FileOrFolderElement } from '../../../../model/fileOrFolderElement';
-import { MatTable, Sort } from '@angular/material';
+import { MatMenuTrigger, MatTable, Sort } from '@angular/material';
 import { RenameDialogComponent } from './dialogs/renameDialog.component';
 import { NewFolderDialogComponent } from './dialogs/newFolderDialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material';
 import { ConfirmDialogComponent } from './dialogs/confirmDialog.component';
 
 @Component({
@@ -44,10 +43,10 @@ export class FileManagerComponent implements OnChanges {
     listView = true;
     contextMenuPosition = { x: '0px', y: '0px' };
 
+    readonly SEPARATOR = '/';
+
     private dirsAndFilesList: FileOrFolderElement[];
     private lastSort: Sort = { active: 'size', direction: 'asc' };
-
-    private readonly SEPARATOR = '\\';
     private readonly COLUMNS: string[] = ['isFile', 'name', 'size', 'modified'];
     private readonly UNITS = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 
@@ -67,7 +66,11 @@ export class FileManagerComponent implements OnChanges {
     determineBaseDir() {
         const keys = Array.from(this.pathToElementsMap.keys());
         keys.sort((a, b) => a.length > b.length ? 1 : -1);
-        this.baseDir = keys[0];
+        if (!keys[0]) {
+            this.baseDir = '';
+        } else {
+            this.baseDir = keys[0];
+        }
     }
 
     setCurrentPath(newPath: string) {
@@ -155,7 +158,7 @@ export class FileManagerComponent implements OnChanges {
     }
 
     depth(path: string): number {
-        return (path.match(/\\/g) || []).length;
+        return (path.match(new RegExp('/', 'g')) || []).length;
     }
 
     openFolder(folder: FileOrFolderElement) {

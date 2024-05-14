@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021-2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -48,7 +48,7 @@ public class ResearchObjectUtils {
     }
 
     public static Path getFilesPath(IRepository repository, RepositoryFileReference files_ref) {
-        return Paths.get(repository.getRepositoryRoot().toString(), BackendUtils.getPathInsideRepo(files_ref));
+        return repository.ref2AbsolutePath(files_ref);
     }
 
     public static ResearchObject getResearchObject(IRepository repository, ResearchObjectDirectoryId id) {

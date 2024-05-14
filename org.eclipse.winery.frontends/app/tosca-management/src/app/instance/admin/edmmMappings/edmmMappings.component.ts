@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { EdmmMappingItem, EdmmMappingsService, EdmmType } from './edmmMappings.service';
+import { EdmmMappingItem, EdmmMappingsService } from './edmmMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
@@ -21,6 +21,7 @@ import { forkJoin } from 'rxjs';
 import { ToscaTypes } from '../../../model/enums';
 import { SectionData } from '../../../section/sectionData';
 import { SelectItem } from 'ng2-select';
+import { EdmmTypesService } from '../edmmTypes/edmmTypes.service';
 
 @Component({
     selector: 'winery-edmm-mappings',
@@ -30,9 +31,7 @@ import { SelectItem } from 'ng2-select';
     ]
 })
 export class EdmmMappingsComponent implements OnInit {
-
     loading = true;
-
     edmmTypes: string[];
 
     @ViewChild('addModal') addModal: ModalDirective;
@@ -48,11 +47,10 @@ export class EdmmMappingsComponent implements OnInit {
         { title: 'EDMM Type', name: 'edmmType' },
     ];
 
-    constructor(private service: EdmmMappingsService, private notify: WineryNotificationService, private modalService: BsModalService) {
-        this.edmmTypes = [];
-        for (const edmmType of Object.keys(EdmmType)) {
-            this.edmmTypes.push(edmmType.toLowerCase());
-        }
+    constructor(private service: EdmmMappingsService,
+                private notify: WineryNotificationService,
+                private modalService: BsModalService,
+                private edmmTypesService: EdmmTypesService) {
     }
 
     ngOnInit() {
@@ -62,10 +60,11 @@ export class EdmmMappingsComponent implements OnInit {
                 error => this.handleError(error)
             );
         forkJoin(
-            this.service.getTypes(ToscaTypes.NodeType),
-            this.service.getTypes(ToscaTypes.RelationshipType)
+            this.service.getToscaTypes(ToscaTypes.NodeType),
+            this.service.getToscaTypes(ToscaTypes.RelationshipType),
+            this.edmmTypesService.getEdmmTypes()
         ).subscribe(
-            (data: [SectionData[], SectionData[]]) => {
+            (data: [SectionData[], SectionData[], string[]]) => {
                 const nodeTypes = new SelectData();
                 nodeTypes.id = 'nodeTypes';
                 nodeTypes.text = 'Node Types';
@@ -79,6 +78,7 @@ export class EdmmMappingsComponent implements OnInit {
                 data[1].forEach(element => relationshipTypes.children.push({ id: element.qName, text: element.name }));
 
                 this.typesSelect = [nodeTypes, relationshipTypes];
+                this.edmmTypes = data[2];
             },
             error => this.handleError(error)
         );
@@ -110,7 +110,7 @@ export class EdmmMappingsComponent implements OnInit {
     }
 
     edmmTypeSelected(data: SelectData) {
-        this.elementToEdit.edmmType = <EdmmType>data.id;
+        this.elementToEdit.edmmType = data.id;
     }
 
     toscaTypeSelected(data: SelectItem) {
@@ -126,9 +126,29 @@ export class EdmmMappingsComponent implements OnInit {
         this.edmmMappings = data;
     }
 
+    /***
+     * Triggered at the end of an error to load the real list from the backend. Silent not to go into an infinite loop
+     * if the GET operation is the source of the error!
+     * @private
+     */
+    private silentReload() {
+        this.service.getMappings().subscribe(
+            data => this.handleData(data),
+            () => this.loading = false
+        );
+    }
+
     private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error.message);
+        if (error.status === 404) {
+            this.notify.error('Trying to add a mapping of an inexistent EDMM type!');
+        } else if (error.status === 409) {
+            this.notify.error('Trying to add a mapping that contains a type used in a different mapping!');
+        } else {
+            this.notify.error(error.message);
+        }
+
+        this.silentReload();
     }
 
     private save() {
