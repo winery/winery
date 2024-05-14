@@ -29,6 +29,7 @@ import { WineryModalSize } from './wineryModalSize';
  *     </winery-modal-body>
  *     <winery-modal-footer [modalRef]="removeElementModalRef"
  *              [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+ *              [okButtonClass]="'btn-danger'"
  *              (onOk)="onRemoveElement()"></winery-modal-footer>
  *</ng-template>
  */

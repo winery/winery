@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.DiscoveryPluginDescriptor;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologygraph.matching.IToscaMatcher;
 import org.eclipse.winery.topologygraph.matching.ToscaIsomorphismMatcher;
@@ -36,26 +40,31 @@ public abstract class InstanceModelRefinementPlugin {
 
     protected RefineableSubgraph matchToBeRefined;
 
+    protected final Map<QName, TNodeType> nodeTypes;
+
     private final ToscaIsomorphismMatcher isomorphismMatcher;
     private final String id;
     private ArrayList<RefineableSubgraph> subGraphs;
 
-    public InstanceModelRefinementPlugin(String id) {
+    public InstanceModelRefinementPlugin(String id, Map<QName, TNodeType> nodeTypes) {
         this.id = id;
+        this.nodeTypes = nodeTypes;
         this.isomorphismMatcher = new ToscaIsomorphismMatcher();
     }
 
     /**
      * Apply the changes for the nodes identified by the matchToBeRefined.
      *
-     * @param template the topology template to be refined
+     * @param topology the topology to be refined
      * @return the ids of the nodes that have been altered by the plugin
      */
-    public abstract Set<String> apply(TTopologyTemplate template);
+    public abstract Set<String> apply(TTopologyTemplate topology);
 
-    public abstract Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced);
+    public Set<String> determineAdditionalInputs(TTopologyTemplate template, ArrayList<String> nodeIdsToBeReplaced) {
+        return InstanceModelUtils.getRequiredInputs(template, nodeIdsToBeReplaced, this.nodeTypes);
+    }
 
-    public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph) {
+    public boolean isApplicable(TTopologyTemplate template, ToscaGraph topologyGraph, List<DiscoveryPluginDescriptor> discoveryPluginDescriptors) {
         List<TTopologyTemplate> detectors = getDetectorGraphs();
         this.subGraphs = new ArrayList<>();
         IToscaMatcher matcher = getToscaMatcher();
@@ -74,9 +83,17 @@ public abstract class InstanceModelRefinementPlugin {
                 );
 
                 if (!nodeIdsToBeReplaced.isEmpty()) {
-                    Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
+                    // We want to avoid multiple executions of a plugin for the same nodes
+                    if (nodeIdsToBeReplaced.stream().noneMatch(
+                        nodeToBeRefined -> discoveryPluginDescriptors.stream()
+                            .filter(executedPlugin -> executedPlugin.getId().equals(this.id))
+                            .flatMap(discoveryPluginDescriptor -> discoveryPluginDescriptor.getDiscoveredIds().stream())
+                            .anyMatch(node -> node.equals(nodeToBeRefined)))
+                    ) {
+                        Set<String> additionalInputs = this.determineAdditionalInputs(template, nodeIdsToBeReplaced);
 
-                    this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
+                        this.subGraphs.add(new RefineableSubgraph(match, detectorGraph, nodeIdsToBeReplaced, additionalInputs, ids[0]++));
+                    }
                 }
             });
         });
@@ -97,7 +114,7 @@ public abstract class InstanceModelRefinementPlugin {
      */
     @JsonIgnore
     protected IToscaMatcher getToscaMatcher() {
-        return new ToscaPropertyMatcher();
+        return new ToscaPropertyMatcher(false, true);
     }
 
     public String getId() {

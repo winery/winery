@@ -20,5 +20,5 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public interface InstanceModelPluginChooser {
 
-    InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins);
+    InstanceModelRefinementPlugin selectPlugin(TTopologyTemplate template, List<InstanceModelRefinementPlugin> plugins, boolean detectedInformation);
 }

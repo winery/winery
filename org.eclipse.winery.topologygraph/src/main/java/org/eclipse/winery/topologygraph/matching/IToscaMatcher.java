@@ -13,6 +13,10 @@
  ********************************************************************************/
 package org.eclipse.winery.topologygraph.matching;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.winery.topologygraph.model.ToscaEdge;
 import org.eclipse.winery.topologygraph.model.ToscaNode;
 
@@ -21,4 +25,8 @@ public interface IToscaMatcher {
     boolean isCompatible(ToscaNode left, ToscaNode right);
 
     boolean isCompatible(ToscaEdge left, ToscaEdge right);
+
+    default Map<String, List<String>> getWarnings() {
+        return Collections.emptyMap();
+    }
 }

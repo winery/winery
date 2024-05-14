@@ -105,6 +105,10 @@
            [checked]="config.features.placement">
     <label for="componentPlacement">Component Placement</label>
     <br>
+    <input type="checkbox" [(ngModel)]="config.features.cloudAllocation" id="cloudAllocation" name="cloudAllocation"
+           [checked]="config.features.cloudAllocation">
+    <label for="componentPlacement">Cloud Allocation</label>
+    <br>
     <input type="checkbox" [(ngModel)]="config.features.radon" id="radon" name="radon"
            [checked]="config.features.radon">
     <label for="radon">RADON</label>

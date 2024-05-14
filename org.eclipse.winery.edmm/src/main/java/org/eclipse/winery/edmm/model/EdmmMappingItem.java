@@ -14,6 +14,8 @@
 
 package org.eclipse.winery.edmm.model;
 
+import java.util.Objects;
+
 import javax.xml.namespace.QName;
 
 public class EdmmMappingItem {
@@ -27,5 +29,18 @@ public class EdmmMappingItem {
     public EdmmMappingItem(EdmmType edmmType, QName toscaType) {
         this.edmmType = edmmType;
         this.toscaType = toscaType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EdmmMappingItem that = (EdmmMappingItem) o;
+        return Objects.equals(edmmType, that.edmmType) && Objects.equals(toscaType, that.toscaType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(edmmType, toscaType);
     }
 }

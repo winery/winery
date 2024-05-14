@@ -15,54 +15,35 @@
 package org.eclipse.winery.edmm.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.github.edmm.model.support.ModelEntity;
+import io.github.edmm.model.support.TypeResolver;
 
-public enum EdmmType implements Serializable {
-
-    // component types
-    COMPUTE("compute"),
-    DATABASE("database"),
-    DBMS("dbms"),
-    MYSQL_DATABASE("mysql_database"),
-    MYSQL_DBMS("mysql_dbms"),
-    SOFTWARE_COMPONENT("software_component"),
-    TOMCAT("tomcat"),
-    WEB_APPLICATION("web_application"),
-    WEB_SERVER("web_server"),
-    PLATFORM("platform"),
-    PAAS("paas"),
-    DBAAS("dbaas"),
-    AWS_BEANSTALK("aws_beanstalk"),
-    AWS_AURORA("aws_aurora"),
-    SAAS("saas"),
-    AUTH0("auth0"),
-    GO("go"),
-    RABBITMQ("rabbitmq"),
-    MOM("mom"),
-    MONGODB("mongodb"),
-    MONGODB_SCHEMA("mongodb_schema"),
-
-    // relation types
-    CONNECTS_TO("connects_to"),
-    DEPENDS_ON("depends_on"),
-    HOSTED_ON("hosted_on");
-
+public class EdmmType implements Serializable {
+    private static final long serialVersionUID = -8206466497675515123L;
     private final String value;
 
-    EdmmType(String value) {
+    public EdmmType(String value) {
         this.value = value;
     }
 
-    @JsonCreator
-    public static EdmmType fromValue(String v) {
-        for (EdmmType c : EdmmType.values()) {
-            if (c.value.equalsIgnoreCase(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
+    public static EdmmType fromEntityClass(Class<? extends ModelEntity> entityClass) {
+        return new EdmmType(TypeResolver.resolve(entityClass));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EdmmType edmmType = (EdmmType) o;
+        return Objects.equals(value, edmmType.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
     @JsonValue

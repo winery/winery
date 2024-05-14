@@ -18,11 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.extensions.OTBehaviorPatternMapping;
 import org.eclipse.winery.model.tosca.extensions.OTPatternRefinementModel;
+import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.apiData.DetectionModel;
 
 public class PatternRefinementModelResource extends TopologyFragmentRefinementModelResource {
 
@@ -44,5 +49,25 @@ public class PatternRefinementModelResource extends TopologyFragmentRefinementMo
             this.getTRefinementModel().setBehaviorPatternMappings(behaviorPatternMappings);
         }
         return new BehaviorPatternMappingsResource(this, behaviorPatternMappings);
+    }
+
+    @Path("detectionmodel")
+    @GET
+    public DetectionModel getDetectionModel() {
+        OTPatternRefinementModel refinementModel = this.getTRefinementModel();
+
+        DetectionModel detectionModel = new DetectionModel();
+        detectionModel.isPdrm = refinementModel.isPdrm();
+
+        return detectionModel;
+    }
+
+    @Path("detectionmodel")
+    @POST
+    public Response setDetectionModel(DetectionModel model) {
+        OTPatternRefinementModel refinementModel = this.getTRefinementModel();
+        refinementModel.setIsPdrm(model.isPdrm);
+
+        return RestUtils.persist(this);
     }
 }

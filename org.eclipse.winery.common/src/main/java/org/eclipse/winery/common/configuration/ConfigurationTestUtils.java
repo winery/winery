@@ -67,9 +67,7 @@ public class ConfigurationTestUtils {
      * Sets the file configuration to the state before the test.
      */
     public static void setConfigBack() {
-        if (savedConfig == null) {
-            return;
-        } else {
+        if (savedConfig != null) {
             Environment.getInstance().setConfiguration(savedConfig);
             Environment.getInstance().save();
         }
