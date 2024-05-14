@@ -84,7 +84,7 @@ public class RefinementWebSocket extends AbstractWebSocket implements Refinement
         RefinementWebSocketApiData data = JacksonProvider.mapper.readValue(message, RefinementWebSocketApiData.class);
 
         switch (data.task) {
-            case START:
+            case START -> {
                 if (!running) {
                     Thread thread = new Thread(() -> {
                         RefinementElementApiData element = new RefinementElementApiData();
@@ -103,15 +103,13 @@ public class RefinementWebSocket extends AbstractWebSocket implements Refinement
                     this.running = true;
                     thread.start();
                 }
-                break;
-            case REFINE_WITH:
-                this.future.complete(data.refineWith);
-                break;
-            case STOP:
+            }
+            case REFINE_WITH -> this.future.complete(data.refineWith);
+            case STOP -> {
                 this.future.complete(-1);
                 this.sendAsync(new RefinementElementApiData(null, this.refinementServiceTemplate, null));
                 this.onClose(this.session);
-                break;
+            }
         }
     }
 

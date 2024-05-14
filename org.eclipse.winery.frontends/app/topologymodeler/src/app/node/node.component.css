@@ -210,6 +210,13 @@ button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-sec
     max-height: 30px;
 }
 
+.deploymentTech {
+    position: absolute;
+    top: 3px;
+    float: right;
+    left: 185px;
+}
+
 .newVersionTriangle {
     position: absolute;
     right: -4px;
@@ -257,8 +264,4 @@ div.overlay .overlay-icon {
     right: 0;
     top: 0;
     transform: translate(50%, -50%);
-}
-
-div.pattern > bs-tooltip-container {
-    z-index: 50;
 }

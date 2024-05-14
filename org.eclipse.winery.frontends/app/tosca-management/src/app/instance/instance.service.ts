@@ -19,9 +19,7 @@ import { ToscaComponent } from '../model/toscaComponent';
 import { ToscaTypes } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import {
-    WineryRepositoryConfigurationService
-} from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
+import { WineryRepositoryConfigurationService } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { SubMenuItem, SubMenuItems } from '../model/subMenuItem';
 
 export interface ToscaLightCompatibilityData {
@@ -154,7 +152,11 @@ export class InstanceService {
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.refinementStructure,
                     SubMenuItems.graficPrmModelling, SubMenuItems.relationMappings, SubMenuItems.attributeMappings,
                     SubMenuItems.stayMappings, SubMenuItems.deploymentArtifactMappings, SubMenuItems.permutationMappings,
-                    SubMenuItems.permutations, SubMenuItems.behaviorPatternMappings, SubMenuItems.xml];
+                    SubMenuItems.permutations, SubMenuItems.behaviorPatternMappings];
+                if (this.toscaComponent.toscaType === ToscaTypes.PatternRefinementModel) {
+                    subMenu.push(SubMenuItems.detectionModel);
+                }
+                subMenu.push(SubMenuItems.xml);
                 break;
             case ToscaTypes.TestRefinementModel:
                 subMenu = [SubMenuItems.readme, SubMenuItems.license, SubMenuItems.detector, SubMenuItems.testFragment, SubMenuItems.graficPrmModelling,

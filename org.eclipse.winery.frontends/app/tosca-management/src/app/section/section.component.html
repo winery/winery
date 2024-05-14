@@ -39,12 +39,20 @@
     </div>
     <div class="sectionSidebar" id="sectionSidebar">
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsAddNewBtn" (click)="onAdd();">
-            Add new
+            <i class="fa fa-plus" aria-hidden="true"></i> Add new
         </button>
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsImportCsarBtn"
                 (click)="addCsarModal.show()">
-            Import CSAR <span *wineryRepositoryShowOnFeature="configEnum.EdmmModeling">/ EDMM-Model</span>
+            <i class="fa fa-upload" aria-hidden="true"></i> Import CSAR <span *wineryRepositoryShowOnFeature="configEnum.EdmmModeling">/ EDMM-Model</span>
         </button>
+        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsGroupBtn" (click)="onChangeView()"
+                [disabled]="showSpecificNamespaceOnly()">
+            <i [className]="showNamespace === 'all' ? 'fa fa-compress' : 'fa fa-expand'" aria-hidden="true"></i> {{ changeViewButtonTitle }}
+        </button>
+        <button class="btn btn-default sidebar-btn sectionBtn" (click)="getSectionsData()">
+            <i class="fa fa-refresh" aria-hidden="true"></i> Reload Data 
+        </button>
+
         <div *ngIf="toscaType === toscaTypes.ServiceTemplate" class="sectionBtn">
             <!-- FIXME seems the component does not query the artifact types properly
             <winery-xaas-packager *wineryRepositoryHideOnFeature="'yaml'"
@@ -55,10 +63,6 @@
                               id="sectionCreateFromDataFlowBtn">
             </winery-placement>
         </div>
-        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsGroupBtn" (click)="onChangeView()"
-                [disabled]="showSpecificNamespaceOnly()">
-            {{ changeViewButtonTitle }}
-        </button>
     </div>
     <div id="sectionsFooterContainer" class="sectionsFooterContainer">
         <div class="form-inline selectItemsPerPage">

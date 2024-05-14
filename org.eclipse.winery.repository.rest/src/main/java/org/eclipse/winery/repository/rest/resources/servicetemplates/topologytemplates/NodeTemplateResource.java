@@ -201,7 +201,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 
         String componentVersion = dateFormat.format(new Date());
         ArtifactTemplateId newArtifactTemplateId = new ArtifactTemplateId(
-            "http://opentosca.org/artifacttemplates",
+            "http://opentosca.org/state/artifacttemplates",
             this.getServiceTemplateResource().getServiceTemplate().getName() + "-" + this.nodeTemplate.getId() + "-State"
                 + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + componentVersion
                 + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + "1"

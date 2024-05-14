@@ -148,11 +148,13 @@ export class RefinementMappingsService {
     public getNewMappingsId(mappings: RefinementMappings[], prefix: string): number {
         let id = 0;
         mappings.forEach(value => {
-            const number = Number(value.id.split(prefix)[1]);
-            if (!isNaN(number) && number >= id) {
-                id = number;
-                if (number === id) {
-                    id++;
+            if (value.id) {
+                const number = Number(value.id.split(prefix)[1]);
+                if (!isNaN(number) && number >= id) {
+                    id = number;
+                    if (number === id) {
+                        id++;
+                    }
                 }
             }
         });
