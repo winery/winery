@@ -11,12 +11,20 @@ Winery is a web-based environment to graphically model TOSCA topologies and plan
 It is an Eclipse project and thus support is available through its project page <https://eclipse.org/winery>.
 Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
 
+## Disclaimer
+
 **The code and the linked libraries are NOT approved by Eclipse Legal.**
 
 There was no software security check of Eclipse Winery in the past.
 There might be [remote code execution vulnerabilities](https://github.com/mbechler/marshalsec). 
-Thus, when hosting Eclipse Winery, make it accessible to trustworthy parties only.
+**Thus, when hosting Eclipse Winery, make it accessible to trustworthy parties only.**
 
+## Known Vulnerabilities
+
+We take vulnerability reports serious.
+Here a list of the publicly disclosed ones.
+
+- Winery is volunarable to XSS. All data input in the front end is NOT sanitized and sent back as is. For instance, you can try it out at Administration -> Namespase -> Add.
 
 ## Getting Started
 
