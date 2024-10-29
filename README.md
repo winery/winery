@@ -24,7 +24,7 @@ There might be [remote code execution vulnerabilities](https://github.com/mbechl
 We take vulnerability reports serious.
 Here a list of the publicly disclosed ones.
 
-- Winery is volunarable to XSS. All data input in the front end is NOT sanitized and sent back as is. For instance, you can try it out at Administration -> Namespase -> Add.
+- Winery is vulnerable to XSS. All data input in the front end is NOT sanitized and sent back as is. For instance, you can try it out at Administration -> Namespase -> Add.
 
 ## Getting Started
 
