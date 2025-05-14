@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2013-2021 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2013-2025 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -53,6 +53,12 @@
         <developerConnection>scm:git:https://github.com/eclipse/winery.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
+    <repositories>
+        <repository>
+            <id>local</id>
+            <url>file://${user.home}/.m2/repository</url>
+        </repository>
+    </repositories>
     <properties>
         <github.global.server>github</github.global.server>
         <main.basedir>${project.basedir}</main.basedir>
@@ -119,6 +125,7 @@
                 <module>org.eclipse.winery.edmm</module>
                 <module>org.eclipse.winery.generators.ia</module>
                 <module>org.eclipse.winery.highlevelrestapi</module>
+                <module>org.eclipse.winery.lsp</module>
                 <module>org.eclipse.winery.model</module>
                 <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
@@ -188,6 +195,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
+            <plugin>
+                <groupId>org.eclipse.dash</groupId>
+                <artifactId>license-tool-plugin</artifactId>
+                <version>1.1.1-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>license-check</id>
+                        <goals>
+                            <goal>license-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                  <dash.projectId>automotive.winery</dash.projectId>
+                  <dash.repo>https://github.com/winery/winery</dash.repo>
+                  <dash.summary>DEPENDENCIES.mvn</dash.summary>
+                  <dash.review.summary>DEPENDENCIES.mvn.review</dash.review.summary>
+                </configuration>
+            </plugin>
+            -->
         </plugins>
         <pluginManagement>
             <plugins>
