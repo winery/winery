@@ -1259,7 +1259,6 @@ npm/npmjs/@webassemblyjs/wast-printer/1.7.11, MIT, approved, clearlydefined
 npm/npmjs/@xtuc/ieee754/1.2.0, BSD-3-Clause, approved, #123
 npm/npmjs/@xtuc/long/4.2.1, Apache-2.0, approved, clearlydefined
 npm/npmjs/@yarnpkg/lockfile/1.1.0, BSD-2-Clause AND MIT, approved, #922
-Invalid: node_modules/tosca-lsp-client, unknown, restricted, none
 npm/npmjs/-/agent-base/6.0.2, MIT, approved, clearlydefined
 npm/npmjs/-/balanced-match/1.0.2, MIT, approved, clearlydefined
 npm/npmjs/-/big-integer/1.6.52, Unlicense AND MIT, approved, #2439
