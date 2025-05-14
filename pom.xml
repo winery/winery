@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2013-2021 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2013-2025 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -119,6 +119,7 @@
                 <module>org.eclipse.winery.edmm</module>
                 <module>org.eclipse.winery.generators.ia</module>
                 <module>org.eclipse.winery.highlevelrestapi</module>
+                <module>org.eclipse.winery.lsp</module>
                 <module>org.eclipse.winery.model</module>
                 <module>org.eclipse.winery.model.adaptation</module>
                 <module>org.eclipse.winery.model.bpmn4tosca</module>
