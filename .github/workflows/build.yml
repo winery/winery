@@ -27,7 +27,7 @@ jobs:
       || needs.pre_job.outputs.docker_run_required == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check if AbstractResourceTest does not contain log().all().
         run: |
           if grep -i -q '\.all()' org.eclipse.winery.repository.rest/src/test/java/org/eclipse/winery/repository/rest/resources/AbstractResourceTest.java;
@@ -65,7 +65,7 @@ jobs:
       || needs.pre_job.outputs.docker_run_required == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
           path: |
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v4
         with:
           name: artifacts
