@@ -44,7 +44,7 @@ jobs:
       - name: Build with Maven
         run: mvn -Pjava -B package
       - name: Upload binary to artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
@@ -82,7 +82,7 @@ jobs:
       - name: Build with Maven
         run: mvn -Pfrontend -B package
       - name: Upload binary to artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ needs.pre_job.outputs.docker_run_required == 'true' }}
         with:
           name: artifacts
