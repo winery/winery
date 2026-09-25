@@ -49,11 +49,11 @@ An example of a Compliance Rule that is **detected** and **satisfied** for a Top
 In the following, a simple example is given describing how to use Topology Compliance Checking.
 We will describe how to create your first topology-based Compliance Rule and how to check the compliance of Topology Templates based on existing Compliance Rules.
 
-Note: You should have a look at the [Winery User Guide](http://eclipse.github.io/winery) before reading this tutorial to get all the basic knowledge about Winery.
+Note: You should have a look at the [Winery User Guide](https://winery.readthedocs.io/) before reading this tutorial to get all the basic knowledge about Winery.
 
 ### Step 1: Start Winery
 
-If you need help getting Winery up and running have a look at the [Quickstart Guide](http://eclipse.github.io/winery)
+If you need help getting Winery up and running have a look at the [Quickstart Guide](https://winery.readthedocs.io/en/latest/user/getting-started.html)
 
 ### Step 2: Create a compliance rule
 

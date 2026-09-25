@@ -2,7 +2,7 @@
 
 ## Topology Completion - Getting started
 
-Note: You should have a look at the [[Wienry User Guide]](http://eclipse.github.io/winery/UserGuide) before reading this tutorial to get all the basic knowledge about winery.
+Note: You should have a look at the [[Wienry User Guide]](https://winery.readthedocs.io/en/latest/user/index.html) before reading this tutorial to get all the basic knowledge about winery.
 
 In this section we will give you a simple example on how to use the topology completion.
 We will describe the required types in the repository and show you how to complete your first topology.

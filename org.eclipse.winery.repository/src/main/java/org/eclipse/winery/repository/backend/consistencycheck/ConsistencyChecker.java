@@ -296,7 +296,7 @@ public class ConsistencyChecker {
             printAndAddError(id, "Reading error " + e.getMessage());
             return;
         } catch (ClassCastException e) {
-            LOGGER.error("Something wrong in the consistency between Ids and the TOSCA data model. See http://eclipse.github.io/winery/dev/id-system.html for more information on the ID system.");
+            LOGGER.error("Something wrong in the consistency between Ids and the TOSCA data model. See https://winery.readthedocs.io/en/latest/dev/id-system.html for more information on the ID system.");
             printAndAddError(id, "Critical error at analysis: " + e.getMessage());
             return;
         }

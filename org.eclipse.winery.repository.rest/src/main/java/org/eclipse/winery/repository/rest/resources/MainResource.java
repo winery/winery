@@ -221,7 +221,7 @@ public class MainResource {
             + "</p>\n"
             + "\n"
             + "<p>\n"
-            + "Configuration of IntelliJ is described <a href=\"http://eclipse.github.io/winery/dev/config/IntelliJ%20IDEA/\">here</a>.\n"
+            + "Configuration of IntelliJ is described <a href=\"https://winery.readthedocs.io/en/latest/config/IntelliJ%20IDEA/index.html\">here</a>.\n"
             + "</p>\n"
             + "\n"
             + "<p>Swagger API description is available at <a href=\"http://localhost:8080/winery/swagger\">http://localhost:8080/winery/swagger</a>.\n"

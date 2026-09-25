@@ -88,7 +88,7 @@ This is required by the Eclipse process for checking for intellectual property (
 
 ### Git Steps: Ensure that a single commit is created
 
-  1. `git fetch upstream` - fetches all updates from https://github.com/eclipse/winery ("upstream") to the local git storage
+  1. `git fetch upstream` - fetches all updates from https://github.com/winery/winery ("upstream") to the local git storage
   2. `git merge upstream/main` - merges all updates from upstream to the local branch
   3. (Resolve merge conflicts) - required if there are conflicting changes
   4. Commit & Push with signed commit message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui) - this ensures that you have the changes backuped in case something goes wrong at the next steps 
@@ -98,7 +98,7 @@ This is required by the Eclipse process for checking for intellectual property (
   6. Check changes in Git Gui:
      - Each change you wanted: Is it recognized?
      - At each file: Is the copyright information in the [header](source-code-headers.md) OK?
-     - Check if you are listed in the [NOTICE](https://github.com/eclipse/winery/blob/main/NOTICE) file as a contributor with the correct year
+     - Check if you are listed in the [NOTICE](https://github.com/winery/winery/blob/main/NOTICE) file as a contributor with the correct year
      - Are there too much changed lines? 🡒 Do not stage spurious lines to the commit (e.g., tab to spaces, ...)
      - Are there too much changed files? 🡒 Do not stage files you did not intend to change (e.g., `build.gradle` if you did not touch `build.gradle` at all)
      - Check again the style (!)
@@ -120,12 +120,12 @@ This is required by the Eclipse process for checking for intellectual property (
 
 **Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)**
 
-* Go to https://github.com/eclipse/winery 🡒 Pull Request
+* Go to https://github.com/winery/winery 🡒 Pull Request
 * Fill in the title of the Pull Request and give a more detailed description of the changes or added functionality
 * In case of UI changes: Add screenshots
 * Add `[x]` to the items listed in the write field
 * Check the description in the Preview and send the Pull Request
-* Close your Pull Request at OpenTOSCA/winery with a comment referencing the full URL of the new Pull Request, e.g. `Follow up at https://github.com/eclipse/winery/pull/212`.
+* Close your Pull Request at OpenTOSCA/winery with a comment referencing the full URL of the new Pull Request, e.g. `Follow up at https://github.com/winery/winery/pull/212`.
 
 
 ## GitHub - Change Final Pull Request

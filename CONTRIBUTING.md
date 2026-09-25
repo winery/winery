@@ -16,8 +16,8 @@
 
 ## Contributing Issues
 
-Please check <https://github.com/eclipse/winery/issues> and its forks (OpenTOSCA: <https://github.com/opentosca/winery/issues>; RADON: <https://github.com/radon-h2020/radon-gmt/issues>) whether the issue is already open.
-If not, just open an issue at <https://github.com/eclipse/winery/issues> or its respective fork.
+Please check <https://github.com/winery/winery/issues> and its forks (OpenTOSCA: <https://github.com/opentosca/winery/issues>; RADON: <https://github.com/radon-h2020/radon-gmt/issues>) whether the issue is already open.
+If not, just open an issue at <https://github.com/winery/winery/issues> or its respective fork.
 In case you are affiliated with the OpenTOSCA ecosystem (e.g., a student of the University of Stuttgart), we ask you to open an issue at <https://github.com/opentosca/winery/issues/>.
 
 ## Contributing Patches
@@ -65,7 +65,7 @@ You will need to create an account with the Eclipse Foundation if you have not a
 GitHub has copious amounts of quality documentation on how to interact with the system and you will minimally need to configure the `user.email` property.
 Check out the [guide on GitHub](https://help.github.com/articles/setting-your-email-in-git) for more information.
 
-Please follow <http://eclipse.github.io/winery/> to setup a git hook, which ensures that each commit contains a `Signed-off-by:` line.
+Please follow <https://winery.readthedocs.io/en/latest/dev/toolchain.html> to setup a git hook, which ensures that each commit contains a `Signed-off-by:` line.
 
 ### Configuring GitHub
 
@@ -85,7 +85,7 @@ For more information, see <https://www.eclipse.org/projects/handbook/#resources-
 Pull requests are very much a GitHub process so best [explained by GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
 See also <https://help.github.com/articles/configuring-a-remote-for-a-fork/>.
 
-A step-by-step guide is available at <http://eclipse.github.io/winery/dev/ToolChain>.
+A step-by-step guide is available at <https://winery.readthedocs.io/en/latest/dev/toolchain.html>.
 
 ### Background Information
 
