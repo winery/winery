@@ -40,6 +40,13 @@
             <groupId>com.github.UST-EDMM.edmm</groupId>
             <artifactId>edmm-core</artifactId>
             <version>${edmm.version}</version>
+            <exclusions>
+                <!-- edmm-core leaks lombok as compile dependency; its annotation processor breaks javac 21 -->
+                <exclusion>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.winery</groupId>
@@ -106,13 +113,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${junit.jupiter.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

@@ -2,6 +2,7 @@
 
 *.java eol=lf
 *.md eol=lf
+*.cmd eol=crlf
 
 *.docx -text
 *.pptx -text
