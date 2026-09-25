@@ -24,11 +24,11 @@ The grouping feature can be used to create or view groups of arbitrary semantics
 In the following, a simple example is given describing how to use the Grouping feature of Winery.
 We will describe how to create multiple groups, how to get an overview of existing groups, and how to remove node templates from groups, or even remove an entire group including its members.
 
-Note: You should have a look at the [Winery User Guide](http://eclipse.github.io/winery) before reading this tutorial to get all the basic knowledge about Winery.
+Note: You should have a look at the [Winery User Guide](https://winery.readthedocs.io/) before reading this tutorial to get all the basic knowledge about Winery.
 
 ### Step 1: Start Winery
 
-If you need help getting Winery up and running have a look at the [Quickstart Guide](http://eclipse.github.io/winery)
+If you need help getting Winery up and running have a look at the [Quickstart Guide](https://winery.readthedocs.io/en/latest/user/getting-started.html)
 
 ### Step 2: Open/Create a Topology Template
 

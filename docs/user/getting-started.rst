@@ -139,7 +139,7 @@ Clone the repository:
 
 .. code-block::
 
-   git clone https://github.com/eclipse/winery
+   git clone https://github.com/winery/winery
    cd winery/deploy/compose
 
 **[Optional]** Adapt the Docker Compose configuration to your needs, e.g., to mount a local TOSCA model repository.

@@ -38,7 +38,7 @@ This document provides an index to all development guidelines and background inf
 
 ## Getting Started
 
-* Clone the repository: `git clone https://github.com/eclipse/winery && cd winery`.
+* Clone the repository: `git clone https://github.com/winery/winery && cd winery`.
 * Build Eclipse Winery: `mvn clean install -DskipTests` (skipping the tests for a faster build).
 * Setup your IDE:
   - IntelliJ IDEA (recommended): [config/IntelliJ IDEA](../config/IntelliJ%20IDEA/index.md)

@@ -13,8 +13,8 @@ the Swarm network.
 The module also has a blockchain-based authorization mechanism to only allow authorized participants to take part in the
 collaborative development process.
 
-This module integrated into the TOSCA modeling tool: [Winery](https://eclipse.github.io/winery/).
-Please follow the [user guide](https://eclipse.github.io/winery/user/) to inform yourself about Winery and how to get it running.
+This module integrated into the TOSCA modeling tool: [Winery](https://winery.readthedocs.io/).
+Please follow the [user guide](https://winery.readthedocs.io/en/latest/user/index.html) to inform yourself about Winery and how to get it running.
 
 ## Table of Contents:
 - [Configuration](#Configuration)

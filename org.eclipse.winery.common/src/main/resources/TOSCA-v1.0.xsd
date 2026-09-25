@@ -10,7 +10,7 @@
 
  - Added "name" at implementation artifacts.
    This is necessary to identify a single implementation artifact in a list of implementation artifacts.
-   See https://github.com/eclipse/winery/issues/71 for a discussion.
+   See https://github.com/winery/winery/issues/71 for a discussion.
  - `processContents="lax"` was added to Properties at Boundary definitions.
  - Make "Types" in "<Definitions>" valid as the only nested element in "<Definitions>"
  - Add "PatternRefinementModels" as otPatternRefinementModel

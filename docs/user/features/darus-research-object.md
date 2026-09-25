@@ -19,7 +19,7 @@ The main motivation is to make research software more findable, accessible, inte
 
 ###*Notes*
 + A short overview of TOSCA can be found [here](https://github.com/OpenTOSCA/opentosca-docker/blob/main/docs/tosca-glossary.md).
-+ You should have a look at the [Winery User Guide](http://eclipse.github.io/winery) before reading this tutorial to get all the basic knowledge about Winery.
++ You should have a look at the [Winery User Guide](https://winery.readthedocs.io/) before reading this tutorial to get all the basic knowledge about Winery.
 + To get Winery up and running easily, you can use our [Docker Compose Setup](https://github.com/OpenTOSCA/opentosca-docker).
 + A guide to model applications can be found [here](https://github.com/OpenTOSCA/opentosca-docker/blob/main/docs/tutorial-model-and-deploy.md).
 + A guide to create Node Types can be found [here](https://github.com/OpenTOSCA/opentosca-docker/blob/main/docs/tutorial-node-implementation.md).
@@ -29,7 +29,7 @@ The main motivation is to make research software more findable, accessible, inte
 
 ### Step 1: Start Winery
 
-If you need help getting Winery up and running have a look at the [Quickstart Guide](http://eclipse.github.io/winery).
+If you need help getting Winery up and running have a look at the [Quickstart Guide](https://winery.readthedocs.io/en/latest/user/getting-started.html).
 
 ### Step 2: Enable the ROAR-feature
 

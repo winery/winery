@@ -23,7 +23,7 @@
     <description>
         Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
     </description>
-    <url>https://eclipse.github.io/winery</url>
+    <url>https://winery.readthedocs.io/</url>
     <organization>
         <name>Eclipse.org - Winery Project</name>
         <url>https://www.eclipse.org/winery</url>
@@ -50,7 +50,7 @@
         </license>
     </licenses>
     <scm>
-        <developerConnection>scm:git:https://github.com/eclipse/winery.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/winery/winery.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <repositories>

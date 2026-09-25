@@ -7,7 +7,7 @@ Here, the categories "Changed" for added and changed functionality,
 "Fixed" for fixed functionality, and
 "Removed" for removed functionality is used.
 
-We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `#NUM`.
+We refer to [GitHub issues](https://github.com/winery/winery/issues) by using `#NUM`.
 
 The ordering of v1.x and v2.x versions is sequential by time.
 This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/blob/main/CHANGELOG.md), where v4.x and v5.x is mixed.
@@ -49,8 +49,8 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 - Add template start of namespace for the creation of tosca components
 - Fixed wrong output of "CSAR Export mode. Putting XSD into CSAR" if in CSAR export mode
 - New project `org.eclipse.winery.repository.rest` for separating REST resources from the backend
-- Add support of [Splitting](http://eclipse.github.io/winery/user/Splitting)
-- Add support of [DASpecification](http://eclipse.github.io/winery/user/DASpecification)
+- Add support of [Splitting](https://winery.readthedocs.io/en/latest/user/features/splitting.html)
+- Add support of [DASpecification](https://winery.readthedocs.io/en/latest/user/index.html)
 - Add support of configuration of git autocommit: `repository.git.autocommit=true` in `winery.properties`
 - **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 - Add support of pattern detection for TOSCA topologies in winery 
@@ -68,13 +68,13 @@ Intermediate milestone build for the OpenTOSCA eco system.
 
 - Adaptions required by the IP check
 - Enfore `LF` line endings in the repository
-- Add support of [XaaS Packager](http://eclipse.github.io/winery/user/XaaSPackager)
+- Add support of [XaaS Packager](https://winery.readthedocs.io/en/latest/user/features/xaas-packager.html)
 
 ## Initial Code Contribution - 2014-03-27
 
 This was the initial code contribution when handing over project governance to the Eclipse Software Foundation.
 See also [CQ 7916](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=7916).
 
-[unreleased]: https://github.com/eclipse/winery/compare/v2.0.0-M1...main
-[v2.0.0-M1]: https://github.com/eclipse/winery/compare/initial-code-contribution...v2.0.0-M1
-[v1.0.0]: https://github.com/eclipse/winery/compare/initial-code-contribution...v1.0.0
+[unreleased]: https://github.com/winery/winery/compare/v2.0.0-M1...main
+[v2.0.0-M1]: https://github.com/winery/winery/compare/initial-code-contribution...v2.0.0-M1
+[v1.0.0]: https://github.com/winery/winery/compare/initial-code-contribution...v1.0.0

@@ -52,14 +52,14 @@ Organizational information is provided at the `eclipse.org page <http://eclipse.
    dev/index.md
    tosca/index.rst
    adr/index.md
-   How to Contribute <https://github.com/eclipse/winery/blob/main/CONTRIBUTING.md>
-   Found an issue? <https://github.com/eclipse/winery/blob/main/CONTRIBUTING.md#contributing-issues>
+   How to Contribute <https://github.com/winery/winery/blob/main/CONTRIBUTING.md>
+   Found an issue? <https://github.com/winery/winery/blob/main/CONTRIBUTING.md#contributing-issues>
 
 
 Getting support for Eclipse Winery
 **********************************
 
-* In case you have concrete issues, please open an issue at `<https://github.com/eclipse/winery/issues>`_.
+* In case you have concrete issues, please open an issue at `<https://github.com/winery/winery/issues>`_.
 * There is a mailing list available at `<https://dev.eclipse.org/mailman/listinfo/winery-dev>`_.
 * General information about Eclipse Winery is available at `<https://eclipse.org/winery>`_.
 
