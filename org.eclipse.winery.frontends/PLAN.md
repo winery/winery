@@ -12,6 +12,10 @@ Apps (all in this directory, one `angular.json`): `tosca-management`, `topologym
 - [x] Node 22 / npm 10 build (#814)
 - [x] Remove `@angular/http` and unused deps
 - [x] Angular 8 (+ Material 8, `rxjs-compat` → public rxjs API, `angular2-markdown` → `marked`)
+- [x] Angular 9 (A1): Ivy on, ngcc runs on demand during `ng build` (no `postinstall` needed).
+  ngx-bootstrap 6 (secondary entry points only), ng2-file-upload 1.4.0, ngx-chips 2.1.0.
+  `ngcc.config.js` makes ng2-select readable for ngcc; delete it together with ng2-select (B2).
+  `entryComponents` are still there (harmless, drop them in a later step).
 
 ## Work packages
 
