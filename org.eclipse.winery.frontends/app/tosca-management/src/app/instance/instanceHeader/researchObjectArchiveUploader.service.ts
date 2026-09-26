@@ -14,7 +14,8 @@
 import {
     WineryRepositoryConfigurationService
 } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ToscaComponent } from '../../model/toscaComponent';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -42,7 +43,7 @@ export class ResearchObjectArchiveUploaderService {
             { privacyOption },
             { headers: headers, observe: 'response' }
         )
-            .map(response => response.headers.get('Location'));
+            .pipe(map(response => response.headers.get('Location')));
     }
 
 
@@ -71,7 +72,7 @@ export class ResearchObjectArchiveUploaderService {
                     subject.next(missingMetadata);
                 },
                 (error) => {
-                    return Observable.throwError(error);
+                    return throwError(error);
                 }
             );
         return subject.asObservable();

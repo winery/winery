@@ -14,9 +14,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { BackendService } from '../services/backend.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
-import 'rxjs/add/operator/mergeMap';
 
 export interface EdmmTechnologyTransformationCheck {
     id: string;
@@ -41,10 +41,10 @@ export class EdmmTransformationCheckService {
     doTransformationCheck(topologyTemplate: TTopologyTemplate): Observable<EdmmTechnologyTransformationCheck[]> {
         const edmmUrl = this.backendService.configuration.parentElementUrl + 'edmm/check-model-support';
         return this.backendService.saveTopologyTemplate(topologyTemplate)
-            .flatMap(() =>
+            .pipe(mergeMap(() =>
                 // this will directly return the info about the supported technologies
                 this.http.get<EdmmTechnologyTransformationCheck[]>(edmmUrl)
-            );
+            ));
     }
 
     /**

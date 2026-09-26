@@ -39,8 +39,8 @@ export class EntityComponent implements OnInit {
     @Input() maxWidth: number;
     @Output() deleted = new EventEmitter<string>();
 
-    @ViewChild('targetAllocationModal') targetAllocationModal: TargetAllocationComponent;
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('targetAllocationModal', { static: true }) targetAllocationModal: TargetAllocationComponent;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
 
     imageUrl: string;
     backendLink: string;

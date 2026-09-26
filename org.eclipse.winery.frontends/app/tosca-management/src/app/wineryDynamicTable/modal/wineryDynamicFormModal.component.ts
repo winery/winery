@@ -47,7 +47,7 @@ export class WineryDynamicFormModalComponent implements OnInit, OnChanges {
 
     @Output() saveClicked = new EventEmitter<any>();
 
-    @ViewChild('modal') modal: ModalDirective;
+    @ViewChild('modal', { static: true }) modal: ModalDirective;
 
     elementsToShow: WineryDynamicTableMetadata[] = [];
 

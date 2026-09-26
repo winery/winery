@@ -54,8 +54,8 @@ export class BehaviorPatternMappingsComponent implements OnInit {
     refinementTemplates: WineryTemplateWithPolicies[];
     patternNamespaces: Set<string>;
 
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('removeModal') removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 

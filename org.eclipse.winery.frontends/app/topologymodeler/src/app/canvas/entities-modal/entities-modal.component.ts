@@ -43,8 +43,8 @@ import { QName } from '../../../../../shared/src/app/model/qName';
 })
 export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
 
-    @ViewChild('modal') public modal: ModalDirective;
-    @ViewChild('fileUploader') fileUploader: ElementRef;
+    @ViewChild('modal', { static: false }) public modal: ModalDirective;
+    @ViewChild('fileUploader', { static: false }) fileUploader: ElementRef;
 
     @Input() modalVariantAndState: ModalVariantAndState;
     @Input() entityTypes: EntityTypesModel;

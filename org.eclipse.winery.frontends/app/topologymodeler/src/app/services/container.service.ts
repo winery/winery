@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { CsarUpload } from '../models/container/csar-upload.model';
 import { of } from 'rxjs';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, concatMap, filter, map, tap , retry} from 'rxjs/operators';
 import { NodeTemplateInstanceStates, PlanTypes, ServiceTemplateInstanceStates } from '../models/enums';

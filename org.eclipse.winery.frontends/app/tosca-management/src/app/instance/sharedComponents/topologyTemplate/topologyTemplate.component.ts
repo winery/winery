@@ -35,7 +35,7 @@ export class TopologyTemplateComponent implements OnInit {
 
     selectedVersion: WineryVersion;
 
-    @ViewChild('compareToModal') compareToModal: ModalDirective;
+    @ViewChild('compareToModal', { static: true }) compareToModal: ModalDirective;
     compareToModalRef: BsModalRef;
 
     constructor(private sanitizer: DomSanitizer,

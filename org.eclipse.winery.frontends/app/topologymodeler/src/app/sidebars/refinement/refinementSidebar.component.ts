@@ -44,7 +44,7 @@ export class RefinementSidebarComponent implements OnDestroy {
     refinementIsDone: boolean;
     prmCandidates: PatternRefinementModel[];
 
-    @ViewChild('confirmRefineModal') confirmRefineModal: ModalDirective;
+    @ViewChild('confirmRefineModal', { static: true }) confirmRefineModal: ModalDirective;
     confirmCandidate: PatternRefinementModel;
 
 

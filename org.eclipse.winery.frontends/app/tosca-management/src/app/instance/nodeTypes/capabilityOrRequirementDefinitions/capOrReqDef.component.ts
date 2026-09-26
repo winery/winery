@@ -87,15 +87,15 @@ export class CapOrReqDefComponent implements OnInit {
     @Input() types = '';
     addCapOrRegModalTitle = '';
 
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('addValidNodeTypeModal') addValidNodeTypeModal: ModalDirective;
-    @ViewChild('editConModal') editConModal: ModalDirective;
-    @ViewChild('showYAMLConModal') showYAMLConModal: ModalDirective;
-    @ViewChild('editNewConModal') editNewConModal: ModalDirective;
-    @ViewChild('lowerBoundSpinner') lowerBoundSpinner: SpinnerWithInfinityComponent;
-    @ViewChild('upperBoundSpinner') upperBoundSpinner: SpinnerWithInfinityComponent;
-    @ViewChild('editor') editor: any;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('addValidNodeTypeModal', { static: true }) addValidNodeTypeModal: ModalDirective;
+    @ViewChild('editConModal', { static: true }) editConModal: ModalDirective;
+    @ViewChild('showYAMLConModal', { static: true }) showYAMLConModal: ModalDirective;
+    @ViewChild('editNewConModal', { static: true }) editNewConModal: ModalDirective;
+    @ViewChild('lowerBoundSpinner', { static: true }) lowerBoundSpinner: SpinnerWithInfinityComponent;
+    @ViewChild('upperBoundSpinner', { static: true }) upperBoundSpinner: SpinnerWithInfinityComponent;
+    @ViewChild('editor', { static: true }) editor: any;
     currentNodeTypes: SelectData[];
     selectedNodeType: QName;
 

@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { mergeMap, tap, filter, takeUntil } from 'rxjs/operators';
+import { filter, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 
 import {
     WineryRepositoryConfigurationService
@@ -38,7 +38,7 @@ export class LicenseEngineService {
         headers.append('Access-Control-Request-Method', 'GET');
         return this.http.get(this.licenseEngineUrl + '/licenses', {
             headers: headers, responseType: 'json'
-        }).map(
+        }).pipe(map(
             (data) => {
                 const licenses = [];
                 for (const item in data) {
@@ -47,7 +47,7 @@ export class LicenseEngineService {
                     }
                 }
                 return licenses;
-            });
+            }));
     }
 
     getLicenseTextEngine(name: string): Observable<string> {
@@ -55,11 +55,11 @@ export class LicenseEngineService {
         headers.append('Access-Control-Request-Method', 'GET');
         return this.http.get(this.licenseEngineUrl + '/licenses/' + name + '/text', {
             headers: headers, responseType: 'text'
-        }).map((response) => {
+        }).pipe(map((response) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(response, 'text/html');
             return doc.body.innerText;
-        });
+        }));
     }
 
     deleteId(): Observable<boolean> {
@@ -67,9 +67,9 @@ export class LicenseEngineService {
         headers.append('Access-Control-Request-Method', 'DELETE');
         return this.http.delete(this.licenseEngineUrl + '/software/' + this.software.id, {
             headers: headers, observe: 'response'
-        }).map((response) => {
+        }).pipe(map((response) => {
             return response.status === 204;
-        });
+        }));
     }
 
     postSoftware(): Observable<boolean> {
@@ -77,9 +77,9 @@ export class LicenseEngineService {
         headers.append('Access-Control-Request-Method', 'POST');
         return this.http.post(this.licenseEngineUrl + '/software', {
             'name': this.software.id, 'id': this.software.id, 'url': this.software.url, 'branch': this.software.branch
-        }, { 'headers': headers, observe: 'response' }).map((response) => {
+        }, { 'headers': headers, observe: 'response' }).pipe(map((response) => {
             return response.status === 202;
-        });
+        }));
     }
 
     getSourceCodeLicense(): Observable<Software> {
@@ -100,7 +100,7 @@ export class LicenseEngineService {
         const headers = new HttpHeaders({ 'content-type': 'application/json', 'Accept': 'application/json' });
         return this.http.get(this.licenseEngineUrl + '/software/' + this.software.id + '/recommended-licenses', {
             headers: headers
-        }).map(
+        }).pipe(map(
             (data) => {
                 const licenses = [];
                 for (const item in data) {
@@ -109,7 +109,7 @@ export class LicenseEngineService {
                     }
                 }
                 return licenses;
-            });
+            }));
     }
 
     poll(): Observable<Software> {

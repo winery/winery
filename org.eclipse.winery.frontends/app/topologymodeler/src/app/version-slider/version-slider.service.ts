@@ -17,8 +17,8 @@ import { HttpClient } from '@angular/common/http';
 import { BackendService } from '../services/backend.service';
 import { WineryVersion } from '../../../../tosca-management/src/app/model/wineryVersion';
 import { TTopologyTemplate } from '../models/ttopology-template';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class VersionSliderService {
@@ -42,14 +42,16 @@ export class VersionSliderService {
     getVersions(): Observable<WineryVersion[]> {
         const url = this.backendService.configuration.parentElementUrl + '?versions';
         return this.http.get<WineryVersion[]>(url)
-            .map(array => array.reverse())
-            // recreate class to access methods
-            .map(array => array.map(v => VersionSliderService.toWineryVersion(v)));
+            .pipe(
+                map(array => array.reverse()),
+                // recreate class to access methods
+                map(array => array.map(v => VersionSliderService.toWineryVersion(v)))
+            );
     }
 
     hasMultipleVersions(): Observable<boolean> {
         return this.getVersions()
-            .map(versions => versions && versions.length > 1);
+            .pipe(map(versions => versions && versions.length > 1));
     }
 
     getTopologyTemplate(id: string): Observable<TTopologyTemplate> {

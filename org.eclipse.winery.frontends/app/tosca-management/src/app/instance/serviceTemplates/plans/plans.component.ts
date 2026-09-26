@@ -74,13 +74,13 @@ export class PlansComponent implements OnInit {
     interfaces = new InterfacesApiData();
     ioModalRef: BsModalRef;
 
-    @ViewChild('addPlanModal') addPlanModal: any;
-    @ViewChild('uploader') uploader: WineryUploaderComponent;
+    @ViewChild('addPlanModal', { static: true }) addPlanModal: any;
+    @ViewChild('uploader', { static: true }) uploader: WineryUploaderComponent;
 
-    @ViewChild('ioModal') ioModal: any;
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: any;
+    @ViewChild('ioModal', { static: true }) ioModal: any;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: any;
 
-    @ViewChild('confirmPlanGeneration') confirmPlanGeneration: any;
+    @ViewChild('confirmPlanGeneration', { static: true }) confirmPlanGeneration: any;
 
     constructor(private notify: WineryNotificationService,
                 public sharedData: InstanceService,

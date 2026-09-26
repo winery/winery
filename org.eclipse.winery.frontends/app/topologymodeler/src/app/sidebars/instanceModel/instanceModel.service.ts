@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { AbstractRefinementWebSocketService, RefinementTasks } from '../refinement/abstractRefinementWebSocket.service';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { TTopologyTemplate } from '../../models/ttopology-template';
 
 export interface SubGraphData {

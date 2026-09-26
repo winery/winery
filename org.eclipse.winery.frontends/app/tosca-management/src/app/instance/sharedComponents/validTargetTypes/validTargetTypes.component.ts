@@ -38,7 +38,7 @@ export class ValidTargetTypesComponent extends ValidSourceTypesComponent {
     validType = ToscaTypes.CapabilityType;
 
 
-    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
     addModalRef: BsModalRef;
 
     constructor(public sharedData: InstanceService,

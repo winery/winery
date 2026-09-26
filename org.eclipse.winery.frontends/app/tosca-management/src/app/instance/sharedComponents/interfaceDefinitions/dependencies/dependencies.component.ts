@@ -40,8 +40,8 @@ export class DependenciesComponent implements OnInit, OnChanges {
     @Input() selectableArtifacts: Artifact[] = [];
     @Output() newDependencyAdded: EventEmitter<Artifact> = new EventEmitter();
 
-    @ViewChild('modal') modal: ModalDirective;
-    @ViewChild('confirmRemoveModal') confirmRemoveModal: ModalDirective;
+    @ViewChild('modal', { static: true }) modal: ModalDirective;
+    @ViewChild('confirmRemoveModal', { static: true }) confirmRemoveModal: ModalDirective;
 
     selectData: SelectData;
     object: DependencyTableModel;

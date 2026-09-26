@@ -42,8 +42,8 @@ export class PropertyRenameComponent implements OnInit, OnChanges {
     @Input() propertyName: string;
     @Input() toscaComponent: ToscaComponent;
     @Input() multipleVersionsAvailable: boolean;
-    @ViewChild('renameComponentForm') renameComponentForm: NgForm;
-    @ViewChild('confirmRenameModal') confirmRenameModal: ModalDirective;
+    @ViewChild('renameComponentForm', { static: false }) renameComponentForm: NgForm;
+    @ViewChild('confirmRenameModal', { static: true }) confirmRenameModal: ModalDirective;
     editMode = false;
     disableEditing = true;
     propertyValue = '';

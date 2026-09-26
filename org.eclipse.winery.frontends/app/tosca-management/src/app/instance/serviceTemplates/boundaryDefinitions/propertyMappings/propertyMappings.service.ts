@@ -11,11 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable, ViewChild } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../../configuration';
-import { ModalDirective } from 'ngx-bootstrap';
 import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
@@ -32,7 +31,6 @@ export interface PropertyMappingsApiData {
 @Injectable()
 export class PropertyMappingService {
 
-    @ViewChild('browseForServiceTemplatePropertyDiag') browseForServiceTemplatePropertyDiag: ModalDirective;
     private path: string;
 
     constructor(private http: HttpClient,

@@ -85,7 +85,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
 
     randomIdSuffix = Math.random();
 
-    @ViewChild('namespaceInput') namespaceInput: ElementRef;
+    @ViewChild('namespaceInput', { static: false }) namespaceInput: ElementRef;
     public initNamespaceString = '';
 
     private innerNamespaceValue = '';

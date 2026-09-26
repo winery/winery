@@ -26,7 +26,7 @@ export class AuthenticationComponent extends AccountabilityParentComponent {
     authenticationData: AuthorizationElement[];
     participant: AuthorizationElement = { identity: '', address: '', transactionHash: '', unixTimestamp: 0 };
     modalRef: BsModalRef;
-    @ViewChild('authenticationLineageModal') modalTemplate: TemplateRef<any>;
+    @ViewChild('authenticationLineageModal', { static: true }) modalTemplate: TemplateRef<any>;
 
     constructor(protected service: AccountabilityService, protected notify: WineryNotificationService, private modalService: BsModalService) {
         super(service, notify);

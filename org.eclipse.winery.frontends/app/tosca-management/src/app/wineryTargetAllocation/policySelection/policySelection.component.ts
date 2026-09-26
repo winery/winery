@@ -26,7 +26,7 @@ import { TPolicy } from '../../../../../topologymodeler/src/app/models/policiesM
 
 export class PolicySelectionComponent implements OnInit {
 
-    @ViewChild('property') propertySelect: SelectComponent;
+    @ViewChild('property', { static: true }) propertySelect: SelectComponent;
 
     // policy, property, operator selection
     policiesForSelect: Array<SelectItem> = [];

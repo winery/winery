@@ -74,9 +74,9 @@ export class WineryIoParameterComponent {
     @Output() inputParameterRemoved = new EventEmitter<InterfaceParameter>();
     @Output() outputParameterRemoved = new EventEmitter<InterfaceParameter>();
 
-    @ViewChild('addIntParametersModal') addIntParametersModal: ModalDirective;
-    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
-    @ViewChild('parameterForm') parameterForm: NgForm;
+    @ViewChild('addIntParametersModal', { static: true }) addIntParametersModal: ModalDirective;
+    @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
+    @ViewChild('parameterForm', { static: false }) parameterForm: NgForm;
 
     selectedInputParameter: InterfaceParameter;
     selectedOutputParameter: InterfaceParameter;

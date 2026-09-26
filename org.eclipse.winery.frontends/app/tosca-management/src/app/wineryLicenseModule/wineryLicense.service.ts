@@ -16,7 +16,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { WineryLicense } from './wineryLicense';
-import { map } from 'rxjs/internal/operators';
+import { map } from 'rxjs/operators';
 
 import {
     WineryRepositoryConfigurationService

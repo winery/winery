@@ -19,7 +19,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { ErrorHandlerService } from '../../services/error-handler.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { InjectorReplaceOptions } from './matchingEntity';
 import { InjectorReplaceData } from './injectorData';

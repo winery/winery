@@ -47,10 +47,10 @@ export class VersionsComponent implements OnInit {
     // first entry newProperties, second entry removedProperties
     matchedProperties: PropertyMatching[] = [];
 
-    @ViewChild('updateVersionModal') updateVersionModal: ModalDirective;
+    @ViewChild('updateVersionModal', { static: true }) updateVersionModal: ModalDirective;
     updateVersionModalRef: BsModalRef;
 
-    @ViewChild('updatePropertyModal') updatePropertyModal: ModalDirective;
+    @ViewChild('updatePropertyModal', { static: true }) updatePropertyModal: ModalDirective;
     updatePropertyModalRef: BsModalRef;
 
     @Input() aVersionElement: VersionElement;

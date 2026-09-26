@@ -13,7 +13,7 @@
  ********************************************************************************/
 
 import { Inject, Injectable } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Fires event if app is loaded.

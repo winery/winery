@@ -18,11 +18,15 @@ import { WineryLicenseComponent } from './wineryLicense.component';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import {
-    MatButtonModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule,
-    MatProgressBarModule,
-    MatSelectModule, MatStepperModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 

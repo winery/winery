@@ -117,7 +117,7 @@ import {
 })
 export class WineryTableComponent implements OnInit, DoCheck {
 
-    @ViewChild('tableContainer') tableContainer: any;
+    @ViewChild('tableContainer', { static: true }) tableContainer: any;
     @Input() title: string;
     @Input() titleRouterLink?: any[] | string;
     @Input() titleRouterLinkText = 'Link';

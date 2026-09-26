@@ -18,7 +18,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { EntityTypesModel } from '../../models/entityTypesModel';

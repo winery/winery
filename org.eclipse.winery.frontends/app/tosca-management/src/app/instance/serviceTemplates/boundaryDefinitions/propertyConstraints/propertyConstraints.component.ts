@@ -41,9 +41,9 @@ export class PropertyConstraintsComponent implements OnInit {
         { title: 'Constraint Type', name: 'constraintType', sort: true },
         { title: 'Constraint', name: 'fragments', sort: true }
     ];
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('propertyConstraintEditor') propertyConstraintEditor: WineryEditorComponent;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('propertyConstraintEditor', { static: true }) propertyConstraintEditor: WineryEditorComponent;
     validatorObject: WineryValidatorObject;
 
     constructor(private service: PropertyConstraintsService,

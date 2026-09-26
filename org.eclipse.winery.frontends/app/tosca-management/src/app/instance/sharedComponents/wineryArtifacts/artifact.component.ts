@@ -73,11 +73,11 @@ export class WineryArtifactComponent implements OnInit {
         { title: 'Specific Content', name: 'anyText' }
     ];
 
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addArtifactModal') addArtifactModal: ModalDirective;
-    @ViewChild('uploadFileModal') uploadFileModal: ModalDirective;
-    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
-    @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addArtifactModal', { static: true }) addArtifactModal: ModalDirective;
+    @ViewChild('uploadFileModal', { static: true }) uploadFileModal: ModalDirective;
+    @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
+    @ViewChild('addComponentData', { static: false }) addComponentData: WineryAddComponentDataComponent;
 
     toscaType = ToscaTypes.ArtifactTemplate;
     valid: boolean;

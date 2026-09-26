@@ -17,7 +17,7 @@ export class ManageParticipantsComponent implements OnInit {
     participants: OTParticipant[] = [];
     formMetadata: Array<WineryDynamicTableMetadata> = [];
 
-    @ViewChild('generatedModal') generatedModal: WineryDynamicFormModalComponent;
+    @ViewChild('generatedModal', { static: true }) generatedModal: WineryDynamicFormModalComponent;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private ngActions: WineryActions) {

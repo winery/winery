@@ -13,9 +13,9 @@
  *******************************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Configuration } from './Configuration';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../../configuration';
-import { map, mergeMap } from 'rxjs/internal/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ConfigurationDTO } from './ConfigurationDTO';
 import { WineryRepositoryConfigurationService } from '../../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';

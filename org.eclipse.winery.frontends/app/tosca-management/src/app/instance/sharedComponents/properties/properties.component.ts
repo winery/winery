@@ -43,9 +43,9 @@ export class PropertiesComponent implements OnInit {
 
     form: NgForm;
     definitions: PropertiesDefinitionKVElement[];
-    properties: Properties;
+    properties: Properties | string;
     isXML: boolean;
-    @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
+    @ViewChild('propertiesEditor', { static: false }) propertiesEditor: WineryEditorComponent;
 
     show = {};
 

@@ -34,8 +34,8 @@ export class EdmmMappingsComponent implements OnInit {
     loading = true;
     edmmTypes: string[];
 
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('removeModal') removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 

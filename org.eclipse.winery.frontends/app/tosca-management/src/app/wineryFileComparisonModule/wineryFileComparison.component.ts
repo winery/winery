@@ -16,7 +16,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FileProvenanceElement, ProvenanceElement } from '../model/provenance';
 import { DatePipe } from '@angular/common';
 import { AccountabilityService } from '../instance/admin/accountability/accountability.service';
-import { forkJoin } from 'rxjs/index';
+import { forkJoin } from 'rxjs';
 import { SelectData } from '../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';

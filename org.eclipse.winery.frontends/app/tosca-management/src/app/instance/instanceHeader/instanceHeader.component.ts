@@ -55,9 +55,9 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() toscaLightCompatibilityData: ToscaLightCompatibilityData;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: TemplateRef<any>;
-    @ViewChild('toscaLightCompatibilityModal') toscaLightCompatibilityModel: TemplateRef<any>;
-    @ViewChild('roarConfirmUploadModal') roarConfirmUploadModal: TemplateRef<any>;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: TemplateRef<any>;
+    @ViewChild('toscaLightCompatibilityModal', { static: true }) toscaLightCompatibilityModel: TemplateRef<any>;
+    @ViewChild('roarConfirmUploadModal', { static: true }) roarConfirmUploadModal: TemplateRef<any>;
 
     needTwoLines = false;
     selectedTab: string;

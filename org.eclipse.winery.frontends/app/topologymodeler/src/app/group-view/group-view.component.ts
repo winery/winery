@@ -17,7 +17,7 @@ export class GroupViewComponent implements OnInit {
     groups: TGroupDefinition[] = [];
     formMetadata: Array<WineryDynamicTableMetadata> = [];
 
-    @ViewChild('generatedModal') generatedModal: WineryDynamicFormModalComponent;
+    @ViewChild('generatedModal', { static: true }) generatedModal: WineryDynamicFormModalComponent;
 
     private expandedDefinitions: TGroupDefinition[] = [];
 

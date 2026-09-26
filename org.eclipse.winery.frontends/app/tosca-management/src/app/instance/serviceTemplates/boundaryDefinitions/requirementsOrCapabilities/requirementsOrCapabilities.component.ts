@@ -31,8 +31,8 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     @Input() singleItem = '';
     @Input() title = '';
 
-    @ViewChild('addReqOrCapModal') addReqOrCapModal: ModalDirective;
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addReqOrCapModal', { static: true }) addReqOrCapModal: ModalDirective;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
 
     columns: Array<any> = [
         { title: 'Name', name: 'name', sort: true },

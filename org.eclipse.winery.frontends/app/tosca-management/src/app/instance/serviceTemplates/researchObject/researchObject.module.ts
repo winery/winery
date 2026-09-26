@@ -23,9 +23,11 @@ import { SelectModule } from 'ng2-select';
 import { FileUploaderModule } from '../../sharedComponents/files/fileUploader/fileUploader.module';
 import { ResearchObjectFilesComponent } from './researchObjectFiles.component';
 import { FileManagerModule } from '../../sharedComponents/files/fileManager/fileManager.module';
-import {
-    MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatProgressBarModule
-} from '@angular/material';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 
 

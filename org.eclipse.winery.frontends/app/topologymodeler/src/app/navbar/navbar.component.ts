@@ -77,9 +77,9 @@ export class NavbarComponent implements OnDestroy {
     unsavedChanges: boolean;
     modalRef: BsModalRef;
 
-    @ViewChild('exportCsarButton')
+    @ViewChild('exportCsarButton', { static: false })
     private exportCsarButtonRef: ElementRef;
-    @ViewChild('confirmModal')
+    @ViewChild('confirmModal', { static: true })
     private confirmModalRef: TemplateRef<any>;
 
     constructor(private alert: ToastrService,

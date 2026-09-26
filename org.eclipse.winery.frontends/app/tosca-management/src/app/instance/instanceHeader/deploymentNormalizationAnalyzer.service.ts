@@ -14,7 +14,8 @@
 import {
     WineryRepositoryConfigurationService
 } from '../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ToscaComponent } from '../../model/toscaComponent';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -31,7 +32,7 @@ export class DeploymentNormalizationAnalyzerService {
     startNormalization(toscaComponent: ToscaComponent): Observable<string> {
         if (!this.configurationService.configuration.endpoints.deploymentNormalizationAssistant) {
             this.notify.error('No DNA URL set!');
-            return Observable.of('Error');
+            return of('Error');
         }
 
         const url = this.configurationService.configuration.endpoints.deploymentNormalizationAssistant;
@@ -42,6 +43,6 @@ export class DeploymentNormalizationAnalyzerService {
             { namespace: toscaComponent.namespace, id: toscaComponent.localName },
             { headers: headers, observe: 'response' }
         )
-            .map(response => url + response.headers.get('Location'));
+            .pipe(map(response => url + response.headers.get('Location')));
     }
 }
