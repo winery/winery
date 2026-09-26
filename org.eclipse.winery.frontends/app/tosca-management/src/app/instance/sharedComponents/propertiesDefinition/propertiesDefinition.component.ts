@@ -112,7 +112,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     editorModalRef: BsModalRef;
     configEnum = FeatureEnum;
 
-    @ViewChild('nameInputForm', { static: false }) nameInputForm: ElementRef;
+    @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
     show = {
         inherited: false

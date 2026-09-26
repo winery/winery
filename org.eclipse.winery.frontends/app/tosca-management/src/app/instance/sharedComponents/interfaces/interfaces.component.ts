@@ -67,7 +67,7 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
     @ViewChild('addElementForm', { static: true }) addElementForm: NgForm;
     @ViewChild('generateImplModal', { static: true }) generateImplModal: ModalDirective;
-    @ViewChild('itemList', { static: false }) interfaceComponent: SelectableListComponent;
+    @ViewChild('itemList') interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
     toscaType: ToscaTypes;
     createImplementation = true;

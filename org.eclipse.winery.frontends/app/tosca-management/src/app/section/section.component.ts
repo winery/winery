@@ -82,7 +82,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     @ViewChild('addModal', { static: true }) addModal: WineryAddComponent;
     @ViewChild('addCsarModal', { static: true }) addCsarModal: ModalDirective;
-    @ViewChild('removeElementModal', { static: false }) removeElementModal: ModalDirective;
+    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addYamlModal', { static: true }) addYamlModal: ModalDirective;
     @ViewChild('validationModal', { static: true }) validationModal: ModalDirective;
     @ViewChild('fileUploader', { static: true }) fileUploader: WineryUploaderComponent;

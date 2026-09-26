@@ -29,7 +29,7 @@ export class ProvenanceComponent extends AccountabilityParentComponent {
     modelProvenance: ModelProvenanceElement[];
     selectedFileProvenance: FileProvenanceElement[];
     selectedFileProvenanceElement: FileProvenanceElement;
-    @ViewChild(WineryFileComparisonComponent, { static: false }) comparer: WineryFileComparisonComponent;
+    @ViewChild(WineryFileComparisonComponent) comparer: WineryFileComparisonComponent;
 
     constructor(protected service: AccountabilityService, protected notify: WineryNotificationService, private modalService: BsModalService) {
         super(service, notify);

@@ -31,7 +31,7 @@ import { AllocationRequest, CriteriaRequest } from './request';
 export class TargetAllocationComponent implements OnInit {
 
     @ViewChild(ModalDirective, { static: true }) targetAllocationModal: ModalDirective;
-    @ViewChild(PolicySelectionComponent, { static: false }) policySelection: PolicySelectionComponent;
+    @ViewChild(PolicySelectionComponent) policySelection: PolicySelectionComponent;
 
     // criteria selection spinner
     criteria = TargetAllocationComponent.getCriteriaForSelect();

@@ -26,7 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     providers: [DatePipe],
 })
 export class WineryNotificationModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<WineryNotificationModule> {
         return {
             ngModule: WineryNotificationModule,
             providers: [WineryNotificationService]

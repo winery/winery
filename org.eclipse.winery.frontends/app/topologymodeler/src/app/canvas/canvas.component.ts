@@ -82,12 +82,12 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     @ViewChildren('YamlPolicyProperties') yamlPolicyProperties: QueryList<any>;
     @ViewChild('nodes', { static: true }) child: ElementRef;
     @ViewChild('selection', { static: true }) selection: ElementRef;
-    @ViewChild('capabilitiesModal', { static: false }) capabilitiesModal: ModalDirective;
-    @ViewChild('requirementsModal', { static: false }) requirementsModal: ModalDirective;
-    @ViewChild('importTopologyModal', { static: false }) importTopologyModal: ModalDirective;
-    @ViewChild('threatModelingModal', { static: false }) threatModelingModal: ModalDirective;
-    @ViewChild('manageYamlPoliciesModal', { static: false }) manageYamlPoliciesModal: ModalDirective;
-    @ViewChild('addYamlPolicyModal', { static: false }) addYamlPolicyModal: ModalDirective;
+    @ViewChild('capabilitiesModal') capabilitiesModal: ModalDirective;
+    @ViewChild('requirementsModal') requirementsModal: ModalDirective;
+    @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
+    @ViewChild('threatModelingModal') threatModelingModal: ModalDirective;
+    @ViewChild('manageYamlPoliciesModal') manageYamlPoliciesModal: ModalDirective;
+    @ViewChild('addYamlPolicyModal') addYamlPolicyModal: ModalDirective;
     @ViewChild('prmPropertiesModal', { static: true }) prmPropertiesModal: ModalDirective;
     @Input() readonly: boolean;
     @Input() entityTypes: EntityTypesModel;

@@ -77,7 +77,7 @@ export class WineryArtifactComponent implements OnInit {
     @ViewChild('addArtifactModal', { static: true }) addArtifactModal: ModalDirective;
     @ViewChild('uploadFileModal', { static: true }) uploadFileModal: ModalDirective;
     @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
-    @ViewChild('addComponentData', { static: false }) addComponentData: WineryAddComponentDataComponent;
+    @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
 
     toscaType = ToscaTypes.ArtifactTemplate;
     valid: boolean;

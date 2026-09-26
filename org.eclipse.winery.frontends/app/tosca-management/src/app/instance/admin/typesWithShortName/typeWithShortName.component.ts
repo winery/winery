@@ -39,8 +39,8 @@ export class TypeWithShortNameComponent implements OnInit {
     elementToRemove: TypeWithShortName = null;
     title: string;
 
-    @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal', { static: false }) addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: TypeWithShortNameService,
                 private notify: WineryNotificationService,

@@ -45,7 +45,7 @@ export class XaasPackagerComponent implements DoCheck {
 
     value: SelectItem[];
 
-    @ViewChild('createFromArtifactModal', { static: false }) createFromArtifactModal: ModalDirective;
+    @ViewChild('createFromArtifactModal') createFromArtifactModal: ModalDirective;
 
     constructor(private service: PackagerService,
                 private notify: WineryNotificationService) {

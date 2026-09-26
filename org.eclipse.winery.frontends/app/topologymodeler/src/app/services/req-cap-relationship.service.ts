@@ -13,11 +13,12 @@
  *******************************************************************************/
 import { BehaviorSubject } from 'rxjs';
 import { EntityType } from '../models/ttopology-template';
-import { EventEmitter, Output } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
+@Injectable()
 export class ReqCapRelationshipService {
-    @Output() sourceSelectedEvent: EventEmitter<any>;
-    @Output() sendSelectedRelationshipTypeEvent: EventEmitter<any>;
+    sourceSelectedEvent: EventEmitter<any>;
+    sendSelectedRelationshipTypeEvent: EventEmitter<any>;
     private closedEndpointEvent = new BehaviorSubject<any>('');
     private askForRepaintEvent = new BehaviorSubject<any>('');
 

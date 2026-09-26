@@ -61,8 +61,8 @@ export class InterfaceDefinitionsComponent implements OnInit {
     modalTitle: string;
     removeModalElement: string;
 
-    @ViewChild('interfacesList', { static: false }) interfacesListComponent: SelectableListComponent;
-    @ViewChild('operationsList', { static: false }) operationsListComponent: SelectableListComponent;
+    @ViewChild('interfacesList') interfacesListComponent: SelectableListComponent;
+    @ViewChild('operationsList') operationsListComponent: SelectableListComponent;
 
     readonly interfaceTypes: SelectData[] = [
         { text: '{tosca.interfaces.node.lifecycle}Standard', id: 'Standard' },

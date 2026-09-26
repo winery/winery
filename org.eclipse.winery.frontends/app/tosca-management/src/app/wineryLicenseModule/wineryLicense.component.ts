@@ -60,9 +60,9 @@ export class WineryLicenseComponent implements OnInit {
     confirmSaveModalRef: BsModalRef;
     confirmDownloadModalRef: BsModalRef;
 
-    @ViewChild('stepper', { static: false }) stepper: MatStepper;
-    @ViewChild('confirmSaveModal', { static: false }) confirmSaveModal: TemplateRef<any>;
-    @ViewChild('confirmDownloadModal', { static: false }) confirmDownloadModal: TemplateRef<any>;
+    @ViewChild('stepper') stepper: MatStepper;
+    @ViewChild('confirmSaveModal') confirmSaveModal: TemplateRef<any>;
+    @ViewChild('confirmDownloadModal') confirmDownloadModal: TemplateRef<any>;
 
     constructor(private notify: WineryNotificationService,
                 private configurationService: WineryRepositoryConfigurationService,

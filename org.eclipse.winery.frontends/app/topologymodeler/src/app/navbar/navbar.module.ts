@@ -34,7 +34,7 @@ import { BsDropdownModule, TooltipModule } from 'ngx-bootstrap';
 })
 export class NavbarModule {
 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<NavbarModule> {
         return {
             ngModule: NavbarModule,
             providers: [

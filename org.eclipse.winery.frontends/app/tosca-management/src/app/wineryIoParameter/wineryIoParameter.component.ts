@@ -76,7 +76,7 @@ export class WineryIoParameterComponent {
 
     @ViewChild('addIntParametersModal', { static: true }) addIntParametersModal: ModalDirective;
     @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
-    @ViewChild('parameterForm', { static: false }) parameterForm: NgForm;
+    @ViewChild('parameterForm') parameterForm: NgForm;
 
     selectedInputParameter: InterfaceParameter;
     selectedOutputParameter: InterfaceParameter;

@@ -54,8 +54,8 @@ export class NamespacesComponent implements OnInit {
     ];
     elementToRemove: any;
 
-    @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal', { static: false }) addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: NamespacesService,
                 private notify: WineryNotificationService,

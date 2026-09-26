@@ -45,9 +45,9 @@ export class PlacementComponent implements DoCheck, OnInit {
 
     file: File;
 
-    @ViewChild('createFromDataFlowModal', { static: false }) createFromDataFlowModal: ModalDirective;
-    @ViewChild('componentName', { static: false }) componentName: FormsModule;
-    @ViewChild('componentNamespace', { static: false }) componentNamespace: FormsModule;
+    @ViewChild('createFromDataFlowModal') createFromDataFlowModal: ModalDirective;
+    @ViewChild('componentName') componentName: FormsModule;
+    @ViewChild('componentNamespace') componentNamespace: FormsModule;
 
     constructor(private service: PlacementService,
                 private notify: WineryNotificationService) {

@@ -40,7 +40,7 @@ export class InheritanceComponent implements OnInit {
     toscaType: ToscaTypes;
     loading = true;
     enableButton = false;
-    @ViewChild('derivedFromSelector', { static: false }) aboutModal: ModalDirective;
+    @ViewChild('derivedFromSelector') aboutModal: ModalDirective;
     @ViewChild('addSubTypeModal', { static: true }) addSubTypeModal: WineryAddComponent;
     initialActiveItem: Array<SelectData>;
 

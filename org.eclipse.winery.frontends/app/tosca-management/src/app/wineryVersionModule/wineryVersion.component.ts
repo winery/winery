@@ -51,7 +51,7 @@ export class WineryVersionComponent {
     readonly versionActions = WineryVersionActions;
 
     @ViewChild('modal', { static: true }) modal: ModalDirective;
-    @ViewChild('referencedDefsComponent', { static: false }) referencedDefsComponent: ReferencedDefinitionsComponent;
+    @ViewChild('referencedDefsComponent') referencedDefsComponent: ReferencedDefinitionsComponent;
 
     // in this case, the type defines the qName's ToscaType
     referencedDefinitions: QNameWithTypeApiData[];

@@ -47,8 +47,8 @@ export class PropertyMappingsComponent implements OnInit {
     @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
     @ViewChild('browseForServiceTemplatePropertyDiag', { static: true }) browseForServiceTemplatePropertyDiag: ModalDirective;
     @ViewChild('propertyMappingForm', { static: true }) propertyMappingForm: NgForm;
-    @ViewChild('tempList', { static: false }) templateSelect: any;
-    @ViewChild('propertiesSelect', { static: false }) propertiesSelect: any;
+    @ViewChild('tempList') templateSelect: any;
+    @ViewChild('propertiesSelect') propertiesSelect: any;
     currentSelectedItem: PropertyMapping = new PropertyMapping();
     addOrUpdate = 'Add';
     properties: { name: string, property: string } = { name: '', property: '' };
