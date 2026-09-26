@@ -20,7 +20,7 @@ import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryIoParameterModule } from '../../wineryIoParameter/wineryIoParameters.module';
 import { WineryUploaderModule } from '../../wineryUploader/wineryUploader.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { InstanceModule } from '../../instance/instance.module';
@@ -44,7 +44,7 @@ import { ResearchObjectModule } from '../../instance/serviceTemplates/researchOb
     imports: [
         CommonModule,
         FormsModule,
-        SelectModule,
+        NgSelectModule,
         InstanceModule,
         SelfServicePortalModule,
         BoundaryDefinitionsModule,

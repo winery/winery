@@ -15,7 +15,7 @@ import { NgModule } from '@angular/core';
 import { DataTypeRouterModule } from './dataTypeRouter.module';
 import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
 import { WineryPipesModule } from '../../wineryPipes/wineryPipes.module';
@@ -28,7 +28,7 @@ import { YamlConstraintsComponent } from '../../instance/sharedComponents/yaml/c
         CommonModule,
         DataTypeRouterModule,
         WineryLoaderModule,
-        SelectModule,
+        NgSelectModule,
         WineryTableModule,
         InheritanceModule,
         WineryPipesModule,

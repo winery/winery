@@ -15,7 +15,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ModalModule, TabsModule, TypeaheadModule } from 'ngx-bootstrap';
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
@@ -35,7 +35,7 @@ import { ArtifactsService } from './artifacts.service';
         ModalModule.forRoot(),
         WineryTableModule,
         TabsModule.forRoot(),
-        SelectModule,
+        NgSelectModule,
         BrowserModule,
         FormsModule,
         WineryLoaderModule,

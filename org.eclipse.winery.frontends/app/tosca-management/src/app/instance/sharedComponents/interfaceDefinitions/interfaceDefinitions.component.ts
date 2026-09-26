@@ -69,7 +69,7 @@ export class InterfaceDefinitionsComponent implements OnInit {
         { text: '{tosca.interfaces.relationship}Configure', id: 'Configure' },
     ];
     selectableArtifacts: Artifact[] = [];
-    selectedArtifact: Artifact[];
+    selectedArtifact: Artifact;
 
     constructor(private interfaceService: InterfaceDefinitionsService, public instanceService: InstanceService,
                 private filesService: FilesService, private artifactsService: ArtifactsService) {
@@ -138,13 +138,13 @@ export class InterfaceDefinitionsComponent implements OnInit {
     }
 
     onOperationSelected(selectedOperation: Operation) {
-        this.selectedArtifact = [];
+        this.selectedArtifact = null;
         this.selectedOperation = selectedOperation;
         if (this.selectedOperation.implementation) {
             const id = this.selectedOperation.implementation.primary;
             const artifact = this.selectableArtifacts.find(item => item.name === id);
             if (artifact) {
-                this.selectedArtifact.push(artifact);
+                this.selectedArtifact = artifact;
             }
             if (!this.selectedOperation.implementation.dependencies) {
                 this.selectedOperation.implementation.dependencies = [];
@@ -177,7 +177,7 @@ export class InterfaceDefinitionsComponent implements OnInit {
     }
 
     onArtifactSelected(data: SelectData) {
-        if (!this.selectedOperation) {
+        if (!this.selectedOperation || !data) {
             return;
         }
         if (!this.selectedOperation.implementation) {

@@ -119,9 +119,9 @@ export class BehaviorPatternMappingsComponent implements OnInit {
             .map((prop) => prop.toString());
     }
 
-    refinementPropertySelected(element: SelectData) {
+    refinementPropertySelected(element: string) {
         this.mapping.property = this.refinementProperties
-            .find((prop) => prop.toString() === element.id);
+            .find((prop) => prop.toString() === element);
     }
 
     onAddBehaviorPatternMapping() {

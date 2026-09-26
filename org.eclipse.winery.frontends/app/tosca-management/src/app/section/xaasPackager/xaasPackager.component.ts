@@ -15,7 +15,6 @@ import { Component, DoCheck, ViewChild } from '@angular/core';
 import { ArtifactTypesAndInfrastructureNodetypes, PackagerService } from './xaasPackagerService';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
-import { SelectItem } from 'ng2-select';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -43,7 +42,7 @@ export class XaasPackagerComponent implements DoCheck {
     selectedNodeTypes: string[];
     file: File;
 
-    value: SelectItem[];
+    value: string[];
 
     @ViewChild('createFromArtifactModal', { static: false }) createFromArtifactModal: ModalDirective;
 
@@ -108,31 +107,21 @@ export class XaasPackagerComponent implements DoCheck {
         this.isModalShown = true;
     }
 
-    public refreshValue(value: SelectItem[]): void {
+    public refreshValue(value: string[]): void {
         this.value = value;
-        this.selectedNodeTypes = this.itemsToStringArray(value);
+        this.selectedNodeTypes = value;
     }
 
-    public refreshSelectedArtifactType(value: SelectItem) {
-        this.selectedArtifactType = value.text;
+    public refreshSelectedArtifactType(value: string) {
+        this.selectedArtifactType = value;
     }
 
-    public refreshSelectedInfrastructureNodeType(value: SelectItem) {
-        this.selectedInfracstuctureNodeType = value.text;
+    public refreshSelectedInfrastructureNodeType(value: string) {
+        this.selectedInfracstuctureNodeType = value;
     }
 
-    public itemsToString(value: Array<SelectItem> = []): string {
-        return value
-            .map((item: any) => {
-                return item.text;
-            }).join(',');
-    }
-
-    public itemsToStringArray(value: Array<SelectItem> = []): string[] {
-
-        return value.map((item: any) => {
-            return item.text;
-        });
+    public itemsToString(value: string[] = []): string {
+        return value.join(',');
     }
 
     public fileChange(event: any) {

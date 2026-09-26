@@ -18,15 +18,17 @@
     <ng-select
         id="leftFileVersion"
         [items]="getProvenanceVersionTitles(selectedFileProvenanceElement.fileName)"
-        [active]="[leftVersion]"
-        (selected)="leftFileVersionSelected($event)"
+        bindLabel="text" [clearable]="false"
+        [ngModel]="leftVersion" [ngModelOptions]="{standalone: true}"
+        (change)="leftFileVersionSelected($event)"
     ></ng-select>
 
     <label for="rightFileVersion" class="control-label horizontalSpace">Version 2</label>
     <ng-select
         id="rightFileVersion"
         [items]="getProvenanceVersionTitles(selectedFileProvenanceElement.fileName)"
-        (selected)="rightFileVersionSelected($event)"
+        bindLabel="text" [clearable]="false"
+        (change)="rightFileVersionSelected($event)"
     ></ng-select>
     <button type="button" class="btn btn-primary horizontalSpace" [disabled]="!leftFile || !rightFile"
             (click)="retrieveFilesForComparison()">Compare

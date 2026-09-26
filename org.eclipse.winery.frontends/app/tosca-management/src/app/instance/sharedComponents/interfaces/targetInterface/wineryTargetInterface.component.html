@@ -33,9 +33,9 @@
             <label class="control-label" for="reference">Reference</label>
             <ng-select id="reference"
                        [items]="referenceData"
-                       [textField]="'id'"
-                       [active]="[activeReference]"
-                       (selected)="onReferenceSelected($event)">
+                       bindLabel="id" [clearable]="false"
+                       [ngModel]="activeReference" [ngModelOptions]="{standalone: true}"
+                       (change)="onReferenceSelected($event)">
             </ng-select>
             <br>
             <div *ngIf="operation.nodeOperation || operation.relationshipOperation">
@@ -46,20 +46,18 @@
                         <label for="operationInterface">Interface</label>
                         <ng-select id="operationInterface"
                                    [items]="interfaces"
-                                   [textField]="'name'"
-                                   [idField]="'name'"
-                                   [active]="[activeInterface]"
-                                   (selected)="onInterfaceSelected($event)">
+                                   bindLabel="name" [clearable]="false"
+                                   [ngModel]="activeInterface" [ngModelOptions]="{standalone: true}"
+                                   (change)="onInterfaceSelected($event)">
                         </ng-select>
                         <br>
                         <div *ngIf="activeInterface.operation">
                             <label for="operationOperation">Operation</label>
                             <ng-select id="operationOperation"
                                        [items]="activeInterface.operation"
-                                       [active]="[activeOperation]"
-                                       [textField]="'name'"
-                                       [idField]="'name'"
-                                       (selected)="onOperationSelected($event)">
+                                       [ngModel]="activeOperation" [ngModelOptions]="{standalone: true}"
+                                       bindLabel="name" [clearable]="false"
+                                       (change)="onOperationSelected($event)">
                             </ng-select>
                         </div>
                     </div>

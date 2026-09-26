@@ -23,7 +23,7 @@ import { InterfaceDefinitionsComponent } from './interfaceDefinitions.component'
 import { SelectableListModule } from '../interfaces/selectableList/selectableList.module';
 import { ParametersModule } from '../parameters/parameters.module';
 import { InterfaceDefinitionsService } from './interfaceDefinitions.service';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { ArtifactsModule } from '../artifacts/artifacts.module';
 import { DependenciesComponent } from './dependencies/dependencies.component';
 import { FilesModule } from '../filesTag/files.module';
@@ -33,7 +33,7 @@ import { FilesModule } from '../filesTag/files.module';
         CommonModule,
         BrowserModule,
         FormsModule,
-        SelectModule,
+        NgSelectModule,
         WineryLoaderModule,
         WineryModalModule,
         WineryTableModule,

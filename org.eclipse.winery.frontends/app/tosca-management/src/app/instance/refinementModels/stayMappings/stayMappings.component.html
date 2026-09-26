@@ -41,15 +41,15 @@
             <ng-template #showElementsSelector>
                 <div class="form-group">
                     <label for="detectorNode" class="control-label">Detector Element</label>
-                    <ng-select id="detectorNode" [items]="detectorTemplates" [textField]="'name'"
-                               (selected)="detectorNodeSelected($event)">
+                    <ng-select id="detectorNode" [items]="detectorTemplates" bindLabel="name" [clearable]="false"
+                               (change)="detectorNodeSelected($event)">
                     </ng-select>
                 </div>
 
                 <div class="form-group">
                     <label for="refinementNode" class="control-label">Refinement Structure Element</label>
-                    <ng-select id="refinementNode" [items]="refinementStructureTemplates" [textField]="'name'"
-                               (selected)="refinementNodeSelected($event)">
+                    <ng-select id="refinementNode" [items]="refinementStructureTemplates" bindLabel="name" [clearable]="false"
+                               (change)="refinementNodeSelected($event)">
                     </ng-select>
                 </div>
             </ng-template>

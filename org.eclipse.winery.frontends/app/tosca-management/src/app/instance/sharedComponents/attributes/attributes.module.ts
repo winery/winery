@@ -16,7 +16,7 @@ import { NgModule } from '@angular/core';
 import { AttributesComponent } from './attributes.component';
 import { AttributesService } from './attributes.service';
 import { TabsModule } from 'ngx-bootstrap';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
@@ -28,7 +28,7 @@ import { WineryDynamicTableModule } from '../../../wineryDynamicTable/wineryDyna
 @NgModule({
     imports: [
         TabsModule.forRoot(),
-        SelectModule,
+        NgSelectModule,
         BrowserModule,
         FormsModule,
         CommonModule,

@@ -17,7 +17,7 @@ import { WineryNotificationService } from '../../../../wineryNotificationModule/
 import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
 import { ModalDirective } from 'ngx-bootstrap';
 import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
-import { SelectItem } from 'ng2-select';
+import { SelectData } from '../../../../model/selectData';
 import { EditXMLComponent } from '../../../sharedComponents/editXML/editXML.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -33,10 +33,10 @@ export class PoliciesComponent implements OnInit {
     loadingTemplate = false;
     policies: Array<WineryPolicy> = [];
     newPolicy: WineryPolicy = new WineryPolicy();
-    policyTypes: Array<SelectItem> = [];
-    policyTemplates: Array<SelectItem> = [];
-    activePolicyType: SelectItem = new SelectItem('');
-    activePolicyTemplate: SelectItem = new SelectItem('');
+    policyTypes: Array<SelectData> = [];
+    policyTemplates: Array<SelectData> = [];
+    activePolicyType: SelectData = { id: '', text: '' };
+    activePolicyTemplate: SelectData = { id: '', text: '' };
 
     columnsArray: Array<WineryTableColumn> = [
         { title: 'Name', name: 'name' },
@@ -75,7 +75,7 @@ export class PoliciesComponent implements OnInit {
             this.newPolicy = new WineryPolicy();
             this.validator = new WineryValidatorObject(this.policies, 'name');
             this.activePolicyType = this.policyTypes[0].children[0];
-            this.activePolicyTemplate = new SelectItem('');
+            this.activePolicyTemplate = { id: '', text: '' };
             this.xmlEditor.setEditorContent(this.policyXml);
             this.addModal.show();
             this.loadTemplates();
@@ -138,12 +138,12 @@ export class PoliciesComponent implements OnInit {
             );
     }
 
-    policyTypeSelected(data: SelectItem) {
+    policyTypeSelected(data: SelectData) {
         this.activePolicyType = data;
         this.loadTemplates();
     }
 
-    policyTemplateSelected(data: SelectItem) {
+    policyTemplateSelected(data: SelectData) {
         this.activePolicyTemplate = data;
     }
 
@@ -161,9 +161,9 @@ export class PoliciesComponent implements OnInit {
         this.policies = data;
     }
 
-    private handleTemplates(data: SelectItem[]) {
+    private handleTemplates(data: SelectData[]) {
         this.policyTemplates = data;
-        this.activePolicyTemplate = new SelectItem('');
+        this.activePolicyTemplate = { id: '', text: '' };
         this.loadingTemplate = false;
     }
 

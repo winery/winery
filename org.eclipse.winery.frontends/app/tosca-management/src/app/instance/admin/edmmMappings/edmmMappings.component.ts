@@ -20,7 +20,6 @@ import { SelectData } from '../../../model/selectData';
 import { forkJoin } from 'rxjs';
 import { ToscaTypes } from '../../../model/enums';
 import { SectionData } from '../../../section/sectionData';
-import { SelectItem } from 'ng2-select';
 import { EdmmTypesService } from '../edmmTypes/edmmTypes.service';
 
 @Component({
@@ -109,11 +108,11 @@ export class EdmmMappingsComponent implements OnInit {
         this.save();
     }
 
-    edmmTypeSelected(data: SelectData) {
-        this.elementToEdit.edmmType = data.id;
+    edmmTypeSelected(data: string) {
+        this.elementToEdit.edmmType = data;
     }
 
-    toscaTypeSelected(data: SelectItem) {
+    toscaTypeSelected(data: SelectData) {
         this.elementToEdit.toscaType = data.id;
     }
 

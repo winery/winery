@@ -20,7 +20,7 @@ import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/winery
 import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
 import { RouterModule } from '@angular/router';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { AlertModule, CollapseModule, TooltipModule } from 'ngx-bootstrap';
 import { WineryAddComponentDataComponent } from './addComponentData.component';
 
@@ -29,7 +29,7 @@ import { WineryAddComponentDataComponent } from './addComponentData.component';
         BrowserModule,
         FormsModule,
         RouterModule,
-        SelectModule,
+        NgSelectModule,
         TooltipModule,
         AlertModule.forRoot(),
         CollapseModule.forRoot(),

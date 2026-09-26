@@ -24,9 +24,9 @@
                     <label for="criteriaSelection" class="control-label">Criteria selection</label>
                     <div style="display: flex;">
                         <ng-select id="criteriaSelection" style="flex: 1"
-                                   [allowClear]="true"
+                                   [clearable]="true" bindLabel="text"
                                    [items]="criteria"
-                                   (data)="criteriaSelected($event)"
+                                   (change)="criteriaSelected($event)"
                                    placeholder="Criteria">
                         </ng-select>
                         <button class="rightbutton btn btn-primary btn-xs"

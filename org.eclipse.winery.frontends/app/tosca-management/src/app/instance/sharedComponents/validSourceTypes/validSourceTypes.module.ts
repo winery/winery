@@ -15,7 +15,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
@@ -28,7 +28,7 @@ import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module
     imports: [
         CommonModule,
         BrowserModule,
-        SelectModule,
+        NgSelectModule,
         FormsModule,
         CommonModule,
         RouterModule,

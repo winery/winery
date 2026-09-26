@@ -18,7 +18,6 @@ import { PlansService } from './plans.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { SelectData } from '../../../model/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
-import { SelectItem } from 'ng2-select';
 import { InterfaceParameter } from '../../../model/parameters';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
@@ -210,7 +209,7 @@ export class PlansComponent implements OnInit {
             );
     }
 
-    planLanguageSelected(event: SelectItem) {
+    planLanguageSelected(event: SelectData) {
         if (event.id.includes(bpmn4tosca) || event.id.includes('BPMN')) {
             this.fileDropped = true;
             this.showArchiveUpload = false;
@@ -225,7 +224,7 @@ export class PlansComponent implements OnInit {
         this.selectedPlanLanguage = event;
     }
 
-    planTypeSelected(event: SelectItem) {
+    planTypeSelected(event: SelectData) {
         this.selectedPlanType = event;
     }
 

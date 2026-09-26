@@ -18,7 +18,7 @@ import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.mod
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { SupportedFileTypesComponent } from '../../instance/artifactTypes/supportedFileTypes/supportedFileTypes.component';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 
 @NgModule({
@@ -28,7 +28,7 @@ import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
         WineryReadmeModule,
         WineryLicenseModule,
         WineryLoaderModule,
-        SelectModule,
+        NgSelectModule,
         WineryTableModule
     ],
     declarations: [SupportedFileTypesComponent]

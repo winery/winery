@@ -15,7 +15,8 @@ import { NgModule } from '@angular/core';
 import { RelationshipTypeRouterModule } from './relationshipTypeRouter.module';
 import { CommonModule } from '@angular/common';
 import { ValidSourcesAndTargetsComponent } from '../../instance/relationshipTypes/validSourcesAndTargets/validSourcesAndTargets.component';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
@@ -25,7 +26,8 @@ import { ValidTargetTypesModule } from '../../instance/sharedComponents/validTar
 @NgModule({
     imports: [
         CommonModule,
-        SelectModule,
+        NgSelectModule,
+        FormsModule,
         WineryLoaderModule,
         RelationshipTypeRouterModule,
         WineryReadmeModule,

@@ -103,11 +103,11 @@
             <div class="form-group">
                 <label for="validNodeTypes" class="control-label">Select Node Type</label>
                 <ng-select id="validNodeTypes"
-                           [disabled]="!sharedData?.currentVersion?.editable"
-                           [items]="currentNodeTypes"
-                           (selected)="onSelectedNodeTypeChanged($event)"
-                           [active]=""
+                           [readonly]="!sharedData?.currentVersion?.editable"
+                           [items]="currentNodeTypes" bindLabel="text" groupBy="children" [clearable]="false"
+                           (change)="onSelectedNodeTypeChanged($event)"
                 >
+                    <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
                 </ng-select>
             </div>
 
@@ -183,9 +183,9 @@
         <div id="editConstraintContainer">
             <label>Type</label>
             <div id="constraintTypeSelect">
-                <ng-select [items]="constraintTypeItems"
-                           [active]="[activeTypeElement]"
-                           (selected)="constraintTypeSelected($event)"
+                <ng-select [items]="constraintTypeItems" bindLabel="text" [clearable]="false"
+                           [ngModel]="activeTypeElement" [ngModelOptions]="{standalone: true}"
+                           (change)="constraintTypeSelected($event)"
                            placeholder="">
                 </ng-select>
             </div>

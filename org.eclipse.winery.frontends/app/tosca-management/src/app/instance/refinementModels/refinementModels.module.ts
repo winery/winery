@@ -21,7 +21,7 @@ import { InstanceModule } from '../instance.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { StayMappingsComponent } from './stayMappings/stayMappings.component';
 import { AttributeMappingsComponent } from './attributeMappings/attributeMappings.component';
 import { DeploymentArtifactsMappingsComponent } from './deploymentArtifactsMappings/deploymentArtifactsMappings.component';
@@ -39,7 +39,7 @@ import { BehaviorPatternMappingsComponent } from './behavior-pattern-mappings/be
         FormsModule,
         HttpClientModule,
         BrowserModule,
-        SelectModule,
+        NgSelectModule,
         InstanceModule,
         WineryModalModule,
         WineryNotificationModule,

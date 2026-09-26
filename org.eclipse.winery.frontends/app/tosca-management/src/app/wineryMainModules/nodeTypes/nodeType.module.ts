@@ -19,7 +19,7 @@ import { ImplementationsModule } from '../../instance/sharedComponents/implement
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { SpinnerWithInfinityModule } from '../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.module';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { WineryQNameSelectorModule } from '../../wineryQNameSelector/wineryQNameSelector.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
@@ -45,7 +45,7 @@ import { WineryFeatureToggleModule } from '../../wineryFeatureToggleModule/winer
         PropertiesDefinitionModule,
         InheritanceModule,
         ImplementationsModule,
-        SelectModule,
+        NgSelectModule,
         SpinnerWithInfinityModule,
         TagModule,
         WineryLoaderModule,

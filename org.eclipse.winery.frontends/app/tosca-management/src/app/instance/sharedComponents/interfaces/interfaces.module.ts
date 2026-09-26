@@ -27,7 +27,7 @@ import { ExistService } from '../../../wineryUtils/existService';
 import { WineryIoParameterModule } from '../../../wineryIoParameter/wineryIoParameters.module';
 import { WineryTargetInterfaceModule } from './targetInterface/wineryTargetInterface.module';
 import { WineryComponentExistsModule } from '../../../wineryComponentExists/wineryComponentExists.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { WineryArtifactService } from '../wineryArtifacts/artifact.service';
 
 @NgModule({
@@ -44,7 +44,7 @@ import { WineryArtifactService } from '../wineryArtifacts/artifact.service';
         WineryDuplicateValidatorModule,
         WineryNamespaceSelectorModule,
         WineryIoParameterModule,
-        SelectModule
+        NgSelectModule
     ],
     exports: [InterfacesComponent],
     declarations: [

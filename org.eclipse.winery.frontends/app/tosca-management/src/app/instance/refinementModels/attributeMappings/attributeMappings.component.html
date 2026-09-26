@@ -38,30 +38,28 @@
 
             <div class="form-group">
                 <label for="detectorNode" class="control-label">Detector Node</label>
-                <ng-select id="detectorNode" [items]="detectorTemplates" [textField]="'name'"
-                           (selected)="detectorNodeSelected($event)">
+                <ng-select id="detectorNode" [items]="detectorTemplates" bindLabel="name" [clearable]="false"
+                           (change)="detectorNodeSelected($event)">
                 </ng-select>
             </div>
             <div class="from-group" *ngIf="detectorProperties">
                 <label for="detectorNodePropertiesDropdown" class="control-label">Detector Node Property</label>
-                <ng-select id="detectorNodePropertiesDropdown" [items]="detectorProperties" [textField]="'key'"
-                           [idField]="'key'"
-                           (selected)="mapping.detectorProperty = $event.id">
+                <ng-select id="detectorNodePropertiesDropdown" [items]="detectorProperties" bindLabel="key" [clearable]="false"
+                           (change)="mapping.detectorProperty = $event.key">
                 </ng-select>
             </div>
             <hr>
 
             <div class="form-group">
                 <label for="refinementNode" class="control-label">Refinement Structure Node</label>
-                <ng-select id="refinementNode" [items]="refinementStructureTemplates" [textField]="'name'"
-                           (selected)="refinementNodeSelected($event)">
+                <ng-select id="refinementNode" [items]="refinementStructureTemplates" bindLabel="name" [clearable]="false"
+                           (change)="refinementNodeSelected($event)">
                 </ng-select>
             </div>
             <div class="from-group" *ngIf="refinementProperties">
                 <label for="refinementNodePropertiesDropdown" class="control-label">Refinement Node Property</label>
-                <ng-select id="refinementNodePropertiesDropdown" [items]="refinementProperties" [textField]="'key'"
-                           [idField]="'key'"
-                           (selected)="mapping.refinementProperty = $event.id">
+                <ng-select id="refinementNodePropertiesDropdown" [items]="refinementProperties" bindLabel="key" [clearable]="false"
+                           (change)="mapping.refinementProperty = $event.key">
                 </ng-select>
             </div>
         </form>

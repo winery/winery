@@ -69,8 +69,9 @@
 
             <div class="form-group">
                 <label class="control-label" for="planType">Type</label>
-                <ng-select id="planType" [items]="planTypes" [active]="[selectedPlanType]"
-                           (selected)="planTypeSelected($event)"></ng-select>
+                <ng-select id="planType" [items]="planTypes" bindLabel="text" [clearable]="false"
+                           [ngModel]="selectedPlanType" [ngModelOptions]="{standalone: true}"
+                           (change)="planTypeSelected($event)"></ng-select>
                 <button class="btn btn-info btn-xs" (click)="refreshPlanTypes()">Refresh</button>
                 <button class="btn btn-info btn-xs" [routerLink]="['/admin/plantypes']">Manage</button>
             </div>
@@ -116,8 +117,9 @@
 
             <div class="form-group">
                 <label class="control-label" for="planLanguage">Language</label>
-                <ng-select id="planLanguage" [items]="planLanguages" [active]="[selectedPlanLanguage]"
-                           (selected)="planLanguageSelected($event)"></ng-select>
+                <ng-select id="planLanguage" [items]="planLanguages" bindLabel="text" [clearable]="false"
+                           [ngModel]="selectedPlanLanguage" [ngModelOptions]="{standalone: true}"
+                           (change)="planLanguageSelected($event)"></ng-select>
                 <button class="btn btn-info btn-xs" (click)="refreshPlanLanguages()">Refresh</button>
                 <button class="btn btn-info btn-xs" [routerLink]="['/admin/planlanguages']">Manage</button>
             </div>

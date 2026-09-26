@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ModalModule, TabsModule, TypeaheadModule } from 'ngx-bootstrap';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { WineryNamespaceSelectorModule } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
@@ -34,7 +34,7 @@ import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.
         ModalModule.forRoot(),
         WineryTableModule,
         TabsModule.forRoot(),
-        SelectModule,
+        NgSelectModule,
         BrowserModule,
         FormsModule,
         WineryLoaderModule,

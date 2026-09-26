@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { EntityContainerComponent } from './entityContainer/entityContainer.component';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
@@ -49,7 +49,7 @@ import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-f
         WineryLoaderModule,
         WineryModalModule,
         RouterModule,
-        SelectModule,
+        NgSelectModule,
         WineryUploaderModule,
         TooltipModule,
         WineryPipesModule,

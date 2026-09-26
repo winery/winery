@@ -16,14 +16,14 @@ import { NgModule } from '@angular/core';
 import { PolicySelectionComponent } from './policySelection.component';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { FormsModule } from '@angular/forms';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [
         WineryTableModule,
         FormsModule,
-        SelectModule,
+        NgSelectModule,
         CommonModule
     ],
     exports: [PolicySelectionComponent],

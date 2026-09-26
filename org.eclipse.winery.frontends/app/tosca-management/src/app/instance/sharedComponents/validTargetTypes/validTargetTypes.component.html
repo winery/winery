@@ -36,10 +36,11 @@
                 <label for="validTargetTypes" class="control-label">Capability Types</label>
                 <ng-select #select
                            id="validTargetTypes"
-                           [disabled]="!sharedData?.currentVersion?.editable"
-                           [items]="sortedValidTypes"
-                           (selected)="onSelectedValueChanged($event)"
-                           [active]="initialActiveItem">
+                           [readonly]="!sharedData?.currentVersion?.editable"
+                           [items]="sortedValidTypes" bindLabel="text" groupBy="children" [clearable]="false"
+                           (change)="onSelectedValueChanged($event)"
+                           [ngModel]="initialActiveItem" [ngModelOptions]="{standalone: true}">
+                    <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
                 </ng-select>
             </div>
 

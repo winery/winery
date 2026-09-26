@@ -16,22 +16,22 @@
 <div id="inputs">
     <div *ngIf="policiesForSelect.length > 0">
         <ng-select id="policy"
-                   [allowClear]="true"
+                   [clearable]="true" bindLabel="text"
                    [items]="policiesForSelect"
-                   (data)="policySelected($event)"
+                   (change)="policySelected($event)"
                    placeholder="Policy Template name">
         </ng-select>
     </div>
     <ng-select #property id="property"
-               [allowClear]="true"
+               [clearable]="true" bindLabel="text"
                [items]="propertiesForSelect"
-               (data)="propertySelected($event)"
+               (change)="propertySelected($event)"
                placeholder="Property key">
     </ng-select>
     <ng-select id="operator"
-               [allowClear]="true"
+               [clearable]="true" bindLabel="text"
                [items]="operators"
-               (data)="operatorSelected($event)"
+               (change)="operatorSelected($event)"
                placeholder="Operator">
     </ng-select>
 </div>

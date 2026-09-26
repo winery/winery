@@ -81,12 +81,10 @@
                     <div class="form-group">
                         <label class="control-label" for="repositoryId">Repository</label>
                         <ng-select id="repositoryId" [items]="repositories"
-                                   [idField]="'id'"
-                                   [textField]="'name'"
+                                   bindLabel="name"
                                    placeholder="Repository (current Workspace is default)"
-                                   [allowClear]="true"
-                                   (removed)="repositoriesSelected(null)"
-                                   (selected)="repositoriesSelected($event)">
+                                   [clearable]="true"
+                                   (change)="repositoriesSelected($event)">
                         </ng-select>
                     </div>
 

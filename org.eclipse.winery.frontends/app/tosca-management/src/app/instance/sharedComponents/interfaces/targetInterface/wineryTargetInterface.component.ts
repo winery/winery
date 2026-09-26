@@ -18,7 +18,6 @@ import { InstanceService } from '../../../instance.service';
 import { WineryTemplate } from '../../../../model/wineryComponent';
 import { InterfacesService } from '../interfaces.service';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { SelectItem } from 'ng2-select';
 import { PlansService } from '../../../serviceTemplates/plans/plans.service';
 import { PlansApiData } from '../../../serviceTemplates/plans/plansApiData';
 
@@ -134,7 +133,7 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         this.currentSelected = CurrentSelectedEnum.plan;
     }
 
-    onReferenceSelected(event: SelectItem) {
+    onReferenceSelected(event: WineryTemplate) {
         this.activeReference = this.referenceData.find((element) => {
             return element.id === event.id;
         });
@@ -154,17 +153,17 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         this.getInterfaces();
     }
 
-    onInterfaceSelected(event: SelectItem) {
+    onInterfaceSelected(event: InterfacesApiData) {
         this.activeInterface = this.interfaces.find((element) => {
-            return element.name === event.id;
+            return element.name === event.name;
         });
         this.activeOperation = this.activeInterface.operations[0];
         this.setInterfaceAndOperation();
     }
 
-    onOperationSelected(event: SelectItem) {
+    onOperationSelected(event: InterfaceOperationApiData) {
         this.activeOperation = this.activeInterface.operations.find((element) => {
-            return element.name === event.id;
+            return element.name === event.name;
         });
         this.setInterfaceAndOperation();
     }

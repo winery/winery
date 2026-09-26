@@ -49,8 +49,11 @@
 
         <div *ngIf="(propertiesDefinitions.selectedValue === propertiesEnum.Element
             || propertiesDefinitions.selectedValue === propertiesEnum.Type)">
-            <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)"
-                       [active]="[activeElement]"></ng-select>
+            <ng-select [items]="selectItems" bindLabel="text" groupBy="children" [clearable]="false"
+                       (change)="xmlValueSelected($event)"
+                       [ngModel]="activeElement" [ngModelOptions]="{standalone: true}">
+                <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
+            </ng-select>
         </div>
 
         <div *ngIf="propertiesDefinitions.selectedValue === propertiesEnum.Custom">

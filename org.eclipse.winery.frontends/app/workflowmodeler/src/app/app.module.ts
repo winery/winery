@@ -33,7 +33,6 @@ import { WineryService } from './services/winery.service';
 import { SharedModule } from './shared/shared.module';
 import { HttpService } from './util/http.service';
 import { HttpClientModule } from '@angular/common/http';
-import { SelectModule } from 'ng2-select';
 import { WmInstanceTypeComponent } from './components/instanceType/instanceType.component';
 
 @NgModule({
@@ -60,7 +59,6 @@ import { WmInstanceTypeComponent } from './components/instanceType/instanceType.
         RouterModule.forRoot([]),
         SharedModule,
         HttpClientModule,
-        SelectModule,
     ],
     bootstrap: [
         AppComponent,

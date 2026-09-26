@@ -18,7 +18,6 @@ import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
 import { ToscaTypes } from '../../../model/enums';
 import { SelectData } from '../../../model/selectData';
-import { SelectItem } from 'ng2-select';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap';
 import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
@@ -42,7 +41,7 @@ export class InheritanceComponent implements OnInit {
     enableButton = false;
     @ViewChild('derivedFromSelector', { static: false }) aboutModal: ModalDirective;
     @ViewChild('addSubTypeModal', { static: true }) addSubTypeModal: WineryAddComponent;
-    initialActiveItem: Array<SelectData>;
+    initialActiveItem: SelectData;
 
     constructor(public sharedData: InstanceService,
                 private service: InheritanceService,
@@ -67,7 +66,7 @@ export class InheritanceComponent implements OnInit {
             );
     }
 
-    onSelectedValueChanged(value: SelectItem) {
+    onSelectedValueChanged(value: SelectData) {
         this.inheritanceApiData.derivedFrom = value.id;
         this.enableButton = this.inheritanceApiData.derivedFrom !== '(none)';
     }
@@ -94,9 +93,9 @@ export class InheritanceComponent implements OnInit {
 
     private handleInheritanceData(inheritance: InheritanceApiData) {
         this.inheritanceApiData = inheritance;
-        this.initialActiveItem = [{
+        this.initialActiveItem = {
             'id': this.inheritanceApiData.derivedFrom, 'text': this.inheritanceApiData.derivedFrom.split('}').pop()
-        }];
+        };
         if (!(this.availableSuperClasses === null || this.availableSuperClasses === undefined)) {
             this.loading = false;
             this.enableButton = this.inheritanceApiData.derivedFrom !== '(none)';

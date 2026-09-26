@@ -14,7 +14,8 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
-import { SelectComponent, SelectItem } from 'ng2-select';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { SelectData } from '../../model/selectData';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { TargetAllocationService } from '../targetAllocation.service';
 import { TPolicy } from '../../../../../topologymodeler/src/app/models/policiesModalData';
@@ -26,11 +27,11 @@ import { TPolicy } from '../../../../../topologymodeler/src/app/models/policiesM
 
 export class PolicySelectionComponent implements OnInit {
 
-    @ViewChild('property', { static: true }) propertySelect: SelectComponent;
+    @ViewChild('property', { static: true }) propertySelect: NgSelectComponent;
 
     // policy, property, operator selection
-    policiesForSelect: Array<SelectItem> = [];
-    propertiesForSelect: Array<SelectItem> = [];
+    policiesForSelect: Array<SelectData> = [];
+    propertiesForSelect: Array<SelectData> = [];
     operators = [
         { id: 'min', text: 'min' },
         { id: 'max', text: 'max' },
@@ -84,17 +85,17 @@ export class PolicySelectionComponent implements OnInit {
         this.data.splice(index, 1);
     }
 
-    policySelected(value: SelectItem) {
-        this.policy = value.id;
+    policySelected(value: SelectData) {
+        this.policy = value ? value.id : undefined;
         this.propertiesForSelect = [];
-        this.propertySelect.writeValue('');
+        this.propertySelect.clearModel();
 
         // get properties of policy and update select ui component
         for (const policy of this.policies) {
             if (policy.name === this.policy) {
                 this.service.getProperties(policy).subscribe(props => {
                     for (const key of Object.keys(props)) {
-                        const selectItem = new SelectItem('');
+                        const selectItem = new SelectData();
                         selectItem.id = key;
                         selectItem.text = key;
                         this.propertiesForSelect.push(selectItem);
@@ -105,12 +106,12 @@ export class PolicySelectionComponent implements OnInit {
         }
     }
 
-    propertySelected(value: SelectItem) {
-        this.policyProperty = value.id;
+    propertySelected(value: SelectData) {
+        this.policyProperty = value ? value.id : undefined;
     }
 
-    operatorSelected(value: SelectItem) {
-        this.operator = value.id;
+    operatorSelected(value: SelectData) {
+        this.operator = value ? value.id : undefined;
     }
 
     private getPolicies() {
@@ -122,7 +123,7 @@ export class PolicySelectionComponent implements OnInit {
                     }
 
                     for (const policy of nt.policies) {
-                        const selectItem = new SelectItem('');
+                        const selectItem = new SelectData();
                         selectItem.id = policy.name;
                         selectItem.text = policy.name;
 

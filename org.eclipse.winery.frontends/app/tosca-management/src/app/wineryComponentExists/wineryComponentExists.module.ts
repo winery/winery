@@ -20,7 +20,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ExistService } from '../wineryUtils/existService';
 import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
     imports: [
@@ -29,7 +29,7 @@ import { SelectModule } from 'ng2-select';
         CommonModule,
         WineryNamespaceSelectorModule,
         WineryPipesModule,
-        SelectModule,
+        NgSelectModule,
     ],
     exports: [WineryComponentExistsComponent],
     declarations: [WineryComponentExistsComponent],

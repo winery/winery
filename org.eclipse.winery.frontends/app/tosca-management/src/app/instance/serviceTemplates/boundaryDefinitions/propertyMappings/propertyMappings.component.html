@@ -82,9 +82,9 @@
                     <div *ngIf="serviceTemplateTemplate === templatesEnum.NodeTemplate || serviceTemplateTemplate === templatesEnum.RelationshipTemplate;
                          else editTargetObject">
                         <ng-select #tempList
-                                   [items]="templateList"
-                                   [active]="[currentSelectedItem.targetObjectRef]"
-                                   (selected)="targetObjectSelected($event)"
+                                   [items]="templateList" bindLabel="text" [clearable]="false"
+                                   [ngModel]="currentSelectedItem.targetObjectRef" [ngModelOptions]="{standalone: true}"
+                                   (change)="targetObjectSelected($event)"
                                    placeholder="no template selected">
                         </ng-select>
                     </div>
@@ -113,9 +113,9 @@
                      else editTargetProps">
                         <ng-select *ngIf="targetProperties !== null"
                                    #propertiesSelect
-                                   [items]="targetProperties"
-                                   [active]="[selectedProperty]"
-                                   (data)="targetPropertySelected($event)"
+                                   [items]="targetProperties" bindLabel="text" [clearable]="false"
+                                   [ngModel]="selectedProperty" [ngModelOptions]="{standalone: true}"
+                                   (change)="targetPropertySelected($event)"
                                    placeholder="Please select a property">
                         </ng-select>
                     </div>
