@@ -31,7 +31,7 @@ export class EditXMLComponent implements OnInit {
     @Input() hideSaveButton = false;
     @Input() xmlData: string;
 
-    @ViewChild('editor') editor: WineryEditorComponent;
+    @ViewChild('editor', { static: true }) editor: WineryEditorComponent;
     loading = true;
 
     id = 'XML';

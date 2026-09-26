@@ -36,8 +36,8 @@ export class TagComponent implements OnInit {
         { title: 'Name', name: 'name', sort: true },
         { title: 'Value', name: 'value', sort: true },
     ];
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
 
     public constructor(private service: TagService,
                        private noteService: WineryNotificationService,

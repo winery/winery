@@ -48,8 +48,8 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     @HostBinding('attr.role') hostRole = 'dialog';
     @HostBinding('tabindex') hostTabIndex = '-1';
 
-    @ContentChild(WineryModalHeaderComponent) headerContent: WineryModalHeaderComponent;
-    @ContentChild(WineryModalFooterComponent) footerContent: WineryModalFooterComponent;
+    @ContentChild(WineryModalHeaderComponent, { static: false }) headerContent: WineryModalHeaderComponent;
+    @ContentChild(WineryModalFooterComponent, { static: false }) footerContent: WineryModalFooterComponent;
 
     private overrideSize: string = null;
     private cssClass = '';

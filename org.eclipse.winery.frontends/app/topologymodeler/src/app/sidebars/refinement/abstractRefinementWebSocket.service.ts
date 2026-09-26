@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { BehaviorSubject } from 'rxjs';
 import { BackendService } from '../../services/backend.service';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 export enum RefinementTasks {
     START = 'START',

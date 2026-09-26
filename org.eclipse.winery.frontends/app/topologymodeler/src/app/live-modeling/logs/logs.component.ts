@@ -32,7 +32,7 @@ export class LogsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     subscriptions: Array<Subscription> = [];
 
-    @ViewChild('scrollContainer') private scrollContainer: ElementRef;
+    @ViewChild('scrollContainer', { static: true }) private scrollContainer: ElementRef;
     @ViewChildren('logItems') private logItems: QueryList<any>;
 
     constructor(private loggingService: LoggingService) {

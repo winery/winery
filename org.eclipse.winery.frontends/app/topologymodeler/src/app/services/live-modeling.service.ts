@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import {
     AdaptationAction, LiveModelingStates, NodeTemplateInstanceStates, ServiceTemplateInstanceStates
@@ -29,8 +29,7 @@ import { BsModalService } from 'ngx-bootstrap';
 import { OverlayService } from './overlay.service';
 import { LoggingService } from './logging.service';
 import { catchError, concatMap, distinctUntilChanged, first, switchMap, takeWhile, tap, timeout } from 'rxjs/operators';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import 'rxjs/add/observable/timer';
+import { forkJoin, Observable, of, Subscription, timer } from 'rxjs';
 import { Csar } from '../models/container/csar.model';
 import { PlanInstance } from '../models/container/plan-instance.model';
 import { InputParameter } from '../models/container/input-parameter.model';
@@ -452,7 +451,7 @@ export class LiveModelingService {
     }
 
     private waitForServiceTemplateInstanceIdAfterDeployment(csarId: string, correlationId: string): Observable<string> {
-        return Observable.timer(0, this.settings.interval).pipe(
+        return timer(0, this.settings.interval).pipe(
             concatMap(() => this.containerService.getServiceTemplateInstanceIdAfterDeployment(csarId, correlationId)),
             distinctUntilChanged(),
             first((resp) => {
@@ -473,7 +472,7 @@ export class LiveModelingService {
         desiredInstanceState: ServiceTemplateInstanceStates
     ): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            Observable.timer(0, this.settings.interval).pipe(
+            timer(0, this.settings.interval).pipe(
                 concatMap(() => this.containerService.getServiceTemplateInstanceState(csarId, serviceTemplateInstanceId)),
                 distinctUntilChanged(),
                 timeout(this.settings.timeout),
@@ -639,7 +638,7 @@ export class LiveModelingService {
         planId: string,
         correlationId: string
     ): Observable<string> {
-        return Observable.timer(0, this.settings.interval).pipe(
+        return timer(0, this.settings.interval).pipe(
             concatMap(() => this.containerService.getServiceTemplateInstanceIdAfterTransformation(csarId, serviceTemplateInstanceId, correlationId, planId)),
             distinctUntilChanged(),
             first((resp) => {
@@ -687,7 +686,7 @@ export class LiveModelingService {
             observables.push(
                 this.containerService.updateNodeTemplateInstanceState(csarId, serviceTemplateInstanceId, nodeId, NodeTemplateInstanceStates.DELETED));
         });
-        return Observable.forkJoin(observables).toPromise();
+        return forkJoin(observables).toPromise();
     }
 
     private waitUntilNodeTemplateInstanceIsInState(
@@ -697,7 +696,7 @@ export class LiveModelingService {
         desiredInstanceState: NodeTemplateInstanceStates
     ): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            Observable.timer(0, this.settings.interval).pipe(
+            timer(0, this.settings.interval).pipe(
                 concatMap(() => this.containerService.getNodeTemplateInstanceState(csarId, serviceTemplateInstanceId, nodeTemplateId)),
                 distinctUntilChanged(),
                 timeout(this.settings.timeout),

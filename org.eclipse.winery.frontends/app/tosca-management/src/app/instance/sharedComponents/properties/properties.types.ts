@@ -18,5 +18,5 @@ export interface Properties {
 
 export interface PropertiesData {
     isXML: boolean;
-    properties: Properties;
+    properties: Properties | string;
 }

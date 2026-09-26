@@ -45,9 +45,9 @@ export class PoliciesComponent implements OnInit {
     ];
     selectedCell: WineryPolicy;
     validator: WineryValidatorObject;
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('xmlEditor') xmlEditor: EditXMLComponent;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('xmlEditor', { static: true }) xmlEditor: EditXMLComponent;
 
     policyXml = '<Policy xsi:nil="true" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"'
         + ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n</Policy>';

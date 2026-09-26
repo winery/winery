@@ -16,7 +16,7 @@ import {
     AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { EntityType, OTParticipant, TGroupDefinition, TNodeTemplate, VisualEntityType } from '../models/ttopology-template';
@@ -113,8 +113,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() relationshipTemplateIdClicked: EventEmitter<string>;
     @Output() showYamlPolicyManagementModal: EventEmitter<void>;
 
-    @ViewChild('versionModal') versionModal: VersionsComponent;
-    @ViewChild('nodeProperties') nodePropertiesComponent: PropertiesComponent;
+    @ViewChild('versionModal', { static: false }) versionModal: VersionsComponent;
+    @ViewChild('nodeProperties', { static: false }) nodePropertiesComponent: PropertiesComponent;
     previousPosition: any;
     currentPosition: any;
     nodeRef: ComponentRef<Component>;

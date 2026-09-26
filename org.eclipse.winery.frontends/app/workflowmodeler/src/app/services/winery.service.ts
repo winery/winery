@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 import { NodeTemplate } from '../model/nodetemplate';
 import { PageParameter } from '../model/page-parameter';
@@ -22,7 +22,7 @@ import { HttpService } from '../util/http.service';
 import { BroadcastService } from './broadcast.service';
 import { HttpHeaders } from '@angular/common/http';
 import { ToscaInterface } from '../model/toscaInterface';
-import { map } from 'rxjs/internal/operators';
+import { map } from 'rxjs/operators';
 
 /**
  * WineryService

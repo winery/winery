@@ -33,7 +33,7 @@ export class FilesComponent implements OnInit {
     filesList: FilesApiData[];
     filesPath: string;
 
-    @ViewChild('removeElementModal') removeElementModal: any;
+    @ViewChild('removeElementModal', { static: true }) removeElementModal: any;
     fileToRemove: FilesApiData;
 
     constructor(private service: FilesService, public sharedData: InstanceService, private notify: WineryNotificationService) {

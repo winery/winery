@@ -52,8 +52,8 @@ export class AttributeMappingsComponent implements OnInit {
     refinementStructureTemplates: WineryTemplate[];
     refinementProperties: PropertiesDefinitionKVElement[];
 
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('removeModal') removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 

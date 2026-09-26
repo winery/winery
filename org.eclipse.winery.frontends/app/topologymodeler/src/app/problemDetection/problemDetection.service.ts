@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BackendService } from '../services/backend.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ProblemFindings, ProblemOccurrence } from './problemEntity';
 import { SolutionInputData } from './solutionEntity';
 import { TTopologyTemplate } from '../models/ttopology-template';

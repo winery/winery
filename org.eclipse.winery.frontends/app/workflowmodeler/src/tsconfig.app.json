@@ -1,9 +1,8 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "../../../dist/workflowmodeler",
-        "module": "es2015"
-    },
+        "outDir": "../../../dist/workflowmodeler"
+},
     "include": [
         "**/*.ts"
     ],

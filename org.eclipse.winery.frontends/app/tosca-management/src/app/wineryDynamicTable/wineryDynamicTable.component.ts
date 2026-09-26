@@ -83,9 +83,9 @@ export class WineryDynamicTableComponent implements OnInit, DoCheck {
     @Output() entryRemoved = new EventEmitter<any>();
     @Output() entryAdded = new EventEmitter<any>();
 
-    @ViewChild('table') wineryTable: WineryTableComponent;
-    @ViewChild('generatedModal') generatedModal: WineryDynamicFormModalComponent;
-    @ViewChild('confirmRemoveModal') confirmRemoveModal: ModalDirective;
+    @ViewChild('table', { static: true }) wineryTable: WineryTableComponent;
+    @ViewChild('generatedModal', { static: true }) generatedModal: WineryDynamicFormModalComponent;
+    @ViewChild('confirmRemoveModal', { static: true }) confirmRemoveModal: ModalDirective;
 
     selectedRow: any;
     defaultData: any;

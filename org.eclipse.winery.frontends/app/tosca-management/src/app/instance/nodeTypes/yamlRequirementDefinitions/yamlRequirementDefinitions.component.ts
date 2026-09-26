@@ -18,6 +18,7 @@ import { YamlRequirementDefinitionsService } from './yamlRequirementDefinitions.
 import { SelectData } from '../../../model/selectData';
 import { YamlRequirementDefinitionApiData } from './yamlRequirementDefinitionApiData';
 import { forkJoin } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { YamlRequirementDefinitionTableData } from './yamlRequirementDefinitionTableData';
@@ -65,9 +66,9 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
     isUnboundedSelected: boolean;
     loading: boolean;
     elementToRemove: YamlRequirementDefinitionTableData;
-    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
     addModalRef: BsModalRef;
-    @ViewChild('removeModal') removeModal: ModalDirective;
+    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
     removeModalRef: BsModalRef;
     enableAddItemButton = false;
 
@@ -133,7 +134,7 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
         }
 
         this.service.saveRequirementDefinition(this.reqDefToBeAdded)
-            .flatMap(() => this.service.getAllRequirementDefinitions())
+            .pipe(mergeMap(() => this.service.getAllRequirementDefinitions()))
             .subscribe(
                 (data) => {
                     this.handleRequirementDefinitions(data);

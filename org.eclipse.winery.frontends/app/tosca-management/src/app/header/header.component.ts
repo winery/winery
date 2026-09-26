@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
 
     selectedOtherComponent = '';
     otherActive = false;
-    @ViewChild('aboutModal') aboutModal: ModalDirective;
+    @ViewChild('aboutModal', { static: true }) aboutModal: ModalDirective;
 
     constructor(public router: Router) {
     }

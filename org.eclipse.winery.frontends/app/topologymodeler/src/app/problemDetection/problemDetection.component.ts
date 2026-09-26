@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnDestroy } from '@angular/core';
 import { ProblemDetectionService } from './problemDetection.service';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
@@ -27,7 +27,7 @@ import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { WineryRepositoryConfigurationService } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { EntityTypesModel } from '../models/entityTypesModel';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'winery-problem-detection',

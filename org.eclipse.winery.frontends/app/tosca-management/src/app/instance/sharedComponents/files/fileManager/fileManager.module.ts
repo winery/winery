@@ -26,9 +26,11 @@ import { NewFolderDialogComponent } from './dialogs/newFolderDialog.component';
 import { RenameDialogComponent } from './dialogs/renameDialog.component';
 import { FileManagerComponent } from './fileManager.component';
 import { ConfirmDialogComponent } from './dialogs/confirmDialog.component';
-import {
-    MatFormFieldModule, MatSortModule, MatTableModule, MatDividerModule, MatTooltipModule
-} from '@angular/material';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({

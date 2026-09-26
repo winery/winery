@@ -40,8 +40,8 @@ export class ImplementationsComponent implements OnInit {
         { title: 'Namespace', name: 'namespace', sort: true },
         { title: 'Name', name: 'displayName', sort: true },
     ];
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addComponent') addComponent: WineryAddComponent;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addComponent', { static: true }) addComponent: WineryAddComponent;
 
     constructor(public sharedData: InstanceService,
                 private service: ImplementationService,

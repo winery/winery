@@ -40,9 +40,9 @@ export class WineryGitLogComponent implements OnInit {
     command = '';
     filesToCommit: string[] = [];
 
-    @ViewChild('confirmDiscardModal') confirmDiscardModal: ModalDirective;
-    @ViewChild('confirmMassExecution') confirmMassExecution: ModalDirective;
-    @ViewChild('selectBranch') selectBranch: ModalDirective;
+    @ViewChild('confirmDiscardModal', { static: true }) confirmDiscardModal: ModalDirective;
+    @ViewChild('confirmMassExecution', { static: true }) confirmMassExecution: ModalDirective;
+    @ViewChild('selectBranch', { static: true }) selectBranch: ModalDirective;
 
     constructor(private notify: WineryNotificationService,
                 private router: Router) {

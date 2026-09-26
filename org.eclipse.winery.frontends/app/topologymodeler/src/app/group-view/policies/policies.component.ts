@@ -16,7 +16,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TPolicy } from '../../models/policiesModalData';
 import { TGroupDefinition } from '../../models/ttopology-template';
 import { EntityTypesModel } from '../../models/entityTypesModel';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 
 @Component({

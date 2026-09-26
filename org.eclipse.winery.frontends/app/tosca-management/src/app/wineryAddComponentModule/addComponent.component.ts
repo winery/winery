@@ -60,8 +60,8 @@ export class WineryAddComponent {
 
     types: SelectData[];
 
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('addComponentData', { static: true }) addComponentData: WineryAddComponentDataComponent;
     useStartNamespace = true;
 
     collapseVersioning: boolean;

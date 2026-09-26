@@ -11,13 +11,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { WineryMarkdownComponent } from './wineryMarkdown.component';
-import { MarkdownModule } from 'angular2-markdown';
 
 @NgModule({
     imports: [
         FormsModule,
         BrowserModule,
-        MarkdownModule.forRoot(),
 
     ],
     exports: [WineryMarkdownComponent],

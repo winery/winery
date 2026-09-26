@@ -17,9 +17,8 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { InstanceService } from '../instance/instance.service';
 import { ToscaTypes } from '../model/enums';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map } from 'rxjs/internal/operators';
-import { forkJoin } from 'rxjs';
-import { Observable } from 'rxjs/Rx';
+import { catchError, map } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
 import {
     WineryRepositoryConfigurationService
 } from '../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
@@ -61,9 +60,9 @@ export class WineryLicenseComponent implements OnInit {
     confirmSaveModalRef: BsModalRef;
     confirmDownloadModalRef: BsModalRef;
 
-    @ViewChild('stepper') stepper: MatStepper;
-    @ViewChild('confirmSaveModal') confirmSaveModal: TemplateRef<any>;
-    @ViewChild('confirmDownloadModal') confirmDownloadModal: TemplateRef<any>;
+    @ViewChild('stepper', { static: false }) stepper: MatStepper;
+    @ViewChild('confirmSaveModal', { static: false }) confirmSaveModal: TemplateRef<any>;
+    @ViewChild('confirmDownloadModal', { static: false }) confirmDownloadModal: TemplateRef<any>;
 
     constructor(private notify: WineryNotificationService,
                 private configurationService: WineryRepositoryConfigurationService,
@@ -86,7 +85,7 @@ export class WineryLicenseComponent implements OnInit {
                     }),
                 catchError(() => {
                     this.handleMissingLicense();
-                    return Observable.of(null);
+                    return of(null);
                 })
             ));
 
@@ -106,7 +105,7 @@ export class WineryLicenseComponent implements OnInit {
                         this.options = licenses;
                     }),
                 catchError(() => {
-                    return Observable.of(null);
+                    return of(null);
                 })
             ));
         } else {
@@ -116,7 +115,7 @@ export class WineryLicenseComponent implements OnInit {
                     .pipe(
                         catchError((e) => {
                             this.handleError(e);
-                            return Observable.of(null);
+                            return of(null);
                         })
                     ));
             this.options = this.wlService.getLicenseNames();

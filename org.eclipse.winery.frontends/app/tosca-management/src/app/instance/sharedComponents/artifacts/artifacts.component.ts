@@ -39,8 +39,8 @@ export class ArtifactsComponent implements OnInit {
         { title: 'Deployment Path', name: 'deployPath' }
     ];
 
-    @ViewChild('modal') modal: ModalDirective;
-    @ViewChild('removeModal') removeModal: ModalDirective;
+    @ViewChild('modal', { static: true }) modal: ModalDirective;
+    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
     validatorObject: WineryValidatorObject;
 
     isRepositoryType = false;

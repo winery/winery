@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { backendBaseURL } from '../configuration';
 import { AllocationRequest } from './request';

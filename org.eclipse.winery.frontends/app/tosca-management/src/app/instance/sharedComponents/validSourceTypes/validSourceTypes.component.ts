@@ -48,7 +48,7 @@ export class ValidSourceTypesComponent implements OnInit {
     initialActiveItem: Array<SelectData>;
     currentSelectedItem: QNameApiData;
     validSourceTypes: ValidSourceTypesApiData = new ValidSourceTypesApiData();
-    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
     addModalRef: BsModalRef;
     columns: Array<WineryTableColumn> = [
         { title: 'Name', name: 'localname', sort: true },

@@ -19,7 +19,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SectionData } from '../../../section/sectionData';
 import { ToscaTypes } from '../../../model/enums';
 import { EdmmMappingItem } from '../edmmMappings/edmmMappings.service';
-import { map } from 'rxjs/internal/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class EdmmTypesService {

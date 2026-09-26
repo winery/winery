@@ -14,11 +14,11 @@
 import { Component, OnDestroy } from '@angular/core';
 import { InstanceModelPlugin, InstanceModelReceiveData, InstanceModelService, SubGraphData } from './instanceModel.service';
 import { PatternRefinementModel } from '../refinement/refinementWebSocket.service';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { EntityTypesModel } from '../../models/entityTypesModel';

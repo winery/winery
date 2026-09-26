@@ -43,12 +43,12 @@ export class PropertyMappingsComponent implements OnInit {
         { title: 'Target', name: 'targetObjectRef', sort: true },
         { title: 'Target Property', name: 'targetPropertyRef', sort: true }
     ];
-    @ViewChild('addPropertyMappingModal') addPropertyMappingModal: ModalDirective;
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('browseForServiceTemplatePropertyDiag') browseForServiceTemplatePropertyDiag: ModalDirective;
-    @ViewChild('propertyMappingForm') propertyMappingForm: NgForm;
-    @ViewChild('tempList') templateSelect: any;
-    @ViewChild('propertiesSelect') propertiesSelect: any;
+    @ViewChild('addPropertyMappingModal', { static: true }) addPropertyMappingModal: ModalDirective;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('browseForServiceTemplatePropertyDiag', { static: true }) browseForServiceTemplatePropertyDiag: ModalDirective;
+    @ViewChild('propertyMappingForm', { static: true }) propertyMappingForm: NgForm;
+    @ViewChild('tempList', { static: false }) templateSelect: any;
+    @ViewChild('propertiesSelect', { static: false }) propertiesSelect: any;
     currentSelectedItem: PropertyMapping = new PropertyMapping();
     addOrUpdate = 'Add';
     properties: { name: string, property: string } = { name: '', property: '' };

@@ -25,7 +25,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { PaletteComponent } from './palette/palette.component';
 import { TopologyRendererModule } from './topology-renderer/topology-renderer.module';
 import { PrintViewComponent } from './print-view/print-view.component';
-import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
+import { DevToolsExtension, NgRedux, NgReduxModule } from './redux/ng-redux';
 import { INITIAL_IWINERY_STATE, IWineryState, rootReducer } from './redux/store/winery.store';
 import { WineryActions } from './redux/actions/winery.actions';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
@@ -86,7 +86,7 @@ import { NavbarModule } from './navbar/navbar.module';
 import { PlaceholderSubstitutionComponent } from './sidebars/placeholderSubstitution/placeholderSubstitution.component';
 import { PlaceholderSubstitutionWebSocketService } from './sidebars/placeholderSubstitution/placeholderSubstitutionWebSocket.service';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
-import { MatListModule } from '@angular/material';
+import { MatListModule } from '@angular/material/list';
 import { SplitMatchTopologyComponent } from './sidebars/splitting-matching/split-match-topology.component';
 import { WineryLoaderModule } from '../../../tosca-management/src/app/wineryLoader/wineryLoader.module';
 

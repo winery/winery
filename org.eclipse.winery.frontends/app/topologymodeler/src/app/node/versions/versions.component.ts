@@ -19,7 +19,7 @@ import { PropertyMatching, UpdateInfo } from '../../models/UpdateInfo';
 import { UpdateService } from './update.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { TTopologyTemplate } from '../../models/ttopology-template';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryActions } from '../../redux/actions/winery.actions';
@@ -47,10 +47,10 @@ export class VersionsComponent implements OnInit {
     // first entry newProperties, second entry removedProperties
     matchedProperties: PropertyMatching[] = [];
 
-    @ViewChild('updateVersionModal') updateVersionModal: ModalDirective;
+    @ViewChild('updateVersionModal', { static: true }) updateVersionModal: ModalDirective;
     updateVersionModalRef: BsModalRef;
 
-    @ViewChild('updatePropertyModal') updatePropertyModal: ModalDirective;
+    @ViewChild('updatePropertyModal', { static: true }) updatePropertyModal: ModalDirective;
     updatePropertyModalRef: BsModalRef;
 
     @Input() aVersionElement: VersionElement;

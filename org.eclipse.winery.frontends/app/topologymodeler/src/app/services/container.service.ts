@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { CsarUpload } from '../models/container/csar-upload.model';
 import { of } from 'rxjs';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, concatMap, filter, map, tap , retry} from 'rxjs/operators';
 import { NodeTemplateInstanceStates, PlanTypes, ServiceTemplateInstanceStates } from '../models/enums';
@@ -29,7 +29,7 @@ import { Plan } from '../models/container/plan.model';
 import { NodeTemplateResources } from '../models/container/node-template-resources.model';
 import { NodeTemplateInstanceResources } from '../models/container/node-template-instance-resources.model';
 import { NodeTemplateInstance } from '../models/container/node-template-instance.model';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import { PlanInstance } from '../models/container/plan-instance.model';
 import { PlanLogEntry } from '../models/container/plan-log-entry.model';

@@ -36,7 +36,7 @@ export class WineryRepositoryComponent implements OnInit {
     backendState = BackendAvailabilityStates.Undefined;
     backendAvailabilityStates = BackendAvailabilityStates;
     loading = true;
-    @ViewChild('gitLog') gitLog: WineryGitLogComponent;
+    @ViewChild('gitLog', { static: false }) gitLog: WineryGitLogComponent;
 
     // endregion
     options = {

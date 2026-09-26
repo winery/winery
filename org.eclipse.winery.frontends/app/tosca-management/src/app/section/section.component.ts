@@ -80,12 +80,12 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     showLastElement = new Map<string, boolean>();
 
-    @ViewChild('addModal') addModal: WineryAddComponent;
-    @ViewChild('addCsarModal') addCsarModal: ModalDirective;
-    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
-    @ViewChild('addYamlModal') addYamlModal: ModalDirective;
-    @ViewChild('validationModal') validationModal: ModalDirective;
-    @ViewChild('fileUploader') fileUploader: WineryUploaderComponent;
+    @ViewChild('addModal', { static: true }) addModal: WineryAddComponent;
+    @ViewChild('addCsarModal', { static: true }) addCsarModal: ModalDirective;
+    @ViewChild('removeElementModal', { static: false }) removeElementModal: ModalDirective;
+    @ViewChild('addYamlModal', { static: true }) addYamlModal: ModalDirective;
+    @ViewChild('validationModal', { static: true }) validationModal: ModalDirective;
+    @ViewChild('fileUploader', { static: true }) fileUploader: WineryUploaderComponent;
 
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,

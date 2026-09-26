@@ -63,11 +63,11 @@ export class InterfacesComponent implements OnInit {
     modalTitle: string;
     elementToRemove: string;
     validatorObject: WineryValidatorObject;
-    @ViewChild('addIntOpModal') addIntOpModal: ModalDirective;
-    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
-    @ViewChild('addElementForm') addElementForm: NgForm;
-    @ViewChild('generateImplModal') generateImplModal: ModalDirective;
-    @ViewChild('itemList') interfaceComponent: SelectableListComponent;
+    @ViewChild('addIntOpModal', { static: true }) addIntOpModal: ModalDirective;
+    @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
+    @ViewChild('addElementForm', { static: true }) addElementForm: NgForm;
+    @ViewChild('generateImplModal', { static: true }) generateImplModal: ModalDirective;
+    @ViewChild('itemList', { static: false }) interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
     toscaType: ToscaTypes;
     createImplementation = true;

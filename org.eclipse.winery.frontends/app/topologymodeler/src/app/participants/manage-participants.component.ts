@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IWineryState } from '../redux/store/winery.store';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { OTParticipant } from '../models/ttopology-template';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { DynamicTextData } from '../../../../tosca-management/src/app/wineryDynamicTable/formComponents/dynamicText.component';
@@ -17,7 +17,7 @@ export class ManageParticipantsComponent implements OnInit {
     participants: OTParticipant[] = [];
     formMetadata: Array<WineryDynamicTableMetadata> = [];
 
-    @ViewChild('generatedModal') generatedModal: WineryDynamicFormModalComponent;
+    @ViewChild('generatedModal', { static: true }) generatedModal: WineryDynamicFormModalComponent;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private ngActions: WineryActions) {

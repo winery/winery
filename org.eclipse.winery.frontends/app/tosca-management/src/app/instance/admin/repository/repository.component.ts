@@ -43,9 +43,9 @@ export class RepositoryComponent implements OnInit {
     elementToRemove: any;
     cloning = false;
 
-    @ViewChild('uploaderModal') uploaderModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('uploaderModal', { static: true }) uploaderModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
     path: string;
 
     constructor(private service: RepositoryService,

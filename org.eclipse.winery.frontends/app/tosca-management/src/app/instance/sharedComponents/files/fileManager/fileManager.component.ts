@@ -13,7 +13,9 @@
  *******************************************************************************/
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FileOrFolderElement } from '../../../../model/fileOrFolderElement';
-import { MatMenuTrigger, MatTable, Sort } from '@angular/material';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { Sort } from '@angular/material/sort';
+import { MatTable } from '@angular/material/table';
 import { RenameDialogComponent } from './dialogs/renameDialog.component';
 import { NewFolderDialogComponent } from './dialogs/newFolderDialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,8 +37,8 @@ export class FileManagerComponent implements OnChanges {
     @Output() elementUpdated = new EventEmitter<{ oldPath: string, newPath: string }>();
     @Output() updateRequested = new EventEmitter();
 
-    @ViewChild(MatTable) table: MatTable<any>;
-    @ViewChild('contextMenuTrigger') contextMenu: MatMenuTrigger;
+    @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+    @ViewChild('contextMenuTrigger', { static: true }) contextMenu: MatMenuTrigger;
 
     currentPath: string;
     baseDir: string;

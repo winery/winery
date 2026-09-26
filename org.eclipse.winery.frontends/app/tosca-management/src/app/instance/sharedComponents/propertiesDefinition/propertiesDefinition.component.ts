@@ -103,16 +103,16 @@ export class PropertiesDefinitionComponent implements OnInit {
     validatorObject: WineryValidatorObject;
     availableTypes: string[] = [];
 
-    @ViewChild('confirmDeleteModal')
+    @ViewChild('confirmDeleteModal', { static: true })
     confirmDeleteModal: ModalDirective;
     confirmDeleteModalRef: BsModalRef;
 
-    @ViewChild('editorModal')
+    @ViewChild('editorModal', { static: true })
     editorModal: ModalDirective;
     editorModalRef: BsModalRef;
     configEnum = FeatureEnum;
 
-    @ViewChild('nameInputForm') nameInputForm: ElementRef;
+    @ViewChild('nameInputForm', { static: false }) nameInputForm: ElementRef;
 
     show = {
         inherited: false

@@ -41,14 +41,14 @@ export class SourceComponent implements OnInit {
     baseUrl = hostURL;
     fileMap = new Map<string, FilesApiData[]>();
     paths: string[];
-    @ViewChild('removeElementModal') removeElementModal: any;
+    @ViewChild('removeElementModal', { static: true }) removeElementModal: any;
     srcPath: string;
     selectedPath: string;
 
-    @ViewChild('saveCurrentFileModal') saveCurrentFileModal: any;
-    @ViewChild('createNewFileModal') createNewFileModel: any;
-    @ViewChild('renameFileModal') renameFileModal: any;
-    @ViewChild('artifactsEditor') editor: WineryEditorComponent;
+    @ViewChild('saveCurrentFileModal', { static: true }) saveCurrentFileModal: any;
+    @ViewChild('createNewFileModal', { static: true }) createNewFileModel: any;
+    @ViewChild('renameFileModal', { static: true }) renameFileModal: any;
+    @ViewChild('artifactsEditor', { static: false }) editor: WineryEditorComponent;
 
     validatorObject: WineryValidatorObject;
     pathValidatorObject: WineryValidatorObject;

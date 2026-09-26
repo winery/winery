@@ -34,8 +34,8 @@ export class InstanceStatesComponent implements OnInit {
         { title: 'Name', name: 'state', sort: false },
     ];
 
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
 
     constructor(public sharedData: InstanceService,
                 private service: InstanceStateService, private notify: WineryNotificationService) {
