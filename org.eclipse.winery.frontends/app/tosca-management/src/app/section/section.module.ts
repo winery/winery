@@ -32,7 +32,6 @@ import { XaasPackagerComponent } from './xaasPackager/xaasPackager.component';
 import { WineryAddModule } from '../wineryAddComponentModule/addComponent.module';
 import { TargetAllocationModule } from '../wineryTargetAllocation/targetAllocation.module';
 import { EntityComponent } from './entityContainer/entity.component';
-import { TagInputModule } from 'ngx-chips';
 import { AdminModule } from '../wineryMainModules/admin/admin.module';
 import { WineryFileComparisonModule } from '../wineryFileComparisonModule/wineryFileComparison.module';
 import { PlacementComponent } from './placement/placement.component';
@@ -54,7 +53,6 @@ import { WineryFeatureToggleModule } from '../wineryFeatureToggleModule/winery-f
         TooltipModule,
         WineryPipesModule,
         WineryFeatureToggleModule,
-        TagInputModule,
         WineryAddModule,
         AdminModule, // to be able to access the ConfigurationService and AccountabilityService
         WineryFileComparisonModule,

@@ -36,7 +36,7 @@ export class XaasPackagerComponent implements DoCheck {
     nodeTypes: string[];
     infrastructureNodetypes: string[];
     artifactTypes: string[];
-    tagItems: string[];
+    tags = '';
 
     selectedInfracstuctureNodeType: string = null;
     selectedArtifactType: string;
@@ -69,8 +69,9 @@ export class XaasPackagerComponent implements DoCheck {
             }
         }
 
-        if (this.tagItems) {
-            for (const tag of this.tagItems) {
+        const tagItems = this.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+        if (tagItems.length) {
+            for (const tag of tagItems) {
                 formData.append('tags', tag);
             }
         } else {
@@ -155,7 +156,7 @@ export class XaasPackagerComponent implements DoCheck {
         this.selectedInfracstuctureNodeType = null;
         this.selectedArtifactType = null;
         this.selectedNodeTypes = [];
-        this.tagItems = [];
+        this.tags = '';
         this.value = [];
         this.file = null;
     }

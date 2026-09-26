@@ -42,9 +42,8 @@
                 <div class="form-group">
                     <label for="tagsInput">Tags:</label>
                     <div id="createArtifactFormTags">
-                        <tag-input id="tagsInput" [(ngModel)]='tagItems' theme='bootstrap' [modelAsStrings]="true"
-                                   name="tags">
-                        </tag-input>
+                        <input id="tagsInput" class="form-control" [(ngModel)]="tags" name="tags"
+                               placeholder="Comma-separated, e.g. tag1, tag2"/>
                     </div>
                 </div>
                 <div class="form-group" id="nodeTypesDiv">
