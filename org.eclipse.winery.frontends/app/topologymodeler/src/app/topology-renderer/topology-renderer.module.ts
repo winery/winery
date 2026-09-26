@@ -43,7 +43,6 @@ import { PropertiesModule } from '../properties/properties.module';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
 import { WineryFeatureToggleModule } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
 import { WineryTableModule } from '../../../../tosca-management/src/app/wineryTableModule/wineryTable.module';
-import { Ng2TableModule } from 'ng2-table';
 import { GroupsComponent } from '../node/groups/groups.component';
 import { AssignParticipantsComponent } from '../participants/assign-participants.component';
 import { AssignDeploymentTechnologyComponent } from '../edmm/assign-deployment-technology.component';
@@ -67,7 +66,6 @@ import { NavbarModule } from '../navbar/navbar.module';
         PropertiesModule,
         WineryFeatureToggleModule,
         WineryTableModule,
-        Ng2TableModule,
         NavbarModule
     ],
     declarations: [

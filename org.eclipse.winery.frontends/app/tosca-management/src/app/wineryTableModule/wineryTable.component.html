@@ -18,9 +18,9 @@
         <div *ngIf="!disableFiltering">
             <label>Search:</label>
             <input *ngIf="config.filtering" placeholder="Filter all columns"
-                   [ngTableFiltering]="config.filtering"
+                   [value]="config.filtering.filterString"
                    class="form-control"
-                   (tableChanged)="onChangeTable(config)"/>
+                   (input)="config.filtering.filterString = $event.target.value; onChangeTable(config)"/>
         </div>
         <div *ngIf="!disableButtons" class="table-component-header-btn-wrap">
             <button *ngIf="showRemoveButton" class="rightbutton btn btn-danger btn-xs"
@@ -50,12 +50,23 @@
 
 <div>
     <div #tableContainer>
-        <ng-table [config]="config"
-                  (tableChanged)="onChangeTable(config)"
-                  (cellClicked)="onCellClick($event)"
-                  [rows]="rows"
-                  [columns]="columns">
-        </ng-table>
+        <table class="table dataTable" [ngClass]="config.className" role="grid" style="width: 100%;">
+            <thead>
+            <tr role="row">
+                <th *ngFor="let column of columns" (click)="onSortClick(column)" [ngClass]="column.className || ''">
+                    {{column.title}}
+                    <i *ngIf="column.sort" class="pull-right fa"
+                       [ngClass]="{'fa-chevron-down': column.sort === 'desc', 'fa-chevron-up': column.sort === 'asc'}"></i>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of rows">
+                <td *ngFor="let column of columns" (click)="onCellClick({ row: row, column: column.name })"
+                    [innerHtml]="getCellHtml(row, column.name)"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div *ngIf="data.length > 10 || data.length > itemsPerPage">
         <pagination *ngIf="config.paging"
