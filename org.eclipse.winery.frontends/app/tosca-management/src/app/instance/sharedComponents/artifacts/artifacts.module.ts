@@ -13,7 +13,9 @@
  *******************************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ModalModule, TabsModule, TypeaheadModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { SelectModule } from 'ng2-select';
 import { BrowserModule } from '@angular/platform-browser';

@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { Component, Input, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { VersionElement } from '../../models/versionElement';
 import { PropertyMatching, UpdateInfo } from '../../models/UpdateInfo';
 import { UpdateService } from './update.service';
@@ -47,10 +47,10 @@ export class VersionsComponent implements OnInit {
     // first entry newProperties, second entry removedProperties
     matchedProperties: PropertyMatching[] = [];
 
-    @ViewChild('updateVersionModal', { static: true }) updateVersionModal: ModalDirective;
+    @ViewChild('updateVersionModal', { static: true }) updateVersionModal: TemplateRef<any>;
     updateVersionModalRef: BsModalRef;
 
-    @ViewChild('updatePropertyModal', { static: true }) updatePropertyModal: ModalDirective;
+    @ViewChild('updatePropertyModal', { static: true }) updatePropertyModal: TemplateRef<any>;
     updatePropertyModalRef: BsModalRef;
 
     @Input() aVersionElement: VersionElement;

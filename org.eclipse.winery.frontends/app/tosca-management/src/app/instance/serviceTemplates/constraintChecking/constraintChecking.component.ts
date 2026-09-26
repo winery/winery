@@ -23,7 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ConstraintCheckingComponent implements OnInit {
 
-    @ViewChild('editor', { static: false }) editor: WineryEditorComponent;
+    @ViewChild('editor') editor: WineryEditorComponent;
 
     checkingResult: string;
     loading = false;

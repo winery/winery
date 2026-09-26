@@ -37,7 +37,7 @@ export class FileManagerComponent implements OnChanges {
     @Output() elementUpdated = new EventEmitter<{ oldPath: string, newPath: string }>();
     @Output() updateRequested = new EventEmitter();
 
-    @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+    @ViewChild(MatTable) table: MatTable<any>;
     @ViewChild('contextMenuTrigger', { static: true }) contextMenu: MatMenuTrigger;
 
     currentPath: string;

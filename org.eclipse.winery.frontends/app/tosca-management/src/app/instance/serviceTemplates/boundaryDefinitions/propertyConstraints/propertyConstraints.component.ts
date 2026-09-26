@@ -17,7 +17,7 @@ import { PropertyConstraintApiData } from './propertyConstraintApiData';
 import { ConstraintTypeApiData } from './constraintTypesApiData';
 import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { WineryEditorComponent } from '../../../../wineryEditorModule/wineryEditor.component';
 

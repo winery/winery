@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { EdmmMappingItem } from './edmmMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SelectData } from '../../../model/selectData';
 import { SelectItem } from 'ng2-select';
 import { EdmmTypesService } from './edmmTypes.service';
@@ -39,8 +39,8 @@ export class EdmmTypesComponent implements OnInit {
     loading = true;
     edmmTypes: EdmmTypesRow[];
 
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
-    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
+    @ViewChild('removeModal', { static: true }) removeModal: TemplateRef<any>;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
     elementToEdit: EdmmTypesRow;

@@ -19,7 +19,7 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { PolicySelectionComponent } from './policySelection/policySelection.component';
 import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
 import { TargetAllocationService } from './targetAllocation.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { AllocationRequest, CriteriaRequest } from './request';
 
@@ -31,7 +31,7 @@ import { AllocationRequest, CriteriaRequest } from './request';
 export class TargetAllocationComponent implements OnInit {
 
     @ViewChild(ModalDirective, { static: true }) targetAllocationModal: ModalDirective;
-    @ViewChild(PolicySelectionComponent, { static: false }) policySelection: PolicySelectionComponent;
+    @ViewChild(PolicySelectionComponent) policySelection: PolicySelectionComponent;
 
     // criteria selection spinner
     criteria = TargetAllocationComponent.getCriteriaForSelect();

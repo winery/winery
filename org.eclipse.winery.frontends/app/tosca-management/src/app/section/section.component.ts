@@ -19,7 +19,7 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { ToscaTypes } from '../model/enums';
 import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
 import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.component';
@@ -82,7 +82,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     @ViewChild('addModal', { static: true }) addModal: WineryAddComponent;
     @ViewChild('addCsarModal', { static: true }) addCsarModal: ModalDirective;
-    @ViewChild('removeElementModal', { static: false }) removeElementModal: ModalDirective;
+    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addYamlModal', { static: true }) addYamlModal: ModalDirective;
     @ViewChild('validationModal', { static: true }) validationModal: ModalDirective;
     @ViewChild('fileUploader', { static: true }) fileUploader: WineryUploaderComponent;

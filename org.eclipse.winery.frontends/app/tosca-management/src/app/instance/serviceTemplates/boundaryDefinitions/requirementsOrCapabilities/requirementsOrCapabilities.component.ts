@@ -15,7 +15,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
 import { RequirementsOrCapabilitiesService } from './requirementsOrCapabilities.service';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { InstanceService } from '../../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 

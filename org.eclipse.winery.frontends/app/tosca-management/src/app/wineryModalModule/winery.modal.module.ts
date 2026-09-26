@@ -14,7 +14,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ModalModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { WineryModalBodyComponent } from './winery.modal.body.component';
 import { WineryModalComponent } from './winery.modal.component';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';

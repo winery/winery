@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { YamlRequirementDefinitionsService } from './yamlRequirementDefinitions.service';
 import { SelectData } from '../../../model/selectData';
@@ -23,7 +23,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { HttpErrorResponse } from '@angular/common/http';
 import { YamlRequirementDefinitionTableData } from './yamlRequirementDefinitionTableData';
 import { InstanceService } from '../../instance.service';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SelectItem } from 'ng2-select';
 import { QName } from '../../../../../../shared/src/app/model/qName';
 
@@ -66,9 +66,9 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
     isUnboundedSelected: boolean;
     loading: boolean;
     elementToRemove: YamlRequirementDefinitionTableData;
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
     addModalRef: BsModalRef;
-    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
+    @ViewChild('removeModal', { static: true }) removeModal: TemplateRef<any>;
     removeModalRef: BsModalRef;
     enableAddItemButton = false;
 

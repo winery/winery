@@ -19,7 +19,7 @@ import { SelectModule } from 'ng2-select';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
 import { WineryPipesModule } from '../../wineryPipes/wineryPipes.module';
-import { AlertModule } from 'ngx-bootstrap';
+import { AlertModule } from 'ngx-bootstrap/alert';
 import { PropertiesDefinitionModule } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.module';
 import { YamlConstraintsComponent } from '../../instance/sharedComponents/yaml/constraints/yaml-constraints.component';
 

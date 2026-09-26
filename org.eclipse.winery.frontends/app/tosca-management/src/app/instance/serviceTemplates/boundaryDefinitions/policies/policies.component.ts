@@ -15,7 +15,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PoliciesService, WineryPolicy } from './policies.service';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
 import { SelectItem } from 'ng2-select';
 import { EditXMLComponent } from '../../../sharedComponents/editXML/editXML.component';

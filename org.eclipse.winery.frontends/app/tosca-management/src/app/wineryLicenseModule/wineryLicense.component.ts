@@ -25,7 +25,7 @@ import {
 import { saveAs } from 'file-saver';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LicenseEngineService } from './licenseEngine.service';
 import { License } from './LicenseEngineApiData';
 
@@ -60,9 +60,9 @@ export class WineryLicenseComponent implements OnInit {
     confirmSaveModalRef: BsModalRef;
     confirmDownloadModalRef: BsModalRef;
 
-    @ViewChild('stepper', { static: false }) stepper: MatStepper;
-    @ViewChild('confirmSaveModal', { static: false }) confirmSaveModal: TemplateRef<any>;
-    @ViewChild('confirmDownloadModal', { static: false }) confirmDownloadModal: TemplateRef<any>;
+    @ViewChild('stepper') stepper: MatStepper;
+    @ViewChild('confirmSaveModal') confirmSaveModal: TemplateRef<any>;
+    @ViewChild('confirmDownloadModal') confirmDownloadModal: TemplateRef<any>;
 
     constructor(private notify: WineryNotificationService,
                 private configurationService: WineryRepositoryConfigurationService,

@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToscaTypes } from '../model/enums';
 import { Utils } from '../wineryUtils/utils';
 

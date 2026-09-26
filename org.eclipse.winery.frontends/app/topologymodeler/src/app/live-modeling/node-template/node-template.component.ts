@@ -20,7 +20,7 @@ import { LiveModelingService } from '../../services/live-modeling.service';
 import { distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { AdaptationAction, LiveModelingStates, NodeTemplateInstanceStates } from '../../models/enums';
 import { ConfirmModalComponent } from '../modals/confirm-modal/confirm-modal.component';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { WineryActions } from '../../redux/actions/winery.actions';
 
 @Component({

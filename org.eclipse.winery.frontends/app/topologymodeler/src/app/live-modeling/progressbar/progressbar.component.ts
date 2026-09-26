@@ -16,7 +16,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../redux/store/winery.store';
 import { Subscription } from 'rxjs';
 import { LiveModelingStates } from '../../models/enums';
-import { ProgressbarConfig } from 'ngx-bootstrap';
+import { ProgressbarConfig } from 'ngx-bootstrap/progressbar';
 
 export function getProgressbarConfig(): ProgressbarConfig {
     return Object.assign(new ProgressbarConfig(), { animate: true, striped: true, max: 100 });

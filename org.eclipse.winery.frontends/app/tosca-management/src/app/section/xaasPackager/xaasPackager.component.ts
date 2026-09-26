@@ -14,7 +14,7 @@
 import { Component, DoCheck, ViewChild } from '@angular/core';
 import { ArtifactTypesAndInfrastructureNodetypes, PackagerService } from './xaasPackagerService';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SelectItem } from 'ng2-select';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -45,7 +45,7 @@ export class XaasPackagerComponent implements DoCheck {
 
     value: SelectItem[];
 
-    @ViewChild('createFromArtifactModal', { static: false }) createFromArtifactModal: ModalDirective;
+    @ViewChild('createFromArtifactModal') createFromArtifactModal: ModalDirective;
 
     constructor(private service: PackagerService,
                 private notify: WineryNotificationService) {

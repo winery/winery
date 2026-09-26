@@ -21,7 +21,7 @@ import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { IAReport, InterfacesService } from './interfaces.service';
 import { InheritedInterface, InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InterfaceParameter } from '../../../model/parameters';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm } from '@angular/forms';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
 import { ToscaTypes } from '../../../model/enums';
@@ -67,7 +67,7 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
     @ViewChild('addElementForm', { static: true }) addElementForm: NgForm;
     @ViewChild('generateImplModal', { static: true }) generateImplModal: ModalDirective;
-    @ViewChild('itemList', { static: false }) interfaceComponent: SelectableListComponent;
+    @ViewChild('itemList') interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
     toscaType: ToscaTypes;
     createImplementation = true;

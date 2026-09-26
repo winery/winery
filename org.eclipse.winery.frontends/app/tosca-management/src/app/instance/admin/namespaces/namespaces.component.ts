@@ -17,7 +17,7 @@ import { NamespacesService } from './namespaces.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { NamespaceProperties } from '../../../model/namespaceProperties';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RepositoryService } from '../repository/repository.service';
 import { Repository } from '../repository/repository';
@@ -54,8 +54,8 @@ export class NamespacesComponent implements OnInit {
     ];
     elementToRemove: any;
 
-    @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal', { static: false }) addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: NamespacesService,
                 private notify: WineryNotificationService,

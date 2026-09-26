@@ -45,7 +45,7 @@ export class PropertiesComponent implements OnInit {
     definitions: PropertiesDefinitionKVElement[];
     properties: Properties | string;
     isXML: boolean;
-    @ViewChild('propertiesEditor', { static: false }) propertiesEditor: WineryEditorComponent;
+    @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
     show = {};
 

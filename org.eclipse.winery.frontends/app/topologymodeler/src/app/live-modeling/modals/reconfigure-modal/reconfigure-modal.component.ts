@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ReconfigureOptions } from '../../../models/enums';
 import { PropertyValidatorService } from '../../../services/property-validator.service';
 

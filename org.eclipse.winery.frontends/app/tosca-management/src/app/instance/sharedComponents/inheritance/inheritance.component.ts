@@ -20,7 +20,7 @@ import { ToscaTypes } from '../../../model/enums';
 import { SelectData } from '../../../model/selectData';
 import { SelectItem } from 'ng2-select';
 import { Router } from '@angular/router';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
@@ -40,7 +40,7 @@ export class InheritanceComponent implements OnInit {
     toscaType: ToscaTypes;
     loading = true;
     enableButton = false;
-    @ViewChild('derivedFromSelector', { static: false }) aboutModal: ModalDirective;
+    @ViewChild('derivedFromSelector') aboutModal: ModalDirective;
     @ViewChild('addSubTypeModal', { static: true }) addSubTypeModal: WineryAddComponent;
     initialActiveItem: Array<SelectData>;
 

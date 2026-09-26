@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { Injectable } from '@angular/core';
 
 @Injectable()

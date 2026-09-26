@@ -16,7 +16,7 @@ import { RepositoryService } from './repository.service';
 import { Repository } from './repository';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { backendBaseURL } from '../../../configuration';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';

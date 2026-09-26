@@ -23,7 +23,7 @@ import {WineryQNameSelectorModule} from '../../../wineryQNameSelector/wineryQNam
 import {WineryComponentExistsModule} from '../../../wineryComponentExists/wineryComponentExists.module';
 import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.module';
 import { WineryAddDataModule } from '../../../wineryAddComponentDataModule/addComponentData.module';
-import { TooltipModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
     imports: [

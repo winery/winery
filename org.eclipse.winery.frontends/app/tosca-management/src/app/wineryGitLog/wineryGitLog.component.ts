@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { webSocketURL } from '../configuration';
 import { GitChange, GitData, Repos, GitResponseData } from './GitLogApiData';

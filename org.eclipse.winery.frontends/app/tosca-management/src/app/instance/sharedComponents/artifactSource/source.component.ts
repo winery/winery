@@ -48,7 +48,7 @@ export class SourceComponent implements OnInit {
     @ViewChild('saveCurrentFileModal', { static: true }) saveCurrentFileModal: any;
     @ViewChild('createNewFileModal', { static: true }) createNewFileModel: any;
     @ViewChild('renameFileModal', { static: true }) renameFileModal: any;
-    @ViewChild('artifactsEditor', { static: false }) editor: WineryEditorComponent;
+    @ViewChild('artifactsEditor') editor: WineryEditorComponent;
 
     validatorObject: WineryValidatorObject;
     pathValidatorObject: WineryValidatorObject;

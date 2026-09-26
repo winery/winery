@@ -15,7 +15,8 @@ import {NgModule} from '@angular/core';
 
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
-import {CollapseModule, TypeaheadModule} from 'ngx-bootstrap';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
 import {WineryNamespaceSelectorComponent} from './wineryNamespaceSelector.component';
 

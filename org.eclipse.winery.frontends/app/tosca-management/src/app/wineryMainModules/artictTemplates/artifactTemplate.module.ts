@@ -21,7 +21,8 @@ import { WineryUploaderModule } from '../../wineryUploader/wineryUploader.module
 import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
-import { AlertModule, TabsModule } from 'ngx-bootstrap';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';

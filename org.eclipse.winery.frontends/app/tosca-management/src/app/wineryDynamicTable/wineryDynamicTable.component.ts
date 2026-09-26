@@ -14,7 +14,7 @@
 
 import { Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnInit, Output, ViewChild } from '@angular/core';
 import { WineryDynamicTableMetadata } from './wineryDynamicTableMetadata';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryRowData, WineryTableColumn, WineryTableComponent } from '../wineryTableModule/wineryTable.component';
 import { WineryDynamicFormModalComponent } from './modal/wineryDynamicFormModal.component';
 import { ValidatorFn } from '@angular/forms';

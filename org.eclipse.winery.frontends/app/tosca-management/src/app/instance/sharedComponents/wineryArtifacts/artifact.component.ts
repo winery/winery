@@ -18,7 +18,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ArtifactApiData, WineryInstance } from '../../../model/wineryComponent';
 import { backendBaseURL, hostURL } from '../../../configuration';
 import { Router } from '@angular/router';
@@ -77,7 +77,7 @@ export class WineryArtifactComponent implements OnInit {
     @ViewChild('addArtifactModal', { static: true }) addArtifactModal: ModalDirective;
     @ViewChild('uploadFileModal', { static: true }) uploadFileModal: ModalDirective;
     @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
-    @ViewChild('addComponentData', { static: false }) addComponentData: WineryAddComponentDataComponent;
+    @ViewChild('addComponentData') addComponentData: WineryAddComponentDataComponent;
 
     toscaType = ToscaTypes.ArtifactTemplate;
     valid: boolean;

@@ -15,7 +15,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { backendBaseURL } from '../../configuration';
 import { SectionData } from '../sectionData';
 import { ExistService } from '../../wineryUtils/existService';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { EntityService } from './entity.service';
 import { ToscaTypes } from '../../model/enums';

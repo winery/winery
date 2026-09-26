@@ -15,7 +15,7 @@
 import {
     Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild
 } from '@angular/core';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TPolicy } from '../../models/policiesModalData';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';
 import { QNameWithTypeApiData } from '../../models/generateArtifactApiData';
@@ -43,8 +43,8 @@ import { QName } from '../../../../../shared/src/app/model/qName';
 })
 export class EntitiesModalComponent implements OnInit, OnChanges, OnDestroy {
 
-    @ViewChild('modal', { static: false }) public modal: ModalDirective;
-    @ViewChild('fileUploader', { static: false }) fileUploader: ElementRef;
+    @ViewChild('modal') public modal: ModalDirective;
+    @ViewChild('fileUploader') fileUploader: ElementRef;
 
     @Input() modalVariantAndState: ModalVariantAndState;
     @Input() entityTypes: EntityTypesModel;

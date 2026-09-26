@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { EdmmMappingItem, EdmmMappingsService } from './edmmMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SelectData } from '../../../model/selectData';
 import { forkJoin } from 'rxjs';
 import { ToscaTypes } from '../../../model/enums';
@@ -34,8 +34,8 @@ export class EdmmMappingsComponent implements OnInit {
     loading = true;
     edmmTypes: string[];
 
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
-    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
+    @ViewChild('removeModal', { static: true }) removeModal: TemplateRef<any>;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 

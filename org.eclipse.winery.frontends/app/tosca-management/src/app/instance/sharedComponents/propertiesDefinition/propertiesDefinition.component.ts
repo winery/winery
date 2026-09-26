@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
@@ -35,7 +35,7 @@ import {
 } from '../../../wineryDynamicTable/formComponents/dynamicConstraints/dynamicConstraints.component';
 import { XmlTypes } from '../../../model/parameters';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { Constraint, yaml_well_known } from '../../../model/constraint';
 import { SchemaDefinition, TDataType } from '../../../../../../topologymodeler/src/app/models/ttopology-template';
@@ -104,15 +104,15 @@ export class PropertiesDefinitionComponent implements OnInit {
     availableTypes: string[] = [];
 
     @ViewChild('confirmDeleteModal', { static: true })
-    confirmDeleteModal: ModalDirective;
+    confirmDeleteModal: TemplateRef<any>;
     confirmDeleteModalRef: BsModalRef;
 
     @ViewChild('editorModal', { static: true })
-    editorModal: ModalDirective;
+    editorModal: TemplateRef<any>;
     editorModalRef: BsModalRef;
     configEnum = FeatureEnum;
 
-    @ViewChild('nameInputForm', { static: false }) nameInputForm: ElementRef;
+    @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
     show = {
         inherited: false

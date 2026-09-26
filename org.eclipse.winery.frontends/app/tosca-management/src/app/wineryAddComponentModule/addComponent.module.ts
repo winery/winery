@@ -23,7 +23,9 @@ import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplic
 import { RouterModule } from '@angular/router';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
-import { AlertModule, CollapseModule, TooltipModule } from 'ngx-bootstrap';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { WineryAddDataModule } from '../wineryAddComponentDataModule/addComponentData.module';
 
 @NgModule({

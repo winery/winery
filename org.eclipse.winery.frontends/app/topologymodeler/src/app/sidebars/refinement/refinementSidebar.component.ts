@@ -21,7 +21,7 @@ import { WineryActions } from '../../redux/actions/winery.actions';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { EntityTypesModel } from '../../models/entityTypesModel';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
     selector: 'winery-refinement',

@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, TemplateRef } from '@angular/core';
 import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
 import { InterfaceParameter } from '../model/parameters';
 import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { YesNoEnum } from '../model/enums';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { NgForm } from '@angular/forms';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { InstanceService } from '../instance/instance.service';
 
 /**
@@ -74,9 +74,9 @@ export class WineryIoParameterComponent {
     @Output() inputParameterRemoved = new EventEmitter<InterfaceParameter>();
     @Output() outputParameterRemoved = new EventEmitter<InterfaceParameter>();
 
-    @ViewChild('addIntParametersModal', { static: true }) addIntParametersModal: ModalDirective;
-    @ViewChild('removeElementModal', { static: true }) removeElementModal: ModalDirective;
-    @ViewChild('parameterForm', { static: false }) parameterForm: NgForm;
+    @ViewChild('addIntParametersModal', { static: true }) addIntParametersModal: TemplateRef<any>;
+    @ViewChild('removeElementModal', { static: true }) removeElementModal: TemplateRef<any>;
+    @ViewChild('parameterForm') parameterForm: NgForm;
 
     selectedInputParameter: InterfaceParameter;
     selectedOutputParameter: InterfaceParameter;

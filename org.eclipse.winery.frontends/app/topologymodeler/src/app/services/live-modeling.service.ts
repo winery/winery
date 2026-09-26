@@ -25,7 +25,7 @@ import { ErrorHandlerService } from './error-handler.service';
 import { TRelationshipTemplate, TTopologyTemplate } from '../models/ttopology-template';
 import { LiveModelingActions } from '../redux/actions/live-modeling.actions';
 import { WineryActions } from '../redux/actions/winery.actions';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { OverlayService } from './overlay.service';
 import { LoggingService } from './logging.service';
 import { catchError, concatMap, distinctUntilChanged, first, switchMap, takeWhile, tap, timeout } from 'rxjs/operators';

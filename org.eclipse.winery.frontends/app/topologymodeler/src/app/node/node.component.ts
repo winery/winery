@@ -113,8 +113,8 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() relationshipTemplateIdClicked: EventEmitter<string>;
     @Output() showYamlPolicyManagementModal: EventEmitter<void>;
 
-    @ViewChild('versionModal', { static: false }) versionModal: VersionsComponent;
-    @ViewChild('nodeProperties', { static: false }) nodePropertiesComponent: PropertiesComponent;
+    @ViewChild('versionModal') versionModal: VersionsComponent;
+    @ViewChild('nodeProperties') nodePropertiesComponent: PropertiesComponent;
     previousPosition: any;
     currentPosition: any;
     nodeRef: ComponentRef<Component>;

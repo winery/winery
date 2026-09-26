@@ -16,7 +16,7 @@ import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { TypeWithShortName, TypeWithShortNameService } from './typeWithShortName.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
@@ -39,8 +39,8 @@ export class TypeWithShortNameComponent implements OnInit {
     elementToRemove: TypeWithShortName = null;
     title: string;
 
-    @ViewChild('confirmDeleteModal', { static: false }) confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal', { static: false }) addModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: TypeWithShortNameService,
                 private notify: WineryNotificationService,

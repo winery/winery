@@ -99,7 +99,7 @@ export class TopologyRendererModule {
     constructor() {
     }
 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<TopologyRendererModule> {
         return {
             ngModule: TopologyRendererModule,
             providers: [

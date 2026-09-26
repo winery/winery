@@ -26,7 +26,7 @@ import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { ExistService } from './wineryUtils/existService';
 import { WineryOAuthComponent } from './header/wineryOauth/wineryOAuth.component';
-import { TooltipModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NodeTypeModule } from './wineryMainModules/nodeTypes/nodeType.module';
 import { ServiceTemplateModule } from './wineryMainModules/serviceTemplates/serviceTemplate.module';
 import { RelationshipTypeModule } from './wineryMainModules/relationshipTypes/relationshipType.module';

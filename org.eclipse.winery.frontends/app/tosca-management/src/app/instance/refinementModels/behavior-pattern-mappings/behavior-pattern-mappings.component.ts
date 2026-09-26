@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { BehaviorPatternMapping } from './types';
 import { RefinementMappingsService } from '../refinementMappings.service';
 import { forkJoin } from 'rxjs';
@@ -21,7 +21,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { WineryTemplateWithPolicies } from '../../../model/wineryComponent';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { InstanceService } from '../../instance.service';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SelectData } from '../../../model/selectData';
 import { NamespaceProperties } from '../../../model/namespaceProperties';
 import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
@@ -54,8 +54,8 @@ export class BehaviorPatternMappingsComponent implements OnInit {
     refinementTemplates: WineryTemplateWithPolicies[];
     patternNamespaces: Set<string>;
 
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
-    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
+    @ViewChild('removeModal', { static: true }) removeModal: TemplateRef<any>;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 

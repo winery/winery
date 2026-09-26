@@ -16,7 +16,7 @@ import { InstanceService } from '../../instance.service';
 import {
     ConfigureInterface, Interface, Operation, OperationImplementation, StandardInterface
 } from '../../../model/interfaces';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { SelectableListComponent } from '../interfaces/selectableList/selectableList.component';
 import { InterfaceDefinitionsService } from './interfaceDefinitions.service';
@@ -61,8 +61,8 @@ export class InterfaceDefinitionsComponent implements OnInit {
     modalTitle: string;
     removeModalElement: string;
 
-    @ViewChild('interfacesList', { static: false }) interfacesListComponent: SelectableListComponent;
-    @ViewChild('operationsList', { static: false }) operationsListComponent: SelectableListComponent;
+    @ViewChild('interfacesList') interfacesListComponent: SelectableListComponent;
+    @ViewChild('operationsList') operationsListComponent: SelectableListComponent;
 
     readonly interfaceTypes: SelectData[] = [
         { text: '{tosca.interfaces.node.lifecycle}Standard', id: 'Standard' },

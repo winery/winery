@@ -17,7 +17,7 @@ import { AccountabilityService } from '../accountability.service';
 import { FileProvenanceElement, ModelProvenanceElement } from '../../../../model/provenance';
 import { AccountabilityParentComponent } from '../accountabilityParent.component';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { WineryFileComparisonComponent } from '../../../../wineryFileComparisonModule/wineryFileComparison.component';
 
 @Component({
@@ -29,7 +29,7 @@ export class ProvenanceComponent extends AccountabilityParentComponent {
     modelProvenance: ModelProvenanceElement[];
     selectedFileProvenance: FileProvenanceElement[];
     selectedFileProvenanceElement: FileProvenanceElement;
-    @ViewChild(WineryFileComparisonComponent, { static: false }) comparer: WineryFileComparisonComponent;
+    @ViewChild(WineryFileComparisonComponent) comparer: WineryFileComparisonComponent;
 
     constructor(protected service: AccountabilityService, protected notify: WineryNotificationService, private modalService: BsModalService) {
         super(service, notify);
