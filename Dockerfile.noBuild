@@ -55,8 +55,8 @@ ENV DARUS_API_TOKEN ""
 ENV DARUS_DATAVERSE "spielwiese"
 
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
-    && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
     && apt-get update -qq && apt-get install -qqy --no-install-recommends \
+        curl \
         git \
         git-lfs \
         sudo \
