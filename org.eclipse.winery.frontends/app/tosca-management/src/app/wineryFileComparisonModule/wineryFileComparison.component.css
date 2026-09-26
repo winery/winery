@@ -19,3 +19,34 @@
 .horizontalSpace {
     margin-top: 10px;
 }
+
+.line-diff {
+    overflow-x: auto;
+    border: 1px solid #808080;
+    font-family: Consolas, Courier, monospace;
+}
+
+.line-diff table {
+    min-width: 100%;
+}
+
+.line-number {
+    width: 50px;
+    text-align: center;
+    color: #484848;
+    background-color: #dedede;
+    border-right: 1px solid #888888;
+}
+
+.line-text {
+    white-space: pre;
+    padding-left: 10px;
+}
+
+.diff-delete, .diff-delete .line-number {
+    background-color: #ff8c8c;
+}
+
+.diff-insert, .diff-insert .line-number {
+    background-color: #9dff97;
+}

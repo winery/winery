@@ -31,9 +31,18 @@
     <button type="button" class="btn btn-primary horizontalSpace" [disabled]="!leftFile || !rightFile"
             (click)="retrieveFilesForComparison()">Compare
     </button>
-    <dmp-line-compare [left]="leftFileText" [right]="rightFileText"
-                      *ngIf="leftFileText && rightFileText && canCompareFile(leftFile.fileName)"
-                      class="horizontalSpace"></dmp-line-compare>
+    <div *ngIf="leftFileText && rightFileText && canCompareFile(leftFile.fileName)" class="horizontalSpace">
+        <span *ngIf="lineDiff.length === 0">There are no changes to display.</span>
+        <div *ngIf="lineDiff.length > 0" class="line-diff">
+            <table>
+                <tr *ngFor="let line of lineDiff" [ngClass]="line[0]">
+                    <td class="line-number">{{line[1]}}</td>
+                    <td class="line-number">{{line[2]}}</td>
+                    <td class="line-text">{{line[3]}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
     <div *ngIf="leftFileText && rightFileText && !canCompareFile(leftFile.fileName)">
         <div *ngIf="leftFile.fileHash !== rightFile.fileHash">
