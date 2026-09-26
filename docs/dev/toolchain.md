@@ -49,7 +49,7 @@ Get [Apache Maven](https://maven.apache.org/) to run.
 2. Change into the newly created directory `winery`: `cd winery`.
 3. Add `upstream` as second remote: `git remote add upstream https://github.com/winery/winery.git`
 4. Fetch everything from `upstream`: `git fetch upstream` or `git fetch --all`
-5. Run `mvn clean install -DskipTests` to build the whole project
+5. Run `./mvnw clean install -DskipTests` to build the whole project
 
 ## Steps to initialize a TOSCA repository
 

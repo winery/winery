@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2019-2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -122,6 +122,8 @@ public class VersionSupport {
             .exclude()
             .propertyName("nodeTemplateOrRelationshipTemplate")
             .propertyName("fakeJacksonType")
+            // derived from id or name, which are compared themselves
+            .propertyName("idFromIdOrNameField")
             // Ignore 'any', otherwise, it crashes if a policy with a XML content is contained somehow: java.util.Collections$EmptyEnumeration
             // at nodeTemplate/policies/policy/any/[content]/parentNode/identifiers
             .propertyName("any")

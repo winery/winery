@@ -25,7 +25,7 @@
 
 Build Winery to have all dependencies fetched by Maven: `mvn install -DskipTests`.
 
-*Note*: You must use Java 17 or above.
+*Note*: You must use Java 25 or above.
 
 ## Setup IntelliJ
 
