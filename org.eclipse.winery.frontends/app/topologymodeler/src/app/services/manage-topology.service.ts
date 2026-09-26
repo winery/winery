@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { PaletteComponent } from '../palette/palette.component';
 import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
 import { CanvasComponent } from '../canvas/canvas.component';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { NodeTypeModel } from '../models/groupedNodeTypeModel';

@@ -14,7 +14,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { TGroupDefinition, TNodeTemplate } from '../../models/ttopology-template';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 

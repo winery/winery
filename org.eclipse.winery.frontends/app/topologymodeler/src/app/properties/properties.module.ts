@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDropdownModule, TooltipModule, TypeaheadModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { NgReduxModule } from '@angular-redux/store';
+import { NgReduxModule } from '../redux/ng-redux';
 import { RouterModule } from '@angular/router';
 import { PropertiesComponent } from './properties.component';
 import { KeysPipe } from '../pipes/keys.pipe';

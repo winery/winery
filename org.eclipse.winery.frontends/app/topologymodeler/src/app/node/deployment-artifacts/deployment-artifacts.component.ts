@@ -14,7 +14,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IWineryState } from '../../redux/store/winery.store';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { TableType } from '../../models/enums';
 import { WineryRepositoryConfigurationService } from '../../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TArtifact } from '../../models/ttopology-template';

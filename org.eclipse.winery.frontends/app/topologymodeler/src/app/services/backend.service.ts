@@ -35,7 +35,7 @@ import { ToscaUtils } from '../models/toscaUtils';
 import { TopologyTemplateUtil } from '../models/topologyTemplateUtil';
 import { SubMenuItems } from '../../../../tosca-management/src/app/model/subMenuItem';
 import { takeLast, tap } from 'rxjs/operators';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { DeploymentTechnology } from '../models/deployment-technology';

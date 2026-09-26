@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Component, OnDestroy, OnInit, } from '@angular/core';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { Subscription } from 'rxjs';
 import { LiveModelingStates } from '../../models/enums';

@@ -15,7 +15,7 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { ToastrService } from 'ngx-toastr';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { ErrorHandlerService } from '../../services/error-handler.service';

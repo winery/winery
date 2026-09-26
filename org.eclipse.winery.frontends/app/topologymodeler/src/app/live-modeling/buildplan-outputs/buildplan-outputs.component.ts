@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnDestroy, OnInit, } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { ServiceTemplateInstanceStates } from '../../models/enums';
 import { PlanInstance } from '../../models/container/plan-instance.model';
