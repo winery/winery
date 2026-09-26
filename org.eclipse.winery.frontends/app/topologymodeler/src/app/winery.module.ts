@@ -60,7 +60,6 @@ import { EdmmTransformationCheckComponent } from './edmmTransformationCheck/edmm
 import { EdmmReplacementRulesComponent } from './edmmTransformationCheck/edmm-replacement-rules/edmm-replacement-rules.component';
 import { ManageTopologyService } from './services/manage-topology.service';
 import { PolicyService } from './services/policy.service';
-import { SidebarModule } from 'ng-sidebar';
 import { NodeDetailsSidebarComponent } from './sidebars/node-details/nodeDetailsSidebar.component';
 import { RefinementSidebarComponent } from './sidebars/refinement/refinementSidebar.component';
 import { GroupViewComponent } from './group-view/group-view.component';
@@ -114,7 +113,6 @@ import { WineryLoaderModule } from '../../../tosca-management/src/app/wineryLoad
     ],
     exports: [WineryComponent],
     imports: [
-        SidebarModule.forRoot(),
         BrowserModule,
         FormsModule,
         HttpClientModule,

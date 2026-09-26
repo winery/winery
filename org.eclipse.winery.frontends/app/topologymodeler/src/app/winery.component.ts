@@ -168,7 +168,7 @@ export class WineryComponent implements OnInit, AfterViewInit {
      */
     notifyClose(key: string): void {
         // FIXME this currently basically only supports the node-details sidebar
-        //  because none of the other sidebars are based off ng-sidebar
+        //  because the other sidebars are not closed by sliding out
         this.ngRedux.dispatch(this.uiActions.triggerSidebar( new DetailsSidebarState(false)));
     }
 
