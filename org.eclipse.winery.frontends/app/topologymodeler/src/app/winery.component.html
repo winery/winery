@@ -32,7 +32,18 @@
 
     <div class="sidebar-content-root">
 
-        <hotkeys-cheatsheet></hotkeys-cheatsheet>
+        <div class="hotkeys-cheatsheet" *ngIf="hotkeysCheatSheetVisible">
+            <div>
+                <h4 class="hotkeys-title">Keyboard Shortcuts:</h4>
+                <table>
+                    <tr *ngFor="let hotkey of hotkeys">
+                        <td class="hotkeys-keys"><span class="hotkeys-key">{{ hotkey[0] }}</span></td>
+                        <td class="hotkeys-text">{{ hotkey[1] }}</td>
+                    </tr>
+                </table>
+                <div class="hotkeys-close" (click)="hotkeysCheatSheetVisible = false">&#215;</div>
+            </div>
+        </div>
         <router-outlet *ngIf="!readonly"></router-outlet>
 
 <winery-overlay *ngIf="!readonly && loaded?.loadedData"></winery-overlay>

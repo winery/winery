@@ -31,7 +31,6 @@ import { WineryActions } from './redux/actions/winery.actions';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';
 import { LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
-import { HotkeyModule } from 'angular2-hotkeys';
 import { BackendService } from './services/backend.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ExistsService } from './services/exists.service';
@@ -131,7 +130,6 @@ import { WineryLoaderModule } from '../../../tosca-management/src/app/wineryLoad
         }),
         AccordionModule.forRoot(),
         TopologyRendererModule.forRoot(),
-        HotkeyModule.forRoot({ cheatSheetHotkey: 'mod+space' }),
         WineryModalModule,
         TypeaheadModule.forRoot(),
         PopoverModule.forRoot(),

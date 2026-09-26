@@ -66,3 +66,62 @@ winery-topology-renderer {
     z-index: 400;
     width: 300px;
 }
+
+.hotkeys-cheatsheet {
+    display: table;
+    position: fixed;
+    z-index: 10002;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #333;
+    font-size: 1.2em;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.hotkeys-cheatsheet > div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.hotkeys-title {
+    font-weight: bold;
+    text-align: center;
+}
+
+.hotkeys-cheatsheet table {
+    margin: auto;
+}
+
+.hotkeys-keys {
+    padding: 5px;
+    text-align: right;
+}
+
+.hotkeys-key {
+    display: inline-block;
+    color: #fff;
+    background-color: #333;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 0 #666, 0 1px 0 #bbb;
+    padding: 5px 9px;
+}
+
+.hotkeys-text {
+    padding-left: 10px;
+}
+
+.hotkeys-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 45px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
