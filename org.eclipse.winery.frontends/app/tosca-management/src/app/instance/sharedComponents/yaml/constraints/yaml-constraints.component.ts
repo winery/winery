@@ -23,7 +23,7 @@ import { WineryInstance, WineryTemplateOrImplementationComponent } from '../../.
 import { HttpErrorResponse } from '@angular/common/http';
 import { TDataType } from '../../../../../../../topologymodeler/src/app/models/ttopology-template';
 import { Constraint } from '../../../../model/constraint';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { DataTypesService } from '../../../dataTypes/dataTypes.service';
 
 const valid_constraint_keys = ['equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal', 'in_range',

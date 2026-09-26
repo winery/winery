@@ -15,7 +15,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { WineryDynamicTableMetadata } from '../wineryDynamicTableMetadata';
 import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 /**
  * This component contains the modal used in {@link WineryDynamicTableComponent}.

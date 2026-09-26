@@ -32,7 +32,7 @@ import {
 } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { TTopologyTemplate } from '../models/ttopology-template';
 import { OverlayService } from '../services/overlay.service';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TopologyService } from '../services/topology.service';
 import { VersionSliderService } from '../version-slider/version-slider.service';
 import { CheService } from '../services/che.service';

@@ -20,7 +20,7 @@ import { ToscaTypes } from '../../../model/enums';
 import { SelectData } from '../../../model/selectData';
 import { SelectItem } from 'ng2-select';
 import { Router } from '@angular/router';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 

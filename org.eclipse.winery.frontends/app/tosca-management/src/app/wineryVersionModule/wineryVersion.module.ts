@@ -21,7 +21,7 @@ import {WineryNotificationModule} from '../wineryNotificationModule/wineryNotifi
 import {WineryDuplicateValidatorModule} from '../wineryValidators/wineryDuplicateValidator.module';
 import {RouterModule} from '@angular/router';
 import {WineryPipesModule} from '../wineryPipes/wineryPipes.module';
-import {BsDropdownModule} from 'ngx-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import {ReferencedDefinitionsComponent} from './referencedDefinitions/referencedDefinitions.component';
 
 @NgModule({

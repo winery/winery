@@ -14,7 +14,7 @@
 import { Component, DoCheck, ViewChild } from '@angular/core';
 import { ArtifactTypesAndInfrastructureNodetypes, PackagerService } from './xaasPackagerService';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { SelectItem } from 'ng2-select';
 import { HttpErrorResponse } from '@angular/common/http';
 

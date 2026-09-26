@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, DoCheck, OnInit, ViewChild } from '@angular/core';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PlacementService } from './placementService';
 import { AddComponentValidation } from '../../wineryAddComponentModule/addComponentValidation';

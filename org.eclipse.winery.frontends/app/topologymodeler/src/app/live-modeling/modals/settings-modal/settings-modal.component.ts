@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../../../redux/store/winery.store';
 import { LiveModelingActions } from '../../../redux/actions/live-modeling.actions';

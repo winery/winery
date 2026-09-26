@@ -16,7 +16,7 @@ import { WineryReadmeComponent } from './wineryReadme.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
-import { TabsModule } from 'ngx-bootstrap';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { WineryMarkdownModule } from '../wineryMarkdownComponent/wineryMarkdown.module';
 

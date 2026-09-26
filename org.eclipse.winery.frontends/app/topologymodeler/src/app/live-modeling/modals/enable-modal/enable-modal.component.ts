@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Component } from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LiveModelingService } from '../../../services/live-modeling.service';
 import { BackendService } from '../../../services/backend.service';
 import { HttpClient } from '@angular/common/http';

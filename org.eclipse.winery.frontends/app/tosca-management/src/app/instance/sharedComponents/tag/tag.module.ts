@@ -19,7 +19,9 @@ import {RouterModule} from '@angular/router';
 import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
 import {SelectModule} from 'ng2-select';
 import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
-import {ModalModule, TabsModule, TypeaheadModule} from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
 import {TagComponent} from './tag.component';
 

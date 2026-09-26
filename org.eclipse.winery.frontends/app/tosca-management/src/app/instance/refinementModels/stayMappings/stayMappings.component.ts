@@ -14,10 +14,10 @@
 
 import { RefinementMappingsService } from '../refinementMappings.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { WineryTemplate } from '../../../model/wineryComponent';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SelectData } from '../../../model/selectData';
 import { InstanceService } from '../../instance.service';
@@ -45,8 +45,8 @@ export class StayMappingsComponent implements OnInit {
     detectorTemplates: WineryTemplate[];
     refinementStructureTemplates: WineryTemplate[];
 
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
-    @ViewChild('removeModal', { static: true }) removeModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
+    @ViewChild('removeModal', { static: true }) removeModal: TemplateRef<any>;
     addModalRef: BsModalRef;
     removeModalRef: BsModalRef;
 

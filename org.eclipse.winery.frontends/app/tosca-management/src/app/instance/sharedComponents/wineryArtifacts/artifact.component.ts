@@ -18,7 +18,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ArtifactApiData, WineryInstance } from '../../../model/wineryComponent';
 import { backendBaseURL, hostURL } from '../../../configuration';
 import { Router } from '@angular/router';

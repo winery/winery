@@ -14,7 +14,7 @@
 import { AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input } from '@angular/core';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { WineryModalHeaderComponent } from './winery.modal.header.component';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryModalSize } from './wineryModalSize';
 
 /**

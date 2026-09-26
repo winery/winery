@@ -19,7 +19,7 @@ import { ToscaTypes } from '../model/enums';
 import { Router } from '@angular/router';
 import { Utils } from '../wineryUtils/utils';
 import { SectionData } from '../section/sectionData';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { InheritanceService } from '../instance/sharedComponents/inheritance/inheritance.service';
 import { WineryVersion } from '../model/wineryVersion';
 import { AddComponentValidation } from './addComponentValidation';

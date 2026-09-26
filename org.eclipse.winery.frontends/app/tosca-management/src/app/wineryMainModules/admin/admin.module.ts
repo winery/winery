@@ -25,7 +25,11 @@ import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDup
 import { WineryNamespaceSelectorModule } from '../../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
-import { AccordionModule, AlertModule, CollapseModule, ModalModule, ProgressbarModule } from 'ngx-bootstrap';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ErrorElementToLinkPipe } from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
 import { AccountabilityComponent } from '../../instance/admin/accountability/accountability.component';
 import { SelectModule } from 'ng2-select';

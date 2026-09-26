@@ -16,7 +16,7 @@ import { InstanceService } from '../../instance.service';
 import {
     ConfigureInterface, Interface, Operation, OperationImplementation, StandardInterface
 } from '../../../model/interfaces';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { SelectableListComponent } from '../interfaces/selectableList/selectableList.component';
 import { InterfaceDefinitionsService } from './interfaceDefinitions.service';

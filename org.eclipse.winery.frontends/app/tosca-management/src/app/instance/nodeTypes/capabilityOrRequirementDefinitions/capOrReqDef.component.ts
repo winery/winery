@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CapabilityOrRequirementDefinitionsService } from './capOrReqDef.service';
 import {
     CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint
@@ -23,7 +23,7 @@ import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.compon
 import { TypeWithShortName } from '../../admin/typesWithShortName/typeWithShortName.service';
 import { SelectData } from '../../../model/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -89,7 +89,7 @@ export class CapOrReqDefComponent implements OnInit {
 
     @ViewChild('confirmDeleteModal', { static: true }) confirmDeleteModal: ModalDirective;
     @ViewChild('addModal', { static: true }) addModal: ModalDirective;
-    @ViewChild('addValidNodeTypeModal', { static: true }) addValidNodeTypeModal: ModalDirective;
+    @ViewChild('addValidNodeTypeModal', { static: true }) addValidNodeTypeModal: TemplateRef<any>;
     @ViewChild('editConModal', { static: true }) editConModal: ModalDirective;
     @ViewChild('showYAMLConModal', { static: true }) showYAMLConModal: ModalDirective;
     @ViewChild('editNewConModal', { static: true }) editNewConModal: ModalDirective;

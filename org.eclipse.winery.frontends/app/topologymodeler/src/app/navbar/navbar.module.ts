@@ -15,7 +15,8 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { NavbarComponent } from './navbar.component';
 import { CommonModule } from '@angular/common';
 import { WineryFeatureToggleModule } from '../../../../tosca-management/src/app/wineryFeatureToggleModule/winery-feature-toggle.module';
-import { BsDropdownModule, TooltipModule } from 'ngx-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
     imports: [

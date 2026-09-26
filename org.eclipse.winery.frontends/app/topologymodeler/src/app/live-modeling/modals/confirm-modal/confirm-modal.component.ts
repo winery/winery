@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { PropertyValidatorService } from '../../../services/property-validator.service';
 
 @Component({

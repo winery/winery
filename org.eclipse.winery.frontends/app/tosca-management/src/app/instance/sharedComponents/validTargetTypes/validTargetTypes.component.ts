@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, Input, ViewChild } from '@angular/core';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { Component, Input, ViewChild, TemplateRef } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SelectItem } from 'ng2-select';
 import { ValidSourceTypesComponent } from '../validSourceTypes/validSourceTypes.component';
 import { ToscaTypes } from '../../../model/enums';
@@ -38,7 +38,7 @@ export class ValidTargetTypesComponent extends ValidSourceTypesComponent {
     validType = ToscaTypes.CapabilityType;
 
 
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
     addModalRef: BsModalRef;
 
     constructor(public sharedData: InstanceService,

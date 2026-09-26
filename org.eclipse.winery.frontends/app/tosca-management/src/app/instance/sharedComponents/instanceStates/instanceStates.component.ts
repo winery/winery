@@ -15,7 +15,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceStateService } from './instanceStates.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 

@@ -15,7 +15,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
-import {TabsModule} from 'ngx-bootstrap';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
 import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
 import {VisualAppearanceComponent} from './visualAppearance.component';

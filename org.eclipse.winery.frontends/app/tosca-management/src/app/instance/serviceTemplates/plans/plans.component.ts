@@ -22,7 +22,7 @@ import { SelectItem } from 'ng2-select';
 import { InterfaceParameter } from '../../../model/parameters';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
 import { InterfacesService } from '../../sharedComponents/interfaces/interfaces.service';
 import { InterfaceOperationApiData, InterfacesApiData } from '../../sharedComponents/interfaces/interfacesApiData';

@@ -17,7 +17,7 @@ import { NamespacesService } from './namespaces.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { NamespaceProperties } from '../../../model/namespaceProperties';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RepositoryService } from '../repository/repository.service';
 import { Repository } from '../repository/repository';

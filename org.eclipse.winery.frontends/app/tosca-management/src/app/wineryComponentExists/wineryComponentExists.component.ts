@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ExistService } from '../wineryUtils/existService';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { backendBaseURL } from '../configuration';
 import { ToscaTypes } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';

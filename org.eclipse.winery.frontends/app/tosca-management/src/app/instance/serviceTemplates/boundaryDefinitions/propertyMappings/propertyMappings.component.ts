@@ -15,7 +15,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PropertyMapping, PropertyMappingsApiData, PropertyMappingService } from './propertyMappings.service';
 import { WineryRowData, WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm } from '@angular/forms';
 import { InstanceService } from '../../../instance.service';
 import { WineryTemplate, WineryTopologyTemplate } from '../../../../model/wineryComponent';

@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { AttributesComponent } from './attributes.component';
 import { AttributesService } from './attributes.service';
-import { TabsModule } from 'ngx-bootstrap';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { SelectModule } from 'ng2-select';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';

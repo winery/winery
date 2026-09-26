@@ -25,7 +25,7 @@ import {
 import { saveAs } from 'file-saver';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LicenseEngineService } from './licenseEngine.service';
 import { License } from './LicenseEngineApiData';
 

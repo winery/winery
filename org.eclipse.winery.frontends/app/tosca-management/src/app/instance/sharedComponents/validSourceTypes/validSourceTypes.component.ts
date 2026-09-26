@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ValidSourceTypesService } from './validSourceTypes.service';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { InstanceService } from '../../instance.service';
@@ -20,7 +20,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { SelectData } from '../../../model/selectData';
 import { ValidSourceTypesApiData } from './validSourceTypesApiData';
 import { HttpErrorResponse } from '@angular/common/http';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { forkJoin } from 'rxjs';
 import { QNameApiData } from '../../../model/qNameApiData';
 import { QName } from '../../../../../../shared/src/app/model/qName';
@@ -48,7 +48,7 @@ export class ValidSourceTypesComponent implements OnInit {
     initialActiveItem: Array<SelectData>;
     currentSelectedItem: QNameApiData;
     validSourceTypes: ValidSourceTypesApiData = new ValidSourceTypesApiData();
-    @ViewChild('addModal', { static: true }) addModal: ModalDirective;
+    @ViewChild('addModal', { static: true }) addModal: TemplateRef<any>;
     addModalRef: BsModalRef;
     columns: Array<WineryTableColumn> = [
         { title: 'Name', name: 'localname', sort: true },

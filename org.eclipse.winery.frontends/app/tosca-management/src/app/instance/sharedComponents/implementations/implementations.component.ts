@@ -16,7 +16,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { InstanceService } from '../../instance.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationService } from './implementations.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Utils } from '../../../wineryUtils/utils';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { ToscaTypes } from '../../../model/enums';

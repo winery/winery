@@ -15,7 +15,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
 import { InstanceService } from '../../../instance.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Artifact } from '../../../../model/artifact';
 import { SelectData } from '../../../../model/selectData';
 

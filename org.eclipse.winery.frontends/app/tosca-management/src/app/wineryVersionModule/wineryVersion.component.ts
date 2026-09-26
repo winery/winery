@@ -13,7 +13,7 @@
  ********************************************************************************/
 import { Component, Input, ViewChild } from '@angular/core';
 import { InstanceService } from '../instance/instance.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { WineryVersionTypesEnum } from '../model/enums';
 import { WineryVersion } from '../model/wineryVersion';

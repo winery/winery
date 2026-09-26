@@ -14,7 +14,7 @@
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { InheritanceService } from '../instance/sharedComponents/inheritance/inheritance.service';
-import { TooltipConfig } from 'ngx-bootstrap';
+import { TooltipConfig } from 'ngx-bootstrap/tooltip';
 import { AddComponentValidation } from '../wineryAddComponentModule/addComponentValidation';
 import { WineryVersion } from '../model/wineryVersion';
 import { SelectData } from '../model/selectData';

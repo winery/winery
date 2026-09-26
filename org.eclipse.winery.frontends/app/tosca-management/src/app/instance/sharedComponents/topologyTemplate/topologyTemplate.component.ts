@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { backendBaseURL, editorURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../model/wineryVersion';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ActivatedRoute } from '@angular/router';
 import { ToscaTypes } from '../../../model/enums';
 import { WineryRepositoryConfigurationService } from '../../../wineryFeatureToggleModule/WineryRepositoryConfiguration.service';
@@ -35,7 +35,7 @@ export class TopologyTemplateComponent implements OnInit {
 
     selectedVersion: WineryVersion;
 
-    @ViewChild('compareToModal', { static: true }) compareToModal: ModalDirective;
+    @ViewChild('compareToModal', { static: true }) compareToModal: TemplateRef<any>;
     compareToModalRef: BsModalRef;
 
     constructor(private sanitizer: DomSanitizer,

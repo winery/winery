@@ -21,7 +21,7 @@ import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { IAReport, InterfacesService } from './interfaces.service';
 import { InheritedInterface, InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InterfaceParameter } from '../../../model/parameters';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm } from '@angular/forms';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
 import { ToscaTypes } from '../../../model/enums';

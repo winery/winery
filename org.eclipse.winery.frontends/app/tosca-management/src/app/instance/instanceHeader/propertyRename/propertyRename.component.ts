@@ -18,7 +18,7 @@ import { PropertyRenameService } from './propertyRename.service';
 import { ToscaComponent } from '../../../model/toscaComponent';
 import { NgForm } from '@angular/forms';
 import { ToscaTypes } from '../../../model/enums';
-import { ModalDirective } from 'ngx-bootstrap';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';

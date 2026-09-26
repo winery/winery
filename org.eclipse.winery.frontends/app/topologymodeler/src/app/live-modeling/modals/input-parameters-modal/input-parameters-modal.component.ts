@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { InputParameter } from '../../../models/container/input-parameter.model';
 
 @Component({

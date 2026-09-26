@@ -14,7 +14,7 @@
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
-import {PaginationModule} from 'ngx-bootstrap';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 import {Ng2TableModule} from 'ng2-table';
 import {WineryTableComponent} from './wineryTable.component';
 import { RouterModule } from '@angular/router';
