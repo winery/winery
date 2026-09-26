@@ -15,7 +15,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { ResearchObjectPublicationComponent } from './researchObjectPublication.component';
 import { ResearchObjectMetaDataComponent } from './researchObjectMetaData.component';
 import { ResearchObjectFilesComponent } from './researchObjectFiles.component';
@@ -44,7 +43,6 @@ export const researchObjectRoutes: Routes = [
     imports: [
         BrowserModule,
         FormsModule,
-        HttpModule,
     ],
     exports: [RouterModule],
     declarations: [],

@@ -14,7 +14,6 @@
 import {NgModule} from '@angular/core';
 import {SelfServicePortalComponent} from './selfServicePortal.component';
 import {SelfServiceDescriptionComponent} from './selfServicePortalDescription.component';
-import {HttpModule} from '@angular/http';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouterModule} from '@angular/router';
@@ -31,7 +30,6 @@ import {WineryEditXMLModule} from '../../sharedComponents/editXML/editXML.module
     imports: [
         BrowserModule,
         FormsModule,
-        HttpModule,
         RouterModule,
         WineryEditorModule,
         WineryUploaderModule,

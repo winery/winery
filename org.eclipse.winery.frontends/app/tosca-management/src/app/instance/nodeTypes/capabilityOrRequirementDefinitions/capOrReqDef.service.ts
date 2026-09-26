@@ -12,7 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { CapabilityOrRequirementDefinition, CapOrReqDefinition, Constraint } from './capOrReqDefResourceApiData';
 import { Router } from '@angular/router';

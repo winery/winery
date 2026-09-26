@@ -15,7 +15,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import {SelfServiceDescriptionComponent} from './selfServicePortalDescription.component';
 import {SelfServicePortalImagesComponent} from './selfServicePortalImages.component';
 import {SelfServicePortalOptionsComponent} from './selfServicePortalOptions.component';
@@ -54,7 +53,6 @@ export const selfServiceRoutes = [
     imports: [
         BrowserModule,
         FormsModule,
-        HttpModule,
         RouterModule.forChild(selfServiceRoutes)
     ],
     exports: [RouterModule],
