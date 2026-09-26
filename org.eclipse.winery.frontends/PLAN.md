@@ -12,6 +12,7 @@ Apps (all in this directory, one `angular.json`): `tosca-management`, `topologym
 - [x] Node 22 / npm 10 build (#814)
 - [x] Remove `@angular/http` and unused deps
 - [x] Angular 8 (+ Material 8, `rxjs-compat` → public rxjs API, `angular2-markdown` → `marked`)
+- [x] B1: `@angular-redux/store` → local `NgRedux` shim (`app/topologymodeler/src/app/redux/ng-redux.ts`)
 - [x] B2: `ng2-select` → `@ng-select/ng-select` 3.7.3
 
 ## Work packages

@@ -14,7 +14,7 @@
 import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { PatternRefinementModel, RefinementElement, RefinementWebSocketService } from './refinementWebSocket.service';
 import { BackendService } from '../../services/backend.service';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyRendererActions } from '../../redux/actions/topologyRenderer.actions';
 import { WineryActions } from '../../redux/actions/winery.actions';

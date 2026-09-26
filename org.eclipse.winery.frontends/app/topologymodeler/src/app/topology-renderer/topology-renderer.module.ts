@@ -26,7 +26,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JsPlumbService } from '../services/jsPlumb.service';
 import { TopologyRendererComponent } from './topology-renderer.component';
-import { NgReduxModule } from '@angular-redux/store';
+import { NgReduxModule } from '../redux/ng-redux';
 import { RequirementsComponent } from '../node/requirements/requirements.component';
 import { TargetLocationsComponent } from '../node/target-locations/target-locations.component';
 import { PoliciesComponent } from '../node/policies/policies.component';

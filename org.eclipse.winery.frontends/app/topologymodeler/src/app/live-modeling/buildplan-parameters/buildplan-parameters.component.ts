@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 import { LoggingService } from '../../services/logging.service';
 import { LiveModelingLogTypes } from '../../models/enums';
 import { InputParameter } from '../../models/container/input-parameter.model';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 
 @Component({

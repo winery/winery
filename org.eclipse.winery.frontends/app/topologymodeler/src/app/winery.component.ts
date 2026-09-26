@@ -18,7 +18,7 @@ import { ILoaded, LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
 import { BackendService } from './services/backend.service';
 import { Subscription } from 'rxjs';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from './redux/ng-redux';
 import { IWineryState } from './redux/store/winery.store';
 import { ToscaDiff } from './models/ToscaDiff';
 import { TopologyTemplateUtil } from './models/topologyTemplateUtil';

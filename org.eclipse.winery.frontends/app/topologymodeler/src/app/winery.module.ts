@@ -25,7 +25,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { PaletteComponent } from './palette/palette.component';
 import { TopologyRendererModule } from './topology-renderer/topology-renderer.module';
 import { PrintViewComponent } from './print-view/print-view.component';
-import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
+import { DevToolsExtension, NgRedux, NgReduxModule } from './redux/ng-redux';
 import { INITIAL_IWINERY_STATE, IWineryState, rootReducer } from './redux/store/winery.store';
 import { WineryActions } from './redux/actions/winery.actions';
 import { TopologyRendererActions } from './redux/actions/topologyRenderer.actions';

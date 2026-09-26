@@ -19,7 +19,7 @@ import { PropertyMatching, UpdateInfo } from '../../models/UpdateInfo';
 import { UpdateService } from './update.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { TTopologyTemplate } from '../../models/ttopology-template';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { TopologyTemplateUtil } from '../../models/topologyTemplateUtil';
 import { WineryActions } from '../../redux/actions/winery.actions';
