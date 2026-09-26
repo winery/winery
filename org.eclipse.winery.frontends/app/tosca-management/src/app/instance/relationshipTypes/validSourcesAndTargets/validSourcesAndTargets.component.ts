@@ -16,7 +16,6 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { ValidService } from './validSourcesAndTargets.service';
 import { ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum } from './validEndingsApiData';
 import { SelectData } from '../../../model/selectData';
-import { SelectItem } from 'ng2-select';
 import { InstanceService } from '../../instance.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -53,11 +52,11 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
             );
     }
 
-    public onSelectedTrgValueChanged(event: SelectItem) {
+    public onSelectedTrgValueChanged(event: SelectData) {
         this.validEndingsData.validTarget.validDataSet = { id: event.id, text: event.text };
     }
 
-    public onSelectedSrcValueChanged(event: SelectItem) {
+    public onSelectedSrcValueChanged(event: SelectData) {
         this.validEndingsData.validSource.validDataSet = { id: event.id, text: event.text };
     }
 

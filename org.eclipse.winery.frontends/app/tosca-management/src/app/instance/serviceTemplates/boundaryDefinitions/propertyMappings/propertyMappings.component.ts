@@ -21,7 +21,6 @@ import { InstanceService } from '../../../instance.service';
 import { WineryTemplate, WineryTopologyTemplate } from '../../../../model/wineryComponent';
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../../../../model/enums';
 import { Utils } from '../../../../wineryUtils/utils';
-import { SelectItem } from 'ng2-select';
 import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinition.types';
 import { SelectData } from '../../../../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -139,7 +138,7 @@ export class PropertyMappingsComponent implements OnInit {
     getListOfTemplates(templateType: string): Array<SelectData> {
         if (this.topologyTemplate[templateType]) {
             return this.topologyTemplate[templateType].map((template: WineryTemplate) => {
-                const newItem: SelectItem = new SelectItem('');
+                const newItem: SelectData = new SelectData();
                 newItem.id = template.id;
                 newItem.text = template.id;
                 return newItem;
@@ -151,7 +150,7 @@ export class PropertyMappingsComponent implements OnInit {
         }
     }
 
-    targetObjectSelected(targetObj: SelectItem) {
+    targetObjectSelected(targetObj: SelectData) {
         const templates: Array<WineryTemplate> = this.topologyTemplate[this.serviceTemplateTemplate];
         this.targetObject = templates.find((template: WineryTemplate) => {
             return template.id === targetObj.id;
@@ -189,7 +188,7 @@ export class PropertyMappingsComponent implements OnInit {
         }
     }
 
-    targetPropertySelected(property: SelectItem) {
+    targetPropertySelected(property: SelectData) {
         if (property) {
             this.selectedProperty = property.id;
         }

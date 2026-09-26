@@ -33,6 +33,7 @@
                             "app/tosca-management/src/css/wineryCommon.css",
                             "app/tosca-management/src/css/wineryRepository.css",
                             "node_modules/ngx-toastr/toastr.css",
+                            "node_modules/@ng-select/ng-select/themes/default.theme.css",
                             "node_modules/font-awesome/css/font-awesome.css",
                             "app/tosca-management/src/assets/built-codeEdit15_1/code_edit/built-codeEdit.css"
                         ],

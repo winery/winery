@@ -20,7 +20,6 @@ import { forkJoin } from 'rxjs';
 import { SelectData } from '../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { SelectItem } from 'ng2-select';
 
 @Component({
     selector: 'winery-file-comparison',
@@ -32,7 +31,7 @@ export class WineryFileComparisonComponent implements OnChanges {
      * The selected drop-down item representing the version of the model corresponding to the left file to compare.
      * Has the format {id: modelTransactionId, text: textualRepresentationOfModelVersion}
      */
-    leftVersion: SelectItem;
+    leftVersion: SelectData;
 
     /**
      * The left file version to compare
@@ -48,7 +47,7 @@ export class WineryFileComparisonComponent implements OnChanges {
      * The selected drop-down item representing the version of the model corresponding to the right file to compare.
      * Has the format {id: modelTransactionId, text: textualRepresentationOfModelVersion}
      */
-    rightVersion: SelectItem;
+    rightVersion: SelectData;
 
     /**
      * The content of the right file to compare
@@ -79,19 +78,19 @@ export class WineryFileComparisonComponent implements OnChanges {
         this.initializeSelection();
     }
 
-    leftFileVersionSelected(fileVersion: SelectItem) {
+    leftFileVersionSelected(fileVersion: SelectData) {
         this.leftVersion = fileVersion;
         this.leftFile = this.locateSelectedFileVersion(fileVersion);
         this.leftFileText = null;
     }
 
-    rightFileVersionSelected(fileVersion: SelectItem) {
+    rightFileVersionSelected(fileVersion: SelectData) {
         this.rightVersion = fileVersion;
         this.rightFile = this.locateSelectedFileVersion(fileVersion);
         this.rightFileText = null;
     }
 
-    locateSelectedFileVersion(version: SelectItem): FileProvenanceElement {
+    locateSelectedFileVersion(version: SelectData): FileProvenanceElement {
         return this.fileProvenance
             .find((file: FileProvenanceElement) => file.transactionHash.toLowerCase() === version.id.toLowerCase());
     }
@@ -123,9 +122,9 @@ export class WineryFileComparisonComponent implements OnChanges {
     /**
      * Gets all file versions of the specified file
      * @param {string} fileId the name of the file for which to find versions
-     * @returns {SelectItem[]} the set of file versions (SelectItem {id, text}) that refer to the specified file
+     * @returns {SelectData[]} the set of file versions (SelectData {id, text}) that refer to the specified file
      */
-    getProvenanceVersionTitles(fileId: string): SelectItem[] {
+    getProvenanceVersionTitles(fileId: string): SelectData[] {
         if (this.fileProvenance !== null && this.fileProvenance !== undefined) {
             return this.fileProvenance
                 .map((version: FileProvenanceElement) => {
@@ -136,12 +135,12 @@ export class WineryFileComparisonComponent implements OnChanges {
         return [];
     }
 
-    convertProvenanceElementToSelectEntry(element: ProvenanceElement): SelectItem {
+    convertProvenanceElementToSelectEntry(element: ProvenanceElement): SelectData {
         const formattedTimestamp = this.datePipe.transform(element.unixTimestamp * 1000, 'yyyy-MM-dd HH:mm:ss');
         const text = `${formattedTimestamp} (${element.authorName ? element.authorName : 'unauthorized'})`;
         const id = element.transactionHash;
 
-        const result = new SelectItem('');
+        const result = new SelectData();
         result.id = id;
         result.text = text;
 

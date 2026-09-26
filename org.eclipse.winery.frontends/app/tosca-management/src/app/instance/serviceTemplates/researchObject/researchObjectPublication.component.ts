@@ -27,7 +27,7 @@ export class ResearchObjectPublicationComponent implements OnInit {
     loading = true;
     public items: Array<string> = ['ark', 'arXiv', 'bibcode', 'doi', 'ean13', 'eissn', 'handle',
         'isbn', 'issn', 'istc', 'lissn', 'lsid', 'pmid', 'purl', 'upc', 'url', 'urn'];
-    private idType: any = [];
+    private idType: string = null;
 
     constructor(private service: ResearchObjectService,
                 private notify: WineryNotificationService) {
@@ -47,8 +47,8 @@ export class ResearchObjectPublicationComponent implements OnInit {
     }
 
     saveResearchObjectPublication() {
-        if (!!this.idType[0]) {
-            this.data.idType = this.idType[0].text;
+        if (!!this.idType) {
+            this.data.idType = this.idType;
         }
         this.service.saveResearchObjectPublication(this.data).subscribe(
             (data) => {
@@ -63,7 +63,7 @@ export class ResearchObjectPublicationComponent implements OnInit {
     handleData(data: ROPublicationApiData) {
         this.data = data;
         if (!!this.data.idType) {
-            this.idType.push(this.data.idType);
+            this.idType = this.data.idType;
         }
         this.loading = false;
     }

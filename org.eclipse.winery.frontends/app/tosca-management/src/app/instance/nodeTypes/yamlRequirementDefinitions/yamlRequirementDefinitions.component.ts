@@ -24,7 +24,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { YamlRequirementDefinitionTableData } from './yamlRequirementDefinitionTableData';
 import { InstanceService } from '../../instance.service';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
-import { SelectItem } from 'ng2-select';
 import { QName } from '../../../../../../shared/src/app/model/qName';
 
 @Component({
@@ -53,11 +52,11 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
     ];
 
     allNodeTypes: SelectData[] = [];
-    initialNodeType = this.anyElement;
+    initialNodeType = this.anyElement[0].children[0];
     allCapabilityTypes: SelectData[] = [];
-    initialCapabilityType = this.noneElement;
+    initialCapabilityType = this.noneElement[0].children[0];
     allRelationshipTypes: SelectData[] = [];
-    initialRelationshipType = this.anyElement;
+    initialRelationshipType = this.anyElement[0].children[0];
     requirementDefinitions: YamlRequirementDefinitionApiData[] = [];
     tableData: YamlRequirementDefinitionTableData[] = [];
     reqDefToBeAdded: YamlRequirementDefinitionApiData;
@@ -144,16 +143,16 @@ export class YamlRequirementDefinitionsComponent implements OnInit {
             );
     }
 
-    onSelectedCapTypeChanged(value: SelectItem) {
+    onSelectedCapTypeChanged(value: SelectData) {
         this.reqDefToBeAdded.capability = value.id;
         this.enableAddItemButton = value.id !== '(none)';
     }
 
-    onSelectedNodeTypeChanged(value: SelectItem) {
+    onSelectedNodeTypeChanged(value: SelectData) {
         this.reqDefToBeAdded.node = value.id === '(any)' ? undefined : value.id;
     }
 
-    onSelectedRelTypeChanged(value: SelectItem) {
+    onSelectedRelTypeChanged(value: SelectData) {
         this.reqDefToBeAdded.relationship = value.id === '(any)' ? undefined : value.id;
     }
 

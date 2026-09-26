@@ -28,7 +28,7 @@ import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck
 import { AccordionModule, AlertModule, CollapseModule, ModalModule, ProgressbarModule } from 'ngx-bootstrap';
 import { ErrorElementToLinkPipe } from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
 import { AccountabilityComponent } from '../../instance/admin/accountability/accountability.component';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { AuthorizationComponent } from '../../instance/admin/accountability/authorization/authorization.component';
 import { AuthenticationComponent } from '../../instance/admin/accountability/authentication/authentication.component';
 import { ConfigurationComponent } from '../../instance/admin/accountability/configuration/configuration.component';
@@ -48,7 +48,7 @@ import { EdmmTypesService } from '../../instance/admin/edmmTypes/edmmTypes.servi
         CommonModule,
         FormsModule,
         RepositoryModule,
-        SelectModule,
+        NgSelectModule,
         WineryDuplicateValidatorModule,
         WineryLoaderModule,
         WineryModalModule,

@@ -47,10 +47,11 @@
 
     <label class="control-label">Derived From</label>
     <ng-select #derivedFromSelector
-               [disabled]="!sharedData?.currentVersion?.editable"
-               [items]="availableSuperClasses"
-               (selected)="onSelectedValueChanged($event)"
-               [active]="initialActiveItem">
+               [readonly]="!sharedData?.currentVersion?.editable"
+               [items]="availableSuperClasses" bindLabel="text" groupBy="children" [clearable]="false"
+               (change)="onSelectedValueChanged($event)"
+               [ngModel]="initialActiveItem" [ngModelOptions]="{standalone: true}">
+        <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
     </ng-select>
     <br>
     <button class="btn btn-info btn-sm" [disabled]="!enableButton" (click)="onButtonClick()">Open</button>

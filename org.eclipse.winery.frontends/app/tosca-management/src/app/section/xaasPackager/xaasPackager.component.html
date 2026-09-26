@@ -25,9 +25,9 @@
                 <div class="form-group">
                     <label for="artifactType" class="control-label">Type</label>
                     <ng-select id="artifactType" name="type"
-                               [allowClear]="true"
+                               [clearable]="true"
                                [items]="artifactTypes"
-                               (data)="refreshSelectedArtifactType($event)">
+                               (change)="refreshSelectedArtifactType($event)">
                     </ng-select>
                 </div>
                 <div class="form-group">
@@ -51,17 +51,17 @@
                     <label for="nodeTypes">Node Types:</label>
                     <ng-select id="nodeTypes" name="nodeType"
                                [items]="nodeTypes"
-                               [multiple]="true"
-                               (data)="refreshValue($event)">
+                               [multiple]="true" [clearable]="false"
+                               (change)="refreshValue($event)">
                     </ng-select>
                     <pre>{{itemsToString(value)}}</pre>
                 </div>
                 <div *ngIf="infrastructureNodetypes?.length != 0" class="form-group" id="infrastructureDiv">
                     <label for="infrastructureNodeTypes">Infrastructure:</label>
                     <ng-select id="infrastructureNodeTypes" name="infrastructure"
-                               [allowClear]="true"
+                               [clearable]="true"
                                [items]="infrastructureNodetypes"
-                               (data)="refreshSelectedInfrastructureNodeType($event)">
+                               (change)="refreshSelectedInfrastructureNodeType($event)">
                     </ng-select>
                 </div>
             </fieldset>

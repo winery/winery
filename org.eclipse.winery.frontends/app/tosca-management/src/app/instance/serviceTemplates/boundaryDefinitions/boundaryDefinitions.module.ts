@@ -28,7 +28,7 @@ import { CapabilitiesComponent } from './capabilities/capabilities.component';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
 import { PoliciesComponent } from './policies/policies.component';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { EditXMLComponent } from '../../sharedComponents/editXML/editXML.component';
 import { WineryEditXMLModule } from '../../sharedComponents/editXML/editXML.module';
 import { InterfacesComponent } from '../../sharedComponents/interfaces/interfaces.component';
@@ -55,7 +55,7 @@ export const boundaryDefinitionsRoutes: Routes = [
         CommonModule,
         WineryModalModule,
         FileUploadModule,
-        SelectModule,
+        NgSelectModule,
         InterfacesModule,
         WineryTableModule,
         WineryDuplicateValidatorModule,

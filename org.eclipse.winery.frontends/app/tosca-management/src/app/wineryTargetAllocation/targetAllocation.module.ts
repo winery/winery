@@ -15,7 +15,7 @@
 import { NgModule } from '@angular/core';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { TargetAllocationComponent } from './targetAllocation.component';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { PolicySelectionModule } from './policySelection/policySelection.module';
 import { CommonModule } from '@angular/common';
@@ -25,7 +25,7 @@ import { TargetAllocationService } from './targetAllocation.service';
 @NgModule({
     imports: [
         WineryModalModule,
-        SelectModule,
+        NgSelectModule,
         FormsModule,
         PolicySelectionModule,
         CommonModule,

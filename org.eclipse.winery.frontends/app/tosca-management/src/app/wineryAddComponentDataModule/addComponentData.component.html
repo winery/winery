@@ -116,8 +116,11 @@
                 </div>
                 <div class="form-group" *ngIf="types">
                     <label for="typeSelect" class="control-label">Type</label>
-                    <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)"
-                               [active]="[newComponentSelectedType]"></ng-select>
+                    <ng-select id="typeSelect" [items]="types" bindLabel="text" groupBy="children" [clearable]="false"
+                               (change)="typeSelected($event)"
+                               [ngModel]="newComponentSelectedType" [ngModelOptions]="{standalone: true}">
+                        <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
+                    </ng-select>
                 </div>
                 <br>
                 <!-- pattern parameter is required to enable form validation -->

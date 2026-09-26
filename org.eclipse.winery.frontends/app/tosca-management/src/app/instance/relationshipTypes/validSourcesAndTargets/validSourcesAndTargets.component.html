@@ -47,9 +47,10 @@
             </div>
             <div *ngIf="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.NODETYPE"
                  [class.hidden]="loadingSrc">
-                <ng-select [items]="selectSources"
-                           [active]="[validEndingsData.validSource.validDataSet]"
-                           (selected)="onSelectedSrcValueChanged($event)">
+                <ng-select [items]="selectSources" bindLabel="text" groupBy="children" [clearable]="false"
+                           [ngModel]="validEndingsData.validSource.validDataSet" [ngModelOptions]="{standalone: true}"
+                           (change)="onSelectedSrcValueChanged($event)">
+                    <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
                 </ng-select>
             </div>
             <div *ngIf="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.REQTYPE">
@@ -83,8 +84,11 @@
             </div>
             <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.NODETYPE"
                  [class.hidden]="loadingTrg">
-                <ng-select id="targetSelect" [items]="selectTargets" (selected)="onSelectedTrgValueChanged($event)"
-                           [active]="[validEndingsData.validTarget.validDataSet]"></ng-select>
+                <ng-select id="targetSelect" [items]="selectTargets" bindLabel="text" groupBy="children" [clearable]="false"
+                           (change)="onSelectedTrgValueChanged($event)"
+                           [ngModel]="validEndingsData.validTarget.validDataSet" [ngModelOptions]="{standalone: true}">
+                    <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
+                </ng-select>
             </div>
             <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.CAPTYPE">
                 Not implemented yet!

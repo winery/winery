@@ -39,10 +39,11 @@
             <div class="form-group">
                 <label for="validNodeTypes" class="control-label">Node Types</label>
                 <ng-select id="validNodeTypes"
-                           [disabled]="!sharedData?.currentVersion?.editable"
-                           [items]="allPossibleValidTypes"
-                           (selected)="onSelectedValueChanged($event)"
-                           [active]="initialActiveItem">
+                           [readonly]="!sharedData?.currentVersion?.editable"
+                           [items]="allPossibleValidTypes" bindLabel="text" groupBy="children" [clearable]="false"
+                           (change)="onSelectedValueChanged($event)"
+                           [ngModel]="initialActiveItem" [ngModelOptions]="{standalone: true}">
+                    <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
                 </ng-select>
             </div>
 

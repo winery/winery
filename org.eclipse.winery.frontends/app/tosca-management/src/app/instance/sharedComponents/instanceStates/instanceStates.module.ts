@@ -16,7 +16,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {ModalModule, TabsModule, TypeaheadModule} from 'ngx-bootstrap';
-import {SelectModule} from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
 import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
 import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
@@ -27,7 +27,7 @@ import {InstanceStatesComponent} from './instanceStates.component';
         ModalModule.forRoot(),
         WineryTableModule,
         TabsModule.forRoot(),
-        SelectModule,
+        NgSelectModule,
         BrowserModule,
         FormsModule,
         WineryLoaderModule,

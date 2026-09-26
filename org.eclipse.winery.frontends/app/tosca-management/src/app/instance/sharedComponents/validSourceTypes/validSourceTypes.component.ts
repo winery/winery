@@ -45,7 +45,7 @@ export class ValidSourceTypesComponent implements OnInit {
     loading: boolean;
     sortedValidTypes: SelectData[];
     allPossibleValidTypes: SelectData[];
-    initialActiveItem: Array<SelectData>;
+    initialActiveItem: SelectData;
     currentSelectedItem: QNameApiData;
     validSourceTypes: ValidSourceTypesApiData = new ValidSourceTypesApiData();
     @ViewChild('addModal', { static: true }) addModal: ModalDirective;
@@ -133,8 +133,8 @@ export class ValidSourceTypesComponent implements OnInit {
                 && this.sortedValidTypes !== undefined
                 && this.sortedValidTypes.length > 0
                 && this.sortedValidTypes[0].children.length > 0) {
-                this.initialActiveItem = [this.sortedValidTypes[0].children[0]];
-                this.onSelectedValueChanged(this.initialActiveItem[0]);
+                this.initialActiveItem = this.sortedValidTypes[0].children[0];
+                this.onSelectedValueChanged(this.initialActiveItem);
             }
         }
     }

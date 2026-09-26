@@ -35,8 +35,8 @@
                 <div *ngIf="generateData.toscaType == artifactTemplate">
                     <div *ngIf="artifactTypes">
                         <label> Artifact Type</label>
-                        <ng-select name="artifactType" [items]="artifactTypes" (selected)="typeSelected($event)"
-                                   [active]="[selectedArtifactType]">
+                        <ng-select name="artifactType" [items]="artifactTypes" bindLabel="text" [clearable]="false" (change)="typeSelected($event)"
+                                   [ngModel]="selectedArtifactType" [ngModelOptions]="{standalone: true}">
                         </ng-select>
                     </div>
                     <div

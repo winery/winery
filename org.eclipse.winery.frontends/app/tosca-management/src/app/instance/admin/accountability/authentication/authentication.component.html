@@ -17,9 +17,12 @@
         <div *ngIf="!error; else showError">
             <div class="form-group">
                 <label for="provenanceSelect" class="control-label">Service Template (Process Id)</label>
-                <ng-select id="provenanceSelect" [items]="serviceTemplateList"
-                           (selected)="provenanceIdSelected($event)"
-                           [active]="[selectedProvenanceId]"></ng-select>
+                <ng-select id="provenanceSelect" [items]="serviceTemplateList" bindLabel="text" groupBy="children"
+                           [clearable]="false"
+                           (change)="provenanceIdSelected($event)"
+                           [ngModel]="selectedProvenanceId" [ngModelOptions]="{standalone: true}">
+                    <ng-template ng-optgroup-tmp let-item="item">{{ item.text }}</ng-template>
+                </ng-select>
                 <br/>
 
                 <label for="blockchainAddress">Blockchain Address</label>

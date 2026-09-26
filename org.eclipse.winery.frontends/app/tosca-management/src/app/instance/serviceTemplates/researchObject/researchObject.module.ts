@@ -19,7 +19,7 @@ import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { ResearchObjectPublicationComponent } from './researchObjectPublication.component';
 import { ResearchObjectMetaDataComponent } from './researchObjectMetaData.component';
 import { ResearchObjectComponent } from './researchObject.component';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { FileUploaderModule } from '../../sharedComponents/files/fileUploader/fileUploader.module';
 import { ResearchObjectFilesComponent } from './researchObjectFiles.component';
 import { FileManagerModule } from '../../sharedComponents/files/fileManager/fileManager.module';
@@ -37,7 +37,7 @@ import { MatButtonModule } from '@angular/material/button';
         FormsModule,
         RouterModule,
         WineryLoaderModule,
-        SelectModule,
+        NgSelectModule,
         FileUploaderModule,
         FileManagerModule,
         MatExpansionModule,

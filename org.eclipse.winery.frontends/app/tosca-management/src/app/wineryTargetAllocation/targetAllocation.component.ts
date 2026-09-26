@@ -14,7 +14,7 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { SelectItem } from 'ng2-select';
+import { SelectData } from '../model/selectData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { PolicySelectionComponent } from './policySelection/policySelection.component';
 import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
@@ -50,20 +50,20 @@ export class TargetAllocationComponent implements OnInit {
     constructor(private service: TargetAllocationService, private notify: WineryNotificationService) {
     }
 
-    private static getCriteriaForSelect(): SelectItem[] {
-        const criteria: SelectItem[] = [];
+    private static getCriteriaForSelect(): SelectData[] {
+        const criteria: SelectData[] = [];
 
-        const minHosts = new SelectItem('');
+        const minHosts = new SelectData();
         minHosts.id = 'MinHosts';
         minHosts.text = 'Min Hosts';
         criteria.push(minHosts);
 
-        const fulfillPolicies = new SelectItem('');
+        const fulfillPolicies = new SelectData();
         fulfillPolicies.id = 'FulfillPolicies';
         fulfillPolicies.text = 'Fulfill Policies';
         criteria.push(fulfillPolicies);
 
-        const minExternalConnections = new SelectItem('');
+        const minExternalConnections = new SelectData();
         minExternalConnections.id = 'MinExternalConnections';
         minExternalConnections.text = 'Min External Connections';
         criteria.push(minExternalConnections);
@@ -104,8 +104,8 @@ export class TargetAllocationComponent implements OnInit {
         this.targetAllocationModal.hide();
     }
 
-    criteriaSelected(value: SelectItem) {
-        this.selectedCriteria = value.id;
+    criteriaSelected(value: SelectData) {
+        this.selectedCriteria = value ? value.id : undefined;
     }
 
     addSelectedCriteria() {

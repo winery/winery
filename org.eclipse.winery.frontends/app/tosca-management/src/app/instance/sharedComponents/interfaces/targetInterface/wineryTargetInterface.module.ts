@@ -15,14 +15,14 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {WineryTargetInterfaceComponent} from './wineryTargetInterface.component';
-import {SelectModule} from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import {WineryLoaderModule} from '../../../../wineryLoader/wineryLoader.module';
 
 @NgModule({
     imports: [
         FormsModule,
         BrowserModule,
-        SelectModule,
+        NgSelectModule,
         WineryLoaderModule,
     ],
     exports: [

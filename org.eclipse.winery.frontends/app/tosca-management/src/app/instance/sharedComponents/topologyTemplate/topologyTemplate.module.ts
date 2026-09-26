@@ -18,7 +18,6 @@ import { RouterModule } from '@angular/router';
 import { TopologyTemplateComponent } from './topologyTemplate.component';
 import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { SelectModule } from 'ng2-select';
 
 @NgModule({
     imports: [

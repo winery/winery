@@ -35,7 +35,7 @@
     <div class="control-group">
         <label class="control-label">Subject <span style="color: darkred">*</span></label>
         <div>
-            <ng-select [multiple]="true"
+            <ng-select [multiple]="true" [clearable]="false"
                        [(ngModel)]="selection"
                        [items]="subjects"
                        placeholder="Select Subjects">

@@ -26,8 +26,8 @@
         <form #form="ngForm">
             <div class="form-group">
                 <label class="control-label">Artifacts and Files</label>
-                <ng-select [items]="selectableArtifacts" (selected)="onArtifactSelected($event)"
-                           [disabled]="!instanceService?.currentVersion?.editable">
+                <ng-select [items]="selectableArtifacts" bindLabel="text" [clearable]="false" (change)="onArtifactSelected($event)"
+                           [readonly]="!instanceService?.currentVersion?.editable">
                 </ng-select>
             </div>
         </form>

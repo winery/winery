@@ -28,7 +28,7 @@ export class ResearchObjectMetaDataComponent implements OnInit {
     private subjects: Array<string> = ['Agricultural Sciences', 'Arts and Humanities', 'Astronomy and Astrophysics', 'Business and Management',
         'Chemistry', 'Computer and Information Science', 'Earth and Environmental Sciences', 'Engineering', 'Law',
         'Mathematical Sciences', 'Medicine, Health and Life Sciences', 'Physics', 'Social Sciences', 'Other'];
-    private selection: { id: string, text: string }[] = [];
+    private selection: string[] = [];
 
     constructor(private service: ResearchObjectService,
                 private notify: WineryNotificationService) {
@@ -49,7 +49,7 @@ export class ResearchObjectMetaDataComponent implements OnInit {
     public itemsToList(): Array<string> {
         const valueList: Array<string> = [];
         for (const entry of this.selection) {
-            valueList.push(entry.text);
+            valueList.push(entry);
         }
         return valueList;
     }
@@ -68,7 +68,7 @@ export class ResearchObjectMetaDataComponent implements OnInit {
         this.data = data;
         if (data.subjects) {
             for (const entry of data.subjects.subject) {
-                this.selection.push({ id: entry, text: entry });
+                this.selection.push(entry);
             }
         }
         this.loading = false;

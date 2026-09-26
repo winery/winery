@@ -19,7 +19,7 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
 import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQNameSelector.module';
-import { SelectModule } from 'ng2-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.module';
@@ -28,7 +28,7 @@ import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.
     imports: [
         CommonModule,
         BrowserModule,
-        SelectModule,
+        NgSelectModule,
         FormsModule,
         CommonModule,
         RouterModule,

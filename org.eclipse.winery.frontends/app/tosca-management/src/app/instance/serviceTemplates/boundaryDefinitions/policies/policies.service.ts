@@ -14,7 +14,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { SelectItem } from 'ng2-select';
+import { SelectData } from '../../../../model/selectData';
 import { WineryComponent } from '../../../../model/wineryComponent';
 import { backendBaseURL } from '../../../../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -33,14 +33,14 @@ export class PoliciesService {
         return this.http.get<WineryPolicy[]>(this.path);
     }
 
-    getPolicyTypes(): Observable<SelectItem[]> {
-        return this.http.get<SelectItem[]>(backendBaseURL + '/policytypes?grouped=angularSelect');
+    getPolicyTypes(): Observable<SelectData[]> {
+        return this.http.get<SelectData[]>(backendBaseURL + '/policytypes?grouped=angularSelect');
     }
 
-    getPolicyTemplatesForType(pT: SelectItem): Observable<SelectItem[]> {
+    getPolicyTemplatesForType(pT: SelectData): Observable<SelectData[]> {
         const qName = pT.id.slice(1).split('}');
         return this.http
-            .get<SelectItem[]>(
+            .get<SelectData[]>(
                 backendBaseURL + '/policytypes/' + encodeURIComponent(encodeURIComponent(qName[0])) + '/' + qName[1] + '/instances'
             );
     }

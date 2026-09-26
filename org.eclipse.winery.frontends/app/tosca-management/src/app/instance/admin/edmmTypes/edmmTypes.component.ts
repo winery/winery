@@ -17,7 +17,6 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
 import { SelectData } from '../../../model/selectData';
-import { SelectItem } from 'ng2-select';
 import { EdmmTypesService } from './edmmTypes.service';
 
 export class EdmmTypesRow {

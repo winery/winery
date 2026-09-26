@@ -14,7 +14,6 @@
 
 import { Component, Input, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap';
-import { SelectItem } from 'ng2-select';
 import { ValidSourceTypesComponent } from '../validSourceTypes/validSourceTypes.component';
 import { ToscaTypes } from '../../../model/enums';
 import { InstanceService } from '../../instance.service';
