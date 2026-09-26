@@ -17,7 +17,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { WineryFileComparisonComponent } from './wineryFileComparison.component';
 
-import { DiffMatchPatchModule } from 'ng-diff-match-patch';
 import { SelectModule } from 'ng2-select';
 import { WineryNotificationModule } from '../wineryNotificationModule/wineryNotification.module';
 
@@ -25,7 +24,6 @@ import { WineryNotificationModule } from '../wineryNotificationModule/wineryNoti
     imports: [
         BrowserModule,
         FormsModule,
-        DiffMatchPatchModule,
         SelectModule,
         WineryNotificationModule
     ],

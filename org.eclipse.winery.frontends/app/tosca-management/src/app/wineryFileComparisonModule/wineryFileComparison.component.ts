@@ -21,6 +21,7 @@ import { SelectData } from '../model/selectData';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { SelectItem } from 'ng2-select';
+import * as DiffMatchPatch from 'diff-match-patch';
 
 @Component({
     selector: 'winery-file-comparison',
@@ -59,6 +60,11 @@ export class WineryFileComparisonComponent implements OnChanges {
      * The right file version to compare
      */
     rightFile: FileProvenanceElement;
+
+    /**
+     * Line diff of the two file texts: [cssClass, leftLineNumber, rightLineNumber, text]; empty if equal
+     */
+    lineDiff: string[][] = [];
 
     @Input() fileProvenance: FileProvenanceElement[];
     @Input() selectedFileProvenanceElement: FileProvenanceElement;
@@ -112,6 +118,7 @@ export class WineryFileComparisonComponent implements OnChanges {
                         if (texts !== null && texts !== undefined && texts.length === 2) {
                             this.leftFileText = texts[0];
                             this.rightFileText = texts[1];
+                            this.lineDiff = this.computeLineDiff(texts[0], texts[1]);
                         }
                     },
                     error => this.handleError(error)
@@ -157,6 +164,35 @@ export class WineryFileComparisonComponent implements OnChanges {
 
         // if the file has no extension, e.g., LICENSE, and README, then we consider it comparable
         return true;
+    }
+
+    computeLineDiff(left: string, right: string): string[][] {
+        const dmp = new DiffMatchPatch();
+        const chars = dmp.diff_linesToChars_(left, right);
+        const diffs = dmp.diff_main(chars.chars1, chars.chars2, false);
+        dmp.diff_charsToLines_(diffs, chars.lineArray);
+        if (diffs.every(([op]) => op === DiffMatchPatch.DIFF_EQUAL)) {
+            return [];
+        }
+        const lines: string[][] = [];
+        let leftLine = 1;
+        let rightLine = 1;
+        for (const [op, text] of diffs) {
+            const diffLines = text.split(/\r?\n/);
+            if (diffLines[diffLines.length - 1] === '') {
+                diffLines.pop();
+            }
+            for (const line of diffLines) {
+                if (op === DiffMatchPatch.DIFF_DELETE) {
+                    lines.push(['diff-delete', `${leftLine++}`, '-', line]);
+                } else if (op === DiffMatchPatch.DIFF_INSERT) {
+                    lines.push(['diff-insert', '-', `${rightLine++}`, line]);
+                } else {
+                    lines.push(['diff-equal', `${leftLine++}`, `${rightLine++}`, line]);
+                }
+            }
+        }
+        return lines;
     }
 
     handleError(error: HttpErrorResponse) {

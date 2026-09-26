@@ -12,7 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnInit } from '@angular/core';
+import { isHotkey } from './hotkeys';
 import { TNodeTemplate, TRelationshipTemplate, TTopologyTemplate } from './models/ttopology-template';
 import { ILoaded, LoadedService } from './services/loaded.service';
 import { AppReadyEventService } from './services/app-ready-event.service';
@@ -77,6 +78,15 @@ export class WineryComponent implements OnInit, AfterViewInit {
     showVersionSlider: boolean;
 
     navbarHeight = 0;
+
+    hotkeysCheatSheetVisible = false;
+    readonly hotkeys = [
+        ['ctrl + space', 'Show / hide this help menu'],
+        ['ctrl + s', 'Save the Topology Template'],
+        ['ctrl + l', 'Apply the layout directive to the Node Templates'],
+        ['ctrl + a', 'Select all Node Templates'],
+        ['del', 'Delete an element.'],
+    ];
     configEnum = FeatureEnum;
 
     public loaded: ILoaded;
@@ -162,13 +172,21 @@ export class WineryComponent implements OnInit, AfterViewInit {
         this.appReadyEvent.trigger();
     }
 
+    @HostListener('document:keydown', ['$event'])
+    onHotkey(event: KeyboardEvent) {
+        if (isHotkey(event, 'mod+space')) {
+            event.preventDefault();
+            this.hotkeysCheatSheetVisible = !this.hotkeysCheatSheetVisible;
+        }
+    }
+
     /**
      * notifies the redux store of the sidebar with a given key being closed
      * @param key The identifier for the sidebar that has been closed
      */
     notifyClose(key: string): void {
         // FIXME this currently basically only supports the node-details sidebar
-        //  because none of the other sidebars are based off ng-sidebar
+        //  because the other sidebars are not closed by sliding out
         this.ngRedux.dispatch(this.uiActions.triggerSidebar( new DetailsSidebarState(false)));
     }
 

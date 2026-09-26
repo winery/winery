@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, ElementRef, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr';
 import { NgRedux } from '@angular-redux/store';
@@ -20,7 +20,7 @@ import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actio
 import { IWineryState } from '../redux/store/winery.store';
 import { BackendService } from '../services/backend.service';
 import { Subscription } from 'rxjs';
-import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { isHotkey } from '../hotkeys';
 import { TopologyRendererState } from '../redux/reducers/topologyRenderer.reducer';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { StatefulAnnotationsService } from '../services/statefulAnnotations.service';
@@ -88,7 +88,6 @@ export class NavbarComponent implements OnDestroy {
                 private wineryActions: WineryActions,
                 public backendService: BackendService,
                 private statefulService: StatefulAnnotationsService,
-                private hotkeysService: HotkeysService,
                 private overlayService: OverlayService,
                 private topologyService: TopologyService,
                 public configurationService: WineryRepositoryConfigurationService,
@@ -101,19 +100,20 @@ export class NavbarComponent implements OnDestroy {
         this.subscriptions.push(ngRedux.select((currentState) => currentState.wineryState.unsavedChanges)
             .subscribe((unsavedChanges) => this.unsavedChanges = unsavedChanges));
 
-        this.hotkeysService.add(new Hotkey('mod+s', (event: KeyboardEvent): boolean => {
-            event.stopPropagation();
-            this.saveTopologyTemplateToRepository();
-            return false; // Prevent bubbling
-        }, undefined, 'Save the Topology Template'));
-        this.hotkeysService.add(new Hotkey('mod+l', (event: KeyboardEvent): boolean => {
-            event.stopPropagation();
-            this.ngRedux.dispatch(this.actions.executeLayout());
-            return false; // Prevent bubbling
-        }, undefined, 'Apply the layout directive to the Node Templates'));
         this.exportCsarUrl = this.backendService.serviceTemplateURL + '/?csar';
         this.versionSliderService.hasMultipleVersions()
             .subscribe(hasMultipleVersions => this.showVersionSliderButton = hasMultipleVersions);
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    onHotkey(event: KeyboardEvent) {
+        if (isHotkey(event, 'mod+s')) {
+            event.preventDefault();
+            this.saveTopologyTemplateToRepository();
+        } else if (isHotkey(event, 'mod+l')) {
+            event.preventDefault();
+            this.ngRedux.dispatch(this.actions.executeLayout());
+        }
     }
 
     /**

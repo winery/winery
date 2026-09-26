@@ -14,9 +14,10 @@
 import {
     Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnInit, Output, ViewChild
 } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
- * This component provides an easy and fast way to use the ng2-table with further modifications
+ * This component provides an easy and fast way to use a table with further modifications
  * for the winery. It already enables the search, pagination and adding items to the table.
  * However, most of the configuration can be passed to this object.
  * <p>
@@ -170,7 +171,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
      */
     private iterableDiffer: IterableDiffer<any>;
 
-    constructor(private iterableDiffers: IterableDiffers) {
+    constructor(private iterableDiffers: IterableDiffers, private sanitizer: DomSanitizer) {
         this.iterableDiffer = iterableDiffers.find([]).create(null);
     }
 
@@ -270,6 +271,29 @@ export class WineryTableComponent implements OnInit, DoCheck {
         return filteredData;
     }
 
+    /**
+     * Cycles the sort order of the clicked column (asc, desc, none) and resets the other columns
+     */
+    onSortClick(column: any) {
+        if (column.sort === false) {
+            return;
+        }
+        column.sort = column.sort === 'asc' ? 'desc' : column.sort === 'desc' ? '' : 'asc';
+        this.columns.forEach((col: any) => {
+            if (col.name !== column.name && col.sort !== false) {
+                col.sort = '';
+            }
+        });
+        this.onChangeTable(this.config);
+    }
+
+    /**
+     * Cell values may contain HTML (e.g., links), which is rendered as is
+     */
+    getCellHtml(row: any, propertyName: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(propertyName.split('.').reduce((prev, curr) => prev[curr], row));
+    }
+
     onCellClick(data: WineryRowData) {
         this.selectedRow = this.rows.indexOf(data.row);
         this.cellSelected.emit(data);
@@ -321,7 +345,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
     }
 
     private refreshRowHighlighting(): void {
-        const tableRows = this.tableContainer.nativeElement.children[0].children[0].children[1].children;
+        const tableRows = this.tableContainer.nativeElement.children[0].children[1].children;
 
         for (let i = 0; i < tableRows.length; i++) {
             tableRows[i].className = (i === this.selectedRow) ? 'active-row' : '';

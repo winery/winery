@@ -11,31 +11,39 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-<ng-sidebar-container style="height: 100vh;">
+<div class="sidebar-container-root">
 
-    <ng-sidebar class="winery-sidebar"
-                [(opened)]="detailsSidebarVisible"
-                [position]="'right'"
-                (onClosed)="notifyClose('node-details')"
-                *ngIf="loaded?.loadedData">
+    <div class="winery-sidebar"
+         [class.winery-sidebar-closed]="!detailsSidebarVisible"
+         (transitionend)="$event.target === $event.currentTarget && !detailsSidebarVisible && notifyClose('node-details')"
+         *ngIf="loaded?.loadedData">
         <!-- need to wait for loading to know about repo configuration's yaml state -->
         <winery-node-details-sidebar [readonly]="readonly"
                                      (sidebarDeleteButtonClicked)="sidebarDeleteButtonClicked($event)"
                                      class="sidebar">
         </winery-node-details-sidebar>
-    </ng-sidebar>
-    <ng-sidebar class="winery-sidebar"
-                *ngIf="activeResearchPlugin != undefined"
-                [opened]="activeResearchPlugin != undefined"
-                [position]="'right'">
+    </div>
+    <div class="winery-sidebar"
+         *ngIf="activeResearchPlugin != undefined">
         <winery-research-plugins class="sidebar"
                                  [selectedPlugin]="activeResearchPlugin">
         </winery-research-plugins>
-    </ng-sidebar>
+    </div>
 
-    <div ng-sidebar-content>
+    <div class="sidebar-content-root">
 
-        <hotkeys-cheatsheet></hotkeys-cheatsheet>
+        <div class="hotkeys-cheatsheet" *ngIf="hotkeysCheatSheetVisible">
+            <div>
+                <h4 class="hotkeys-title">Keyboard Shortcuts:</h4>
+                <table>
+                    <tr *ngFor="let hotkey of hotkeys">
+                        <td class="hotkeys-keys"><span class="hotkeys-key">{{ hotkey[0] }}</span></td>
+                        <td class="hotkeys-text">{{ hotkey[1] }}</td>
+                    </tr>
+                </table>
+                <div class="hotkeys-close" (click)="hotkeysCheatSheetVisible = false">&#215;</div>
+            </div>
+        </div>
         <router-outlet *ngIf="!readonly"></router-outlet>
 
 <winery-overlay *ngIf="!readonly && loaded?.loadedData"></winery-overlay>
@@ -87,4 +95,4 @@
 
     </div>
 
-</ng-sidebar-container>
+</div>

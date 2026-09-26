@@ -23,7 +23,7 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { NodeComponent } from '../node/node.component';
-import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { isHotkey } from '../hotkeys';
 import { ModalDirective } from 'ngx-bootstrap';
 import { GridTemplate } from '../models/gridTemplate';
 import { Subscription } from 'rxjs';
@@ -204,7 +204,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                 private actions: WineryActions,
                 private topologyRendererActions: TopologyRendererActions,
                 private zone: NgZone,
-                private hotkeysService: HotkeysService,
                 private renderer: Renderer2,
                 private alert: ToastrService,
                 private differs: KeyValueDiffers,
@@ -240,15 +239,6 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             .subscribe(currentPaletteOpened => this.setPaletteState(currentPaletteOpened)));
         this.subscriptions.push(this.ngRedux.select(state => state.liveModelingState.state)
             .subscribe(state => this.liveModelingState = state));
-        this.hotkeysService.add(new Hotkey('mod+a', (event: KeyboardEvent): boolean => {
-            event.stopPropagation();
-            this.allNodeTemplates.forEach((node) => this.enhanceDragSelection(node.id));
-            return false; // Prevent bubbling
-        }, undefined, 'Select all Node Templates'));
-        this.hotkeysService.add(new Hotkey('del', (): boolean => {
-            this.handleDeleteKeyEvent();
-            return false;
-        }, undefined, 'Delete an element.'));
         this.capabilities = new CapabilitiesModalData();
         this.requirements = new RequirementsModalData();
         this.importTopologyData = new ImportTopologyModalData();
@@ -279,6 +269,17 @@ export class CanvasComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes) {
+            this.handleDeleteKeyEvent();
+        }
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    onHotkey(event: KeyboardEvent) {
+        if (isHotkey(event, 'mod+a')) {
+            event.preventDefault();
+            this.allNodeTemplates.forEach((node) => this.enhanceDragSelection(node.id));
+        } else if (isHotkey(event, 'del')) {
+            event.preventDefault();
             this.handleDeleteKeyEvent();
         }
     }
