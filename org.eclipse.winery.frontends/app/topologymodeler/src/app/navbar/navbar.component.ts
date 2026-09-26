@@ -15,7 +15,7 @@
 import { Component, ElementRef, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
 import { IWineryState } from '../redux/store/winery.store';
 import { BackendService } from '../services/backend.service';

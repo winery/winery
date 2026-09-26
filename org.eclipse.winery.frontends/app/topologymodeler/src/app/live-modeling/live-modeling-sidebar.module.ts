@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDropdownModule, ProgressbarModule, TooltipModule, TypeaheadModule } from 'ngx-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { NgReduxModule } from '@angular-redux/store';
+import { NgReduxModule } from '../redux/ng-redux';
 import { RouterModule } from '@angular/router';
 import { WineryModalModule } from '../../../../tosca-management/src/app/wineryModalModule/winery.modal.module';
 import { LiveModelingSidebarComponent } from './live-modeling-sidebar.component';

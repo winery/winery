@@ -14,7 +14,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../../redux/ng-redux';
 import { IWineryState } from '../../../redux/store/winery.store';
 import { LiveModelingActions } from '../../../redux/actions/live-modeling.actions';
 import { Subscription } from 'rxjs';

@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../redux/ng-redux';
 import { IWineryState } from '../redux/store/winery.store';
 import {
     AdaptationAction, LiveModelingStates, NodeTemplateInstanceStates, ServiceTemplateInstanceStates

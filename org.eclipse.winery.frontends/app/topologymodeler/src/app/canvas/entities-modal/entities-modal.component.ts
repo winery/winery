@@ -22,7 +22,7 @@ import { QNameWithTypeApiData } from '../../models/generateArtifactApiData';
 import { EntityTypesModel } from '../../models/entityTypesModel';
 import { BackendService } from '../../services/backend.service';
 import { IWineryState } from '../../redux/store/winery.store';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { WineryActions } from '../../redux/actions/winery.actions';
 import { ExistsService } from '../../services/exists.service';
 import { ToastrService } from 'ngx-toastr';

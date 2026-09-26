@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Component, OnDestroy, OnInit, } from '@angular/core';
 import { of, Subject, Subscription } from 'rxjs';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux } from '../../redux/ng-redux';
 import { IWineryState } from '../../redux/store/winery.store';
 import { NodeTemplateInstance } from '../../models/container/node-template-instance.model';
 import { LiveModelingService } from '../../services/live-modeling.service';
