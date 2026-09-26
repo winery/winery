@@ -3,10 +3,11 @@
     "compilerOptions": {
         "outDir": "../../../dist/repository"
 },
-    "include": [
-        "**/*.ts"
+    "files": [
+        "main.ts",
+        "polyfills.ts"
     ],
-    "exclude": [
-        "**/*.spec.ts"
+    "include": [
+        "**/*.d.ts"
     ]
 }
